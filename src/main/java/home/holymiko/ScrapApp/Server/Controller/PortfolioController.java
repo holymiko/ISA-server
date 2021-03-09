@@ -1,5 +1,6 @@
 package home.holymiko.ScrapApp.Server.Controller;
 
+import home.holymiko.ScrapApp.Server.DTO.PortfolioCreateDTO;
 import home.holymiko.ScrapApp.Server.DTO.PortfolioDTO;
 import home.holymiko.ScrapApp.Server.DTO.Portfolio_Investment_DTO;
 import home.holymiko.ScrapApp.Server.Entity.Portfolio;
@@ -30,24 +31,12 @@ public class PortfolioController {
         this.investmentService = investmentService;
     }
 
-    /////////////// GET
+    /////// GET
 
     @GetMapping({"/", ""})
     public List<Portfolio> all() {
         System.out.println("Get all portfolios");
         return portfolioService.findAll();
-    }
-
-    @GetMapping({"/dto/portfolio","/dto/portfolio/", "/dto/", "/dto"})
-    public List<PortfolioDTO> allAsDTO() {
-        System.out.println("Get all portfolios as DTO");
-        return portfolioService.findAllAsPortfolioDTO();
-    }
-
-    @GetMapping({"/dto/portfolio-investments", "/dto/portfolio-investments/" })
-    public List<Portfolio_Investment_DTO> allAsPortfolioInvestmentDTO() {
-        System.out.println("Get all portfolios as Portfolio-Investment DTO");
-        return portfolioService.findAllAsPortfolioInvestmentDTO();
     }
 
     @GetMapping("/id/{id}")
@@ -66,8 +55,28 @@ public class PortfolioController {
         }
     }
 
+    @GetMapping("/owner/{owner}")
+    public Portfolio byOwner(@PathVariable String owner) {
+        return portfolioService.findByOwner(owner).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Try owner Mikolas"));
+    }
+
+
+    /////// GET DTO
+
+    @GetMapping({"/dto/portfolio","/dto/portfolio/", "/dto/", "/dto"})
+    public List<PortfolioDTO> allAsDTO() {
+        System.out.println("Get all portfolios as DTO");
+        return portfolioService.findAllAsPortfolioDTO();
+    }
+
+    @GetMapping({"/dto/portfolio-investments", "/dto/portfolio-investments/" })
+    public List<Portfolio_Investment_DTO> allAsPortfolio_Investment_DTO() {
+        System.out.println("Get all portfolios as Portfolio-Investment DTO");
+        return portfolioService.findAllAsPortfolioInvestmentDTO();
+    }
+
     @GetMapping("/dto/portfolio-investments/id/{id}")
-    public Portfolio_Investment_DTO byIdAsPortfolioInvestmentDTO(@PathVariable long id) {
+    public Portfolio_Investment_DTO byIdAsPortfolio_Investment_DTO(@PathVariable long id) {
         System.out.println("Get by Id as Portfolio-Investment DTO");
 
         Optional<Portfolio_Investment_DTO> optionalPortfolio = portfolioService.findByIdAsPortfolioInvestmentDTO(id);
@@ -78,20 +87,23 @@ public class PortfolioController {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/owner/{owner}")
-    public Portfolio byOwner(@PathVariable String owner) {
-        return portfolioService.findByOwner(owner).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Try owner Mikolas"));
+
+    /////// POST
+
+    @PostMapping({"/", ""})
+    public void addPortfolio(@RequestBody PortfolioCreateDTO portfolioCreateDTO) {
+        System.out.println("Add Portfolio");
+        this.portfolioService.save(portfolioCreateDTO);
     }
 
 
-    /////////////// PUT
-
+    /////// PUT
 
     @RequestMapping("/scrap/{id}")
     public void updatePortfolioProducts(@PathVariable long id) {
         Optional<Portfolio> optionalPortfolio = portfolioService.findById(id);
         if (optionalPortfolio.isPresent()) {
-            this.scrapController.scrapPortfolioProducts(id);
+            this.scrapController.byPortfolio(id);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }

@@ -1,7 +1,7 @@
 package home.holymiko.ScrapApp.Server.Repository;
 
 import home.holymiko.ScrapApp.Server.Entity.Link;
-import home.holymiko.ScrapApp.Server.Entity.Metal;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
 import home.holymiko.ScrapApp.Server.Entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

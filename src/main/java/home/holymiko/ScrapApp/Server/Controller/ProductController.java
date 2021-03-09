@@ -1,8 +1,7 @@
 package home.holymiko.ScrapApp.Server.Controller;
 
-import home.holymiko.ScrapApp.Server.DTO.Portfolio_Investment_DTO;
 import home.holymiko.ScrapApp.Server.DTO.ProductDTO;
-import home.holymiko.ScrapApp.Server.Entity.Metal;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
 import home.holymiko.ScrapApp.Server.Entity.Product;
 import home.holymiko.ScrapApp.Server.Scrap;
 import home.holymiko.ScrapApp.Server.Service.ProductService;
@@ -30,12 +29,6 @@ public class ProductController {
 
     /////// GET
 
-    @GetMapping({ "/dto/", "/dto"})
-    public List<ProductDTO> allAsDTO() {
-        System.out.println("Get all products as DTO");
-        return productService.findAllAsDTO();
-    }
-
     @GetMapping("/id/{id}")
     public Product byId(@PathVariable long id) {
         System.out.println("Get product by Id");
@@ -44,6 +37,26 @@ public class ProductController {
             return optionalProduct.get();
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping({ "/metal/{metal}", "/metal/{metal}/"})
+    public List<Product> byMetal(@PathVariable String metal) {
+        System.out.println("Get products byMetal "+metal);
+        return switch (metal) {
+            case "gold" -> this.productService.findByMetal(Metal.GOLD);
+            case "silver" -> this.productService.findByMetal(Metal.SILVER);
+            case "platinum" -> this.productService.findByMetal(Metal.PLATINUM);
+            case "palladium" -> this.productService.findByMetal(Metal.PALLADIUM);
+            default -> throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        };
+    }
+
+    /////// GET DTO
+
+    @GetMapping({ "/dto/", "/dto"})
+    public List<ProductDTO> allAsDTO() {
+        System.out.println("Get all products as DTO");
+        return productService.findAllAsDTO();
     }
 
     @GetMapping("/dto/id/{id}")
@@ -59,8 +72,8 @@ public class ProductController {
     }
 
     @GetMapping({ "/dto/metal/{metal}", "/dto/metal/{metal}/"})
-    public List<ProductDTO> getMetalProductsAsDTO(@PathVariable String metal) {
-        System.out.println("Get products byMetal "+metal);
+    public List<ProductDTO> byMetalAsDTO(@PathVariable String metal) {
+        System.out.println("Get products byMetal "+metal+" as DTO");
         return switch (metal) {
             case "gold" -> this.productService.findByMetalAsDTO(Metal.GOLD);
             case "silver" -> this.productService.findByMetalAsDTO(Metal.SILVER);
@@ -69,13 +82,5 @@ public class ProductController {
             default -> throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         };
     }
-
-    public List<Product> getGoldProducts() {
-        return this.productService.findByMetal(Metal.GOLD);
-    }
-
-//    public List<Product> getGoldProducts(double maxPrice) {
-//        return this.productService.findByMetal(maxPrice);
-//    }
 
 }

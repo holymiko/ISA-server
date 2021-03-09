@@ -9,20 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/api/v1/link")         // Na url/api/v1/herbivores se zavola HTTP request
+@RequestMapping("/api/v1/link")
 public class LinkController {
-    private final Scrap scrap;
 
-    @Autowired
-    public LinkController(Scrap scrap) {
-        this.scrap = scrap;
-    }
-
-    public void saveGoldLinks() {
-        this.scrap.scrapGoldLinks();
-    }
-
-    public void saveAllLinks() {
-        this.scrap.scrapAllLinks();
-    }
 }

@@ -1,5 +1,7 @@
 package home.holymiko.ScrapApp.Server.Entity;
 
+import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
+
 import javax.persistence.*;
 import java.util.Comparator;
 import java.util.List;

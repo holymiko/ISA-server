@@ -18,9 +18,43 @@ public class Portfolio {
     public Portfolio(List<Investment> investments, String owner) {
         this.investments = investments;
         this.owner = owner;
+        this.setValue();
+        this.setYield();
+        this.setBeginPrice();
     }
 
     public Portfolio() {
+    }
+
+
+    ///// MY SET
+
+    public void setBeginPrice() {
+        double total = 0;
+        for (Investment investment : this.investments) {
+            total += investment.getBeginPrice();
+        }
+        beginPrice = total;
+    }
+
+    public void setYield() {
+        setValue();
+        yield = getValue() / this.beginPrice;
+    }
+
+    public void setValue() {
+        double totalRedemption = 0;
+        for (Investment investment : this.investments)
+            totalRedemption += investment.getProduct().getLatestPrice().getRedemption();
+        value = totalRedemption;
+    }
+
+
+
+    public String getTextYield() {
+        if (yield >= 1)
+            return "+" + String.format("%.2f", (yield - 1) * 100) + "%";
+        return "-" + String.format("%.2f", (100 - yield * 100)) + "%";
     }
 
     public long getId() {
@@ -31,38 +65,12 @@ public class Portfolio {
         return yield;
     }
 
-    public String getTextYield() {
-        if (yield >= 1)
-            return "+" + String.format("%.2f", (yield - 1) * 100) + "%";
-        return "-" + String.format("%.2f", (100 - yield * 100)) + "%";
-    }
-
     public double getBeginPrice() {
         return beginPrice;
     }
 
-    public void setBeginPrice() {
-        double total = 0;
-        for (Investment investment : this.investments) {
-            total += investment.getBeginPrice();
-        }
-        beginPrice = total;
-    }
-
-    public void setValue() {
-        double totalRedemption = 0;
-        for (Investment investment : this.investments)
-            totalRedemption += investment.getProduct().getLatestPrice().getRedemption();
-        value = totalRedemption;
-    }
-
     public double getValue() {
         return value;
-    }
-
-    public void setYield() {
-        setValue();
-        yield = getValue() / this.beginPrice;
     }
 
     public List<Investment> getInvestments() {

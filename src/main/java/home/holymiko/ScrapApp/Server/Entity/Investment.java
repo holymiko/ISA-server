@@ -16,10 +16,8 @@ public class Investment {
     @Fetch(FetchMode.SELECT)                        // To avoid duplicates
     private Product product;
     private double yield;
-    @NotNull
     private double beginPrice;
     private double endPrice;
-    @NotNull
     private LocalDate beginDate;
     private LocalDate endDate;
 
@@ -29,10 +27,20 @@ public class Investment {
         this.beginDate = beginDate;
     }
 
+    public Investment(Product product, LocalDate beginDate) {
+        this.product = product;
+        this.beginDate = beginDate;
+    }
+
+    public Investment(Product product) {
+        this.product = product;
+    }
 
     public Investment() {
 
     }
+
+    ///// SET
 
     public void setYield() {
         setYield(getProduct().getLatestPrice().getRedemption() / getBeginPrice());
@@ -41,6 +49,8 @@ public class Investment {
     public void setYield(double yield) {
         this.yield = yield;
     }
+
+    ///// GET
 
     public double getYield() {
         return yield;

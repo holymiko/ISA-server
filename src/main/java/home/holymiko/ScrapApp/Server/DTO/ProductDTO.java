@@ -1,6 +1,5 @@
 package home.holymiko.ScrapApp.Server.DTO;
 
-import home.holymiko.ScrapApp.Server.Entity.Metal;
 import home.holymiko.ScrapApp.Server.Entity.Price;
 
 import java.time.LocalDateTime;

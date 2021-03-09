@@ -4,7 +4,10 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.sun.xml.bind.v2.TODO;
 import home.holymiko.ScrapApp.Server.Entity.*;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
 import home.holymiko.ScrapApp.Server.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,30 +56,35 @@ public class Scrap {
         client.getOptions().setCssEnabled(false);
     }
 
-    public void scrapProduct(Link link) {
+    private void scrapProduct(Link link) {
+        double weight;
+        Product product;
+
+        loadPage(link.getLink());
+        HtmlElement name = page.getFirstByXPath(".//span[@class='base']");
+        weight = weightExtracter(name.asText());
+
+        if (name.asText().contains("Zlat"))
+            product = new Product(Metal.GOLD, name.asText(), weight, link, null, new ArrayList<>());
+        else if (name.asText().contains("Stříbr"))
+            product = new Product(Metal.SILVER, name.asText(), weight, link, null, new ArrayList<>());
+        else if (name.asText().contains("Platin"))
+            product = new Product(Metal.PLATINUM, name.asText(), weight, link, null, new ArrayList<>());
+        else if (name.asText().contains("Pallad"))
+            product = new Product(Metal.PALLADIUM, name.asText(), weight, link, null, new ArrayList<>());
+        else
+            product = new Product(null, name.asText(), weight, link, null, new ArrayList<>());
+
+        addPriceToProduct(product, getPriceFromPage(weight));
+        System.out.println("Product saved");
+    }
+
+    public void scrapOptionalProduct(Link link) {
         List<Product> productList = this.productService.findByLink(link.getLink());
 
         if (productList.isEmpty()) {
-            double weight;
-            Product product;
-
-            loadPage(link.getLink());
-            HtmlElement name = page.getFirstByXPath(".//span[@class='base']");
-            weight = weightExtracter(name.asText());
-
-            if (name.asText().contains("Zlat"))
-                product = new Product(Metal.GOLD, name.asText(), weight, link, null, new ArrayList<>());
-            else if (name.asText().contains("Stříbr"))
-                product = new Product(Metal.SILVER, name.asText(), weight, link, null, new ArrayList<>());
-            else if (name.asText().contains("Platin"))
-                product = new Product(Metal.PLATINUM, name.asText(), weight, link, null, new ArrayList<>());
-            else if (name.asText().contains("Pallad"))
-                product = new Product(Metal.PALLADIUM, name.asText(), weight, link, null, new ArrayList<>());
-            else
-                product = new Product(null, name.asText(), weight, link, null, new ArrayList<>());
-
-            addPriceToProduct(product, getPriceFromPage(weight));
-            System.out.println("Product saved");
+            // TODO Add product to Avatar
+            scrapProduct(link);
         } else {
             if (productList.size() > 1)
                 System.out.println("WARNING - More products with same link");
@@ -85,23 +92,33 @@ public class Scrap {
         }
     }   // Saves new product or Updates price of existing
 
-    public void scrapAllProducts() {
-        List<Link> allLinks = linkService.findAll();
+    public void scrapProducts(List<Link> links) {
         int i = 0;
-        for (Link link : allLinks) {
-            scrapProduct(link);
+        for (Link link : links) {
+            scrapOptionalProduct(link);
             i++;
             if ((i % 10) == 0)
-                System.out.println(i + "/" + allLinks.size());
+                System.out.println(i + "/" + links.size());
             try {
                 Thread.sleep(DELAY);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void scrapAllProducts() {
+        scrapByDealer(Dealer.BESSERGOLD);
+
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
         System.out.println("All products scraped");
     }        // Scraps products based on Links from DB
+
+    public void scrapByDealer(Dealer dealer) {
+        List<Link> dealerLinks = linkService.findByDealer(dealer);
+        //// TODO Make new dealer or find existing
+        scrapProducts(dealerLinks);
+    }
 
     public void scrapPortfolioProducts(long portfolioId) throws ResponseStatusException {
         System.out.println("Scrap Portfolio-Products");
@@ -114,7 +131,7 @@ public class Scrap {
                 linkSet.add(investment.getProduct().getLink());
             }
             for (Link link : linkSet) {
-                scrapProduct(link);
+                scrapOptionalProduct(link);
             }
             try {
                 Thread.sleep(DELAY);
@@ -123,7 +140,6 @@ public class Scrap {
             }
             portfolioService.update(portfolioId);
             System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
-            throw new ResponseStatusException(HttpStatus.OK);
         } else
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No portfolio with such ID");
 //            System.out.println("No portfolio with such ID");
@@ -158,6 +174,30 @@ public class Scrap {
 
     ///////////////////// Link scraping //////////////////////////
 
+    public void scrapLink(HtmlElement htmlItem, String searchUrl){
+        HtmlAnchor itemAnchor = htmlItem.getFirstByXPath(".//strong[@class='product name product-item-name']/a");
+        Link link;
+        if(  searchUrl.equals(searchUrlGold) || searchUrl.equals(searchUrlSilver)
+        ||   searchUrl.equals(searchUrlPlatinum) || searchUrl.equals(searchUrlPalladium) ) {
+            link = new Link(Dealer.BESSERGOLD, itemAnchor.getHrefAttribute());
+        } else {
+            link = new Link(Dealer.NONE, itemAnchor.getHrefAttribute());
+        }
+
+        if (linkFilter(link.getLink())) {
+            List<Link> linkList = linkService.findByLink(link.getLink());
+            if (linkList.isEmpty()) {
+                linkService.save(link);
+                System.out.println("Link saved");
+            } else {
+                if (linkList.size() == 1)
+                    System.out.println("Link already in DB");
+                else
+                    System.out.println("WARNING - Duplicates in DB table LINK");
+            }
+        }
+    }
+
     public void scrapLinks(String searchUrl) {
         page = null;
         try {
@@ -173,22 +213,9 @@ public class Scrap {
         }
 
         for (HtmlElement htmlItem : item) {
-            HtmlAnchor itemAnchor = htmlItem.getFirstByXPath(".//strong[@class='product name product-item-name']/a");
-            Link link = new Link(itemAnchor.getHrefAttribute());
-
-            if (linkFilter(link.getLink())) {
-                List<Link> linkList = linkService.findByLink(link.getLink());
-                if (linkList.isEmpty()) {
-                    linkService.save(link);
-                    System.out.println("Link saved");
-                } else {
-                    if (linkList.size() == 1)
-                        System.out.println("Link already in DB");
-                    else
-                        System.out.println("WARNING - Duplicates in DB table LINK");
-                }
-            }
+            scrapLink(htmlItem, searchUrl);
         }
+
         List<Link> allLinks = linkService.findAll();
         System.out.println("Number of links: " + allLinks.size());
     }

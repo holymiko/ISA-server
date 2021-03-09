@@ -1,10 +1,12 @@
 package home.holymiko.ScrapApp.Server.Service;
 
 import home.holymiko.ScrapApp.Server.DTO.InvestmentDTO;
+import home.holymiko.ScrapApp.Server.DTO.PortfolioCreateDTO;
 import home.holymiko.ScrapApp.Server.DTO.PortfolioDTO;
 import home.holymiko.ScrapApp.Server.DTO.Portfolio_Investment_DTO;
 import home.holymiko.ScrapApp.Server.Entity.Portfolio;
 import home.holymiko.ScrapApp.Server.Entity.Investment;
+import home.holymiko.ScrapApp.Server.Entity.Product;
 import home.holymiko.ScrapApp.Server.Repository.PortfolioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,15 +20,15 @@ import java.util.stream.Collectors;
 @Service
 public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
+    private final ProductService productService;
     private final InvestmentService investmentService;
 
     @Autowired
-    public PortfolioService(PortfolioRepository portfolioRepository, InvestmentService investmentService) {
+    public PortfolioService(PortfolioRepository portfolioRepository, ProductService productService, InvestmentService investmentService) {
         this.portfolioRepository = portfolioRepository;
+        this.productService = productService;
         this.investmentService = investmentService;
     }
-
-
 
     /////// to DTO
 
@@ -64,16 +66,26 @@ public class PortfolioService {
     }
 
 
+    ////// FIND AS DTO
 
-    ////// GET
+    public List<PortfolioDTO> findAllAsPortfolioDTO() {
+        return portfolioRepository.findAll().stream().map(this::toPortfolioDTO).collect(Collectors.toList());
+    }
 
-    public Optional<Portfolio> findById(Long id) {
-        return portfolioRepository.findById(id);
+    public List<Portfolio_Investment_DTO> findAllAsPortfolioInvestmentDTO() {
+        return portfolioRepository.findAll().stream().map(this::toPortfolioInvestmentDTO).collect(Collectors.toList());
     }
 
     public Optional<Portfolio_Investment_DTO> findByIdAsPortfolioInvestmentDTO(Long id) {
         Optional<Portfolio> optionalPortfolio = portfolioRepository.findById(id);
         return optionalPortfolio.map(this::toPortfolioInvestmentDTO);
+    }
+
+
+    ////// FIND
+
+    public Optional<Portfolio> findById(Long id) {
+        return portfolioRepository.findById(id);
     }
 
     public Optional<Portfolio> findByOwner(String owner) {
@@ -84,25 +96,30 @@ public class PortfolioService {
         return portfolioRepository.findAll();
     }
 
-    public List<PortfolioDTO> findAllAsPortfolioDTO() {
-        return portfolioRepository.findAll().stream().map(this::toPortfolioDTO).collect(Collectors.toList());
-    }
-
-    public List<Portfolio_Investment_DTO> findAllAsPortfolioInvestmentDTO() {
-        return portfolioRepository.findAll().stream().map(this::toPortfolioInvestmentDTO).collect(Collectors.toList());
-    }
-
-
 
     ////// POST, PUT
 
     @Transactional
+    public void save(PortfolioCreateDTO portfolioCreateDTO) {
+        List<Product> productList = this.productService.findProducts( portfolioCreateDTO.getInvestmentIds() );
+        List<Investment> investmentList = new ArrayList<>();
+
+        for (Product product:productList) {
+            investmentList.add(this.investmentService.save(product));
+        }
+        this.portfolioRepository.save(
+                new Portfolio(
+                        investmentList,
+                        portfolioCreateDTO.getOwner()
+                )
+        );
+        System.out.println(">> Save PortfolioCreateDTO " + portfolioCreateDTO.getOwner());
+    }
+
+    @Transactional
     public void save(Portfolio portfolio) {
-        portfolio.setValue();
-        portfolio.setYield();
-        portfolio.setBeginPrice();
         this.portfolioRepository.save(portfolio);
-        System.out.println("PortfolioDTO saved");
+        System.out.println(">> Save Portfolio");
     }
 
     @Transactional

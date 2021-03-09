@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/api/v1/investment")         // Na url/api/v1/herbivores se zavola HTTP request
+@RequestMapping("/api/v1/investment")
 public class InvestmentController {
 
 }

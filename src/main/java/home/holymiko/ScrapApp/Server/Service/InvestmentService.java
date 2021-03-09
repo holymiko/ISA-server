@@ -2,15 +2,20 @@ package home.holymiko.ScrapApp.Server.Service;
 
 import home.holymiko.ScrapApp.Server.DTO.InvestmentDTO;
 import home.holymiko.ScrapApp.Server.Entity.Investment;
+import home.holymiko.ScrapApp.Server.Entity.Product;
 import home.holymiko.ScrapApp.Server.Repository.InvestmentRepository;
 import home.holymiko.ScrapApp.Server.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InvestmentService {
@@ -28,8 +33,6 @@ public class InvestmentService {
     }
 
 
-
-
     public InvestmentDTO toDTO(Investment investment){
         return new InvestmentDTO(
                 investment.getId(),
@@ -40,6 +43,41 @@ public class InvestmentService {
                 investment.getBeginDate(),
                 investment.getEndDate()
         );
+    }
+
+
+    ////// FIND
+
+    public List<Investment> longToInvestments(List<Long> investmentIds) {
+        List<Investment> investments = new ArrayList<>();
+        for (Long id:
+                investmentIds) {
+            Optional<Investment> optionalInvestment = this.investmentRepository.findById(id);
+            if(optionalInvestment.isPresent()){
+                investments.add(optionalInvestment.get());
+            } else {
+                System.out.println("Investment by ID does exist");
+            }
+        }
+        return investments;
+    }
+
+    public Optional<Investment> findById(Long id) {
+        return this.investmentRepository.findById(id);
+    }
+
+    ////// POST
+
+    @Transactional
+    public Investment save(Product product) throws ResponseStatusException {
+        Optional<Product> optionalProduct = this.productRepository.findById(product.getId());
+        if(optionalProduct.isPresent()){
+            System.out.println("localDate");
+            Investment investment = new Investment( product, LocalDate.of(100,1,1));
+            this.investmentRepository.save(investment);
+            return this.investmentRepository.findById(investment.getId()).get();
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product with such ID not found");
     }
 
     @Transactional

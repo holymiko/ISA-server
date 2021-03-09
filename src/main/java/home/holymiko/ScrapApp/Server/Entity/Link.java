@@ -1,6 +1,7 @@
 package home.holymiko.ScrapApp.Server.Entity;
 
 import com.sun.istack.NotNull;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,14 +12,15 @@ public class Link {
     @Id
     @GeneratedValue
     private Long Id;
-
+    private Dealer dealer;
     @NotNull
     private String link;
 
     public Link() {
     }
 
-    public Link(String link) {
+    public Link(Dealer dealer, String link) {
+        this.dealer = dealer;
         this.link = link;
     }
 
