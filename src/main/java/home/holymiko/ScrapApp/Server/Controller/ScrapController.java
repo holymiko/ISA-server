@@ -30,12 +30,13 @@ public class ScrapController {
     private LocalDateTime lastPalladiumLinks = LocalDateTime.now().minusYears(YEAR_DELAY);
     private boolean isRunning = false;
     private final Scrap scrap;
+    private final PortfolioService portfolioService;
 
     @Autowired
-    public ScrapController(Scrap scrap) {
+    public ScrapController(Scrap scrap, PortfolioService portfolioService) {
         this.scrap = scrap;
+        this.portfolioService = portfolioService;
     }
-
 
 
     @RequestMapping({"/all", "/all/"})
@@ -52,12 +53,14 @@ public class ScrapController {
         System.out.println("Scrap all");
 
         System.out.println("Scrap all links");
-        this.scrap.scrapAllLinks();
+        this.scrap.sAllLinks();
         lastAllLinks = LocalDateTime.now();
 
         System.out.println("Scrap all products");
-        this.scrap.scrapAllProducts();
+        this.scrap.sAllProducts();
         lastAll = LocalDateTime.now();
+
+        this.portfolioService.saveMyPortfolio();
 
         isRunning = false;
     }
@@ -83,7 +86,7 @@ public class ScrapController {
                     isRunning = false;
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then "+MINUTES_DELAY+" ago");
                 }
-                this.scrap.scrapPricesByMetal(Metal.GOLD);
+                this.scrap.sMetalPrices(Metal.GOLD);
                 lastGold = LocalDateTime.now();
                 break;
             }
@@ -92,7 +95,7 @@ public class ScrapController {
                     isRunning = false;
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then "+MINUTES_DELAY+" ago");
                 }
-                this.scrap.scrapPricesByMetal(Metal.SILVER);
+                this.scrap.sMetalPrices(Metal.SILVER);
                 lastSilver = LocalDateTime.now();
                 break;
             }
@@ -101,7 +104,7 @@ public class ScrapController {
                     isRunning = false;
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then "+MINUTES_DELAY+" ago");
                 }
-                this.scrap.scrapPricesByMetal(Metal.PLATINUM);
+                this.scrap.sMetalPrices(Metal.PLATINUM);
                 lastPlatinum = LocalDateTime.now();
                 break;
             }
@@ -110,7 +113,7 @@ public class ScrapController {
                     isRunning = false;
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then "+MINUTES_DELAY+" ago");
                 }
-                this.scrap.scrapPricesByMetal(Metal.PALLADIUM);
+                this.scrap.sMetalPrices(Metal.PALLADIUM);
                 lastPalladium = LocalDateTime.now();
                 break;
             }
@@ -130,7 +133,7 @@ public class ScrapController {
         isRunning = true;
 
         try {
-            this.scrap.scrapPortfolioProducts(id);
+            this.scrap.sPortfolioProducts(id);
         } catch (ResponseStatusException e){
             isRunning = false;
             throw e;
@@ -152,7 +155,7 @@ public class ScrapController {
         isRunning = true;
 
         System.out.println("Scrap all links");
-        this.scrap.scrapAllLinks();
+        this.scrap.sAllLinks();
         lastAllLinks = LocalDateTime.now();
 
         isRunning = false;
@@ -175,7 +178,7 @@ public class ScrapController {
                     isRunning = false;
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then "+MINUTES_DELAY+" ago");
                 }
-                this.scrap.scrapGoldLinks();
+                this.scrap.sGoldLinks();
                 lastGoldLinks = LocalDateTime.now();
                 break;
             }
@@ -184,7 +187,7 @@ public class ScrapController {
                     isRunning = false;
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then "+MINUTES_DELAY+" ago");
                 }
-                this.scrap.scrapSilverLinks();
+                this.scrap.sSilverLinks();
                 lastSilverLinks = LocalDateTime.now();
                 break;
             }
@@ -193,7 +196,7 @@ public class ScrapController {
                     isRunning = false;
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then "+MINUTES_DELAY+" ago");
                 }
-                this.scrap.scrapPlatinumLinks();
+                this.scrap.sPlatinumLinks();
                 lastPlatinumLinks = LocalDateTime.now();
                 break;
             }
@@ -202,7 +205,7 @@ public class ScrapController {
                     isRunning = false;
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then "+MINUTES_DELAY+" ago");
                 }
-                this.scrap.scrapPalladiumLinks();
+                this.scrap.sPalladiumLinks();
                 lastPalladiumLinks = LocalDateTime.now();
                 break;
             }

@@ -18,9 +18,8 @@ public class Portfolio {
     public Portfolio(List<Investment> investments, String owner) {
         this.investments = investments;
         this.owner = owner;
-        this.setValue();
-        this.setYield();
         this.setBeginPrice();
+        this.setYield();
     }
 
     public Portfolio() {
@@ -34,22 +33,23 @@ public class Portfolio {
         for (Investment investment : this.investments) {
             total += investment.getBeginPrice();
         }
-        beginPrice = total;
+        this.beginPrice = total;
     }
 
     public void setYield() {
-        setValue();
-        yield = getValue() / this.beginPrice;
+        this.setValue();
+        this.yield = this.value / this.beginPrice;
     }
 
     public void setValue() {
         double totalRedemption = 0;
         for (Investment investment : this.investments)
             totalRedemption += investment.getProduct().getLatestPrice().getRedemption();
-        value = totalRedemption;
+        this.value = totalRedemption;
     }
 
 
+    ////// GET
 
     public String getTextYield() {
         if (yield >= 1)

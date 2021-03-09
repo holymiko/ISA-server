@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class AvatarProducer {
+public class AvatarMetal {
     @Id
     @GeneratedValue
     private long id;
@@ -20,12 +20,12 @@ public class AvatarProducer {
     private double AverageRedemption;
     private int productsCount;
 
-    public AvatarProducer(Producer producer, Dealer dealer) {
+    public AvatarMetal(Producer producer, Dealer dealer) {
         this.producer = producer;
         this.dealer = dealer;
     }
 
-    public AvatarProducer(Producer producer, Dealer dealer, double averageBuyPrice, double averageRedemption, int productsCount) {
+    public AvatarMetal(Producer producer, Dealer dealer, double averageBuyPrice, double averageRedemption, int productsCount) {
         this.producer = producer;
         this.dealer = dealer;
         AverageBuyPrice = averageBuyPrice;

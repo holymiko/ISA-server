@@ -1,6 +1,10 @@
 package home.holymiko.ScrapApp.Server.Service;
 
 import home.holymiko.ScrapApp.Server.DTO.InvestmentDTO;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
 import home.holymiko.ScrapApp.Server.Entity.Investment;
 import home.holymiko.ScrapApp.Server.Entity.Product;
 import home.holymiko.ScrapApp.Server.Repository.InvestmentRepository;
@@ -12,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +27,8 @@ public class InvestmentService {
     private final InvestmentRepository investmentRepository;
 
     private final ProductService productService;
+
+    private static final double TROY_OUNCE = 31.1034768;
 
     @Autowired
     public InvestmentService(ProductRepository productRepository, InvestmentRepository investmentRepository, ProductService productService) {
@@ -66,6 +71,7 @@ public class InvestmentService {
         return this.investmentRepository.findById(id);
     }
 
+
     ////// POST
 
     @Transactional
@@ -82,22 +88,22 @@ public class InvestmentService {
 
     @Transactional
     public List<Investment> saveMyInvestments() {
-        Investment goldenBar1 = new Investment(this.productRepository.findById(2932L).get(), 3164.75, LocalDate.of(2021, 1, 19));
-        Investment goldenBar2 = new Investment(this.productRepository.findById(2932L).get(), 3547.00, LocalDate.of(2020, 10, 12));
+        Investment goldenBar1 = new Investment(this.productRepository.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.GOLD, Form.BAR, 2).get(), 3164.75, LocalDate.of(2021, 1, 19));
+        Investment goldenBar2 = new Investment(this.productRepository.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.GOLD, Form.BAR, 2).get(), 3547.00, LocalDate.of(2020, 10, 12));
 
-        Investment silverBar1 = new Investment(this.productRepository.findById(3124L).get(), 17832.76, LocalDate.of(2020, 1, 22));
-        Investment silverBar2 = new Investment(this.productRepository.findById(3123L).get(), 7752.67, LocalDate.of(2018, 10, 17));
-        Investment silverBar3 = new Investment(this.productRepository.findById(3123L).get(), 7375.80, LocalDate.of(2018, 9, 10));
+        Investment silverBar1 = new Investment(this.productRepository.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 1000).get(), 17832.76, LocalDate.of(2020, 1, 22));
+        Investment silverBar2 = new Investment(this.productRepository.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500).get(), 7752.67, LocalDate.of(2018, 10, 17));
+        Investment silverBar3 = new Investment(this.productRepository.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500).get(), 7375.80, LocalDate.of(2018, 9, 10));
 
-        Investment silverMapleCoin1 = new Investment(this.productRepository.findById(3130L).get(), 848.00, LocalDate.of(2021, 1, 25));
-        Investment silverMapleCoin2 = new Investment(this.productRepository.findById(3130L).get(), 848.00, LocalDate.of(2021, 1, 25));
-        Investment silverMapleCoin3 = new Investment(this.productRepository.findById(3130L).get(), 848.00, LocalDate.of(2021, 1, 25));
+        Investment silverMapleCoin1 = new Investment(this.productRepository.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ROYAL_CANADIAN_MINT, Metal.SILVER, Form.COIN, TROY_OUNCE).get(), 848.00, LocalDate.of(2021, 1, 25));
+        Investment silverMapleCoin2 = new Investment(this.productRepository.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ROYAL_CANADIAN_MINT, Metal.SILVER, Form.COIN, TROY_OUNCE).get(), 848.00, LocalDate.of(2021, 1, 25));
+        Investment silverMapleCoin3 = new Investment(this.productRepository.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ROYAL_CANADIAN_MINT, Metal.SILVER, Form.COIN, TROY_OUNCE).get(), 848.00, LocalDate.of(2021, 1, 25));
 
-        Investment silverWienerCoin1 = new Investment(this.productRepository.findById(3129L).get(), 868.00, LocalDate.of(2020, 12, 10));
-        Investment silverWienerCoin2 = new Investment(this.productRepository.findById(3129L).get(), 845.00, LocalDate.of(2021, 1, 25));
-        Investment silverWienerCoin3 = new Investment(this.productRepository.findById(3129L).get(), 845.00, LocalDate.of(2021, 1, 25));
+        Investment silverWienerCoin1 = new Investment(this.productRepository.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.SILVER, Form.COIN, TROY_OUNCE).get(), 868.00, LocalDate.of(2020, 12, 10));
+        Investment silverWienerCoin2 = new Investment(this.productRepository.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.SILVER, Form.COIN, TROY_OUNCE).get(), 845.00, LocalDate.of(2021, 1, 25));
+        Investment silverWienerCoin3 = new Investment(this.productRepository.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.SILVER, Form.COIN, TROY_OUNCE).get(), 845.00, LocalDate.of(2021, 1, 25));
 
-        Investment platinumBar1 = new Investment(this.productRepository.findById(3165L).get(), 4409.18, LocalDate.of(2019, 2, 18));
+        Investment platinumBar1 = new Investment(this.productRepository.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.PLATINUM, Form.BAR, 5).get(), 4409.18, LocalDate.of(2019, 2, 18));
 
         List<Investment> investmentList = new ArrayList<>() {{
             add(goldenBar1);

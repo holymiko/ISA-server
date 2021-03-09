@@ -1,6 +1,9 @@
 package home.holymiko.ScrapApp.Server.Entity;
 
+import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
 
 import javax.persistence.*;
 import java.util.Comparator;
@@ -12,11 +15,13 @@ public class Product {
     @Id
     @GeneratedValue
     private long id;
+    private Producer producer;
+    private Form form;
     private Metal metal;
     private String name;
     private double grams;
     @OneToOne
-    private Link link;
+    private Link link;      // + Dealer
     @OneToOne
     private Price latestPrice;
     @OneToMany(fetch = FetchType.EAGER)
@@ -25,7 +30,9 @@ public class Product {
     public Product() {
     }
 
-    public Product(Metal metal, String name, double grams, Link link, Price latestPrice, List<Price> prices) {
+    public Product(Producer producer, Form form, Metal metal, String name, double grams, Link link, Price latestPrice, List<Price> prices) {
+        this.producer = producer;
+        this.form = form;
         this.metal = metal;
         this.name = name;
         this.grams = grams;
@@ -67,6 +74,10 @@ public class Product {
         this.grams = grams;
     }
 
+    public Dealer getDealer() {
+        return this.link.getDealer();
+    }
+
     public double getGrams() {
         return grams;
     }
@@ -91,6 +102,14 @@ public class Product {
         return metal;
     }
 
+    public Producer getProducer() {
+        return producer;
+    }
+
+    public Form getForm() {
+        return form;
+    }
+
     public String getMetalString() {
         return metal.toString();
     }
@@ -101,46 +120,4 @@ public class Product {
                 ", grams=" + grams +
                 ", prices=" + prices;
     }
-
-    public static Comparator<Product> ProductSplitComparator
-            = new Comparator<Product>() {
-
-        public int compare(Product product1, Product product2) {
-
-            Double split1 = product1.getLatestPrice().getSplit();
-            Double split2 = product2.getLatestPrice().getSplit();
-
-            //ascending order
-//            return split1.compareTo(split2);
-
-            //descending order
-            return split2.compareTo(split1);
-        }
-
-    };
-
-    public static Comparator<Product> ProductPerGramComparator
-            = (Product1, Product2) -> {
-
-        Double ProductName1 = Product1.getLatestPrice().getPricePerGram();
-        Double ProductName2 = Product2.getLatestPrice().getPricePerGram();
-
-        //ascending order
-        return ProductName1.compareTo(ProductName2);
-
-        //descending order
-//                return ProductName2.compareTo(ProductName1);
-    };
-    public static Comparator<Product> ProductPriceComparator
-            = (Product1, Product2) -> {
-
-        Double ProductName1 = Product1.getLatestPrice().getPrice();
-        Double ProductName2 = Product2.getLatestPrice().getPrice();
-
-        //ascending order
-        return ProductName1.compareTo(ProductName2);
-
-        //descending order
-//                return ProductName2.compareTo(ProductName1);
-    };
 }

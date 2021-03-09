@@ -4,10 +4,11 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.sun.xml.bind.v2.TODO;
 import home.holymiko.ScrapApp.Server.Entity.*;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
 import home.holymiko.ScrapApp.Server.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class Scrap {
     private HtmlPage page;
     private final WebClient client;
 
-    private static final long DELAY = 800;
+    private static final long DELAY = 700;
     private static final double OUNCE = 28.349523125;
     private static final double TROY_OUNCE = 31.1034768;
 
@@ -56,30 +57,35 @@ public class Scrap {
         client.getOptions().setCssEnabled(false);
     }
 
+
+    /////// PRODUCT
+
     private void scrapProduct(Link link) {
         double weight;
         Product product;
 
         loadPage(link.getLink());
         HtmlElement name = page.getFirstByXPath(".//span[@class='base']");
-        weight = weightExtracter(name.asText());
+        weight = weightExtractor(name.asText());
+        Form form = formExtractor(name.asText());
+        Producer producer = producerExtractor(name.asText());
 
         if (name.asText().contains("Zlat"))
-            product = new Product(Metal.GOLD, name.asText(), weight, link, null, new ArrayList<>());
+            product = new Product( producer, form, Metal.GOLD, name.asText(), weight, link, null, new ArrayList<>() );
         else if (name.asText().contains("Stříbr"))
-            product = new Product(Metal.SILVER, name.asText(), weight, link, null, new ArrayList<>());
+            product = new Product( producer, form, Metal.SILVER, name.asText(), weight, link, null, new ArrayList<>());
         else if (name.asText().contains("Platin"))
-            product = new Product(Metal.PLATINUM, name.asText(), weight, link, null, new ArrayList<>());
+            product = new Product( producer, form, Metal.PLATINUM, name.asText(), weight, link, null, new ArrayList<>());
         else if (name.asText().contains("Pallad"))
-            product = new Product(Metal.PALLADIUM, name.asText(), weight, link, null, new ArrayList<>());
+            product = new Product( producer, form, Metal.PALLADIUM, name.asText(), weight, link, null, new ArrayList<>());
         else
-            product = new Product(null, name.asText(), weight, link, null, new ArrayList<>());
+            product = new Product( producer, form, Metal.UNKNOWN, name.asText(), weight, link, null, new ArrayList<>());
 
-        addPriceToProduct(product, getPriceFromPage(weight));
+        addPriceToProduct(product, scrapPrice(product));
         System.out.println("Product saved");
     }
 
-    public void scrapOptionalProduct(Link link) {
+    public void sOptionalProduct(Link link) {
         List<Product> productList = this.productService.findByLink(link.getLink());
 
         if (productList.isEmpty()) {
@@ -92,10 +98,10 @@ public class Scrap {
         }
     }   // Saves new product or Updates price of existing
 
-    public void scrapProducts(List<Link> links) {
+    public void sProducts(List<Link> links) {
         int i = 0;
         for (Link link : links) {
-            scrapOptionalProduct(link);
+            sOptionalProduct(link);
             i++;
             if ((i % 10) == 0)
                 System.out.println(i + "/" + links.size());
@@ -107,20 +113,20 @@ public class Scrap {
         }
     }
 
-    public void scrapAllProducts() {
-        scrapByDealer(Dealer.BESSERGOLD);
+    public void sAllProducts() {
+        sDealerProducts(Dealer.BESSERGOLD);
 
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
         System.out.println("All products scraped");
     }        // Scraps products based on Links from DB
 
-    public void scrapByDealer(Dealer dealer) {
+    public void sDealerProducts(Dealer dealer) {
         List<Link> dealerLinks = linkService.findByDealer(dealer);
         //// TODO Make new dealer or find existing
-        scrapProducts(dealerLinks);
+        sProducts(dealerLinks);
     }
 
-    public void scrapPortfolioProducts(long portfolioId) throws ResponseStatusException {
+    public void sPortfolioProducts(long portfolioId) throws ResponseStatusException {
         System.out.println("Scrap Portfolio-Products");
         Optional<Portfolio> optionalPortfolio = portfolioService.findById(portfolioId);
         if (optionalPortfolio.isPresent()) {
@@ -131,7 +137,7 @@ public class Scrap {
                 linkSet.add(investment.getProduct().getLink());
             }
             for (Link link : linkSet) {
-                scrapOptionalProduct(link);
+                sOptionalProduct(link);
             }
             try {
                 Thread.sleep(DELAY);
@@ -146,14 +152,33 @@ public class Scrap {
 
     }
 
-    public void scrapPrice(Product product) {
+
+    /////// PRICE
+
+    private Price scrapPrice(Product product) {
         loadPage(product.getLink().getLink());
+
         double weight = product.getGrams();
-        addPriceToProduct(product, getPriceFromPage(weight));
+        HtmlElement htmlBuyPrice = page.getFirstByXPath(".//span[@class='price']");
+        HtmlElement htmlRedemptionPrice = page.getFirstByXPath(".//div[@class='vykupni-cena']");
+
+        String buyPrice = formatPrice(htmlBuyPrice.asText());
+        String redPrice = htmlRedemptionPrice.asText();
+        try {
+            redPrice = redPrice.split(":")[1];          // Aktuální výkupní cena (bez DPH): xxxx,xx Kč
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        redPrice = formatPrice(redPrice);
+        if (Double.parseDouble(redPrice) <= 0.0)
+            System.out.println("WARNING - Vykupni cena = 0");
+        Price newPrice = new Price(LocalDateTime.now(), Double.parseDouble(buyPrice), Double.parseDouble(redPrice), weight);
+        addPriceToProduct(product, newPrice);
         System.out.println("> New price saved");
+        return newPrice;
     }
 
-    public void scrapPricesByMetal(Metal metal){
+    public void sMetalPrices(Metal metal){
         System.out.println("Scrap Prices-Metal");
         List<Product> productList = this.productService.findByMetal(metal);
         int i = 0;
@@ -172,16 +197,17 @@ public class Scrap {
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
     }
 
-    ///////////////////// Link scraping //////////////////////////
 
-    public void scrapLink(HtmlElement htmlItem, String searchUrl){
+    /////// LINK
+
+    private void scrapLink(HtmlElement htmlItem, String searchUrl){
         HtmlAnchor itemAnchor = htmlItem.getFirstByXPath(".//strong[@class='product name product-item-name']/a");
         Link link;
         if(  searchUrl.equals(searchUrlGold) || searchUrl.equals(searchUrlSilver)
         ||   searchUrl.equals(searchUrlPlatinum) || searchUrl.equals(searchUrlPalladium) ) {
             link = new Link(Dealer.BESSERGOLD, itemAnchor.getHrefAttribute());
         } else {
-            link = new Link(Dealer.NONE, itemAnchor.getHrefAttribute());
+            link = new Link(Dealer.UNKNOWN, itemAnchor.getHrefAttribute());
         }
 
         if (linkFilter(link.getLink())) {
@@ -220,32 +246,87 @@ public class Scrap {
         System.out.println("Number of links: " + allLinks.size());
     }
 
-    public void scrapAllLinks() {
+    public void sAllLinks() {
         scrapLinks(searchUrlGold);
         scrapLinks(searchUrlSilver);
         scrapLinks(searchUrlPlatinum);
         scrapLinks(searchUrlPalladium);
     }
 
-    public void scrapGoldLinks() {
+    public void sGoldLinks() {
         scrapLinks(searchUrlGold);
     }
 
-    public void scrapSilverLinks() {
+    public void sSilverLinks() {
         scrapLinks(searchUrlSilver);
     }
 
-    public void scrapPlatinumLinks() {
+    public void sPlatinumLinks() {
         scrapLinks(searchUrlPlatinum);
     }
 
-    public void scrapPalladiumLinks() {
+    public void sPalladiumLinks() {
         scrapLinks(searchUrlPalladium);
     }
 
-    //////////////////// UTILS ////////////////////////////
 
-    private double weightExtracter(String name) {
+    /////// UTILS
+
+    private Producer producerExtractor(String name) {
+        name = name.toLowerCase();
+        if (name.contains("perth") || name.contains("rok") || name.contains("kangaroo") || name.contains("kookaburra") || name.contains("koala")) {
+            return Producer.PERTH_MINT;
+        } else if(name.contains("argor")) {
+            return Producer.ARGOR_HERAEUS;
+        } else if (name.contains("heraeus")) {
+            return Producer.HERAEUS;
+        } else if (name.contains("münze") || name.contains("wiener philharmoniker")) {
+            return Producer.MUNZE_OSTERREICH;
+        } else if (name.contains("rand") || name.contains("krugerrand")) {
+            return Producer.SOUTH_AFRICAN_MINT;
+        } else if (name.contains("pamp")) {
+            return Producer.PAMP;
+        } else if (name.contains("valcambi")) {
+            return Producer.VALCAMBI;
+        } else if (name.contains("royal canadian mint") || name.contains("maple leaf") || name.contains("moose") || name.contains("golden eagle")) {
+            return Producer.ROYAL_CANADIAN_MINT;
+        } else if (name.contains("panda čína")) {
+            return Producer.CHINA_MINT;
+        } else if (name.contains("american eagle")) {
+            return Producer.UNITED_STATES_MINT;
+        } else if (name.contains("britannia") || name.contains("sovereign elizabeth")) {
+            return Producer.ROYAL_MINT_UK;
+        } else if (name.contains("libertad") || name.contains("mexico") || name.contains("mexiko")) {
+            return Producer.MEXICO_MINT;
+        } else if (name.contains("slon") ) {
+            return Producer.BAVARIAN_STATE_MINT;
+        } else if (name.contains("noble isle of man") ) {
+            return Producer.POBJOY_MINT;
+        } else {
+            if (name.contains("kanada")){
+                return Producer.ROYAL_CANADIAN_MINT;
+            } else if (name.contains("austrálie")) {
+                return Producer.PERTH_MINT;
+            } else if (name.contains("usa") || name.contains("american")) {
+                return Producer.UNITED_STATES_MINT;
+            }
+        }
+
+        return Producer.UNKNOWN;
+    }
+
+    private Form formExtractor(String name) {
+        name = name.toLowerCase();
+        if(name.contains("mince") || name.contains("coin")){
+            return Form.COIN;
+        }
+        if(name.contains("bar") || name.contains("slitek")){
+            return Form.BAR;
+        }
+        return Form.UNKNOWN;
+    }
+
+    private double weightExtractor(String name) {
 //            Pattern pattern = Pattern.compile("\\d*\\.?x?,?\\d+?g");
         Pattern pattern = Pattern.compile("\\d+x\\d+g");
         Matcher matcher = pattern.matcher(name);
@@ -336,23 +417,6 @@ public class Scrap {
         product.setLatestPrice(price);
         product.setPrices(priceList);
         this.productService.save(product);
-    }
-
-    private Price getPriceFromPage(double weight) {
-        HtmlElement htmlBuyPrice = page.getFirstByXPath(".//span[@class='price']");
-        HtmlElement htmlRedemptionPrice = page.getFirstByXPath(".//div[@class='vykupni-cena']");
-
-        String buyPrice = formatPrice(htmlBuyPrice.asText());
-        String redPrice = htmlRedemptionPrice.asText();
-        try {
-            redPrice = redPrice.split(":")[1];          // Aktuální výkupní cena (bez DPH): xxxx,xx Kč
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        redPrice = formatPrice(redPrice);
-        if (Double.parseDouble(redPrice) <= 0.0)
-            System.out.println("WARNING - Vykupni cena = 0");
-        return new Price(LocalDateTime.now(), Double.parseDouble(buyPrice), Double.parseDouble(redPrice), weight);
     }
 
     private void loadPage(String link){

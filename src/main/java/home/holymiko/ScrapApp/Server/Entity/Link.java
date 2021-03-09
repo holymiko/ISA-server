@@ -24,6 +24,10 @@ public class Link {
         this.link = link;
     }
 
+    public Dealer getDealer() {
+        return dealer;
+    }
+
     public String getLink() {
         return link;
     }

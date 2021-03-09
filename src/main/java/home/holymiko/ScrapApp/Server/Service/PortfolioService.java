@@ -100,6 +100,14 @@ public class PortfolioService {
     ////// POST, PUT
 
     @Transactional
+    public void saveMyPortfolio() {
+        if(this.portfolioRepository.findByOwner("Mikols").isEmpty()) {
+            Portfolio portfolio = new Portfolio(this.investmentService.saveMyInvestments(), "Mikolas");
+            this.portfolioRepository.save(portfolio);
+        }
+    }
+
+    @Transactional
     public void save(PortfolioCreateDTO portfolioCreateDTO) {
         List<Product> productList = this.productService.findProducts( portfolioCreateDTO.getInvestmentIds() );
         List<Investment> investmentList = new ArrayList<>();
