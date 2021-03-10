@@ -1,6 +1,5 @@
 package home.holymiko.ScrapApp.Server.Controller;
 
-import home.holymiko.ScrapApp.Server.Scrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;

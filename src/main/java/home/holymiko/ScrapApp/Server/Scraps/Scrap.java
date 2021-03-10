@@ -1,91 +1,60 @@
-package home.holymiko.ScrapApp.Server;
+package home.holymiko.ScrapApp.Server.Scraps;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import home.holymiko.ScrapApp.Server.Entity.*;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
+import home.holymiko.ScrapApp.Server.Entity.*;
 import home.holymiko.ScrapApp.Server.Service.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Component
 public class Scrap {
-    private final LinkService linkService;
-    private final PriceService priceService;
-    private final PortfolioService portfolioService;
-    private final ProductService productService;
-    private final InvestmentService investmentService;
+    protected final Dealer dealer;
+    protected final LinkService linkService;
+    protected final PriceService priceService;
+    protected final PortfolioService portfolioService;
+    protected final ProductService productService;
+    protected final InvestmentService investmentService;
 
-    private HtmlPage page;
-    private final WebClient client;
+    protected HtmlPage page;
+    protected final WebClient client;
 
     private static final long DELAY = 700;
     private static final double OUNCE = 28.349523125;
     private static final double TROY_OUNCE = 31.1034768;
+    private final String xPathProductList;
 
-    private static final String searchUrlGold = "https://www.bessergold.cz/investicni-zlato.html?product_list_limit=all";
-    private static final String searchUrlSilver = "https://www.bessergold.cz/investicni-stribro.html?product_list_limit=all";
-    private static final String searchUrlPlatinum = "https://www.bessergold.cz/investicni-platina.html?product_list_limit=all";
-    private static final String searchUrlPalladium = "https://www.bessergold.cz/investicni-palladium.html?product_list_limit=all";
-
-    @Autowired
-    public Scrap(LinkService linkService,
-                 PriceService priceService,
-                 ProductService productService,
-                 PortfolioService portfolioService,
-                 InvestmentService investmentService) {
+    public Scrap(Dealer dealer, LinkService linkService, PriceService priceService, PortfolioService portfolioService, ProductService productService, InvestmentService investmentService, String xPathProductList) {
+        this.dealer = dealer;
         this.linkService = linkService;
         this.priceService = priceService;
-        this.productService = productService;
         this.portfolioService = portfolioService;
+        this.productService = productService;
         this.investmentService = investmentService;
+        this.xPathProductList = xPathProductList;
         client = new WebClient();
         client.getOptions().setJavaScriptEnabled(false);
         client.getOptions().setCssEnabled(false);
     }
 
-
     /////// PRODUCT
 
-    private void scrapProduct(Link link) {
-        double weight;
-        Product product;
-
-        loadPage(link.getLink());
-        HtmlElement name = page.getFirstByXPath(".//span[@class='base']");
-        weight = weightExtractor(name.asText());
-        Form form = formExtractor(name.asText());
-        Producer producer = producerExtractor(name.asText());
-
-        if (name.asText().contains("Zlat"))
-            product = new Product( producer, form, Metal.GOLD, name.asText(), weight, link, null, new ArrayList<>() );
-        else if (name.asText().contains("Stříbr"))
-            product = new Product( producer, form, Metal.SILVER, name.asText(), weight, link, null, new ArrayList<>());
-        else if (name.asText().contains("Platin"))
-            product = new Product( producer, form, Metal.PLATINUM, name.asText(), weight, link, null, new ArrayList<>());
-        else if (name.asText().contains("Pallad"))
-            product = new Product( producer, form, Metal.PALLADIUM, name.asText(), weight, link, null, new ArrayList<>());
-        else
-            product = new Product( producer, form, Metal.UNKNOWN, name.asText(), weight, link, null, new ArrayList<>());
-
-        addPriceToProduct(product, scrapPrice(product));
-        System.out.println("Product saved");
+    protected void scrapProduct(Link link) {
+        System.out.println("Error: This method should be overwritten");
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    public void sOptionalProduct(Link link) {
+    protected void sOptionalProduct(Link link) {
         List<Product> productList = this.productService.findByLink(link.getLink());
 
         if (productList.isEmpty()) {
@@ -155,27 +124,9 @@ public class Scrap {
 
     /////// PRICE
 
-    private Price scrapPrice(Product product) {
-        loadPage(product.getLink().getLink());
-
-        double weight = product.getGrams();
-        HtmlElement htmlBuyPrice = page.getFirstByXPath(".//span[@class='price']");
-        HtmlElement htmlRedemptionPrice = page.getFirstByXPath(".//div[@class='vykupni-cena']");
-
-        String buyPrice = formatPrice(htmlBuyPrice.asText());
-        String redPrice = htmlRedemptionPrice.asText();
-        try {
-            redPrice = redPrice.split(":")[1];          // Aktuální výkupní cena (bez DPH): xxxx,xx Kč
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        redPrice = formatPrice(redPrice);
-        if (Double.parseDouble(redPrice) <= 0.0)
-            System.out.println("WARNING - Vykupni cena = 0");
-        Price newPrice = new Price(LocalDateTime.now(), Double.parseDouble(buyPrice), Double.parseDouble(redPrice), weight);
-        addPriceToProduct(product, newPrice);
-        System.out.println("> New price saved");
-        return newPrice;
+    protected Price scrapPrice(Product product) {
+        System.out.println("Error: This method should be overwritten");
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     public void sMetalPrices(Metal metal){
@@ -200,79 +151,53 @@ public class Scrap {
 
     /////// LINK
 
-    private void scrapLink(HtmlElement htmlItem, String searchUrl){
+    protected void scrapLink(HtmlElement htmlItem, String searchUrl){
         HtmlAnchor itemAnchor = htmlItem.getFirstByXPath(".//strong[@class='product name product-item-name']/a");
-        Link link;
-        if(  searchUrl.equals(searchUrlGold) || searchUrl.equals(searchUrlSilver)
-        ||   searchUrl.equals(searchUrlPlatinum) || searchUrl.equals(searchUrlPalladium) ) {
-            link = new Link(Dealer.BESSERGOLD, itemAnchor.getHrefAttribute());
-        } else {
-            link = new Link(Dealer.UNKNOWN, itemAnchor.getHrefAttribute());
-        }
-
-        if (linkFilter(link.getLink())) {
-            List<Link> linkList = linkService.findByLink(link.getLink());
-            if (linkList.isEmpty()) {
-                linkService.save(link);
-                System.out.println("Link saved");
-            } else {
-                if (linkList.size() == 1)
-                    System.out.println("Link already in DB");
-                else
-                    System.out.println("WARNING - Duplicates in DB table LINK");
-            }
-        }
+        Link link = new Link(dealer, itemAnchor.getHrefAttribute());
+        linkFilterAction(link);
     }
 
-    public void scrapLinks(String searchUrl) {
-        page = null;
-        try {
-            page = client.getPage(searchUrl);                                       // Product links from main page
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    protected void scrapLinks(String searchUrl) {
+        loadPage(searchUrl);
 
-        List<HtmlElement> item = page.getByXPath("//li[@class='item product product-item']");
+        List<HtmlElement> item = page.getByXPath(xPathProductList);
         if (item.isEmpty()) {
             System.out.println("No products here");
             return;
+        } else {
+            System.out.println(item.size()+" HTMLElements to scrap");
         }
 
         for (HtmlElement htmlItem : item) {
             scrapLink(htmlItem, searchUrl);
         }
 
-        List<Link> allLinks = linkService.findAll();
-        System.out.println("Number of links: " + allLinks.size());
+        System.out.println("Number of links: " + linkService.findAll().size());
     }
 
-    public void sAllLinks() {
-        scrapLinks(searchUrlGold);
-        scrapLinks(searchUrlSilver);
-        scrapLinks(searchUrlPlatinum);
-        scrapLinks(searchUrlPalladium);
+    protected void sAllLinks() {
     }
 
-    public void sGoldLinks() {
-        scrapLinks(searchUrlGold);
+    protected void sGoldLinks() {
+
     }
 
-    public void sSilverLinks() {
-        scrapLinks(searchUrlSilver);
+    protected void sSilverLinks() {
+
     }
 
-    public void sPlatinumLinks() {
-        scrapLinks(searchUrlPlatinum);
+    protected void sPlatinumLinks() {
+
     }
 
-    public void sPalladiumLinks() {
-        scrapLinks(searchUrlPalladium);
+    protected void sPalladiumLinks() {
+
     }
 
 
-    /////// UTILS
+    /////// EXTRACTOR
 
-    private Producer producerExtractor(String name) {
+    protected Producer producerExtractor(String name) {
         name = name.toLowerCase();
         if (name.contains("perth") || name.contains("rok") || name.contains("kangaroo") || name.contains("kookaburra") || name.contains("koala")) {
             return Producer.PERTH_MINT;
@@ -315,7 +240,7 @@ public class Scrap {
         return Producer.UNKNOWN;
     }
 
-    private Form formExtractor(String name) {
+    protected Form formExtractor(String name) {
         name = name.toLowerCase();
         if(name.contains("mince") || name.contains("coin")){
             return Form.COIN;
@@ -326,7 +251,7 @@ public class Scrap {
         return Form.UNKNOWN;
     }
 
-    private double weightExtractor(String name) {
+    protected double weightExtractor(String name) {
 //            Pattern pattern = Pattern.compile("\\d*\\.?x?,?\\d+?g");
         Pattern pattern = Pattern.compile("\\d+x\\d+g");
         Matcher matcher = pattern.matcher(name);
@@ -382,7 +307,10 @@ public class Scrap {
         return -1;
     }
 
-    private boolean linkFilter(String link) {
+
+    /////// FILTER
+
+    protected boolean linkFilter(String link) {
         if (link.contains("etuje")) {
             System.out.println("Link vyřazen: etuje - " + link);
             return false;
@@ -395,7 +323,7 @@ public class Scrap {
             System.out.println("Link vyřazen: kapsle - " + link);
             return false;
         }
-        if (link.contains("slit") || link.contains("minc") || link.contains("lunarni-serie-rok"))
+        if (link.contains("slit") || link.contains("minc") || link.contains("lunarni-serie-rok") || link.contains("tolar"))
             return true;
         if (link.contains("goldbarren") || link.contains("krugerrand") || link.contains("sliek"))
             return true;
@@ -403,14 +331,32 @@ public class Scrap {
         return false;
     }
 
-    private String formatPrice(String price) {
+    protected void linkFilterAction(Link link) {
+        if ( !linkFilter( link.getLink() ) ) {
+            return;
+        }
+        List<Link> linkList = linkService.findByLink(link.getLink());
+
+        if (linkList.isEmpty()) {
+            linkService.save(link);
+            System.out.println("Link saved");
+            return;
+        }
+        if (linkList.size() == 1) {
+            System.out.println("Link already in DB");
+            return;
+        }
+        System.out.println("WARNING - Duplicates in DB table LINK");
+    }
+
+    protected String formatPrice(String price) {
         price = price.replace("\u00a0", "");         // &nbsp;
         price = price.replace(",", ".");             // -> Double
         price = price.replace("Kč", "");
         return price.replace(" ", "");
     }
 
-    public void addPriceToProduct(Product product, Price price) {
+    protected void addPriceToProduct(Product product, Price price) {
         List<Price> priceList = product.getPrices();
         this.priceService.save(price);
         priceList.add(price);
@@ -419,7 +365,7 @@ public class Scrap {
         this.productService.save(product);
     }
 
-    private void loadPage(String link){
+    protected void loadPage(String link){
         page = null;
         try {
             page = client.getPage(link);                // Product page
