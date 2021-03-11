@@ -1,8 +1,8 @@
 package home.holymiko.ScrapApp.Server.Controller;
 
-import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
 import home.holymiko.ScrapApp.Server.Scraps.ScrapBessergold;
+import home.holymiko.ScrapApp.Server.Scraps.ScrapSerenity;
 import home.holymiko.ScrapApp.Server.Scraps.ScrapZlataky;
 import home.holymiko.ScrapApp.Server.Service.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +33,17 @@ public class ScrapController {
     private boolean isRunning = false;
     private final ScrapBessergold scrapBessergold;
     private final ScrapZlataky scrapZlataky;
+    private final ScrapSerenity scrapSerenity;
     private final PortfolioService portfolioService;
 
     @Autowired
-    public ScrapController(ScrapBessergold scrapBessergold, ScrapZlataky scrapZlataky, PortfolioService portfolioService) {
+    public ScrapController(ScrapBessergold scrapBessergold, ScrapZlataky scrapZlataky, ScrapSerenity scrapSerenity, PortfolioService portfolioService) {
         this.scrapBessergold = scrapBessergold;
         this.scrapZlataky = scrapZlataky;
+        this.scrapSerenity = scrapSerenity;
         this.portfolioService = portfolioService;
     }
+
 
 
     @RequestMapping({"/all", "/all/"})
@@ -144,6 +147,11 @@ public class ScrapController {
         }
         isRunning = false;
         throw new ResponseStatusException(HttpStatus.OK, "Scrap done");
+    }
+
+    @RequestMapping({"/serenity", "/serenity/"})
+    public void serenity() {
+        this.scrapSerenity.sTickers();
     }
 
     //////// Links
