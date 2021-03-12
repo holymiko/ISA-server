@@ -18,7 +18,7 @@ import java.util.*;
 
 @Component
 public class ScrapSerenity {
-    private static final long MIN_TICKER_LENGTH = 3;
+    private static final long MAX_TICKER_LENGTH = 3;
     private static final double MAX_RATING_SCORE = 6.5;
     private static final long DELAY = 1000;
     private HtmlPage page;
@@ -34,19 +34,31 @@ public class ScrapSerenity {
         client = new WebClient();
         client.getOptions().setJavaScriptEnabled(false);
         client.getOptions().setCssEnabled(false);
+        client.getOptions().setPrintContentOnFailingStatusCode(false);
         sTickers();
     }
 
     /////// PRODUCT
 
     public void sTickers() {
-//        readFile("nasdaqtraded.txt");
-//        readFile("nasdaqlisted.txt");
-        readFile("otherlisted.txt");
-
         status();
-//        scrap();
-//        status();
+        scrap();
+        status();
+    }
+
+    public void loadTickers() {
+        String date = "_20210311.txt";
+        String location = "txt/";
+        readFile(location+"nasdaqtraded.txt");
+        readFile(location+"nasdaqlisted.txt");
+        readFile(location+"otherlisted.txt");
+        readFile2(location+"AMEX"+date);
+        readFile2(location+"FOREX"+date);
+        readFile2(location+"INDEX"+date);
+        readFile2(location+"NASDAQ"+date);
+        readFile2(location+"NYSE"+date);
+        readFile2(location+"OTCBB"+date);
+        readFile2(location+"USE"+date);
     }
 
     public void readFile(String fileName) {
@@ -96,18 +108,30 @@ public class ScrapSerenity {
     }
 
     public void status() {
-        System.out.println("Celkem: "+tickerRepository.findAll().size());
-        System.out.println("Unknown: "+tickerRepository.findByTickerState(TickerState.UNKNOWN).size());
-        System.out.println("NotFound: "+tickerRepository.findByTickerState(TickerState.NOTFOUND).size());
-        System.out.println("Bad: "+tickerRepository.findByTickerState(TickerState.BAD).size());
-        System.out.println("Good: "+tickerRepository.findByTickerState(TickerState.GOOD).size());
+        int total = tickerRepository.findAll().size();
+        int good = tickerRepository.findByTickerState(TickerState.GOOD).size();
+        int bad = tickerRepository.findByTickerState(TickerState.BAD).size();
+        int notfound = tickerRepository.findByTickerState(TickerState.NOTFOUND).size();
+        int unknown = tickerRepository.findByTickerState(TickerState.UNKNOWN).size();
+        System.out.println();
+        System.out.println("Good: "+good+"  "+good*100/(notfound+bad+good)+"%");
+        System.out.println("Bad: "+bad+"  "+bad*100/(notfound+bad+good)+"%");
+        System.out.println("NotFound: "+notfound+"  "+notfound*100/(notfound+bad+good)+"%");
+        System.out.println();
+        System.out.println("Unknown: "+unknown+"  "+unknown*100/total+"%");
+        System.out.println("Total: "+total);
     }
 
     public void scrap() {
         List<Ticker> tickerList = this.tickerRepository.findByTickerState(TickerState.UNKNOWN);
+        int i = 0;
         for (Ticker ticker: tickerList) {
+//            if(ticker.getTicker().length() > MAX_TICKER_LENGTH){
+//                continue;
+//            }
             if( !loadPage(BASE_URL+ticker.getTicker().toLowerCase(Locale.ROOT) )) {
                 updateTicker(ticker, TickerState.NOTFOUND);
+                System.out.println(">"+ticker.getTicker()+"<");
             } else {
                 HtmlElement htmlElement = page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div[12]/div/div/h3/span");
                 if (Double.parseDouble(htmlElement.asText().split(" = ")[1]) >= MAX_RATING_SCORE) {
@@ -115,6 +139,7 @@ public class ScrapSerenity {
                     saveStock(ticker);
                 } else {
                     updateTicker(ticker, TickerState.BAD);
+                    System.out.println(">"+ticker.getTicker()+"< Bad");
                 }
             }
 
@@ -122,6 +147,11 @@ public class ScrapSerenity {
                 Thread.sleep(DELAY);
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+            i++;
+            if(i >= 100){
+                i = 0;
+                status();
             }
         }
     }
@@ -209,6 +239,40 @@ public class ScrapSerenity {
 //            e.printStackTrace();
             return false;
         }
-        return true;
+        return page.getWebResponse().getStatusCode() != 404;
+    }
+
+    public void readFile2(String fileName) {
+        int i = 0;
+        int j = 0;
+        int k = 0;
+        try {
+            File myObj = new File(fileName);
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                int a = 0;
+                String[] data = myReader.nextLine().split(",");
+                if( data.length <= 1 ) {
+                    System.out.println("Kicked");
+                    k++;
+                    continue;
+                }
+                if( tickerRepository.findById(data[a]).isEmpty() ) {
+                    tickerRepository.save(new Ticker(data[a], TickerState.UNKNOWN));
+                    System.out.println("Saved new - "+data[a]);
+                    i++;
+                } else {
+                    System.out.println("Already known - "+data[a]);
+                    j++;
+                }
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        System.out.println("Saved: "+i);
+        System.out.println("Known: "+j);
+        System.out.println("Kicked: "+k);
     }
 }
