@@ -114,9 +114,8 @@ public class PortfolioController {
 //        this.scrap.scrapPortfolioProducts(portfolioService.findByOwner(owner).get().getId());
 //    }
 
-    public void saveMyPortfolio() {
-        portfolioService.save(new Portfolio(investmentService.saveMyInvestments(), "Mikolas"));
-        portfolioService.update(portfolioService.findByOwner("Mikolas").get().getId());
+    public void saveInitPortfolios() {
+        this.portfolioService.saveInitPortfolios();
     }
 
     public void printProducts(List<Product> products) {

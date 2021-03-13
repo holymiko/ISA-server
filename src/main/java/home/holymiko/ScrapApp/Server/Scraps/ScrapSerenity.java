@@ -1,9 +1,7 @@
 package home.holymiko.ScrapApp.Server.Scraps;
 
-import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.ScrapApp.Server.Entity.Enum.*;
 import home.holymiko.ScrapApp.Server.Entity.*;
 import home.holymiko.ScrapApp.Server.Repository.StockRepository;
@@ -17,33 +15,70 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 @Component
-public class ScrapSerenity {
-    private static final long MAX_TICKER_LENGTH = 3;
+public class ScrapSerenity extends Scrap {
+    private static final long MAX_TICKER_LENGTH = 50;
     private static final double MAX_RATING_SCORE = 6.5;
     private static final long DELAY = 1000;
-    private HtmlPage page;
-    private final WebClient client;
     private static final String BASE_URL = "https://www.serenitystocks.com/stock/";
     private final TickerRepository tickerRepository;
     private final StockRepository stockRepository;
 
     @Autowired
     public ScrapSerenity(TickerRepository tickerRepository, StockRepository stockRepository) {
+        super();
         this.tickerRepository = tickerRepository;
         this.stockRepository = stockRepository;
-        client = new WebClient();
-        client.getOptions().setJavaScriptEnabled(false);
-        client.getOptions().setCssEnabled(false);
-        client.getOptions().setPrintContentOnFailingStatusCode(false);
+
         sTickers();
     }
 
-    /////// PRODUCT
 
     public void sTickers() {
         status();
-        scrap();
-        status();
+//        scrap();
+//        status();
+
+//        fixer("$");
+//        fixer(".");
+//        fixer("-");
+//        status();
+    }
+
+    private void generator() {
+        char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+        int i = 0;
+        for (char character1 : alphabet) {
+            for (char character2 : alphabet) {
+                for (char character3 : alphabet) {
+                    String name = "" + character1 + character2+character3;
+                    if (optionalTickerSave(name))
+                        i++;
+                }
+            }
+        }
+        System.out.println("Generated: "+i);
+    }
+
+    private boolean optionalTickerSave(String name) {
+        name = name.toUpperCase();
+        Optional<Ticker> optionalTicker = this.tickerRepository.findById(name);
+        if(optionalTicker.isEmpty()){
+            this.tickerRepository.save(new Ticker(name, TickerState.UNKNOWN));
+            System.out.println("New Saved");
+            return true;
+        }
+        System.out.println("Already known");
+        return false;
+    }
+
+    private void fixer(String target) {
+        List<Ticker> tickers = this.tickerRepository.findByTickerState(TickerState.NOTFOUND);
+        for (Ticker ticker: tickers) {
+            if(ticker.getTicker().contains(target)) {
+                String name = ticker.getTicker().replace(target, "");
+                optionalTickerSave(name);
+            }
+        }
     }
 
     public void loadTickers() {
@@ -59,52 +94,6 @@ public class ScrapSerenity {
         readFile2(location+"NYSE"+date);
         readFile2(location+"OTCBB"+date);
         readFile2(location+"USE"+date);
-    }
-
-    public void readFile(String fileName) {
-        int a;
-        int b;
-        switch (fileName) {
-            case "nasdaqtraded.txt":
-                a = 1;
-                b = 5;
-                break;
-            case "nasdaqlisted.txt":
-                a = 0;
-                b = 6;
-                break;
-            case "otherlisted.txt":
-                a = 0;
-                b = 4;
-                break;
-            default:
-                return;
-        }
-        try {
-            File myObj = new File(fileName);
-            Scanner myReader = new Scanner(myObj);
-            int i = 0;
-            myReader.nextLine();
-            while (myReader.hasNextLine()) {
-                String[] data = myReader.nextLine().split("\\|");
-                if( data.length >= 6 && !data[b].equals("Y") ) {            // No ETFs
-                    if( tickerRepository.findById(data[a]).isEmpty() ) {
-                        tickerRepository.save(new Ticker(data[a], TickerState.UNKNOWN));
-                        System.out.println("Saved new - "+data[a]);
-                    } else {
-                        System.out.println("Already known - "+data[a]);
-                    }
-                    i++;
-                } else {
-                    System.out.println("Kicked");
-                }
-            }
-            System.out.println("Total: "+i);
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
     }
 
     public void status() {
@@ -126,9 +115,9 @@ public class ScrapSerenity {
         List<Ticker> tickerList = this.tickerRepository.findByTickerState(TickerState.UNKNOWN);
         int i = 0;
         for (Ticker ticker: tickerList) {
-//            if(ticker.getTicker().length() > MAX_TICKER_LENGTH){
-//                continue;
-//            }
+            if(ticker.getTicker().length() > MAX_TICKER_LENGTH){
+                continue;
+            }
             if( !loadPage(BASE_URL+ticker.getTicker().toLowerCase(Locale.ROOT) )) {
                 updateTicker(ticker, TickerState.NOTFOUND);
                 System.out.println(">"+ticker.getTicker()+"<");
@@ -143,13 +132,10 @@ public class ScrapSerenity {
                 }
             }
 
-            try {
-                Thread.sleep(DELAY);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            sleep(DELAY);
+
             i++;
-            if(i >= 100){
+            if(i >= 50){
                 i = 0;
                 status();
             }
@@ -231,15 +217,50 @@ public class ScrapSerenity {
         }
     }
 
-    private boolean loadPage(String link){
-        page = null;
-        try {
-            page = client.getPage(link);                // Product page
-        } catch (Exception e)  {
-//            e.printStackTrace();
-            return false;
+    public void readFile(String fileName) {
+        int a;
+        int b;
+        switch (fileName) {
+            case "nasdaqtraded.txt":
+                a = 1;
+                b = 5;
+                break;
+            case "nasdaqlisted.txt":
+                a = 0;
+                b = 6;
+                break;
+            case "otherlisted.txt":
+                a = 0;
+                b = 4;
+                break;
+            default:
+                return;
         }
-        return page.getWebResponse().getStatusCode() != 404;
+        try {
+            File myObj = new File(fileName);
+            Scanner myReader = new Scanner(myObj);
+            int i = 0;
+            myReader.nextLine();
+            while (myReader.hasNextLine()) {
+                String[] data = myReader.nextLine().split("\\|");
+                if( data.length >= 6 && !data[b].equals("Y") ) {            // No ETFs
+                    if( tickerRepository.findById(data[a]).isEmpty() ) {
+                        tickerRepository.save(new Ticker(data[a], TickerState.UNKNOWN));
+                        System.out.println("Saved new - "+data[a]);
+                    } else {
+                        System.out.println("Already known - "+data[a]);
+                    }
+                    i++;
+                } else {
+                    System.out.println("Kicked");
+                }
+            }
+            System.out.println("Total: "+i);
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
     }
 
     public void readFile2(String fileName) {
@@ -275,4 +296,5 @@ public class ScrapSerenity {
         System.out.println("Known: "+j);
         System.out.println("Kicked: "+k);
     }
+
 }

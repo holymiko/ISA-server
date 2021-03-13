@@ -100,10 +100,21 @@ public class PortfolioService {
     ////// POST, PUT
 
     @Transactional
-    public void saveMyPortfolio() {
-        if(this.portfolioRepository.findByOwner("Mikols").isEmpty()) {
-            Portfolio portfolio = new Portfolio(this.investmentService.saveMyInvestments(), "Mikolas");
+    public void saveInitPortfolios() {
+        if(this.portfolioRepository.findByOwner("Carlos").isEmpty()) {
+            Portfolio portfolio = new Portfolio(this.investmentService.saveCarlosInvestments(), "Carlos");
             this.portfolioRepository.save(portfolio);
+            update(portfolioRepository.findByOwner("Carlos").get().getId());
+        }
+        if(this.portfolioRepository.findByOwner("Sanchez").isEmpty()) {
+            Portfolio portfolio = new Portfolio(this.investmentService.saveSanchezInvestments(), "Sanchez");
+            this.portfolioRepository.save(portfolio);
+            update(portfolioRepository.findByOwner("Sanchez").get().getId());
+        }
+        if(this.portfolioRepository.findByOwner("Eduardo").isEmpty()) {
+            Portfolio portfolio = new Portfolio(this.investmentService.saveEduardoInvestments(), "Eduardo");
+            this.portfolioRepository.save(portfolio);
+            update(portfolioRepository.findByOwner("Eduardo").get().getId());
         }
     }
 
@@ -139,9 +150,9 @@ public class PortfolioService {
             for (Investment investment : investmentList) {
                 investment.setYield();
             }
+            portfolio.setBeginPrice();
             portfolio.setValue();
             portfolio.setYield();
-            portfolio.setBeginPrice();
         }
     }
 

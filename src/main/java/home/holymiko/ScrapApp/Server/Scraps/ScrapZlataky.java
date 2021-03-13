@@ -15,10 +15,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 @Component
-public class ScrapZlataky extends Scrap {
+public class ScrapZlataky extends ScrapMetal {
 
     private static final String BASE_URL = "https://zlataky.cz";
     private static final String searchUrlGoldCoin = "https://zlataky.cz/investicni-zlate-mince?ext=0&filter_weight=on&sort=3a&filter_in_stock=1&page=all";
