@@ -11,6 +11,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -73,6 +75,36 @@ public class TickerService {
         this.tickerRepository.save(ticker);
     }
 
+    ////// EXPORT
+
+    public void writeFile() {
+        try {
+            FileWriter goodWriter = new FileWriter("txt/export/good.txt");
+            FileWriter badWriter = new FileWriter("txt/export/bad.txt");
+            FileWriter notFoundWriter = new FileWriter("txt/export/notfound.txt");
+            FileWriter unknownWriter = new FileWriter("txt/export/unknown.txt");
+            List<Ticker> tickers = this.tickerRepository.findAll();
+            for (Ticker ticker : tickers) {
+                String x = ticker.getTicker()+"\n";
+                switch (ticker.getTickerState()) {
+                    case GOOD -> goodWriter.write(x);
+                    case BAD -> badWriter.write(x);
+                    case NOTFOUND -> notFoundWriter.write(x);
+                    case UNKNOWN -> unknownWriter.write(x);
+                }
+            }
+            goodWriter.close();
+            badWriter.close();
+            notFoundWriter.close();
+            unknownWriter.close();
+            System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+
     ////// IMPORT
 
     public void loadTickers() {
@@ -88,7 +120,7 @@ public class TickerService {
         readFile2(location+"NYSE"+date);
         readFile2(location+"OTCBB"+date);
         readFile2(location+"USE"+date);
-        readFile3("txt/YahooStockTickers.txt");
+        readFile3(location+"YahooStockTickers.txt");
     }
 
     private void readFile(String fileName) {
