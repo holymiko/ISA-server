@@ -19,6 +19,7 @@ Jejich zdrojem jsou soubory v adresáři `txt/`
 Drahé kovy jsou reprezentovány entitou `product` s relací na `link` a `price` Na základě linkových adres je zjištěny ceny, váha, výrobce atd.
 
 
+
 ###Zdroje:
 
 https://www.serenitystocks.com/
@@ -27,13 +28,19 @@ https://www.bessergold.cz/
 
 https://zlataky.cz/
 
+##Komunikační rozhraní
+
+Data je možné získat na http://localhost:8080/api/v1/ +`entita` Jsou poskytovány ve standartním formátu entity či v optimalizovaném formátu `DTO` (Data Transfer Object)
+<br />
+<br />
+<br />
 ###Relevance:
 
 https://www.serenitystocks.com/article/how-build-complete-benjamin-graham-portfolio
 
+https://www.silverum.cz/pruvodce-investora.html
 
 https://en.wikipedia.org/wiki/Benjamin_Graham
 
 https://en.wikipedia.org/wiki/The_Intelligent_Investor
 
-https://www.silverum.cz/pruvodce-investora.html

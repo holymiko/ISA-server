@@ -28,7 +28,7 @@ public class ScrapSerenity extends Scrap {
         this.tickerService = tickerService;
         this.stockService = stockService;
 
-        sTickers();
+//        sTickers();
     }
 
 
