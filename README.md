@@ -8,7 +8,7 @@ Smyslem algoritmu je získat, zpracovat, uložit a zprostředkovat data o invest
 
 
 ##Získání dat
-
+Získání dat zajišťují třídy `scrap`
 Program se pomocí `htmlunit` klienta spojí s webovou stránkou a na základě `XPath` získá z dokumentu relevantní data. 
 Ty jsou následné použity k vytvoření entit `stock` či `product`.
 
