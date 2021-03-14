@@ -16,7 +16,7 @@ import java.util.*;
 public class ScrapSerenity extends Scrap {
     private static final long MIN_TICKER_LENGTH = 4;
     private static final long MAX_TICKER_LENGTH = 50;
-    private static final double MAX_RATING_SCORE = 6.5;
+    private static final double MIN_RATING_SCORE = 6.5;
     private static final long DELAY = 700;
     private static final String BASE_URL = "https://www.serenitystocks.com/stock/";
     private final TickerService tickerService;
@@ -33,7 +33,7 @@ public class ScrapSerenity extends Scrap {
 
 
     public void sTickers() {
-        status();
+        printStatus();
         scrapTicker();
 //        readFile3("txt/YahooStockTickers.txt");
 //        status();
@@ -68,24 +68,6 @@ public class ScrapSerenity extends Scrap {
         }
     }
 
-    public void status() {
-        double total = tickerService.findAll().size();
-        double good = tickerService.findByTickerState(TickerState.GOOD).size();
-        double bad = tickerService.findByTickerState(TickerState.BAD).size();
-        double notfound = tickerService.findByTickerState(TickerState.NOTFOUND).size();
-        double unknown = tickerService.findByTickerState(TickerState.UNKNOWN).size();
-        DecimalFormat df = new DecimalFormat("###.###");
-
-        System.out.println();
-        System.out.println("Good: "+Math.round(good)+"  "+df.format(good*100/(notfound+bad+good))+"%");
-        System.out.println("Bad: "+Math.round(bad)+"  "+df.format(bad*100/(notfound+bad+good))+"%");
-        System.out.println("NotFound: "+Math.round(notfound)+"  "+df.format(notfound*100/(notfound+bad+good))+"%");
-        System.out.println();
-        System.out.println("Unknown: "+Math.round(unknown)+"  "+df.format(unknown*100/total)+"%");
-        System.out.println("Total: "+Math.round(total));
-        System.out.println();
-    }
-
     public void scrapTicker() {
         List<Ticker> tickerList = this.tickerService.findByTickerState(TickerState.UNKNOWN);
         int i = 0;
@@ -101,7 +83,7 @@ public class ScrapSerenity extends Scrap {
                 System.out.println(">"+ticker.getTicker()+"<");
             } else {
                 HtmlElement htmlElement = page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div[12]/div/div/h3/span");
-                if (Double.parseDouble(htmlElement.asText().split(" = ")[1]) >= MAX_RATING_SCORE) {
+                if (Double.parseDouble(htmlElement.asText().split(" = ")[1]) >= MIN_RATING_SCORE) {
                     this.tickerService.updateTicker(ticker, TickerState.GOOD);
                     scrapStock(ticker);
                 } else {
@@ -115,10 +97,10 @@ public class ScrapSerenity extends Scrap {
             i++;
             if(i >= 50){
                 i = 0;
-                status();
+                printStatus();
             }
         }
-        status();
+        printStatus();
     }
 
     public void scrapStock(Ticker ticker) {
@@ -170,6 +152,24 @@ public class ScrapSerenity extends Scrap {
                 doubles1.get(0), doubles1.get(1), doubles1.get(2), doubles1.get(3), doubles1.get(4), doubles1.get(5)
         );
         this.stockService.save(stock);
+    }
+
+    public void printStatus() {
+        double total = tickerService.findAll().size();
+        double good = tickerService.findByTickerState(TickerState.GOOD).size();
+        double bad = tickerService.findByTickerState(TickerState.BAD).size();
+        double notfound = tickerService.findByTickerState(TickerState.NOTFOUND).size();
+        double unknown = tickerService.findByTickerState(TickerState.UNKNOWN).size();
+        DecimalFormat df = new DecimalFormat("###.###");
+
+        System.out.println();
+        System.out.println("Good: "+Math.round(good)+"  "+df.format(good*100/(notfound+bad+good))+"%");
+        System.out.println("Bad: "+Math.round(bad)+"  "+df.format(bad*100/(notfound+bad+good))+"%");
+        System.out.println("NotFound: "+Math.round(notfound)+"  "+df.format(notfound*100/(notfound+bad+good))+"%");
+        System.out.println();
+        System.out.println("Unknown: "+Math.round(unknown)+"  "+df.format(unknown*100/total)+"%");
+        System.out.println("Total: "+Math.round(total));
+        System.out.println();
     }
 
     public String formatString(HtmlElement element) {

@@ -15,10 +15,10 @@ public class Product {
     @Id
     @GeneratedValue
     private long id;
+    private String name;
     private Producer producer;
     private Form form;
     private Metal metal;
-    private String name;
     private double grams;
     @OneToOne
     private Link link;      // + Dealer

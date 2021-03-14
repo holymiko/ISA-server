@@ -1,11 +1,8 @@
 package home.holymiko.ScrapApp.Server.Entity;
 
-import com.sun.istack.NotNull;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
 import home.holymiko.ScrapApp.Server.Entity.Enum.TickerState;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity

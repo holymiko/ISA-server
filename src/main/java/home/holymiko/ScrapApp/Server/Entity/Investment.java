@@ -1,6 +1,5 @@
 package home.holymiko.ScrapApp.Server.Entity;
 
-import com.sun.istack.NotNull;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -32,13 +31,12 @@ public class Investment {
         this.beginDate = beginDate;
     }
 
-    public Investment(Product product) {
-        this.product = product;
-    }
+    public Investment(Product product) { this.product = product; }
 
     public Investment() {
 
     }
+
 
     ///// SET
 
@@ -49,6 +47,7 @@ public class Investment {
     public void setYield(double yield) {
         this.yield = yield;
     }
+
 
     ///// GET
 
