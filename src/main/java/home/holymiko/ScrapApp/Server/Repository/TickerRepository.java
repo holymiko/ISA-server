@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface TickerRepository extends JpaRepository<Ticker, String> {
     List<Ticker> findByTickerState(TickerState tickerState);
+
 }

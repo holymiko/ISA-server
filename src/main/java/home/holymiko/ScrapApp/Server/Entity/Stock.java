@@ -35,6 +35,8 @@ public class Stock {
     private Double previousClose;
     private Double intrinsicValue;
 
+    public Stock() {}
+
     public Stock(Ticker ticker) {
         this.ticker = ticker;
     }
@@ -83,9 +85,7 @@ public class Stock {
         this.ticker = ticker;
     }
 
-    public void setRatingScore(Double ratingScore) {
-        this.ratingScore = ratingScore;
-    }
+    public void setRatingScore(Double ratingScore) { this.ratingScore = ratingScore; }
 
     public void setSizeInSales(Double sizeInSales) {
         this.sizeInSales = sizeInSales;
