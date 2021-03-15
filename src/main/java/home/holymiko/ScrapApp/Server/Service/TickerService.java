@@ -46,38 +46,54 @@ public class TickerService {
 
 
 
-    ////// SAVE
+    ////// SAVE, UPDATE, DELETE
 
-    public boolean optionalSave(String name) {
+    @Transactional
+    public boolean save(String name) {
         name = name.toUpperCase();
-        try {
-            this.findById(name);
-        } catch (ResponseStatusException e){
-            this.save(new Ticker(name, TickerState.UNKNOWN));
-            System.out.println("New Saved");
+        Optional<Ticker> optionalTicker = this.tickerRepository.findById(name);
+
+        if( optionalTicker.isEmpty() ) {
+            this.tickerRepository.save( new Ticker(name, TickerState.UNKNOWN) );
+            System.out.println("Ticker - New saved");
             return true;
         }
-        System.out.println("Already known");
+        System.out.println("Ticker - Already known");
         return false;
     }
 
     @Transactional
-    public void save(Ticker ticker) {
+    public boolean save(Ticker ticker) {
         if( this.tickerRepository.findById(ticker.getTicker()).isPresent() ) {
-            return;
+            return false;
         }
         this.tickerRepository.save(ticker);
+        return true;
     }
 
     @Transactional
-    public void updateTicker(Ticker ticker, TickerState tickerState) {
+    public void update(Ticker ticker, TickerState tickerState) {
         ticker.setTickerState(tickerState);
         this.tickerRepository.save(ticker);
     }
 
+    @Transactional
+    public void delete(Ticker ticker) {
+        if( this.tickerRepository.findById(ticker.getTicker()).isEmpty() ) {
+            System.out.println("Delete fail, 404");
+            return;
+        }
+        if( ticker.getTickerState() != TickerState.UNKNOWN ) {
+            System.out.println("Delete not allowed, wrong state");
+            return;
+        }
+        this.tickerRepository.delete(ticker);
+    }
+
+
     ////// EXPORT
 
-    public void writeFile() {
+    public void exportTickers() {
         try {
             FileWriter goodWriter = new FileWriter("txt/export/good.txt");
             FileWriter badWriter = new FileWriter("txt/export/bad.txt");

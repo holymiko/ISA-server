@@ -14,7 +14,7 @@ import java.util.*;
 
 @Component
 public class ScrapSerenity extends Scrap {
-    private static final long MIN_TICKER_LENGTH = 4;
+    private static final long MIN_TICKER_LENGTH = 1;
     private static final long MAX_TICKER_LENGTH = 50;
     private static final double MIN_RATING_SCORE = 6.5;
     private static final long DELAY = 700;
@@ -28,44 +28,33 @@ public class ScrapSerenity extends Scrap {
         this.tickerService = tickerService;
         this.stockService = stockService;
 
-//        sTickers();
+        sTickers();
     }
 
 
     public void sTickers() {
         printStatus();
-        scrapTicker();
+        tickerService.exportTickers();
+//        scrapTicker();
 //        readFile3("txt/YahooStockTickers.txt");
-//        status();
 //        fixer("$");
-//        fixer(".");
-//        fixer("-");
-//        status();
-    }
-
-    private void generator() {
-        char[] alphabet = "abcdefghijklmnopqrstuvwxyz123456789".toCharArray();
-        int i = 0;
-//        for (char character1 : alphabet) {
-            for (char character2 : alphabet) {
-                for (char character3 : alphabet) {
-                    String name = "" +/* character1 +*/ character2+character3;
-                    if (this.tickerService.optionalSave(name))
-                        i++;
-                }
-            }
-//        }
-        System.out.println("Generated: "+i);
+        printStatus();
     }
 
     private void fixer(String target) {
         List<Ticker> tickers = this.tickerService.findByTickerState(TickerState.NOTFOUND);
+        int i = 0;
         for (Ticker ticker: tickers) {
             if(ticker.getTicker().contains(target)) {
+//                this.tickerService.delete(ticker);
+//                this.tickerService.updateTicker(ticker, TickerState.NOTFOUND);
                 String name = ticker.getTicker().replace(target, "");
-                this.tickerService.optionalSave(name);
+                if( this.tickerService.save(name) ){
+                    i++;
+                }
             }
         }
+        System.out.println("Total saved: "+i);
     }
 
     public void scrapTicker() {
@@ -75,19 +64,19 @@ public class ScrapSerenity extends Scrap {
             if(ticker.getTicker().length() < MIN_TICKER_LENGTH || ticker.getTicker().length() > MAX_TICKER_LENGTH){
                 continue;
             }
-            if(ticker.getTicker().contains(".")){
+            if(ticker.getTicker().contains(".")/*||ticker.getTicker().contains("TWO")*/){
                 continue;
             }
             if( !loadPage(BASE_URL+ticker.getTicker().toLowerCase(Locale.ROOT) )) {
-                this.tickerService.updateTicker(ticker, TickerState.NOTFOUND);
+                this.tickerService.update(ticker, TickerState.NOTFOUND);
                 System.out.println(">"+ticker.getTicker()+"<");
             } else {
                 HtmlElement htmlElement = page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div[12]/div/div/h3/span");
                 if (Double.parseDouble(htmlElement.asText().split(" = ")[1]) >= MIN_RATING_SCORE) {
-                    this.tickerService.updateTicker(ticker, TickerState.GOOD);
+                    this.tickerService.update(ticker, TickerState.GOOD);
                     scrapStock(ticker);
                 } else {
-                    this.tickerService.updateTicker(ticker, TickerState.BAD);
+                    this.tickerService.update(ticker, TickerState.BAD);
                     System.out.println(">"+ticker.getTicker()+"< Bad");
                 }
             }
