@@ -28,17 +28,17 @@ public class ScrapSerenity extends Scrap {
         this.tickerService = tickerService;
         this.stockService = stockService;
 
-        sTickers();
+//        sTickers();
     }
 
 
     public void sTickers() {
         printStatus();
-        tickerService.exportTickers();
+//        tickerService.exportTickers();
 //        scrapTicker();
 //        readFile3("txt/YahooStockTickers.txt");
 //        fixer("$");
-        printStatus();
+//        printStatus();
     }
 
     private void fixer(String target) {
@@ -64,7 +64,7 @@ public class ScrapSerenity extends Scrap {
             if(ticker.getTicker().length() < MIN_TICKER_LENGTH || ticker.getTicker().length() > MAX_TICKER_LENGTH){
                 continue;
             }
-            if(ticker.getTicker().contains(".")/*||ticker.getTicker().contains("TWO")*/){
+            if(ticker.getTicker().contains(".")/**/||ticker.getTicker().contains("TWO")){
                 continue;
             }
             if( !loadPage(BASE_URL+ticker.getTicker().toLowerCase(Locale.ROOT) )) {
