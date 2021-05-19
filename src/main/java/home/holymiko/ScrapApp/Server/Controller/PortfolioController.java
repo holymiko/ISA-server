@@ -3,16 +3,22 @@ package home.holymiko.ScrapApp.Server.Controller;
 import home.holymiko.ScrapApp.Server.DTO.PortfolioCreateDTO;
 import home.holymiko.ScrapApp.Server.DTO.PortfolioDTO;
 import home.holymiko.ScrapApp.Server.DTO.Portfolio_Investment_DTO;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
 import home.holymiko.ScrapApp.Server.Entity.Portfolio;
 import home.holymiko.ScrapApp.Server.Entity.Product;
 import home.holymiko.ScrapApp.Server.Entity.Investment;
 import home.holymiko.ScrapApp.Server.Service.InvestmentService;
 import home.holymiko.ScrapApp.Server.Service.PortfolioService;
+import home.holymiko.ScrapApp.Server.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,12 +29,29 @@ public class PortfolioController {
     private final ScrapController scrapController;
     private final PortfolioService portfolioService;
     private final InvestmentService investmentService;
+    private final ProductService productService;
 
     @Autowired
-    public PortfolioController(ScrapController scrapController, PortfolioService portfolioService, InvestmentService investmentService) {
+    public PortfolioController(ScrapController scrapController, PortfolioService portfolioService, InvestmentService investmentService, ProductService productService) {
         this.scrapController = scrapController;
         this.portfolioService = portfolioService;
         this.investmentService = investmentService;
+        this.productService = productService;
+
+    }
+
+    private void start() {
+//        this.portfolioService.addInvestmentToPortfolio("Mikolas",
+//                this.investmentService.save(
+//                    new Investment (
+//                            this.productService.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(
+//                                    Dealer.BESSERGOLD,
+//                                    Producer.MUNZE_OSTERREICH,
+//                                    Metal.GOLD,
+//                                    Form.BAR,
+//                                    10
+//                            ), 14569.00, LocalDate.of(2021, 5, 18))));
+
     }
 
     /////// GET
@@ -64,13 +87,13 @@ public class PortfolioController {
     /////// GET DTO
 
     @GetMapping({"/dto/portfolio","/dto/portfolio/", "/dto/", "/dto"})
-    public List<PortfolioDTO> allAsDTO() {
+    public List<PortfolioDTO> asDTO() {
         System.out.println("Get all portfolios as DTO");
         return portfolioService.findAllAsPortfolioDTO();
     }
 
     @GetMapping({"/dto/portfolio-investments", "/dto/portfolio-investments/" })
-    public List<Portfolio_Investment_DTO> allAsPortfolio_Investment_DTO() {
+    public List<Portfolio_Investment_DTO> asPortfolio_Investment_DTO() {
         System.out.println("Get all portfolios as Portfolio-Investment DTO");
         return portfolioService.findAllAsPortfolioInvestmentDTO();
     }
@@ -91,7 +114,7 @@ public class PortfolioController {
     /////// POST
 
     @PostMapping({"/", ""})
-    public void addPortfolio(@RequestBody PortfolioCreateDTO portfolioCreateDTO) {
+    public void createPortfolio(@RequestBody PortfolioCreateDTO portfolioCreateDTO) {
         System.out.println("Add Portfolio");
         this.portfolioService.save(portfolioCreateDTO);
     }

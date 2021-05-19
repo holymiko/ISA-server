@@ -87,6 +87,13 @@ public class InvestmentService {
     }
 
     @Transactional
+    public Investment save(Investment investment) throws ResponseStatusException {
+        System.out.println("localDate");
+        this.investmentRepository.save(investment);
+        return this.investmentRepository.findById(investment.getId()).get();
+    }
+
+    @Transactional
     public List<Investment> saveCarlosInvestments() {
         Investment goldenBar1 = new Investment(this.productRepository.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.GOLD, Form.BAR, 2).get(), 3164.75, LocalDate.of(2021, 1, 19));
         Investment goldenBar2 = new Investment(this.productRepository.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.GOLD, Form.BAR, 2).get(), 3547.00, LocalDate.of(2020, 10, 12));

@@ -23,7 +23,7 @@ public class StockService {
     }
 
 
-    /////////// FIND
+    ////// FIND
 
     public Optional<Stock> findById(int id) {
         return this.stockRepository.findById(id);
@@ -54,7 +54,7 @@ public class StockService {
     }
 
 
-    /////////// SAVE
+    ////// SAVE
 
     @Transactional
     public void save(Stock stock) {

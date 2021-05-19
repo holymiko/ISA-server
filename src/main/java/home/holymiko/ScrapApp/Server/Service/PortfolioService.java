@@ -4,6 +4,10 @@ import home.holymiko.ScrapApp.Server.DTO.InvestmentDTO;
 import home.holymiko.ScrapApp.Server.DTO.PortfolioCreateDTO;
 import home.holymiko.ScrapApp.Server.DTO.PortfolioDTO;
 import home.holymiko.ScrapApp.Server.DTO.Portfolio_Investment_DTO;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
 import home.holymiko.ScrapApp.Server.Entity.Portfolio;
 import home.holymiko.ScrapApp.Server.Entity.Investment;
 import home.holymiko.ScrapApp.Server.Entity.Product;
@@ -12,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -156,5 +161,10 @@ public class PortfolioService {
         }
     }
 
-
+    @Transactional
+    public List<Investment> addInvestmentToPortfolio(String portfolioOwner, Investment investment) {
+        List<Investment> investmentList = this.portfolioRepository.findByOwner(portfolioOwner).get().getInvestments();
+        investmentList.add(investment);
+        return investmentList;
+    }
 }

@@ -2,7 +2,10 @@ package home.holymiko.ScrapApp.Server.Service;
 
 import home.holymiko.ScrapApp.Server.DTO.ProductDTO;
 import home.holymiko.ScrapApp.Server.Entity.*;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
 import home.holymiko.ScrapApp.Server.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -100,6 +103,11 @@ public class ProductService {
             }
         }
         return investments;
+    }
+
+    public Product findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer dealer, Producer producer, Metal metal, Form form, double grams) {
+        Optional<Product> optional = this.productRepository.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(dealer, producer, metal, form, grams);
+        return optional.orElse(null);           // Returns optional if its present
     }
 
     public List<Price> findProductPrices(Long id) {
