@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Locale;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -139,6 +140,23 @@ public class ScrapController {
 
         try {
             this.scrapBessergold.productsByPortfolio(id);
+        } catch (ResponseStatusException e){
+            isRunning = false;
+            throw e;
+        }
+        isRunning = false;
+        throw new ResponseStatusException(HttpStatus.OK, "ScrapMetal done");
+    }
+
+    @RequestMapping({"/productsIds", "/productsIds/"})              // Wasn't tested
+    public void byProductIds(@RequestBody List<Long> productIds) {
+        if( isRunning ) {
+            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Another ScrapMetal running");
+        }
+        isRunning = true;
+
+        try {
+            this.scrapBessergold.pricesByProductIds(productIds);
         } catch (ResponseStatusException e){
             isRunning = false;
             throw e;
