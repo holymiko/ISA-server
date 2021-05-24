@@ -120,26 +120,6 @@ public class PortfolioController {
     }
 
 
-    /////// PUT
-
-    @RequestMapping("/scrap/{id}")
-    public void updatePortfolioProducts(@PathVariable long id) {
-        Optional<Portfolio> optionalPortfolio = portfolioService.findById(id);
-        if (optionalPortfolio.isPresent()) {
-            this.scrapController.byPortfolio(id);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-    }
-
-//    @PostMapping("/owner/{owner}")
-//    public void updatePortfolioProducts(@PathVariable String owner){
-//        this.scrap.scrapPortfolioProducts(portfolioService.findByOwner(owner).get().getId());
-//    }
-
-    public void saveInitPortfolios() {
-        this.portfolioService.saveInitPortfolios();
-    }
 
     public void printProducts(List<Product> products) {
         if (!products.isEmpty()) {

@@ -42,17 +42,16 @@ public class ScrapMetal extends Scrap {
 
     /////// PRODUCT
 
-    protected void scrapProduct(Link link) {
+    protected void byLink(Link link) {
         System.out.println("Error: This method should be overwritten");
         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    protected void sOptionalProduct(Link link) {
+    protected void byOptionalLink(Link link) {
         List<Product> productList = this.productService.findByLink(link.getLink());
 
         if (productList.isEmpty()) {
-            // TODO Add product to Avatar
-            scrapProduct(link);
+            byLink(link);
         } else {
             if (productList.size() > 1)
                 System.out.println("WARNING - More products with same link");
@@ -60,10 +59,10 @@ public class ScrapMetal extends Scrap {
         }
     }   // Saves new product or Updates price of existing
 
-    public void sProducts(List<Link> links) {
+    public void byLinks(List<Link> links) {
         int i = 0;
         for (Link link : links) {
-            sOptionalProduct(link);
+            byOptionalLink(link);
             i++;
             if ((i % 10) == 0)
                 System.out.println(i + "/" + links.size());
@@ -72,19 +71,19 @@ public class ScrapMetal extends Scrap {
     }
 
     public void sAllProducts() {
-        sDealerProducts(Dealer.BESSERGOLD);
+        byDealer(Dealer.BESSERGOLD);
 
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
         System.out.println("All products scraped");
     }        // Scraps products based on Links from DB
 
-    public void sDealerProducts(Dealer dealer) {
+    public void byDealer(Dealer dealer) {
         List<Link> dealerLinks = linkService.findByDealer(dealer);
         //// TODO Make new dealer or find existing
-        sProducts(dealerLinks);
+        byLinks(dealerLinks);
     }
 
-    public void sPortfolioProducts(long portfolioId) throws ResponseStatusException {
+    public void byPortfolio(long portfolioId) throws ResponseStatusException {
         System.out.println("ScrapMetal Portfolio-Products");
         Optional<Portfolio> optionalPortfolio = portfolioService.findById(portfolioId);
         if (optionalPortfolio.isPresent()) {
@@ -95,7 +94,7 @@ public class ScrapMetal extends Scrap {
                 linkSet.add(investment.getProduct().getLink());
             }
             for (Link link : linkSet) {
-                sOptionalProduct(link);
+                byOptionalLink(link);
             }
             sleep(DELAY);
             portfolioService.update(portfolioId);

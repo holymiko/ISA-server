@@ -44,7 +44,7 @@ public class ScrapZlataky extends ScrapMetal {
     /////// PRODUCT
 
     @Override
-    protected void scrapProduct(Link link) {
+    protected void byLink(Link link) {
         double weight;
         Product product;
 

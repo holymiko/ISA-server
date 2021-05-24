@@ -130,13 +130,15 @@ public class ScrapController {
 
     @RequestMapping({"/portfolio/{id}", "/portfolio/{id}/"})
     public void byPortfolio(@PathVariable long id) {
+//        this.portfolioService.saveInitPortfolios();
+
         if( isRunning ) {
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Another ScrapMetal running");
         }
         isRunning = true;
 
         try {
-            this.scrapBessergold.sPortfolioProducts(id);
+            this.scrapBessergold.byPortfolio(id);
         } catch (ResponseStatusException e){
             isRunning = false;
             throw e;
