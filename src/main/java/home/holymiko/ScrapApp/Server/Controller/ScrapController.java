@@ -64,7 +64,7 @@ public class ScrapController {
         lastAllLinks = LocalDateTime.now();
 
         System.out.println("ScrapMetal all products");
-        this.scrapBessergold.sAllProducts();
+        this.scrapBessergold.allProducts();
         lastAll = LocalDateTime.now();
 
         this.portfolioService.saveInitPortfolios();
@@ -93,7 +93,7 @@ public class ScrapController {
                     isRunning = false;
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then " + MINUTES_DELAY + " ago");
                 }
-                this.scrapBessergold.sMetalPrices(Metal.GOLD);
+                this.scrapBessergold.pricesByMetal(Metal.GOLD);
                 lastGold = LocalDateTime.now();
             }
             case "silver" -> {
@@ -101,7 +101,7 @@ public class ScrapController {
                     isRunning = false;
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then " + MINUTES_DELAY + " ago");
                 }
-                this.scrapBessergold.sMetalPrices(Metal.SILVER);
+                this.scrapBessergold.pricesByMetal(Metal.SILVER);
                 lastSilver = LocalDateTime.now();
             }
             case "platinum" -> {
@@ -109,7 +109,7 @@ public class ScrapController {
                     isRunning = false;
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then " + MINUTES_DELAY + " ago");
                 }
-                this.scrapBessergold.sMetalPrices(Metal.PLATINUM);
+                this.scrapBessergold.pricesByMetal(Metal.PLATINUM);
                 lastPlatinum = LocalDateTime.now();
             }
             case "palladium" -> {
@@ -117,7 +117,7 @@ public class ScrapController {
                     isRunning = false;
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then " + MINUTES_DELAY + " ago");
                 }
-                this.scrapBessergold.sMetalPrices(Metal.PALLADIUM);
+                this.scrapBessergold.pricesByMetal(Metal.PALLADIUM);
                 lastPalladium = LocalDateTime.now();
             }
             default -> {
@@ -138,7 +138,7 @@ public class ScrapController {
         isRunning = true;
 
         try {
-            this.scrapBessergold.byPortfolio(id);
+            this.scrapBessergold.productsByPortfolio(id);
         } catch (ResponseStatusException e){
             isRunning = false;
             throw e;

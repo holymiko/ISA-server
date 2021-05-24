@@ -42,27 +42,27 @@ public class ScrapMetal extends Scrap {
 
     /////// PRODUCT
 
-    protected void byLink(Link link) {
+    protected void productByLink(Link link) {
         System.out.println("Error: This method should be overwritten");
         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    protected void byOptionalLink(Link link) {
+    protected void productByOptionalLink(Link link) {
         List<Product> productList = this.productService.findByLink(link.getLink());
 
         if (productList.isEmpty()) {
-            byLink(link);
+            productByLink(link);
         } else {
             if (productList.size() > 1)
                 System.out.println("WARNING - More products with same link");
-            scrapPrice(productList.get(0));
+            priceByProduct(productList.get(0));
         }
     }   // Saves new product or Updates price of existing
 
-    public void byLinks(List<Link> links) {
+    public void productsByLinks(List<Link> links) {
         int i = 0;
         for (Link link : links) {
-            byOptionalLink(link);
+            productByOptionalLink(link);
             i++;
             if ((i % 10) == 0)
                 System.out.println(i + "/" + links.size());
@@ -70,20 +70,20 @@ public class ScrapMetal extends Scrap {
         }
     }
 
-    public void sAllProducts() {
-        byDealer(Dealer.BESSERGOLD);
+    public void allProducts() {
+        productsByDealer(Dealer.BESSERGOLD);
 
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
         System.out.println("All products scraped");
     }        // Scraps products based on Links from DB
 
-    public void byDealer(Dealer dealer) {
+    public void productsByDealer(Dealer dealer) {
         List<Link> dealerLinks = linkService.findByDealer(dealer);
         //// TODO Make new dealer or find existing
-        byLinks(dealerLinks);
+        productsByLinks(dealerLinks);
     }
 
-    public void byPortfolio(long portfolioId) throws ResponseStatusException {
+    public void productsByPortfolio(long portfolioId) throws ResponseStatusException {
         System.out.println("ScrapMetal Portfolio-Products");
         Optional<Portfolio> optionalPortfolio = portfolioService.findById(portfolioId);
         if (optionalPortfolio.isPresent()) {
@@ -94,7 +94,7 @@ public class ScrapMetal extends Scrap {
                 linkSet.add(investment.getProduct().getLink());
             }
             for (Link link : linkSet) {
-                byOptionalLink(link);
+                productByOptionalLink(link);
             }
             sleep(DELAY);
             portfolioService.update(portfolioId);
@@ -108,23 +108,44 @@ public class ScrapMetal extends Scrap {
 
     /////// PRICE
 
-    protected Price scrapPrice(Product product) {
+    protected Price priceByProduct(Product product) {
         System.out.println("Error: This method should be overwritten");
         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    public void sMetalPrices(Metal metal){
-        System.out.println("ScrapMetal Prices-Metal");
+    public void pricesByMetal(Metal metal){
+        System.out.println("ScrapMetal pricesByMetal");
         List<Product> productList = this.productService.findByMetal(metal);
         int i = 0;
         for (Product product : productList) {
-            scrapPrice(product);
+            priceByProduct(product);
             i++;
             if ((i % 10) == 0)
                 System.out.println(i + "/" + productList.size());
             sleep(DELAY);
         }
         System.out.println(metal+" prices scraped");
+        System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
+    }
+
+    public void pricesByProductIds(List<Long> productIds){
+        System.out.println("ScrapMetal pricesByProductIds");
+        int i = 0;
+        for (Long productId : productIds) {
+            Optional<Product> optionalProduct = this.productService.findById(productId);
+            if(optionalProduct.isEmpty()){
+                i++;
+                continue;
+            }
+            priceByProduct(optionalProduct.get());
+
+            i++;
+            if ((i % 10) == 0) {
+                System.out.println(i + "/" + productIds.size());
+            }
+            sleep(DELAY);
+        }
+        System.out.println("Prices scraped");
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
     }
 

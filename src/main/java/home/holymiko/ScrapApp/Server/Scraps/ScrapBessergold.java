@@ -35,7 +35,7 @@ public class ScrapBessergold extends ScrapMetal {
     /////// PRODUCT
 
     @Override
-    protected void byLink(Link link) {
+    protected void productByLink(Link link) {
         double weight;
         Product product;
 
@@ -56,14 +56,14 @@ public class ScrapBessergold extends ScrapMetal {
         else
             product = new Product( producer, form, Metal.UNKNOWN, name.asText(), weight, link, null, new ArrayList<>());
 
-        addPriceToProduct(product, scrapPrice(product));
+        addPriceToProduct(product, priceByProduct(product));
         System.out.println("Product saved");
     }
 
     /////// PRICE
 
     @Override
-    protected Price scrapPrice(Product product) {
+    protected Price priceByProduct(Product product) {
         loadPage(product.getLink().getLink());
 
         double weight = product.getGrams();
