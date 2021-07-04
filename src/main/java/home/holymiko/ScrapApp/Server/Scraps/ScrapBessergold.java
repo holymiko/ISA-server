@@ -21,15 +21,27 @@ public class ScrapBessergold extends ScrapMetal {
     private static final String searchUrlPlatinum = "https://www.bessergold.cz/investicni-platina.html?product_list_limit=all";
     private static final String searchUrlPalladium = "https://www.bessergold.cz/investicni-palladium.html?product_list_limit=all";
 
+    private static final String xPathProductList = "//li[@class='item product product-item']";
+
     @Autowired
     public ScrapBessergold(LinkService linkService,
                            PriceService priceService,
                            ProductService productService,
                            PortfolioService portfolioService,
                            InvestmentService investmentService) {
-        super(Dealer.BESSERGOLD,
-                linkService, priceService, portfolioService, productService, investmentService,
-                "//li[@class='item product product-item']");
+        super(
+                Dealer.BESSERGOLD,
+                linkService,
+                priceService,
+                portfolioService,
+                productService,
+                investmentService,
+                searchUrlGold,
+                searchUrlSilver,
+                searchUrlPlatinum,
+                searchUrlPalladium,
+                xPathProductList
+        );
     }
 
     /////// PRODUCT
@@ -64,7 +76,7 @@ public class ScrapBessergold extends ScrapMetal {
 
     /**
      * Scraps new price for already known product
-     * @param product
+     * @param product already saved in DB
      * @return new price
      */
     @Override
@@ -101,33 +113,4 @@ public class ScrapBessergold extends ScrapMetal {
         Link link = new Link(Dealer.BESSERGOLD, itemAnchor.getHrefAttribute());
         linkFilterWrapper(link);
     }
-
-    @Override
-    public void sAllLinks() {
-        scrapLinks(searchUrlGold);
-        scrapLinks(searchUrlSilver);
-        scrapLinks(searchUrlPlatinum);
-        scrapLinks(searchUrlPalladium);
-    }
-
-    @Override
-    public void sGoldLinks() {
-        scrapLinks(searchUrlGold);
-    }
-
-    @Override
-    public void sSilverLinks() {
-        scrapLinks(searchUrlSilver);
-    }
-
-    @Override
-    public void sPlatinumLinks() {
-        scrapLinks(searchUrlPlatinum);
-    }
-
-    @Override
-    public void sPalladiumLinks() {
-        scrapLinks(searchUrlPalladium);
-    }
-
 }

@@ -36,9 +36,19 @@ public class ScrapZlataky extends ScrapMetal {
                         ProductService productService,
                         PortfolioService portfolioService,
                         InvestmentService investmentService) {
-        super(  Dealer.ZLATAKY,
-                linkService, priceService, portfolioService, productService, investmentService,
-                "//*[@id=\"productListing\"]/div");
+        super(
+                Dealer.ZLATAKY,
+                linkService,
+                priceService,
+                portfolioService,
+                productService,
+                investmentService,
+                searchUrlGoldBar,       // Wont be used, method overwritten
+                searchUrlSilverBar,     // Wont be used, method overwritten
+                searchUrlPlatinum,
+                searchUrlPalladium,
+                "//*[@id=\"productListing\"]/div"
+        );
     }
 
     /////// PRODUCT
@@ -117,37 +127,16 @@ public class ScrapZlataky extends ScrapMetal {
     }
 
 
-
-
-    @Override
-    public void sAllLinks() {
-        scrapLinks(searchUrlGoldCoin);
-        scrapLinks(searchUrlGoldBar);
-
-        scrapLinks(searchUrlSilverCoin);
-        scrapLinks(searchUrlSilverBar);
-
-        scrapLinks(searchUrlPlatinum);
-        scrapLinks(searchUrlPalladium);
-        scrapLinks(searchUrlRhodium);
-    }
     @Override
     public void sGoldLinks() {
         scrapLinks(searchUrlGoldCoin);
         scrapLinks(searchUrlGoldBar);
     }
+
     @Override
     public void sSilverLinks() {
         scrapLinks(searchUrlSilverCoin);
         scrapLinks(searchUrlSilverBar);
-    }
-    @Override
-    public void sPlatinumLinks() {
-        scrapLinks(searchUrlPlatinum);
-    }
-    @Override
-    public void sPalladiumLinks() {
-        scrapLinks(searchUrlPalladium);
     }
 
 }

@@ -6,6 +6,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 public class Scrap {
     protected HtmlPage page;
     protected final WebClient client;
+    protected static int printerCounter = 0;
 
     public Scrap() {
         client = new WebClient();
@@ -24,6 +25,13 @@ public class Scrap {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    protected void printAndSleep(long delay, int size){
+        printerCounter++;
+        if ((printerCounter % 10) == 0)
+            System.out.println(printerCounter + "/" + size);
+        sleep(delay);
     }
 
     /**

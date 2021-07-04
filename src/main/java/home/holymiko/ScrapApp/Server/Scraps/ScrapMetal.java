@@ -24,12 +24,18 @@ public class ScrapMetal extends Scrap {
     protected final ProductService productService;
     protected final InvestmentService investmentService;
 
+    protected final String searchUrlGold;
+    protected final String searchUrlSilver;
+    protected final String searchUrlPlatinum;
+    protected final String searchUrlPalladium;
+
     private static final long DELAY = 700;
     private static final double OUNCE = 28.349523125;
     private static final double TROY_OUNCE = 31.1034768;
+
     private final String xPathProductList;
 
-    public ScrapMetal(Dealer dealer, LinkService linkService, PriceService priceService, PortfolioService portfolioService, ProductService productService, InvestmentService investmentService, String xPathProductList) {
+    public ScrapMetal(Dealer dealer, LinkService linkService, PriceService priceService, PortfolioService portfolioService, ProductService productService, InvestmentService investmentService, String searchUrlGold, String searchUrlSilver, String searchUrlPlatinum, String searchUrlPalladium, String xPathProductList) {
         super();
         this.dealer = dealer;
         this.linkService = linkService;
@@ -37,6 +43,10 @@ public class ScrapMetal extends Scrap {
         this.portfolioService = portfolioService;
         this.productService = productService;
         this.investmentService = investmentService;
+        this.searchUrlGold = searchUrlGold;
+        this.searchUrlSilver = searchUrlSilver;
+        this.searchUrlPlatinum = searchUrlPlatinum;
+        this.searchUrlPalladium = searchUrlPalladium;
         this.xPathProductList = xPathProductList;
     }
 
@@ -69,44 +79,42 @@ public class ScrapMetal extends Scrap {
      * @param links Optional links of Products
      */
     public void productsByOptionalLinks(List<Link> links) {
-        int i = 0;
         for (Link link : links) {
             productByOptionalLink(link);
-            i++;
-            if ((i % 10) == 0)
-                System.out.println(i + "/" + links.size());
-            sleep(DELAY);
+            printAndSleep(DELAY, links.size());
         }
+        printerCounter = 0;
     }
 
+    /**
+     * Scraps products based on Links from DB
+     */
     public void allProducts() {
         productsByDealer(Dealer.BESSERGOLD);
-
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
         System.out.println("All products scraped");
-    }        // Scraps products based on Links from DB
+    }
 
     public void productsByDealer(Dealer dealer) {
-        List<Link> dealerLinks = linkService.findByDealer(dealer);
-        productsByOptionalLinks(dealerLinks);
+        productsByOptionalLinks( linkService.findByDealer(dealer) );
     }
 
     public void productsByPortfolio(long portfolioId) throws ResponseStatusException {
         System.out.println("ScrapMetal Portfolio-Products");
         Optional<Portfolio> optionalPortfolio = portfolioService.findById(portfolioId);
-        if (optionalPortfolio.isPresent()) {
-            // Set prevents one Product to be scrapped more times
-            Set<Link> linkSet = optionalPortfolio.get().getInvestments()
-                    .stream()
-                    .map(investment -> investment.getProduct().getLink())
-                    .collect(Collectors.toSet());
-
-            productsByOptionalLinks(new ArrayList<>(linkSet));
-            portfolioService.refresh(portfolioId);
-            System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
-        } else {
+        if (optionalPortfolio.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No portfolio with such ID");
         }
+
+        // Set prevents one Product to be scrapped more times
+        Set<Link> linkSet = optionalPortfolio.get().getInvestments()
+                .stream()
+                .map(investment -> investment.getProduct().getLink())
+                .collect(Collectors.toSet());
+
+        productsByOptionalLinks( new ArrayList<>(linkSet) );
+        portfolioService.refresh(portfolioId);
+        System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
     }
 
 
@@ -119,35 +127,27 @@ public class ScrapMetal extends Scrap {
     public void pricesByMetal(Metal metal){
         System.out.println("ScrapMetal pricesByMetal");
         List<Product> productList = this.productService.findByMetal(metal);
-        int i = 0;
         for (Product product : productList) {
-            priceByProduct(product);        // TODO Use ScrapList some interface here to unite these 3 methods
-            i++;
-            if ((i % 10) == 0)
-                System.out.println(i + "/" + productList.size());
-            sleep(DELAY);
+            priceByProduct(product);
+            printAndSleep(DELAY, productList.size());
         }
+        printerCounter = 0;
         System.out.println(metal+" prices scraped");
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
     }
 
     public void pricesByProductIds(List<Long> productIds){
         System.out.println("ScrapMetal pricesByProductIds");
-        int i = 0;
         for (Long productId : productIds) {
             Optional<Product> optionalProduct = this.productService.findById(productId);
             if(optionalProduct.isEmpty()){
-                i++;
+                printerCounter++;
                 continue;
             }
             priceByProduct(optionalProduct.get());
-
-            i++;
-            if ((i % 10) == 0) {
-                System.out.println(i + "/" + productIds.size());
-            }
-            sleep(DELAY);
+            printAndSleep(DELAY, productIds.size());
         }
+        printerCounter = 0;
         System.out.println("Prices scraped");
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
     }
@@ -182,24 +182,27 @@ public class ScrapMetal extends Scrap {
         throw new AbstractMethodError("Abstract method is supposed to be overwritten");
     }
 
-    protected void sAllLinks() {
-        throw new AbstractMethodError("Abstract method is supposed to be overwritten");
+    public void sAllLinks() {
+        sGoldLinks();
+        sSilverLinks();
+        sPlatinumLinks();
+        sPalladiumLinks();
     }
 
-    protected void sGoldLinks() {
-        throw new AbstractMethodError("Abstract method is supposed to be overwritten");
+    public void sGoldLinks() {
+        scrapLinks(searchUrlGold);
     }
 
-    protected void sSilverLinks() {
-        throw new AbstractMethodError("Abstract method is supposed to be overwritten");
+    public void sSilverLinks() {
+        scrapLinks(searchUrlSilver);
     }
 
-    protected void sPlatinumLinks() {
-        throw new AbstractMethodError("Abstract method is supposed to be overwritten");
+    public void sPlatinumLinks() {
+        scrapLinks(searchUrlPlatinum);
     }
 
-    protected void sPalladiumLinks() {
-        throw new AbstractMethodError("Abstract method is supposed to be overwritten");
+    public void sPalladiumLinks() {
+        scrapLinks(searchUrlPalladium);
     }
 
 
@@ -398,5 +401,6 @@ public class ScrapMetal extends Scrap {
         product.setPrices(priceList);
         this.productService.save(product);
     }
+
 
 }
