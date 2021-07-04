@@ -1,5 +1,6 @@
 package home.holymiko.ScrapApp.Server.Controller;
 
+import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
 import home.holymiko.ScrapApp.Server.Scraps.ScrapBessergold;
 import home.holymiko.ScrapApp.Server.Scraps.ScrapSerenity;
@@ -75,6 +76,30 @@ public class ScrapController {
 
     //////// Products
 
+    @RequestMapping({"/dealer/{dealer}", "/dealer/{dealer}/"})
+    public void scrapProductsByDealer(@PathVariable String dealer) {
+        if( isRunning ) {
+            System.out.println("Too Many Requests");
+            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Another ScrapMetal running");
+        }
+//        if( compareDates(lastAll) ) {
+//            System.out.println("Bad request");
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "All products were scraped less then "+MINUTES_DELAY+" ago");
+//        }
+        isRunning = true;
+
+        System.out.println("Trying to scrap "+dealer+" products");
+        switch (dealer.toLowerCase(Locale.ROOT)) {
+            case "bessergold" -> this.scrapBessergold.productsByDealer(Dealer.BESSERGOLD);
+            case "zlataky" -> this.scrapZlataky.productsByDealer(Dealer.ZLATAKY);
+            default -> {
+                isRunning = false;
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+        }
+        isRunning = false;
+    }
+
     @RequestMapping({"/metal/{metal}", "/metal/{metal}/"})
     public void byMetal(@PathVariable String metal) {
         if( isRunning ) {
@@ -131,8 +156,6 @@ public class ScrapController {
 
     @RequestMapping({"/portfolio/{id}", "/portfolio/{id}/"})
     public void byPortfolio(@PathVariable long id) {
-//        this.portfolioService.saveInitPortfolios();
-
         if( isRunning ) {
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Another ScrapMetal running");
         }

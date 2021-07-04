@@ -68,7 +68,7 @@ public class ScrapMetal extends Scrap {
      * Prints to console.
      * @param links Optional links of Products
      */
-    public void productsByLinks(List<Link> links) {
+    public void productsByOptionalLinks(List<Link> links) {
         int i = 0;
         for (Link link : links) {
             productByOptionalLink(link);
@@ -88,8 +88,7 @@ public class ScrapMetal extends Scrap {
 
     public void productsByDealer(Dealer dealer) {
         List<Link> dealerLinks = linkService.findByDealer(dealer);
-        //// TODO Make new dealer or find existing
-        productsByLinks(dealerLinks);
+        productsByOptionalLinks(dealerLinks);
     }
 
     public void productsByPortfolio(long portfolioId) throws ResponseStatusException {
@@ -102,8 +101,8 @@ public class ScrapMetal extends Scrap {
                     .map(investment -> investment.getProduct().getLink())
                     .collect(Collectors.toSet());
 
-            productsByLinks(new ArrayList<>(linkSet));
-            portfolioService.refresh(portfolioId); 
+            productsByOptionalLinks(new ArrayList<>(linkSet));
+            portfolioService.refresh(portfolioId);
             System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No portfolio with such ID");
@@ -122,7 +121,7 @@ public class ScrapMetal extends Scrap {
         List<Product> productList = this.productService.findByMetal(metal);
         int i = 0;
         for (Product product : productList) {
-            priceByProduct(product);
+            priceByProduct(product);        // TODO Use ScrapList some interface here to unite these 3 methods
             i++;
             if ((i % 10) == 0)
                 System.out.println(i + "/" + productList.size());
