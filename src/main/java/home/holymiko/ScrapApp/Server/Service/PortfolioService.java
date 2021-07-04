@@ -158,6 +158,10 @@ public class PortfolioService {
         System.out.println(">> Save Portfolio");
     }
 
+    /**
+     * Updates portfolio values.
+     * @param portfolioId
+     */
     @Transactional
     public void refresh(long portfolioId) {
         portfolioRepository.findById(portfolioId).ifPresent(portfolio -> {

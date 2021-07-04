@@ -103,7 +103,7 @@ public class ScrapMetal extends Scrap {
                     .collect(Collectors.toSet());
 
             productsByLinks(new ArrayList<>(linkSet));
-//            portfolioService.refresh(portfolioId);       // TODO Is this neccessary?
+            portfolioService.refresh(portfolioId); 
             System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No portfolio with such ID");
