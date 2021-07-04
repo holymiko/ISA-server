@@ -12,7 +12,7 @@ public class Scrap {
         setClient();
     }
 
-    protected void setClient() {
+    private void setClient() {
         client.getOptions().setJavaScriptEnabled(false);
         client.getOptions().setCssEnabled(false);
         client.getOptions().setPrintContentOnFailingStatusCode(false);
@@ -26,6 +26,11 @@ public class Scrap {
         }
     }
 
+    /**
+     * Sets class variable page.
+     * @param link URL of the page
+     * @return True if page was found and loaded successfully.
+     */
     protected boolean loadPage(String link){
         page = null;
         try {

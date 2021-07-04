@@ -49,28 +49,34 @@ public class ScrapZlataky extends ScrapMetal {
         Product product;
 
         loadPage(link.getLink());
-        HtmlElement name = page.getFirstByXPath(".//span[@class='base']");
-        weight = weightExtractor(name.asText());
-        Form form = formExtractor(name.asText());
-        Producer producer = producerExtractor(name.asText());
+        HtmlElement htmlName = page.getFirstByXPath(".//span[@class='base']");
+        String name = htmlName.asText();
+        weight = weightExtractor(name);
+        Form form = formExtractor(name);
+        Producer producer = producerExtractor(name);
 
-        if (name.asText().contains("Zlat"))
-            product = new Product( producer, form, Metal.GOLD, name.asText(), weight, link, null, new ArrayList<>() );
-        else if (name.asText().contains("Stříbr"))
-            product = new Product( producer, form, Metal.SILVER, name.asText(), weight, link, null, new ArrayList<>());
-        else if (name.asText().contains("Platin"))
-            product = new Product( producer, form, Metal.PLATINUM, name.asText(), weight, link, null, new ArrayList<>());
-        else if (name.asText().contains("Pallad"))
-            product = new Product( producer, form, Metal.PALLADIUM, name.asText(), weight, link, null, new ArrayList<>());
-        else
-            product = new Product( producer, form, Metal.UNKNOWN, name.asText(), weight, link, null, new ArrayList<>());
-
+        if (name.contains("Zlat")) {
+            product = new Product(producer, form, Metal.GOLD, name, weight, link, null, new ArrayList<>());
+        } else if (name.contains("Stříbr")) {
+            product = new Product(producer, form, Metal.SILVER, name, weight, link, null, new ArrayList<>());
+        } else if (name.contains("Platin")) {
+            product = new Product(producer, form, Metal.PLATINUM, name, weight, link, null, new ArrayList<>());
+        } else if (name.contains("Pallad")) {
+            product = new Product(producer, form, Metal.PALLADIUM, name, weight, link, null, new ArrayList<>());
+        } else {
+            product = new Product(producer, form, Metal.UNKNOWN, name, weight, link, null, new ArrayList<>());
+        }
         addPriceToProduct(product, priceByProduct(product));
         System.out.println("Product saved");
     }
 
     /////// PRICE
 
+    /**
+     * Scraps new price for already known product
+     * @param product
+     * @return new price
+     */
     @Override
     protected Price priceByProduct(Product product) {
         loadPage(product.getLink().getLink());
@@ -79,17 +85,18 @@ public class ScrapZlataky extends ScrapMetal {
         HtmlElement htmlBuyPrice = page.getFirstByXPath(".//span[@class='price']");
         HtmlElement htmlRedemptionPrice = page.getFirstByXPath(".//div[@class='vykupni-cena']");
 
-        String buyPrice = formatPrice(htmlBuyPrice.asText());
-        String redPrice = htmlRedemptionPrice.asText();
+        Double buyPrice = formatPrice(htmlBuyPrice.asText());
+        Double redemptionPrice = 0.0;
         try {
-            redPrice = redPrice.split(":")[1];          // Aktuální výkupní cena (bez DPH): xxxx,xx Kč
+            String redemptionPriceText = htmlRedemptionPrice.asText().split(":")[1];          // Aktuální výkupní cena (bez DPH): xxxx,xx Kč
+            redemptionPrice = formatPrice(redemptionPriceText);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        redPrice = formatPrice(redPrice);
-        if (Double.parseDouble(redPrice) <= 0.0)
+        if (redemptionPrice <= 0.0) {
             System.out.println("WARNING - Vykupni cena = 0");
-        Price newPrice = new Price(LocalDateTime.now(), Double.parseDouble(buyPrice), Double.parseDouble(redPrice), weight);
+        }
+        Price newPrice = new Price(LocalDateTime.now(), buyPrice, redemptionPrice, weight);
         addPriceToProduct(product, newPrice);
         System.out.println("> New price saved");
         return newPrice;
@@ -103,7 +110,7 @@ public class ScrapZlataky extends ScrapMetal {
         HtmlAnchor itemAnchor = htmlItem.getFirstByXPath(".//div/h3/a");
         if(itemAnchor != null) {
             Link link = new Link(Dealer.ZLATAKY, BASE_URL + itemAnchor.getHrefAttribute());
-            linkFilterAction(link);
+            linkFilterWrapper(link);
             return;
         }
         System.out.println("Error: "+htmlItem.asText());

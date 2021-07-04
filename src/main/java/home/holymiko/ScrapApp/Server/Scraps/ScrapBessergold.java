@@ -62,6 +62,11 @@ public class ScrapBessergold extends ScrapMetal {
 
     /////// PRICE
 
+    /**
+     * Scraps new price for already known product
+     * @param product
+     * @return new price
+     */
     @Override
     protected Price priceByProduct(Product product) {
         loadPage(product.getLink().getLink());
@@ -70,17 +75,18 @@ public class ScrapBessergold extends ScrapMetal {
         HtmlElement htmlBuyPrice = page.getFirstByXPath(".//span[@class='price']");
         HtmlElement htmlRedemptionPrice = page.getFirstByXPath(".//div[@class='vykupni-cena']");
 
-        String buyPrice = formatPrice(htmlBuyPrice.asText());
-        String redPrice = htmlRedemptionPrice.asText();
+        Double buyPrice = formatPrice(htmlBuyPrice.asText());
+        Double redemptionPrice = 0.0;
         try {
-            redPrice = redPrice.split(":")[1];          // Aktuální výkupní cena (bez DPH): xxxx,xx Kč
+            String redemptionPriceText = htmlRedemptionPrice.asText().split(":")[1];          // Aktuální výkupní cena (bez DPH): xxxx,xx Kč
+            redemptionPrice = formatPrice(redemptionPriceText);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        redPrice = formatPrice(redPrice);
-        if (Double.parseDouble(redPrice) <= 0.0)
+        if (redemptionPrice <= 0.0) {
             System.out.println("WARNING - Vykupni cena = 0");
-        Price newPrice = new Price(LocalDateTime.now(), Double.parseDouble(buyPrice), Double.parseDouble(redPrice), weight);
+        }
+        Price newPrice = new Price(LocalDateTime.now(), buyPrice, redemptionPrice, weight);
         addPriceToProduct(product, newPrice);
         System.out.println("> New price saved");
         return newPrice;
@@ -93,11 +99,8 @@ public class ScrapBessergold extends ScrapMetal {
     protected void scrapLink(HtmlElement htmlItem, String searchUrl) {
         HtmlAnchor itemAnchor = htmlItem.getFirstByXPath(".//strong[@class='product name product-item-name']/a");
         Link link = new Link(Dealer.BESSERGOLD, itemAnchor.getHrefAttribute());
-        linkFilterAction(link);
+        linkFilterWrapper(link);
     }
-
-
-
 
     @Override
     public void sAllLinks() {
@@ -106,18 +109,22 @@ public class ScrapBessergold extends ScrapMetal {
         scrapLinks(searchUrlPlatinum);
         scrapLinks(searchUrlPalladium);
     }
+
     @Override
     public void sGoldLinks() {
         scrapLinks(searchUrlGold);
     }
+
     @Override
     public void sSilverLinks() {
         scrapLinks(searchUrlSilver);
     }
+
     @Override
     public void sPlatinumLinks() {
         scrapLinks(searchUrlPlatinum);
     }
+
     @Override
     public void sPalladiumLinks() {
         scrapLinks(searchUrlPalladium);

@@ -1,13 +1,8 @@
 package home.holymiko.ScrapApp.Server.Service;
 
-import home.holymiko.ScrapApp.Server.DTO.InvestmentDTO;
 import home.holymiko.ScrapApp.Server.DTO.PortfolioCreateDTO;
 import home.holymiko.ScrapApp.Server.DTO.PortfolioDTO;
 import home.holymiko.ScrapApp.Server.DTO.Portfolio_Investment_DTO;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
 import home.holymiko.ScrapApp.Server.Entity.Portfolio;
 import home.holymiko.ScrapApp.Server.Entity.Investment;
 import home.holymiko.ScrapApp.Server.Entity.Product;
@@ -16,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +31,11 @@ public class PortfolioService {
 
     /////// to DTO
 
+    /**
+     * Converts Portfolio's Investments to IDs
+     * @param portfolio
+     * @return Portfolio with collection of IDs
+     */
     private PortfolioDTO toPortfolioDTO(Portfolio portfolio) {
         return new PortfolioDTO(
                 portfolio.getId(),
@@ -44,29 +43,36 @@ public class PortfolioService {
                 portfolio.getBeginPrice(),
                 portfolio.getValue(),
                 portfolio.getYield(),
-                portfolio.getInvestments().stream().map(Investment::getId).collect(Collectors.toList())
+                portfolio.getInvestments()
+                        .stream()
+                        .map(Investment::getId)
+                        .collect(Collectors.toList())
         );
     }
 
     private Optional<PortfolioDTO> toPortfolioDTO(Optional<Portfolio> optionalPortfolio) {
-        if (optionalPortfolio.isEmpty())
+        if (optionalPortfolio.isEmpty()) {
             return Optional.empty();
+        }
         return Optional.of(toPortfolioDTO(optionalPortfolio.get()));
     }
 
+    /**
+     * Converts Portfolio's Investments to InvestmentDTOs
+     * @param portfolio
+     * @return Portfolio with collection of InvestmentDTOs
+     */
     private Portfolio_Investment_DTO toPortfolioInvestmentDTO(Portfolio portfolio) {
-        List<InvestmentDTO> investmentDTOList = new ArrayList<>();
-        for (Investment investment:
-                portfolio.getInvestments()) {
-            investmentDTOList.add(investmentService.toDTO(investment));
-        }
         return new Portfolio_Investment_DTO(
                 portfolio.getId(),
                 portfolio.getOwner(),
                 portfolio.getBeginPrice(),
                 portfolio.getValue(),
                 portfolio.getYield(),
-                investmentDTOList
+                portfolio.getInvestments()
+                        .stream()
+                        .map(investmentService::toDTO)
+                        .collect(Collectors.toList())
         );
     }
 
@@ -74,16 +80,22 @@ public class PortfolioService {
     ////// FIND AS DTO
 
     public List<PortfolioDTO> findAllAsPortfolioDTO() {
-        return portfolioRepository.findAll().stream().map(this::toPortfolioDTO).collect(Collectors.toList());
+        return portfolioRepository.findAll()
+                .stream()
+                .map(this::toPortfolioDTO)
+                .collect(Collectors.toList());
     }
 
     public List<Portfolio_Investment_DTO> findAllAsPortfolioInvestmentDTO() {
-        return portfolioRepository.findAll().stream().map(this::toPortfolioInvestmentDTO).collect(Collectors.toList());
+        return portfolioRepository.findAll()
+                .stream()
+                .map(this::toPortfolioInvestmentDTO)
+                .collect(Collectors.toList());
     }
 
-    public Optional<Portfolio_Investment_DTO> findByIdAsPortfolioInvestmentDTO(Long id) {
-        Optional<Portfolio> optionalPortfolio = portfolioRepository.findById(id);
-        return optionalPortfolio.map(this::toPortfolioInvestmentDTO);
+    public Optional<Portfolio_Investment_DTO> findByIdAsPortfolioInvestmentDTO(Long portfolioId) {
+        return portfolioRepository.findById(portfolioId)
+                .map(this::toPortfolioInvestmentDTO);
     }
 
 
@@ -109,17 +121,17 @@ public class PortfolioService {
         if(this.portfolioRepository.findByOwner("Carlos").isEmpty()) {
             Portfolio portfolio = new Portfolio(this.investmentService.saveCarlosInvestments(), "Carlos");
             this.portfolioRepository.save(portfolio);
-            update(portfolioRepository.findByOwner("Carlos").get().getId());
+            refresh(portfolioRepository.findByOwner("Carlos").get().getId());
         }
         if(this.portfolioRepository.findByOwner("Sanchez").isEmpty()) {
             Portfolio portfolio = new Portfolio(this.investmentService.saveSanchezInvestments(), "Sanchez");
             this.portfolioRepository.save(portfolio);
-            update(portfolioRepository.findByOwner("Sanchez").get().getId());
+            refresh(portfolioRepository.findByOwner("Sanchez").get().getId());
         }
         if(this.portfolioRepository.findByOwner("Eduardo").isEmpty()) {
             Portfolio portfolio = new Portfolio(this.investmentService.saveEduardoInvestments(), "Eduardo");
             this.portfolioRepository.save(portfolio);
-            update(portfolioRepository.findByOwner("Eduardo").get().getId());
+            refresh(portfolioRepository.findByOwner("Eduardo").get().getId());
         }
     }
 
@@ -147,18 +159,13 @@ public class PortfolioService {
     }
 
     @Transactional
-    public void update(long portfolioId) {
-        Optional<Portfolio> optionalPortfolio = portfolioRepository.findById(portfolioId);
-        if (optionalPortfolio.isPresent()) {
-            Portfolio portfolio = optionalPortfolio.get();
-            List<Investment> investmentList = portfolio.getInvestments();
-            for (Investment investment : investmentList) {
-                investment.setYield();
-            }
+    public void refresh(long portfolioId) {
+        portfolioRepository.findById(portfolioId).ifPresent(portfolio -> {
+            portfolio.getInvestments().forEach(Investment::setYield);
             portfolio.setBeginPrice();
             portfolio.setValue();
             portfolio.setYield();
-        }
+        });
     }
 
     @Transactional

@@ -1,6 +1,5 @@
 package home.holymiko.ScrapApp.Server.Scraps;
 
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
@@ -15,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ScrapMetal extends Scrap {
     protected final Dealer dealer;
@@ -43,22 +43,31 @@ public class ScrapMetal extends Scrap {
     /////// PRODUCT
 
     protected void productByLink(Link link) {
-        System.out.println("Error: This method should be overwritten");
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new AbstractMethodError("Abstract method is supposed to be overwritten");
     }
 
+    /**
+     * Switch: Save new product / Update price of existing product
+     * @param link of Product
+     */
     protected void productByOptionalLink(Link link) {
         List<Product> productList = this.productService.findByLink(link.getLink());
 
         if (productList.isEmpty()) {
             productByLink(link);
         } else {
-            if (productList.size() > 1)
+            if (productList.size() > 1) {
                 System.out.println("WARNING - More products with same link");
+            }
             priceByProduct(productList.get(0));
         }
-    }   // Saves new product or Updates price of existing
+    }
 
+    /**
+     * Performs ethical delay.
+     * Prints to console.
+     * @param links Optional links of Products
+     */
     public void productsByLinks(List<Link> links) {
         int i = 0;
         for (Link link : links) {
@@ -87,30 +96,25 @@ public class ScrapMetal extends Scrap {
         System.out.println("ScrapMetal Portfolio-Products");
         Optional<Portfolio> optionalPortfolio = portfolioService.findById(portfolioId);
         if (optionalPortfolio.isPresent()) {
-            Portfolio portfolio = optionalPortfolio.get();
-            List<Investment> investmentList = portfolio.getInvestments();
-            Set<Link> linkSet = new HashSet<>();                        // Donts need to scrap same product more times
-            for (Investment investment : investmentList) {
-                linkSet.add(investment.getProduct().getLink());
-            }
-            for (Link link : linkSet) {
-                productByOptionalLink(link);
-            }
-            sleep(DELAY);
-            portfolioService.update(portfolioId);
-            System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
-        } else
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No portfolio with such ID");
-//            System.out.println("No portfolio with such ID");
+            // Set prevents one Product to be scrapped more times
+            Set<Link> linkSet = optionalPortfolio.get().getInvestments()
+                    .stream()
+                    .map(investment -> investment.getProduct().getLink())
+                    .collect(Collectors.toSet());
 
+            productsByLinks(new ArrayList<>(linkSet));
+//            portfolioService.refresh(portfolioId);       // TODO Is this neccessary?
+            System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No portfolio with such ID");
+        }
     }
 
 
     /////// PRICE
 
     protected Price priceByProduct(Product product) {
-        System.out.println("Error: This method should be overwritten");
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new AbstractMethodError("Abstract method is supposed to be overwritten");
     }
 
     public void pricesByMetal(Metal metal){
@@ -152,12 +156,11 @@ public class ScrapMetal extends Scrap {
 
     /////// LINK
 
-    protected void scrapLink(HtmlElement htmlItem, String searchUrl){
-        HtmlAnchor itemAnchor = htmlItem.getFirstByXPath(".//strong[@class='product name product-item-name']/a");
-        Link link = new Link(dealer, itemAnchor.getHrefAttribute());
-        linkFilterAction(link);
-    }
-
+    /**
+     * Finds list of elements, based on class variable xPathProductList
+     * For each calls scrapLink abstract method.
+     * @param searchUrl URL of page, where the search will be done
+     */
     protected void scrapLinks(String searchUrl) {
         loadPage(searchUrl);
 
@@ -176,64 +179,74 @@ public class ScrapMetal extends Scrap {
         System.out.println("Number of links: " + linkService.findAll().size());
     }
 
+    protected void scrapLink(HtmlElement htmlItem, String searchUrl) {
+        throw new AbstractMethodError("Abstract method is supposed to be overwritten");
+    }
+
     protected void sAllLinks() {
+        throw new AbstractMethodError("Abstract method is supposed to be overwritten");
     }
 
     protected void sGoldLinks() {
-
+        throw new AbstractMethodError("Abstract method is supposed to be overwritten");
     }
 
     protected void sSilverLinks() {
-
+        throw new AbstractMethodError("Abstract method is supposed to be overwritten");
     }
 
     protected void sPlatinumLinks() {
-
+        throw new AbstractMethodError("Abstract method is supposed to be overwritten");
     }
 
     protected void sPalladiumLinks() {
-
+        throw new AbstractMethodError("Abstract method is supposed to be overwritten");
     }
 
 
     /////// EXTRACTOR
 
-    protected Producer producerExtractor(String name) {
-        name = name.toLowerCase();
-        if (name.contains("perth") || name.contains("rok") || name.contains("kangaroo") || name.contains("kookaburra") || name.contains("koala")) {
+    /**
+     * Extracts Producer from text
+     * @param text including producer's name
+     * @return Enum class Producer
+     */
+    protected Producer producerExtractor(String text) {
+        text = text.toLowerCase();
+        if (text.contains("perth") || text.contains("rok") || text.contains("kangaroo") || text.contains("kookaburra") || text.contains("koala")) {
             return Producer.PERTH_MINT;
-        } else if(name.contains("argor")) {
+        } else if(text.contains("argor")) {
             return Producer.ARGOR_HERAEUS;
-        } else if (name.contains("heraeus")) {
+        } else if (text.contains("heraeus")) {
             return Producer.HERAEUS;
-        } else if (name.contains("münze") || name.contains("wiener philharmoniker")) {
+        } else if (text.contains("münze") || text.contains("wiener philharmoniker")) {
             return Producer.MUNZE_OSTERREICH;
-        } else if (name.contains("rand") || name.contains("krugerrand")) {
+        } else if (text.contains("rand") || text.contains("krugerrand")) {
             return Producer.SOUTH_AFRICAN_MINT;
-        } else if (name.contains("pamp")) {
+        } else if (text.contains("pamp")) {
             return Producer.PAMP;
-        } else if (name.contains("valcambi")) {
+        } else if (text.contains("valcambi")) {
             return Producer.VALCAMBI;
-        } else if (name.contains("royal canadian mint") || name.contains("maple leaf") || name.contains("moose") || name.contains("golden eagle")) {
+        } else if (text.contains("royal canadian mint") || text.contains("maple leaf") || text.contains("moose") || text.contains("golden eagle")) {
             return Producer.ROYAL_CANADIAN_MINT;
-        } else if (name.contains("panda čína")) {
+        } else if (text.contains("panda čína")) {
             return Producer.CHINA_MINT;
-        } else if (name.contains("american eagle")) {
+        } else if (text.contains("american eagle")) {
             return Producer.UNITED_STATES_MINT;
-        } else if (name.contains("britannia") || name.contains("sovereign elizabeth")) {
+        } else if (text.contains("britannia") || text.contains("sovereign elizabeth")) {
             return Producer.ROYAL_MINT_UK;
-        } else if (name.contains("libertad") || name.contains("mexico") || name.contains("mexiko")) {
+        } else if (text.contains("libertad") || text.contains("mexico") || text.contains("mexiko")) {
             return Producer.MEXICO_MINT;
-        } else if (name.contains("slon") ) {
+        } else if (text.contains("slon") ) {
             return Producer.BAVARIAN_STATE_MINT;
-        } else if (name.contains("noble isle of man") ) {
+        } else if (text.contains("noble isle of man") ) {
             return Producer.POBJOY_MINT;
         } else {
-            if (name.contains("kanada")){
+            if (text.contains("kanada")){
                 return Producer.ROYAL_CANADIAN_MINT;
-            } else if (name.contains("austrálie")) {
+            } else if (text.contains("austrálie")) {
                 return Producer.PERTH_MINT;
-            } else if (name.contains("usa") || name.contains("american")) {
+            } else if (text.contains("usa") || text.contains("american")) {
                 return Producer.UNITED_STATES_MINT;
             }
         }
@@ -241,64 +254,80 @@ public class ScrapMetal extends Scrap {
         return Producer.UNKNOWN;
     }
 
-    protected Form formExtractor(String name) {
-        name = name.toLowerCase();
-        if(name.contains("mince") || name.contains("coin")){
+    /**
+     * Extracts Form from text
+     * @param text including name of form
+     * @return Enum class Form
+     */
+    protected Form formExtractor(String text) {
+        text = text.toLowerCase();
+        if(text.contains("mince") || text.contains("coin")){
             return Form.COIN;
         }
-        if(name.contains("bar") || name.contains("slitek")){
+        if(text.contains("bar") || text.contains("slitek")){
             return Form.BAR;
         }
         return Form.UNKNOWN;
     }
 
-    protected double weightExtractor(String name) {
+    /**
+     * Extracts weight from various patterns
+     * @param text including number with unit
+     * @return Grams
+     */
+    protected double weightExtractor(String text) {
 //            Pattern pattern = Pattern.compile("\\d*\\.?x?,?\\d+?g");
         Pattern pattern = Pattern.compile("\\d+x\\d+g");
-        Matcher matcher = pattern.matcher(name);
+        Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
             String s = matcher.group();
             s = s.replace("g", "");
             return Integer.parseInt(s.split("x")[0]) * Integer.parseInt(s.split("x")[1]);
         }
+
         pattern = Pattern.compile("\\d+\\.\\d+g");
-        matcher = pattern.matcher(name);
+        matcher = pattern.matcher(text);
         if (matcher.find()) {
             String s = matcher.group();
             s = s.replace("g", "");
             return Double.parseDouble(s);
         }
+
         pattern = Pattern.compile("\\d+,\\d+g");
-        matcher = pattern.matcher(name);
+        matcher = pattern.matcher(text);
         if (matcher.find()) {
             String s = matcher.group();
             s = s.replace("g", "");
             s = s.replace(",", ".");
             return Double.parseDouble(s);
         }
+
         pattern = Pattern.compile("\\d+g");
-        matcher = pattern.matcher(name);
+        matcher = pattern.matcher(text);
         if (matcher.find()) {
             String s = matcher.group();
             s = s.replace("g", "");
             return Double.parseDouble(s);
         }
+
         pattern = Pattern.compile("\\d+ g");
-        matcher = pattern.matcher(name);
+        matcher = pattern.matcher(text);
         if (matcher.find()) {
             String s = matcher.group();
-            s = s.replace("g", "");
+            s = s.replace(" g", "");
             return Double.parseDouble(s);
         }
+
         pattern = Pattern.compile("\\d+\\/\\d+ oz");
-        matcher = pattern.matcher(name);
+        matcher = pattern.matcher(text);
         if (matcher.find()) {
             String s = matcher.group();
             s = s.replace(" oz", "");
             return Double.parseDouble(s.split("/")[0]) / Double.parseDouble(s.split("/")[1]) * TROY_OUNCE;
         }
+
         pattern = Pattern.compile("\\d+ oz");
-        matcher = pattern.matcher(name);
+        matcher = pattern.matcher(text);
         if (matcher.find()) {
             String s = matcher.group();
             s = s.replace(" oz", "");
@@ -332,7 +361,7 @@ public class ScrapMetal extends Scrap {
         return false;
     }
 
-    protected void linkFilterAction(Link link) {
+    protected void linkFilterWrapper(Link link) {
         if ( !linkFilter( link.getLink() ) ) {
             return;
         }
@@ -350,11 +379,16 @@ public class ScrapMetal extends Scrap {
         System.out.println("WARNING - Duplicates in DB table LINK");
     }
 
-    protected String formatPrice(String price) {
-        price = price.replace("\u00a0", "");         // &nbsp;
-        price = price.replace(",", ".");             // -> Double
-        price = price.replace("Kč", "");
-        return price.replace(" ", "");
+    /**
+     * Extracts price from text format.
+     * @param text text including only number and currency
+     * @return price from text
+     */
+    protected Double formatPrice(String text) {
+        text = text.replace("\u00a0", "");         // &nbsp;
+        text = text.replace(",", ".");             // -> Double
+        text = text.replace("Kč", "");
+        return Double.parseDouble( text.replace(" ", "") );
     }
 
     protected void addPriceToProduct(Product product, Price price) {
