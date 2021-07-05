@@ -32,18 +32,18 @@ public class ScrapController {
     private LocalDateTime lastSilverLinks = LocalDateTime.now().minusYears(YEAR_DELAY);
     private LocalDateTime lastPlatinumLinks = LocalDateTime.now().minusYears(YEAR_DELAY);
     private LocalDateTime lastPalladiumLinks = LocalDateTime.now().minusYears(YEAR_DELAY);
+
     private boolean isRunning = false;
+
     private final ScrapBessergold scrapBessergold;
     private final ScrapZlataky scrapZlataky;
     private final ScrapSerenity scrapSerenity;
-    private final PortfolioService portfolioService;
 
     @Autowired
-    public ScrapController(ScrapBessergold scrapBessergold, ScrapZlataky scrapZlataky, ScrapSerenity scrapSerenity, PortfolioService portfolioService) {
+    public ScrapController(ScrapBessergold scrapBessergold, ScrapZlataky scrapZlataky, ScrapSerenity scrapSerenity) {
         this.scrapBessergold = scrapBessergold;
         this.scrapZlataky = scrapZlataky;
         this.scrapSerenity = scrapSerenity;
-        this.portfolioService = portfolioService;
     }
 
 
@@ -61,15 +61,19 @@ public class ScrapController {
 
         System.out.println("ScrapMetal all");
 
-        System.out.println("ScrapMetal all links");
+        System.out.println("ScrapMetal all bessergold links");
         this.scrapBessergold.sAllLinks();
+        System.out.println("ScrapMetal all zlataky links");
+        this.scrapZlataky.sAllLinks();
         lastAllLinks = LocalDateTime.now();
 
-        System.out.println("ScrapMetal all products");
+        System.out.println("ScrapMetal all bessergold products");
         this.scrapBessergold.allProducts();
+        System.out.println("ScrapMetal all zlataky products");
+        this.scrapZlataky.allProducts();
         lastAll = LocalDateTime.now();
 
-        this.portfolioService.saveInitPortfolios();
+//        this.portfolioService.saveInitPortfolios();
 
         isRunning = false;
     }

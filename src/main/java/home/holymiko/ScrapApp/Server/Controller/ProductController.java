@@ -19,12 +19,10 @@ import java.util.Optional;
 public class ProductController {
 
     private final ProductService productService;
-    private final ScrapBessergold scrapBessergold;
 
     @Autowired
-    public ProductController(ProductService productService, ScrapBessergold scrapBessergold) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.scrapBessergold = scrapBessergold;
     }
 
     /////// GET

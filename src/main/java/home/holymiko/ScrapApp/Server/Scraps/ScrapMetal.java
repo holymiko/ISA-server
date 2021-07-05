@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,12 +31,15 @@ public class ScrapMetal extends Scrap {
     protected final String searchUrlPalladium;
 
     private static final long DELAY = 700;
-    private static final double OUNCE = 28.349523125;
     private static final double TROY_OUNCE = 31.1034768;
+    private static final double OUNCE = 28.349523125;
 
     private final String xPathProductList;
+    private final String xPathProductName;
+    private final String xPathBuyPrice;
+    private final String xPathRedemptionPrice;
 
-    public ScrapMetal(Dealer dealer, LinkService linkService, PriceService priceService, PortfolioService portfolioService, ProductService productService, InvestmentService investmentService, String searchUrlGold, String searchUrlSilver, String searchUrlPlatinum, String searchUrlPalladium, String xPathProductList) {
+    public ScrapMetal(Dealer dealer, LinkService linkService, PriceService priceService, PortfolioService portfolioService, ProductService productService, InvestmentService investmentService, String searchUrlGold, String searchUrlSilver, String searchUrlPlatinum, String searchUrlPalladium, String xPathProductList, String xPathProductName, String xPathBuyPrice, String xPathRedemptionPrice) {
         super();
         this.dealer = dealer;
         this.linkService = linkService;
@@ -48,12 +52,37 @@ public class ScrapMetal extends Scrap {
         this.searchUrlPlatinum = searchUrlPlatinum;
         this.searchUrlPalladium = searchUrlPalladium;
         this.xPathProductList = xPathProductList;
+        this.xPathProductName = xPathProductName;
+        this.xPathBuyPrice = xPathBuyPrice;
+        this.xPathRedemptionPrice = xPathRedemptionPrice;
     }
 
     /////// PRODUCT
 
     protected void productByLink(Link link) {
-        throw new AbstractMethodError("Abstract method is supposed to be overwritten");
+        Product product;
+
+        loadPage(link.getLink());
+        HtmlElement htmlName = page.getFirstByXPath(xPathProductName);
+        String name = htmlName.asText();
+        double weight = weightExtractor(name);
+        Form form = formExtractor(name);
+        Producer producer = producerExtractor(name);
+
+        if (name.contains("Zlat")) {
+            product = new Product(producer, form, Metal.GOLD, name, weight, link, null, new ArrayList<>());
+        } else if (name.contains("Stříbr")) {
+            product = new Product(producer, form, Metal.SILVER, name, weight, link, null, new ArrayList<>());
+        } else if (name.contains("Platin")) {
+            product = new Product(producer, form, Metal.PLATINUM, name, weight, link, null, new ArrayList<>());
+        } else if (name.contains("Pallad")) {
+            product = new Product(producer, form, Metal.PALLADIUM, name, weight, link, null, new ArrayList<>());
+        } else {
+            product = new Product(producer, form, Metal.UNKNOWN, name, weight, link, null, new ArrayList<>());
+        }
+
+        priceByProductScrap(product);
+        System.out.println("Product saved");
     }
 
     /**
@@ -69,7 +98,7 @@ public class ScrapMetal extends Scrap {
             if (productList.size() > 1) {
                 System.out.println("WARNING - More products with same link");
             }
-            priceByProduct(productList.get(0));
+            priceByProductScrap(productList.get(0));
         }
     }
 
@@ -120,15 +149,46 @@ public class ScrapMetal extends Scrap {
 
     /////// PRICE
 
-    protected Price priceByProduct(Product product) {
-        throw new AbstractMethodError("Abstract method is supposed to be overwritten");
+    /**
+     * Scraps new price for already known product
+     * @param product already saved in DB
+     * @return new price
+     */
+    protected Price priceByProductScrap(Product product) {
+        loadPage(product.getLink().getLink());
+
+        HtmlElement htmlBuyPrice = page.getFirstByXPath(xPathBuyPrice);
+        HtmlElement htmlRedemptionPrice = page.getFirstByXPath(xPathRedemptionPrice);
+
+        Double buyPrice = 0.0;
+        Double redemptionPrice = 0.0;
+        try {
+            buyPrice = formatPrice(htmlBuyPrice.asText());
+        } catch (Exception e) {
+            System.out.println("WARNING - Kupni cena = 0");
+//            e.printStackTrace();
+        }
+        try {
+            redemptionPrice = formatPrice(hmtlRedemptionPriceToText(htmlRedemptionPrice));
+        } catch (Exception e) {
+            System.out.println("WARNING - Vykupni cena = 0");
+//            e.printStackTrace();
+        }
+        Price newPrice = new Price(LocalDateTime.now(), buyPrice, redemptionPrice, product.getGrams());
+        addPriceToProduct(product, newPrice);
+        System.out.println("> New price saved");
+        return newPrice;
     }
 
+    /**
+     * Scraps prices by metal from all dealers
+     * @param metal
+     */
     public void pricesByMetal(Metal metal){
         System.out.println("ScrapMetal pricesByMetal");
         List<Product> productList = this.productService.findByMetal(metal);
         for (Product product : productList) {
-            priceByProduct(product);
+            priceByProductScrap(product);
             printAndSleep(DELAY, productList.size());
         }
         printerCounter = 0;
@@ -144,7 +204,7 @@ public class ScrapMetal extends Scrap {
                 printerCounter++;
                 continue;
             }
-            priceByProduct(optionalProduct.get());
+            priceByProductScrap(optionalProduct.get());
             printAndSleep(DELAY, productIds.size());
         }
         printerCounter = 0;
@@ -243,14 +303,12 @@ public class ScrapMetal extends Scrap {
             return Producer.BAVARIAN_STATE_MINT;
         } else if (text.contains("noble isle of man") ) {
             return Producer.POBJOY_MINT;
-        } else {
-            if (text.contains("kanada")){
-                return Producer.ROYAL_CANADIAN_MINT;
-            } else if (text.contains("austrálie")) {
-                return Producer.PERTH_MINT;
-            } else if (text.contains("usa") || text.contains("american")) {
-                return Producer.UNITED_STATES_MINT;
-            }
+        } else if (text.contains("kanada")){
+            return Producer.ROYAL_CANADIAN_MINT;
+        } else if (text.contains("austrálie")) {
+            return Producer.PERTH_MINT;
+        } else if (text.contains("usa") || text.contains("american")) {
+            return Producer.UNITED_STATES_MINT;
         }
 
         return Producer.UNKNOWN;
@@ -278,7 +336,9 @@ public class ScrapMetal extends Scrap {
      * @return Grams
      */
     protected double weightExtractor(String text) {
-//            Pattern pattern = Pattern.compile("\\d*\\.?x?,?\\d+?g");
+//        text = text.replace("\u00a0", "");         // &nbsp;
+        text = text.toLowerCase(Locale.ROOT);
+
         Pattern pattern = Pattern.compile("\\d+x\\d+g");
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
@@ -334,6 +394,14 @@ public class ScrapMetal extends Scrap {
             String s = matcher.group();
             s = s.replace(" oz", "");
             return Double.parseDouble(s) * TROY_OUNCE;
+        }
+
+        pattern = Pattern.compile("\\d+ kg");
+        matcher = pattern.matcher(text);
+        if (matcher.find()) {
+            String s = matcher.group();
+            s = s.replace(" kg", "");
+            return Double.parseDouble(s) * 1000;
         }
 
         return -1;
@@ -402,5 +470,8 @@ public class ScrapMetal extends Scrap {
         this.productService.save(product);
     }
 
+    protected String hmtlRedemptionPriceToText(HtmlElement htmlRedemptionPrice) {
+        return htmlRedemptionPrice.asText();
+    }
 
 }

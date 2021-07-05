@@ -53,7 +53,14 @@ public class ProductService {
     }
 
     public List<ProductDTO> findAllAsDTO() {
-        return productRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+        return productRepository.findAll()
+                .stream()
+                .filter(product ->
+                    product.getGrams() >= 0 &&
+                    product.getLatestPrice().getPrice() >= 0
+                )
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     public List<ProductDTO> findByMetalAsDTO(Metal metal) {
@@ -81,14 +88,6 @@ public class ProductService {
 
     public List<Product> findByMetal(Metal metal) {
         return this.productRepository.findProductsByMetal(metal);
-    }
-
-    public List<Product> findSilverProducts() {
-        return this.productRepository.findProductsByMetal(Metal.SILVER);
-    }
-
-    public List<Product> findPlatinumProducts() {
-        return this.productRepository.findProductsByMetal(Metal.PLATINUM);
     }
 
     public List<Product> findProducts(List<Long> investmentIds) {
