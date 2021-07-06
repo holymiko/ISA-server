@@ -157,19 +157,16 @@ public class ScrapMetal extends Scrap {
     protected Price priceByProductScrap(Product product) {
         loadPage(product.getLink().getLink());
 
-        HtmlElement htmlBuyPrice = page.getFirstByXPath(xPathBuyPrice);
-        HtmlElement htmlRedemptionPrice = page.getFirstByXPath(xPathRedemptionPrice);
-
         Double buyPrice = 0.0;
         Double redemptionPrice = 0.0;
         try {
-            buyPrice = formatPrice(htmlBuyPrice.asText());
+            buyPrice = formatPrice(((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText());
         } catch (Exception e) {
             System.out.println("WARNING - Kupni cena = 0");
 //            e.printStackTrace();
         }
         try {
-            redemptionPrice = formatPrice(hmtlRedemptionPriceToText(htmlRedemptionPrice));
+            redemptionPrice = formatPrice(hmtlRedemptionPriceToText(page.getFirstByXPath(xPathRedemptionPrice)));
         } catch (Exception e) {
             System.out.println("WARNING - Vykupni cena = 0");
 //            e.printStackTrace();
@@ -223,17 +220,14 @@ public class ScrapMetal extends Scrap {
     protected void scrapLinks(String searchUrl) {
         loadPage(searchUrl);
 
-        List<HtmlElement> item = page.getByXPath(xPathProductList);
-        if (item.isEmpty()) {
+        List<HtmlElement> elements = page.getByXPath(xPathProductList);
+        if (elements.isEmpty()) {
             System.out.println("No products here");
             return;
-        } else {
-            System.out.println(item.size()+" HTMLElements to scrap");
         }
+        System.out.println(elements.size()+" HTMLElements to scrap");
 
-        for (HtmlElement htmlItem : item) {
-            scrapLink(htmlItem, searchUrl);
-        }
+        elements.forEach( element -> scrapLink(element, searchUrl) );
 
         System.out.println("Number of links: " + linkService.findAll().size());
     }
@@ -470,8 +464,8 @@ public class ScrapMetal extends Scrap {
         this.productService.save(product);
     }
 
-    protected String hmtlRedemptionPriceToText(HtmlElement htmlRedemptionPrice) {
-        return htmlRedemptionPrice.asText();
+    protected String hmtlRedemptionPriceToText(HtmlElement redemptionPriceHtml) {
+        return redemptionPriceHtml.asText();
     }
 
 }

@@ -48,8 +48,8 @@ public class ScrapBessergold extends ScrapMetal {
     /////// PRICE
 
     @Override
-    protected String hmtlRedemptionPriceToText(HtmlElement htmlRedemptionPrice) {
-        return htmlRedemptionPrice.asText().split(":")[1];          // Aktuální výkupní cena (bez DPH): xxxx,xx Kč
+    protected String hmtlRedemptionPriceToText(HtmlElement redemptionPriceHtml) {
+        return redemptionPriceHtml.asText().split(":")[1];          // Aktuální výkupní cena (bez DPH): xxxx,xx Kč
     }
 
 
