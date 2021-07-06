@@ -58,13 +58,13 @@ public class StockService {
 
     @Transactional
     public void save(Stock stock) {
-        if( this.stockRepository.findByTicker(stock.getTicker()).isPresent() ) {
-            if( !(stock.getTicker().getTickerState().equals(TickerState.GOOD)) ) {
-                System.out.println("\nWARNING:\nStock: "+stock.getName()+"  and Ticker: "+stock.getTicker().getTicker()+" are no synchronized\n");
-            }
-            return;
-        }
+        this.stockRepository.deleteByTicker(stock.getTicker());
         this.stockRepository.save(stock);
+    }
+
+    @Transactional
+    public void deleteByTicker(Ticker ticker) {
+        this.stockRepository.deleteByTicker(ticker);
     }
 
 }

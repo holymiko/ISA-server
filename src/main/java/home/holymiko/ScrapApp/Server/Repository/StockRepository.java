@@ -4,6 +4,7 @@ import home.holymiko.ScrapApp.Server.Entity.Enum.GrahamGrade;
 import home.holymiko.ScrapApp.Server.Entity.Enum.TickerState;
 import home.holymiko.ScrapApp.Server.Entity.Stock;
 import home.holymiko.ScrapApp.Server.Entity.Ticker;
+import org.eclipse.jetty.util.DateCache;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +18,5 @@ public interface StockRepository extends JpaRepository<Stock, Integer> {
     Optional<Stock> findByTicker(Ticker ticker);
     List<Stock>  findByRatingScore(Double x);
     List<Stock> findByCurrency(String x);
+    void deleteByTicker(Ticker ticker);
 }

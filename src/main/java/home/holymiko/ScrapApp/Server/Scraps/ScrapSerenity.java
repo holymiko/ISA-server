@@ -14,11 +14,10 @@ import java.util.*;
 
 @Component
 public class ScrapSerenity extends Scrap {
-    private static final long MIN_TICKER_LENGTH = 1;
-    private static final long MAX_TICKER_LENGTH = 50;
     private static final double MIN_RATING_SCORE = 6.5;
     private static final long DELAY = 700;
     private static final String BASE_URL = "https://www.serenitystocks.com/stock/";
+
     private final TickerService tickerService;
     private final StockService stockService;
 
@@ -28,17 +27,82 @@ public class ScrapSerenity extends Scrap {
         this.tickerService = tickerService;
         this.stockService = stockService;
 
-//        sTickers();
+        run();
     }
 
 
-    public void sTickers() {
-        printStatus();
+    public void run() {
+        printTotalStatus();
 //        tickerService.exportTickers();
-//        scrapTicker();
-//        readFile3("txt/YahooStockTickers.txt");
+//        scrapTickersByTickerState(TickerState.GOOD);
+//        tickerService.loadTickers();
 //        fixer("$");
-//        printStatus();
+    }
+
+    public void scrapTickersByTickerState(TickerState tickerState) {
+        System.out.println("Trying to scrap "+tickerState+" tickers");
+        printTotalStatus();
+        int i = 0;
+
+        List<Ticker> tickers = this.tickerService.findByTickerState(tickerState);
+
+        for (Ticker ticker : tickers) {
+
+            if( !loadPage(BASE_URL + ticker.getTicker().toLowerCase(Locale.ROOT) )) {
+                this.tickerService.update(ticker, TickerState.NOTFOUND);
+                System.out.println(">"+ticker.getTicker()+"<");
+            }
+            else {
+                HtmlElement htmlElement = page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div[12]/div/div/h3/span");
+                double ratingScore = Double.parseDouble( htmlElement.asText().replace("Rating Score = ", ""));
+                if (ratingScore >= MIN_RATING_SCORE) {
+                    this.tickerService.update(ticker, TickerState.GOOD);
+                    scrapStock(ticker, ratingScore);
+                } else {
+                    this.stockService.deleteByTicker(ticker);
+                    this.tickerService.update(ticker, TickerState.BAD);
+                    System.out.println(">"+ticker.getTicker()+"< Bad");
+                }
+            }
+
+            sleep(DELAY);
+            i++;
+            printScrapingStatus(i, tickers.size());
+        }
+        printTotalStatus();
+    }
+
+    public void scrapStock(final Ticker ticker, final Double ratingScore) {
+        List<Double> ratings = new ArrayList<>();          // Graham Ratings
+        List<Double> results = new ArrayList<>();          // Graham Results
+        GrahamGrade grade = null;
+
+        String header = ((HtmlElement) page.getFirstByXPath("/html/body/div[2]/div/section/h1")).asText();
+        String currency = ((DomText) page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div[9]/div/div/text()")).asText();
+
+        for(int i = 2; i <= 11; i++) {
+            ratings.add( elementToDouble( page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div["+i+"]/div[2]/div")) );
+        }
+        for(int i = 2; i <= 8; i++) {
+            HtmlElement htmlElement = page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div["+i+"]/div[2]/div");
+            if(i == 5) {
+                grade = formatGrade(htmlElement);
+                continue;
+            }
+            results.add( elementToDouble(htmlElement) );
+        }
+
+//        printScrapStock(header, ratingScore, ratings, results, currency);
+        printScrapStockShort(header, ratingScore, results.get(5), currency);
+
+        Stock stock = new Stock(
+                header, ticker, grade, currency, ratingScore,
+                ratings.get(0), ratings.get(1), ratings.get(2), ratings.get(3),
+                ratings.get(4), ratings.get(5), ratings.get(6), ratings.get(7),
+                results.get(0), results.get(1), results.get(2),
+                results.get(3), results.get(4), results.get(5)
+        );
+        this.stockService.save(stock);
     }
 
     private void fixer(String target) {
@@ -57,99 +121,34 @@ public class ScrapSerenity extends Scrap {
         System.out.println("Total saved: "+i);
     }
 
-    public void scrapTicker() {
-        List<Ticker> tickerList = this.tickerService.findByTickerState(TickerState.UNKNOWN);
-        int i = 0;
-        for (Ticker ticker: tickerList) {
-            if(ticker.getTicker().length() < MIN_TICKER_LENGTH || ticker.getTicker().length() > MAX_TICKER_LENGTH){
-                continue;
-            }
-            if(ticker.getTicker().contains(".")/**/||ticker.getTicker().contains("TWO")){
-                continue;
-            }
-            if( !loadPage(BASE_URL+ticker.getTicker().toLowerCase(Locale.ROOT) )) {
-                this.tickerService.update(ticker, TickerState.NOTFOUND);
-                System.out.println(">"+ticker.getTicker()+"<");
-            } else {
-                HtmlElement htmlElement = page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div[12]/div/div/h3/span");
-                if (Double.parseDouble(htmlElement.asText().split(" = ")[1]) >= MIN_RATING_SCORE) {
-                    this.tickerService.update(ticker, TickerState.GOOD);
-                    scrapStock(ticker);
-                } else {
-                    this.tickerService.update(ticker, TickerState.BAD);
-                    System.out.println(">"+ticker.getTicker()+"< Bad");
-                }
-            }
-
-            sleep(DELAY);
-
-            i++;
-            if(i >= 50){
-                i = 0;
-                printStatus();
-            }
-        }
-        printStatus();
-    }
-
-    public void scrapStock(Ticker ticker) {
-        HtmlElement headerElement = page.getFirstByXPath("/html/body/div[2]/div/section/h1");
-        List<HtmlElement> htmlElementList = new ArrayList<>();          // Graham Ratings
-        List<HtmlElement> htmlElementList2 = new ArrayList<>();         // Graham Result
-
-        for(int i = 2; i <= 11; i++) {
-            htmlElementList.add(page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div["+i+"]/div[2]/div"));
-        }
-        HtmlElement ratingScore = page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div[12]/div/div/h3/span");
-
-        for(int i = 2; i <= 4; i++) {
-            htmlElementList2.add(page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div["+i+"]/div[2]/div"));
-        }
-        HtmlElement htmlGrade = page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div[5]/div[2]/div");
-        for(int i = 6; i <= 8; i++) {
-            htmlElementList2.add(page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div["+i+"]/div[2]/div"));
-        }
-        DomText currency = page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div[9]/div/div/text()");
-
-
-        List<Double> doubles = new ArrayList<>();          // Graham Ratings
-        List<Double> doubles1 = new ArrayList<>();         // Graham Result
-        for (HtmlElement element: htmlElementList) {
-            doubles.add( Double.parseDouble( formatString(element) ));
-        }
-        for (HtmlElement element: htmlElementList2) {
-            doubles1.add( Double.parseDouble( formatString(element) ));
-        }
-
-        String header = headerElement.asText();
-        Double rating = Double.parseDouble( ratingScore.asText().replace("Rating Score = ", ""));
-
+    private static void printScrapStock(final String header, final Double ratingScore, final List<Double> ratings, final List<Double> results, final String currency) {
         System.out.println(header);
-        for (Double x: doubles) {
+        for (Double x : ratings) {
             System.out.println(x);
         }
-        System.out.println("Rating Score = "+rating);
-        for (Double x: doubles1) {
+        System.out.println("Rating Score = "+ratingScore);
+        for (Double x : results) {
             System.out.println(x);
         }
-        System.out.println(currency.asText()+'\n');
-
-        Stock stock = new Stock(
-                header, ticker, formatGrade(htmlGrade), currency.asText(), rating,
-                doubles.get(0), doubles.get(1), doubles.get(2), doubles.get(3),
-                doubles.get(4), doubles.get(5), doubles.get(6), doubles.get(7),
-                doubles1.get(0), doubles1.get(1), doubles1.get(2), doubles1.get(3), doubles1.get(4), doubles1.get(5)
-        );
-        this.stockService.save(stock);
+        System.out.println(currency);
+        System.out.println();
     }
 
-    public void printStatus() {
-        double total = tickerService.findAll().size();
-        double good = tickerService.findByTickerState(TickerState.GOOD).size();
-        double bad = tickerService.findByTickerState(TickerState.BAD).size();
-        double notfound = tickerService.findByTickerState(TickerState.NOTFOUND).size();
-        double unknown = tickerService.findByTickerState(TickerState.UNKNOWN).size();
-        DecimalFormat df = new DecimalFormat("###.###");
+    private static void printScrapStockShort(final String header, final Double ratingScore, final Double intrinsicValue, final String currency) {
+        System.out.println(header);
+        System.out.println("  Rating Score = "+ratingScore);
+        System.out.println("  Intrinsic Value = "+intrinsicValue);
+        System.out.println("  "+currency);
+        System.out.println();
+    }
+
+    private void printTotalStatus() {
+        final double total = tickerService.findAll().size();
+        final double good = tickerService.findByTickerState(TickerState.GOOD).size();
+        final double bad = tickerService.findByTickerState(TickerState.BAD).size();
+        final double notfound = tickerService.findByTickerState(TickerState.NOTFOUND).size();
+        final double unknown = tickerService.findByTickerState(TickerState.UNKNOWN).size();
+        final DecimalFormat df = new DecimalFormat("###.###");
 
         System.out.println();
         System.out.println("Good: "+Math.round(good)+"  "+df.format(good*100/(notfound+bad+good))+"%");
@@ -161,14 +160,22 @@ public class ScrapSerenity extends Scrap {
         System.out.println();
     }
 
-    public String formatString(HtmlElement element) {
+    private static void printScrapingStatus(int i, int size) {
+        if(i % 50 == 0) {
+            System.out.println();
+            System.out.println(i+"/"+size);
+            System.out.println();
+        }
+    }
+
+    private static Double elementToDouble(final HtmlElement element) {
         String result = element.asText();
         result = result.replace("%", "");
         result = result.replace(",", "");
-        return result;
+        return Double.parseDouble(result);
     }
 
-    public GrahamGrade formatGrade(HtmlElement element) {
+    private static GrahamGrade formatGrade(final HtmlElement element) {
         switch (element.asText().toLowerCase(Locale.ROOT)) {
             case "enterprising" -> { return GrahamGrade.ENTERPRISING; }
             case "defensive" -> { return GrahamGrade.DEFENSIVE; }
