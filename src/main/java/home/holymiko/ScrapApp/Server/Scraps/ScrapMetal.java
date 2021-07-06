@@ -13,8 +13,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ScrapMetal extends Scrap {
@@ -31,8 +29,7 @@ public class ScrapMetal extends Scrap {
     protected final String searchUrlPalladium;
 
     private static final long DELAY = 700;
-    private static final double TROY_OUNCE = 31.1034768;
-    private static final double OUNCE = 28.349523125;
+
 
     private final String xPathProductList;
     private final String xPathProductName;
@@ -59,23 +56,23 @@ public class ScrapMetal extends Scrap {
 
     /////// PRODUCT
 
-    protected void productByLink(Link link) {
-        Product product;
-
+    protected void productByLink(final Link link) {
         loadPage(link.getLink());
-        HtmlElement htmlName = page.getFirstByXPath(xPathProductName);
-        String name = htmlName.asText();
-        double weight = weightExtractor(name);
-        Form form = formExtractor(name);
-        Producer producer = producerExtractor(name);
 
-        if (name.contains("Zlat")) {
+        Product product;
+        final String name = ((HtmlElement) page.getFirstByXPath(xPathProductName)).asText();
+        final String nameLowerCase = name.toLowerCase(Locale.ROOT);
+        final double weight = Extractor.weightExtractor(name);
+        final Form form = Extractor.formExtractor(name);
+        final Producer producer = Extractor.producerExtractor(name);
+
+        if (nameLowerCase.contains("zlat")) {
             product = new Product(producer, form, Metal.GOLD, name, weight, link, null, new ArrayList<>());
-        } else if (name.contains("Stříbr")) {
+        } else if (nameLowerCase.contains("stříbr")) {
             product = new Product(producer, form, Metal.SILVER, name, weight, link, null, new ArrayList<>());
-        } else if (name.contains("Platin")) {
+        } else if (nameLowerCase.contains("platin")) {
             product = new Product(producer, form, Metal.PLATINUM, name, weight, link, null, new ArrayList<>());
-        } else if (name.contains("Pallad")) {
+        } else if (nameLowerCase.contains("pallad")) {
             product = new Product(producer, form, Metal.PALLADIUM, name, weight, link, null, new ArrayList<>());
         } else {
             product = new Product(producer, form, Metal.UNKNOWN, name, weight, link, null, new ArrayList<>());
@@ -89,17 +86,14 @@ public class ScrapMetal extends Scrap {
      * Switch: Save new product / Update price of existing product
      * @param link of Product
      */
-    protected void productByOptionalLink(Link link) {
-        List<Product> productList = this.productService.findByLink(link.getLink());
+    protected void productByOptionalLink(final Link link) {
+        Optional<Product> optionalProduct = this.productService.findByLink(link.getLink());
 
-        if (productList.isEmpty()) {
+        if (optionalProduct.isEmpty()) {
             productByLink(link);
-        } else {
-            if (productList.size() > 1) {
-                System.out.println("WARNING - More products with same link");
-            }
-            priceByProductScrap(productList.get(0));
+            return;
         }
+        priceByProductScrap(optionalProduct.get());
     }
 
     /**
@@ -107,7 +101,7 @@ public class ScrapMetal extends Scrap {
      * Prints to console.
      * @param links Optional links of Products
      */
-    public void productsByOptionalLinks(List<Link> links) {
+    public void productsByOptionalLinks(final List<Link> links) {
         for (Link link : links) {
             productByOptionalLink(link);
             printAndSleep(DELAY, links.size());
@@ -157,16 +151,16 @@ public class ScrapMetal extends Scrap {
     protected Price priceByProductScrap(Product product) {
         loadPage(product.getLink().getLink());
 
-        Double buyPrice = 0.0;
-        Double redemptionPrice = 0.0;
+        double buyPrice = 0.0;
+        double redemptionPrice = 0.0;
         try {
-            buyPrice = formatPrice(((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText());
+            buyPrice = Extractor.priceExtractor(((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText());
         } catch (Exception e) {
             System.out.println("WARNING - Kupni cena = 0");
 //            e.printStackTrace();
         }
         try {
-            redemptionPrice = formatPrice(hmtlRedemptionPriceToText(page.getFirstByXPath(xPathRedemptionPrice)));
+            redemptionPrice = Extractor.priceExtractor(redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice)));
         } catch (Exception e) {
             System.out.println("WARNING - Vykupni cena = 0");
 //            e.printStackTrace();
@@ -179,7 +173,7 @@ public class ScrapMetal extends Scrap {
 
     /**
      * Scraps prices by metal from all dealers
-     * @param metal
+     * @param metal Enum
      */
     public void pricesByMetal(Metal metal){
         System.out.println("ScrapMetal pricesByMetal");
@@ -221,15 +215,12 @@ public class ScrapMetal extends Scrap {
         loadPage(searchUrl);
 
         List<HtmlElement> elements = page.getByXPath(xPathProductList);
-        if (elements.isEmpty()) {
-            System.out.println("No products here");
-            return;
-        }
+
         System.out.println(elements.size()+" HTMLElements to scrap");
 
         elements.forEach( element -> scrapLink(element, searchUrl) );
 
-        System.out.println("Number of links: " + linkService.findAll().size());
+        System.out.println("Total number of links: " + linkService.findAll().size());
     }
 
     protected void scrapLink(HtmlElement htmlItem, String searchUrl) {
@@ -260,151 +251,10 @@ public class ScrapMetal extends Scrap {
     }
 
 
-    /////// EXTRACTOR
-
-    /**
-     * Extracts Producer from text
-     * @param text including producer's name
-     * @return Enum class Producer
-     */
-    protected Producer producerExtractor(String text) {
-        text = text.toLowerCase();
-        if (text.contains("perth") || text.contains("rok") || text.contains("kangaroo") || text.contains("kookaburra") || text.contains("koala")) {
-            return Producer.PERTH_MINT;
-        } else if(text.contains("argor")) {
-            return Producer.ARGOR_HERAEUS;
-        } else if (text.contains("heraeus")) {
-            return Producer.HERAEUS;
-        } else if (text.contains("münze") || text.contains("wiener philharmoniker")) {
-            return Producer.MUNZE_OSTERREICH;
-        } else if (text.contains("rand") || text.contains("krugerrand")) {
-            return Producer.SOUTH_AFRICAN_MINT;
-        } else if (text.contains("pamp")) {
-            return Producer.PAMP;
-        } else if (text.contains("valcambi")) {
-            return Producer.VALCAMBI;
-        } else if (text.contains("royal canadian mint") || text.contains("maple leaf") || text.contains("moose") || text.contains("golden eagle")) {
-            return Producer.ROYAL_CANADIAN_MINT;
-        } else if (text.contains("panda čína")) {
-            return Producer.CHINA_MINT;
-        } else if (text.contains("american eagle")) {
-            return Producer.UNITED_STATES_MINT;
-        } else if (text.contains("britannia") || text.contains("sovereign elizabeth")) {
-            return Producer.ROYAL_MINT_UK;
-        } else if (text.contains("libertad") || text.contains("mexico") || text.contains("mexiko")) {
-            return Producer.MEXICO_MINT;
-        } else if (text.contains("slon") ) {
-            return Producer.BAVARIAN_STATE_MINT;
-        } else if (text.contains("noble isle of man") ) {
-            return Producer.POBJOY_MINT;
-        } else if (text.contains("kanada")){
-            return Producer.ROYAL_CANADIAN_MINT;
-        } else if (text.contains("austrálie")) {
-            return Producer.PERTH_MINT;
-        } else if (text.contains("usa") || text.contains("american")) {
-            return Producer.UNITED_STATES_MINT;
-        }
-
-        return Producer.UNKNOWN;
-    }
-
-    /**
-     * Extracts Form from text
-     * @param text including name of form
-     * @return Enum class Form
-     */
-    protected Form formExtractor(String text) {
-        text = text.toLowerCase();
-        if(text.contains("mince") || text.contains("coin")){
-            return Form.COIN;
-        }
-        if(text.contains("bar") || text.contains("slitek")){
-            return Form.BAR;
-        }
-        return Form.UNKNOWN;
-    }
-
-    /**
-     * Extracts weight from various patterns
-     * @param text including number with unit
-     * @return Grams
-     */
-    protected double weightExtractor(String text) {
-//        text = text.replace("\u00a0", "");         // &nbsp;
-        text = text.toLowerCase(Locale.ROOT);
-
-        Pattern pattern = Pattern.compile("\\d+x\\d+g");
-        Matcher matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            String s = matcher.group();
-            s = s.replace("g", "");
-            return Integer.parseInt(s.split("x")[0]) * Integer.parseInt(s.split("x")[1]);
-        }
-
-        pattern = Pattern.compile("\\d+\\.\\d+g");
-        matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            String s = matcher.group();
-            s = s.replace("g", "");
-            return Double.parseDouble(s);
-        }
-
-        pattern = Pattern.compile("\\d+,\\d+g");
-        matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            String s = matcher.group();
-            s = s.replace("g", "");
-            s = s.replace(",", ".");
-            return Double.parseDouble(s);
-        }
-
-        pattern = Pattern.compile("\\d+g");
-        matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            String s = matcher.group();
-            s = s.replace("g", "");
-            return Double.parseDouble(s);
-        }
-
-        pattern = Pattern.compile("\\d+ g");
-        matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            String s = matcher.group();
-            s = s.replace(" g", "");
-            return Double.parseDouble(s);
-        }
-
-        pattern = Pattern.compile("\\d+\\/\\d+ oz");
-        matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            String s = matcher.group();
-            s = s.replace(" oz", "");
-            return Double.parseDouble(s.split("/")[0]) / Double.parseDouble(s.split("/")[1]) * TROY_OUNCE;
-        }
-
-        pattern = Pattern.compile("\\d+ oz");
-        matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            String s = matcher.group();
-            s = s.replace(" oz", "");
-            return Double.parseDouble(s) * TROY_OUNCE;
-        }
-
-        pattern = Pattern.compile("\\d+ kg");
-        matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            String s = matcher.group();
-            s = s.replace(" kg", "");
-            return Double.parseDouble(s) * 1000;
-        }
-
-        return -1;
-    }
-
 
     /////// FILTER
 
-    protected boolean linkFilter(String link) {
+    protected static boolean linkFilter(String link) {
         if (link.contains("etuje")) {
             System.out.println("Link vyřazen: etuje - " + link);
             return false;
@@ -425,7 +275,7 @@ public class ScrapMetal extends Scrap {
         return false;
     }
 
-    protected void linkFilterWrapper(Link link) {
+    protected void linkFilterWrapper(final Link link) {
         if ( !linkFilter( link.getLink() ) ) {
             return;
         }
@@ -443,18 +293,6 @@ public class ScrapMetal extends Scrap {
         System.out.println("WARNING - Duplicates in DB table LINK");
     }
 
-    /**
-     * Extracts price from text format.
-     * @param text text including only number and currency
-     * @return price from text
-     */
-    protected Double formatPrice(String text) {
-        text = text.replace("\u00a0", "");         // &nbsp;
-        text = text.replace(",", ".");             // -> Double
-        text = text.replace("Kč", "");
-        return Double.parseDouble( text.replace(" ", "") );
-    }
-
     protected void addPriceToProduct(Product product, Price price) {
         List<Price> priceList = product.getPrices();
         this.priceService.save(price);
@@ -464,7 +302,7 @@ public class ScrapMetal extends Scrap {
         this.productService.save(product);
     }
 
-    protected String hmtlRedemptionPriceToText(HtmlElement redemptionPriceHtml) {
+    protected String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
         return redemptionPriceHtml.asText();
     }
 

@@ -74,11 +74,11 @@ public class ProductService {
         return this.productRepository.findById(id);
     }
 
-    public List<Product> findByLink(Link link) {
+    public Optional<Product> findByLink(Link link) {
         return this.productRepository.findByLink(link);
     }
 
-    public List<Product> findByLink(String link) {
+    public Optional<Product> findByLink(String link) {
         return this.productRepository.findByLink_Link(link);
     }
 
