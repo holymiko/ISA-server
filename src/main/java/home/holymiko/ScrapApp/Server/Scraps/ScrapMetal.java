@@ -114,6 +114,7 @@ public class ScrapMetal extends Scrap {
      */
     public void allProducts() {
         productsByDealer(Dealer.BESSERGOLD);
+        productsByDealer(Dealer.ZLATAKY);
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
         System.out.println("All products scraped");
     }

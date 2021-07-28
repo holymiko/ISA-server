@@ -10,8 +10,6 @@ public class Price {
     private LocalDateTime dateTime;
     private double price;
     private double redemption;
-    private double split;
-    private double pricePerGram;
 
     public Price() {
     }
@@ -20,8 +18,6 @@ public class Price {
         this.dateTime = dateTime;
         this.price = price;
         this.redemption = redemption;
-        this.split = redemption / price;
-        this.pricePerGram = price / grams;
     }
 
     public LocalDateTime getDateTime() {
@@ -34,14 +30,6 @@ public class Price {
 
     public double getRedemption() {
         return redemption;
-    }
-
-    public double getSplit() {
-        return split;
-    }
-
-    public double getPricePerGram() {
-        return pricePerGram;
     }
 
     @Override

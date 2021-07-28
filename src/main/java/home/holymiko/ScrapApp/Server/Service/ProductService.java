@@ -32,9 +32,13 @@ public class ProductService {
     public ProductDTO toDTO(Product product) {
         return new ProductDTO(product.getId(),
                 product.getMetalString(),
-                product.getName(), product.getGrams(),
-                product.getLink().getLink(), product.getLatestPrice(),
-                product.getPrices().stream().map(Price::getDateTime).collect(Collectors.toList())
+                product.getName(),
+                product.getGrams(),
+                product.getLink().getLink(),
+                product.getLatestPrice(),
+                product.getPrices().stream()
+                        .map(Price::getDateTime)
+                        .collect(Collectors.toList())
         );
     }
 

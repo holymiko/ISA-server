@@ -12,7 +12,7 @@ public class Utils {
     public static void printProducts(List<Product> products) {
         if (!products.isEmpty()) {
             System.out.println(">>>>>>> Products <<<<<<<");
-            System.out.printf( "          %-90s%-15s%-10s%-15s%-10s\n", "Nazev", "Gramy", "Price", "Price / Gram", "Split");
+            System.out.printf( "          %-90s%-15s%-10s%-15s%-10s\n", "Nazev", "Gramy", "Price", "Price / Gram", "Spread");
             System.out.println( "----------------------------------------------------------------------------");
             for (Product product : products) {
                 Price latestPrice = product.getLatestPrice();
@@ -21,8 +21,8 @@ public class Utils {
                             product.getName(),
                             product.getGrams(),
                             product.getLatestPrice().getPrice(),
-                            product.getLatestPrice().getPricePerGram(),
-                            product.getLatestPrice().getSplit()
+                            product.getLatestPrice().getPrice() / product.getGrams(),
+                            product.getLatestPrice().getRedemption() / product.getLatestPrice().getPrice()
                     );
                 } else {
                     System.out.printf("          %-90s%-10.2f   %10.2f    %-15.2f  %-10f\n",

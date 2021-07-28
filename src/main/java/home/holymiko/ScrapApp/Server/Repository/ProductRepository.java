@@ -26,7 +26,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findProductsByMetalAndLatestPrice_PriceIsLessThanOrderByLatestPrice_Price(Metal metal, double maxPrice);
 
-    List<Product> findProductsByMetalAndLatestPrice_PriceIsLessThanOrderByLatestPrice_Split(Metal metal, double maxPrice);
-
-    List<Product> findProductsByMetalAndLatestPrice_PriceIsLessThanOrderByLatestPrice_PricePerGram(Metal metal, double maxPrice);
 }
