@@ -52,6 +52,7 @@ public class ScrapMetal extends Scrap {
         this.xPathProductName = xPathProductName;
         this.xPathBuyPrice = xPathBuyPrice;
         this.xPathRedemptionPrice = xPathRedemptionPrice;
+//        allProducts();
     }
 
     /////// PRODUCT
@@ -172,7 +173,7 @@ public class ScrapMetal extends Scrap {
             System.out.println("WARNING - Vykupni cena = 0");
 //            e.printStackTrace();
         }
-        Price newPrice = new Price(LocalDateTime.now(), buyPrice, redemptionPrice, product.getGrams());
+        Price newPrice = new Price(LocalDateTime.now(), buyPrice, redemptionPrice, dealer);
         addPriceToProduct(product, newPrice);
         System.out.println("> New price saved");
         return newPrice;

@@ -1,5 +1,7 @@
 package home.holymiko.ScrapApp.Server.Entity;
 
+import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -10,14 +12,16 @@ public class Price {
     private LocalDateTime dateTime;
     private double price;
     private double redemption;
+    private Dealer dealer;
 
     public Price() {
     }
 
-    public Price(LocalDateTime dateTime, double price, double redemption, double grams) {
+    public Price(LocalDateTime dateTime, double price, double redemption, Dealer dealer) {
         this.dateTime = dateTime;
         this.price = price;
         this.redemption = redemption;
+        this.dealer = dealer;
     }
 
     public LocalDateTime getDateTime() {
@@ -30,6 +34,10 @@ public class Price {
 
     public double getRedemption() {
         return redemption;
+    }
+
+    public Dealer getDealer() {
+        return dealer;
     }
 
     @Override
