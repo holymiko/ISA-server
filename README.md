@@ -39,6 +39,42 @@ Data je možné získat na http://localhost:8080/api/v1/ +`entita` Jsou poskytov
 <br />
 <br />
 <br />
+
+#V1
+Commit dates
+
+Základní verze umožňující těžbu dat z webů Bessergold (bessergold.cz) a Serenity (serenitystocks.com).
+
+Obsahuje DTOs, které zmenšují objem dat posílaných na klienta.
+
+Část databáze (tagy) je možné im/exportovat z/do textových souborů. Tato vlastnost však prozatím není zpřístupněna na kontroloru.
+
+#V2
+Commit dates
+
+Metodám je postupně přidávána dokumentace.
+
+Datové zdroje jsou rozšířeny o Zlaťáky (Zlataky.cz)
+
+Ve třídě ScrapMetal je provedeno mnoho optimalizací a recyklací kódu. Tato třída nyní sjednocuje všechny metody pro scrapování drahých kovů.
+
+Specifické informace pro jednotlivé dealery jsou uvedeny v potomcích třídy ScrapMetal. (ScrapBessergold,  ScrapZlataky)
+
+Metody pro extrakci dat z třídy ScrapMetal jsou vyčleněny do nové třídy Extractor
+
+Opravy ve třídě ScrapSerenity umožňují opakované scrapování při kterém je automaticky upraven i stav Tagu.
+
+#ToDo
+- [ ] Db optimalizace a uprava klienta.
+- [ ] Spojeni stejných produktů
+- [ ] Auto export do txt pro scrapSerenity
+- [ ] Stock to Investments
+- [ ] Gold to silver ratio
+
+<br/>
+<br/>
+<br/>
+
 ###Relevantní články:
 
 https://www.serenitystocks.com/article/how-build-complete-benjamin-graham-portfolio
