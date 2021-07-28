@@ -60,8 +60,14 @@ public class ScrapMetal extends Scrap {
         loadPage(link.getLink());
 
         Product product;
-        final String name = ((HtmlElement) page.getFirstByXPath(xPathProductName)).asText();
-        final String nameLowerCase = name.toLowerCase(Locale.ROOT);
+        String name = "";
+        String nameLowerCase = "";
+        try {
+            name = ((HtmlElement) page.getFirstByXPath(xPathProductName)).asText();
+            nameLowerCase = name.toLowerCase(Locale.ROOT);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         final double weight = Extractor.weightExtractor(name);
         final Form form = Extractor.formExtractor(name);
         final Producer producer = Extractor.producerExtractor(name);
