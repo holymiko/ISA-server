@@ -139,7 +139,7 @@ public class ScrapMetal extends Scrap {
      * Scraps products based on Links from DB
      */
     public void allProducts() {
-        productsByDealer(dealer);
+        productsByOptionalLinks( linkService.findAll() );
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
         System.out.println("All "+dealer+" products scraped");
     }

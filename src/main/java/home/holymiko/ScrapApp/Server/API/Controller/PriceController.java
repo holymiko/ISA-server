@@ -1,7 +1,5 @@
-package home.holymiko.ScrapApp.Server.Controller;
+package home.holymiko.ScrapApp.Server.API.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Deprecated
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/api/v1/link")
-public class LinkController {
+@RequestMapping("/api/v1/price")
+public class PriceController {
 
 }

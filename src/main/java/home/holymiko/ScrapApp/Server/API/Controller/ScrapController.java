@@ -1,4 +1,4 @@
-package home.holymiko.ScrapApp.Server.Controller;
+package home.holymiko.ScrapApp.Server.API.Controller;
 
 import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
@@ -6,7 +6,6 @@ import home.holymiko.ScrapApp.Server.Entity.Enum.TickerState;
 import home.holymiko.ScrapApp.Server.Scraps.ScrapBessergold;
 import home.holymiko.ScrapApp.Server.Scraps.ScrapSerenity;
 import home.holymiko.ScrapApp.Server.Scraps.ScrapZlataky;
-import home.holymiko.ScrapApp.Server.Service.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -195,7 +194,7 @@ public class ScrapController {
 
     @RequestMapping({"/serenity", "/serenity/"})
     public void serenity() {
-        this.scrapSerenity.scrapTickersByTickerState(TickerState.GOOD);
+        this.scrapSerenity.tickersScrap(TickerState.GOOD);
     }
 
     //////// Links

@@ -1,4 +1,4 @@
-package home.holymiko.ScrapApp.Server.Controller;
+package home.holymiko.ScrapApp.Server.API.Controller;
 
 public class Utils {
 

@@ -1,4 +1,4 @@
-package home.holymiko.ScrapApp.Server.Controller;
+package home.holymiko.ScrapApp.Server.API.Controller;
 
 import home.holymiko.ScrapApp.Server.DTO.PortfolioCreateDTO;
 import home.holymiko.ScrapApp.Server.DTO.PortfolioDTO;

@@ -1,6 +1,8 @@
 package home.holymiko.ScrapApp.Server.Scraps;
 
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
+import home.holymiko.ScrapApp.Server.Entity.Enum.GrahamGrade;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
 
 import java.util.Locale;
@@ -172,5 +174,22 @@ public class Extractor {
         text = text.replace(",", ".");             // -> Double
         text = text.replace("Kč", "");
         return Double.parseDouble( text.replace(" ", "") );
+    }
+
+    public static Double serenityElementToDouble(final HtmlElement element) {
+        String result = element.asText();
+        result = result.replace("%", "");
+        result = result.replace(",", "");
+        return Double.parseDouble(result);
+    }
+
+    public static GrahamGrade gradeExtractor(final HtmlElement element) {
+        switch (element.asText().toLowerCase(Locale.ROOT)) {
+            case "enterprising" -> { return GrahamGrade.ENTERPRISING; }
+            case "defensive" -> { return GrahamGrade.DEFENSIVE; }
+            case "ungraded" -> { return GrahamGrade.UNGRADED; }
+            case "ncav" -> { return GrahamGrade.NCAV; }
+            default -> { return GrahamGrade.UNKNOWN; }
+        }
     }
 }

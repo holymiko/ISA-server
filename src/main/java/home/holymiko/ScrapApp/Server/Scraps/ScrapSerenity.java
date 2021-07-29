@@ -34,12 +34,12 @@ public class ScrapSerenity extends Scrap {
     public void run() {
         printTotalStatus();
 //        tickerService.exportTickers();
-//        scrapTickersByTickerState(TickerState.GOOD);
+//        tickersScrap(TickerState.GOOD);
 //        tickerService.loadTickers();
 //        fixer("$");
     }
 
-    public void scrapTickersByTickerState(TickerState tickerState) {
+    public void tickersScrap(TickerState tickerState) {
         System.out.println("Trying to scrap "+tickerState+" tickers");
         printTotalStatus();
         int i = 0;
@@ -57,7 +57,7 @@ public class ScrapSerenity extends Scrap {
                 double ratingScore = Double.parseDouble( htmlElement.asText().replace("Rating Score = ", ""));
                 if (ratingScore >= MIN_RATING_SCORE) {
                     this.tickerService.update(ticker, TickerState.GOOD);
-                    scrapStock(ticker, ratingScore);
+                    stockScrap(ticker, ratingScore);
                 } else {
                     this.stockService.deleteByTicker(ticker);
                     this.tickerService.update(ticker, TickerState.BAD);
@@ -72,7 +72,7 @@ public class ScrapSerenity extends Scrap {
         printTotalStatus();
     }
 
-    public void scrapStock(final Ticker ticker, final Double ratingScore) {
+    public void stockScrap(final Ticker ticker, final Double ratingScore) {
         List<Double> ratings = new ArrayList<>();          // Graham Ratings
         List<Double> results = new ArrayList<>();          // Graham Results
         GrahamGrade grade = null;
@@ -81,15 +81,15 @@ public class ScrapSerenity extends Scrap {
         String currency = ((DomText) page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div[9]/div/div/text()")).asText();
 
         for(int i = 2; i <= 11; i++) {
-            ratings.add( elementToDouble( page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div["+i+"]/div[2]/div")) );
+            ratings.add( Extractor.serenityElementToDouble( page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div["+i+"]/div[2]/div")) );
         }
         for(int i = 2; i <= 8; i++) {
             HtmlElement htmlElement = page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div["+i+"]/div[2]/div");
             if(i == 5) {
-                grade = formatGrade(htmlElement);
+                grade = Extractor.gradeExtractor(htmlElement);
                 continue;
             }
-            results.add( elementToDouble(htmlElement) );
+            results.add( Extractor.serenityElementToDouble(htmlElement) );
         }
 
 //        printScrapStock(header, ratingScore, ratings, results, currency);
@@ -165,23 +165,6 @@ public class ScrapSerenity extends Scrap {
             System.out.println();
             System.out.println(i+"/"+size);
             System.out.println();
-        }
-    }
-
-    private static Double elementToDouble(final HtmlElement element) {
-        String result = element.asText();
-        result = result.replace("%", "");
-        result = result.replace(",", "");
-        return Double.parseDouble(result);
-    }
-
-    private static GrahamGrade formatGrade(final HtmlElement element) {
-        switch (element.asText().toLowerCase(Locale.ROOT)) {
-            case "enterprising" -> { return GrahamGrade.ENTERPRISING; }
-            case "defensive" -> { return GrahamGrade.DEFENSIVE; }
-            case "ungraded" -> { return GrahamGrade.UNGRADED; }
-            case "ncav" -> { return GrahamGrade.NCAV; }
-            default -> { return GrahamGrade.UNKNOWN; }
         }
     }
 
