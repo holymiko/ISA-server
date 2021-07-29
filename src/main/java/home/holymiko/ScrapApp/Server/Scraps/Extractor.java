@@ -67,16 +67,22 @@ public class Extractor {
      */
     public static Form formExtractor(String text) {
         text = text.toLowerCase();
+        if(text.contains("combibar") || text.contains("multidisc")) {
+            return Form.COMBIBAR;
+        }
+        if(text.contains("roundbar")) {
+            return Form.ROUNDBAR;
+        }
         if(text.contains("paket") || text.contains("odběr 100 ks a více")) {
             return Form.PACKET;
         }
-        if(text.contains("mince") || text.contains("coin") || text.contains("tolar")){
+        if(text.contains("mince") || text.contains("coin") || text.contains("tolar")) {
             return Form.COIN;
         }
-        if(text.contains("kinebar")){
+        if(text.contains("kinebar")) {
             return Form.KINEBAR;
         }
-        if(text.contains("bar") || text.contains("slitek")){
+        if(text.contains("bar") || text.contains("slitek")) {
             return Form.BAR;
         }
         return Form.UNKNOWN;

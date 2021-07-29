@@ -52,24 +52,22 @@ public class ScrapMetal extends Scrap {
         this.xPathProductName = xPathProductName;
         this.xPathBuyPrice = xPathBuyPrice;
         this.xPathRedemptionPrice = xPathRedemptionPrice;
-//        allProducts();
     }
 
     /////// PRODUCT
 
-    protected void productByLink(final Link link) {
+    private void productByLink(final Link link) {
         loadPage(link.getLink());
 
         String name = "";
-        String nameLowerCase = "";
 
         try {
             name = ((HtmlElement) page.getFirstByXPath(xPathProductName)).asText();
-            nameLowerCase = name.toLowerCase(Locale.ROOT);
         } catch (Exception e) {
             e.printStackTrace();
         }
         final Metal metal;
+        final String nameLowerCase = name.toLowerCase(Locale.ROOT);
         final double grams = Extractor.weightExtractor(name);
         final Form form = Extractor.formExtractor(name);
         final Producer producer = Extractor.producerExtractor(name);
@@ -86,23 +84,34 @@ public class ScrapMetal extends Scrap {
             metal = Metal.UNKNOWN;
         }
 
-        List<Product> product = productService.findProductByProducerAndMetalAndFormAndGrams(producer, metal, form, grams);
+        final List<Product> products = productService.findProductByProducerAndMetalAndFormAndGrams(producer, metal, form, grams);
 
-//        if(product == null) {
-//            product = new Product(name, producer, form, metal, grams, Collections.singletonList(link), null, new ArrayList<>());
-//        } else {
-//            product.getLinks().add(link);
-//        }
-
-        if(product.isEmpty()) {
-            priceByProductScrap( new Product(name, producer, form, metal, grams, Collections.singletonList(link), null, new ArrayList<>()) );
-        } else if (product.size() == 1) {
-            product.get(0).getLinks().add(link);
-            priceByProductScrap(product.get(0));
-        } else {
-            System.out.println("???????????????????");
+        if(name.equals("") || producer == Producer.UNKNOWN || form == Form.UNKNOWN || metal == Metal.UNKNOWN ) {
+            System.out.println("FATAL ERROR: ");
             System.out.println(producer+" "+metal+" "+form+" "+grams);
+            return;
+        }
+
+        if(products.isEmpty() || nameLowerCase.contains("rok") || nameLowerCase.contains("lunarni") || nameLowerCase.contains("výročí")) {
+            List<Link> links = new ArrayList<>();
+            links.add(link);
+            priceByProductScrap( new Product(name, producer, form, metal, grams, links, null, new ArrayList<>()) );
+        } else if (products.size() == 1) {
+            try {
+                products.get(0).getLinks().add(link);
+                priceByProductScrap(products.get(0));
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println(products.get(0).getName());
+                System.out.println(link.getLink());
+            }
+
+        } else {
+            System.out.println();
             System.out.println("???????????????????");
+            System.out.println(producer+" "+metal+" "+form+" "+grams+" "+link.getLink());
+            System.out.println("???????????????????");
+            System.out.println();
         }
 
         System.out.println("Product saved");
@@ -112,7 +121,12 @@ public class ScrapMetal extends Scrap {
      * Switch: Save new product / Update price of existing product
      * @param link of Product
      */
-    protected void productByOptionalLink(final Link link) {
+    private void productOrPriceScrap(final Link link) {
+        if(link == null){
+            System.out.println("\n\nLink is NULL\n\n");
+            return;
+        }
+
         Optional<Product> optionalProduct = this.productService.findByLink(link.getLink());
 
         if (optionalProduct.isEmpty()) {
@@ -127,9 +141,9 @@ public class ScrapMetal extends Scrap {
      * Prints to console.
      * @param links Optional links of Products
      */
-    public void productsByOptionalLinks(final List<Link> links) {
+    private void productsOrPricesScrap(final List<Link> links) {
         for (Link link : links) {
-            productByOptionalLink(link);
+            productOrPriceScrap(link);
             printAndSleep(DELAY, links.size());
         }
         printerCounter = 0;
@@ -139,13 +153,13 @@ public class ScrapMetal extends Scrap {
      * Scraps products based on Links from DB
      */
     public void allProducts() {
-        productsByOptionalLinks( linkService.findAll() );
+        productsOrPricesScrap( linkService.findAll() );
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
-        System.out.println("All "+dealer+" products scraped");
+        System.out.println("All products scraped");
     }
 
-    public void productsByDealer(Dealer dealer) {
-        productsByOptionalLinks( linkService.findByDealer(dealer) );
+    public void byDealerScrap() {
+        productsOrPricesScrap( linkService.findByDealer(dealer) );
     }
 
     public void productsByPortfolio(long portfolioId) throws ResponseStatusException {
@@ -160,10 +174,9 @@ public class ScrapMetal extends Scrap {
                 .stream()
                 .map(investment -> investment.getProduct().getLinks())
                 .flatMap(List::stream)
-                .collect(Collectors.toSet())
-                ;
+                .collect(Collectors.toSet());
 
-        productsByOptionalLinks( new ArrayList<>(linkSet) );
+        productsOrPricesScrap( new ArrayList<>(linkSet) );
         portfolioService.refresh(portfolioId);
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
     }
@@ -176,7 +189,9 @@ public class ScrapMetal extends Scrap {
      * @param product already saved in DB
      */
     protected void priceByProductScrap(Product product) {
-        for (Link link : product.getLinks() ) {
+        // avoids ConcurrentModificationException
+        List<Link> links = product.getLinks();
+        for ( Link link : links ) {
             loadPage(link.getLink());
 
             double buyPrice = 0.0;
@@ -195,7 +210,7 @@ public class ScrapMetal extends Scrap {
             }
             Price newPrice = new Price(LocalDateTime.now(), buyPrice, redemptionPrice, dealer);
             addPriceToProduct(product, newPrice);
-            System.out.println("> New price saved");
+            System.out.println("> New price saved - "); //+link.getLink()
         }
     }
 
@@ -255,26 +270,26 @@ public class ScrapMetal extends Scrap {
         throw new AbstractMethodError("Abstract method is supposed to be overwritten");
     }
 
-    public void sAllLinks() {
-        sGoldLinks();
-        sSilverLinks();
-        sPlatinumLinks();
-        sPalladiumLinks();
+    public void allLinksScrap() {
+        goldLinksScrap();
+        silverLinksScrap();
+        platinumLinksScrap();
+        palladiumLinksScrap();
     }
 
-    public void sGoldLinks() {
+    public void goldLinksScrap() {
         scrapLinks(searchUrlGold);
     }
 
-    public void sSilverLinks() {
+    public void silverLinksScrap() {
         scrapLinks(searchUrlSilver);
     }
 
-    public void sPlatinumLinks() {
+    public void platinumLinksScrap() {
         scrapLinks(searchUrlPlatinum);
     }
 
-    public void sPalladiumLinks() {
+    public void palladiumLinksScrap() {
         scrapLinks(searchUrlPalladium);
     }
 

@@ -67,13 +67,13 @@ public class ScrapZlataky extends ScrapMetal {
 
 
     @Override
-    public void sGoldLinks() {
+    public void goldLinksScrap() {
         scrapLinks(SEARCH_URL_GOLD_COIN);
         scrapLinks(SEARCH_URL_GOLD_BAR);
     }
 
     @Override
-    public void sSilverLinks() {
+    public void silverLinksScrap() {
         scrapLinks(SEARCH_URL_SILVER_COIN);
         scrapLinks(SEARCH_URL_SILVER_BAR);
     }

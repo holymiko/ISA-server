@@ -1,6 +1,5 @@
 package home.holymiko.ScrapApp.Server.API.Controller;
 
-import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
 import home.holymiko.ScrapApp.Server.Entity.Enum.TickerState;
 import home.holymiko.ScrapApp.Server.Scraps.ScrapBessergold;
@@ -59,26 +58,30 @@ public class ScrapController {
 
         isRunning = true;
 
-        System.out.println("ScrapMetal all");
-
-        System.out.println("ScrapMetal all bessergold links");
-        this.scrapBessergold.sAllLinks();
-        System.out.println("ScrapMetal all zlataky links");
-        this.scrapZlataky.sAllLinks();
-        lastAllLinks = LocalDateTime.now();
-
-        System.out.println("ScrapMetal all bessergold products");
-        this.scrapBessergold.allProducts();
-        System.out.println("ScrapMetal all zlataky products");
-        this.scrapZlataky.allProducts();
-        lastAll = LocalDateTime.now();
-
-//        this.portfolioService.saveInitPortfolios();
+        System.out.println("SCRAP ALL");
+        scrapAllLinks();
+        scrapAllProductsOrPrices();
 
         isRunning = false;
+//        this.portfolioService.saveInitPortfolios();
     }
 
     //////// Products
+
+    @RequestMapping({"/products", "/products/"})
+    public void allProducts() {
+        if( isRunning ) {
+            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Another ScrapMetal running");
+        }
+        if( compareDates(lastAll) ) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "All products were scraped less then "+MINUTES_DELAY+" ago");
+        }
+        isRunning = true;
+
+        scrapAllProductsOrPrices();
+
+        isRunning = false;
+    }
 
     @RequestMapping({"/dealer/{dealer}", "/dealer/{dealer}/"})
     public void scrapProductsByDealer(@PathVariable String dealer) {
@@ -86,21 +89,18 @@ public class ScrapController {
             System.out.println("Too Many Requests");
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Another ScrapMetal running");
         }
-//        if( compareDates(lastAll) ) {
-//            System.out.println("Bad request");
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "All products were scraped less then "+MINUTES_DELAY+" ago");
-//        }
         isRunning = true;
 
         System.out.println("Trying to scrap "+dealer+" products");
         switch (dealer.toLowerCase(Locale.ROOT)) {
-            case "bessergold" -> this.scrapBessergold.productsByDealer(Dealer.BESSERGOLD);
-            case "zlataky" -> this.scrapZlataky.productsByDealer(Dealer.ZLATAKY);
+            case "bessergold" -> this.scrapBessergold.byDealerScrap();
+            case "zlataky" -> this.scrapZlataky.byDealerScrap();
             default -> {
                 isRunning = false;
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
         }
+
         isRunning = false;
     }
 
@@ -209,9 +209,7 @@ public class ScrapController {
         }
         isRunning = true;
 
-        System.out.println("ScrapMetal all links");
-        this.scrapBessergold.sAllLinks();
-        lastAllLinks = LocalDateTime.now();
+        scrapAllLinks();
 
         isRunning = false;
     }
@@ -233,7 +231,7 @@ public class ScrapController {
                     isRunning = false;
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then " + MINUTES_DELAY + " ago");
                 }
-                this.scrapBessergold.sGoldLinks();
+                this.scrapBessergold.goldLinksScrap();
                 lastGoldLinks = LocalDateTime.now();
             }
             case "silver" -> {
@@ -241,7 +239,7 @@ public class ScrapController {
                     isRunning = false;
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then " + MINUTES_DELAY + " ago");
                 }
-                this.scrapBessergold.sSilverLinks();
+                this.scrapBessergold.silverLinksScrap();
                 lastSilverLinks = LocalDateTime.now();
             }
             case "platinum" -> {
@@ -249,7 +247,7 @@ public class ScrapController {
                     isRunning = false;
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then " + MINUTES_DELAY + " ago");
                 }
-                this.scrapBessergold.sPlatinumLinks();
+                this.scrapBessergold.platinumLinksScrap();
                 lastPlatinumLinks = LocalDateTime.now();
             }
             case "palladium" -> {
@@ -257,11 +255,11 @@ public class ScrapController {
                     isRunning = false;
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then " + MINUTES_DELAY + " ago");
                 }
-                this.scrapBessergold.sPalladiumLinks();
+                this.scrapBessergold.palladiumLinksScrap();
                 lastPalladiumLinks = LocalDateTime.now();
             }
-            case "bessergold" -> this.scrapBessergold.sAllLinks();
-            case "zlataky" -> this.scrapZlataky.sAllLinks();
+            case "bessergold" -> this.scrapBessergold.allLinksScrap();
+            case "zlataky" -> this.scrapZlataky.allLinksScrap();
             default -> {
                 isRunning = false;
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -274,6 +272,28 @@ public class ScrapController {
 
     private boolean compareDates(LocalDateTime x) {
         return LocalDateTime.now().minusMinutes(MINUTES_DELAY).isBefore(x);
+    }
+
+    private void scrapAllProductsOrPrices() {
+        System.out.println("Scrap ALL products");
+
+        System.out.println("Scrap all bessergold products");
+        this.scrapBessergold.byDealerScrap();
+
+        System.out.println("Scrap all zlataky products");
+        this.scrapZlataky.byDealerScrap();
+
+        lastAll = LocalDateTime.now();
+    }
+
+    private void scrapAllLinks() {
+        System.out.println("Scrap all bessergold links");
+        this.scrapBessergold.allLinksScrap();
+
+        System.out.println("Scrap all zlataky links");
+        this.scrapZlataky.allLinksScrap();
+
+        lastAllLinks = LocalDateTime.now();
     }
 
 }
