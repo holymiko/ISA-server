@@ -41,28 +41,26 @@ Data je možné získat na http://localhost:8080/api/v1/ +`entita` Jsou poskytov
 <br />
 
 #V1
-Commit dates
+_Commits: 5. February - 15. March 2021_
 
 Základní verze umožňující těžbu dat z webů Bessergold (bessergold.cz) a Serenity (serenitystocks.com).
 
 Obsahuje DTOs, které zmenšují objem dat posílaných na klienta.
 
-Část databáze (tagy) je možné im/exportovat z/do textových souborů. Tato vlastnost však prozatím není zpřístupněna na kontroloru.
+Část databáze (Ticker) je možné im/exportovat z/do textových souborů. Tato vlastnost však prozatím není zpřístupněna na kontroloru.
 
 #V2
-Commit dates
+_Commits: 19. May 2021 - now_
 
 Metodám je postupně přidávána dokumentace.
 
 Datové zdroje jsou rozšířeny o Zlaťáky (Zlataky.cz)
 
-Ve třídě ScrapMetal je provedeno mnoho optimalizací a recyklací kódu. Tato třída nyní sjednocuje všechny metody pro scrapování drahých kovů.
+Ve třídě **ScrapMetal** je provedeno mnoho optimalizací a recyklací kódu. Tato třída nyní sjednocuje všechny metody pro scrapování drahých kovů.  
+Specifické informace pro jednotlivé dealery jsou uvedeny v potomcích třídy ScrapMetal. (ScrapBessergold,  ScrapZlataky)  
+Metody pro extrakci dat z třídy ScrapMetal jsou vyčleněny do nové třídy **Extractor**
 
-Specifické informace pro jednotlivé dealery jsou uvedeny v potomcích třídy ScrapMetal. (ScrapBessergold,  ScrapZlataky)
-
-Metody pro extrakci dat z třídy ScrapMetal jsou vyčleněny do nové třídy Extractor
-
-Opravy ve třídě ScrapSerenity umožňují opakované scrapování při kterém je automaticky upraven i stav Tagu.
+Opravy ve třídě **ScrapSerenity** umožňují opakované scrapování, při kterém je automaticky upraven **TickerState**.
 
 #ToDo
 - [ ] Db optimalizace a uprava klienta.
