@@ -258,8 +258,8 @@ public class ScrapController {
                 this.scrapBessergold.palladiumLinksScrap();
                 lastPalladiumLinks = LocalDateTime.now();
             }
-            case "bessergold" -> this.scrapBessergold.allLinksScrap();
-            case "zlataky" -> this.scrapZlataky.allLinksScrap();
+            case "bessergold" -> this.scrapBessergold.byDealerScrap();
+            case "zlataky" -> this.scrapZlataky.byDealerScrap();
             default -> {
                 isRunning = false;
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
