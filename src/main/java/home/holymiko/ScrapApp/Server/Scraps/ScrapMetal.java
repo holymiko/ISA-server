@@ -62,30 +62,16 @@ public class ScrapMetal extends Scrap {
         loadPage(link.getLink());
 
         String name = "";
-
         try {
             name = ((HtmlElement) page.getFirstByXPath(xPathProductName)).asText();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        final Metal metal;
         final String nameLowerCase = name.toLowerCase(Locale.ROOT);
-        final double grams = Extractor.weightExtractor(name);
-        final Form form = Extractor.formExtractor(name);
-        final Producer producer = Extractor.producerExtractor(name);
-
-        if (nameLowerCase.contains("zlat")) {
-            metal = Metal.GOLD;
-        } else if (nameLowerCase.contains("stříbr")) {
-            metal = Metal.SILVER;
-        } else if (nameLowerCase.contains("platin")) {
-            metal = Metal.PLATINUM;
-        } else if (nameLowerCase.contains("pallad")) {
-            metal = Metal.PALLADIUM;
-        } else {
-            metal = Metal.UNKNOWN;
-        }
-
+        final Form form = Extractor.formExtractor(nameLowerCase);
+        final Metal metal = Extractor.metalExtractor(nameLowerCase);
+        final double grams = Extractor.weightExtractor(nameLowerCase);
+        final Producer producer = Extractor.producerExtractor(nameLowerCase);
         final List<Product> products = productService.findProductByProducerAndMetalAndFormAndGrams(producer, metal, form, grams);
 
         if(name.equals("") || producer == Producer.UNKNOWN || form == Form.UNKNOWN || metal == Metal.UNKNOWN ) {

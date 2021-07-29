@@ -3,6 +3,7 @@ package home.holymiko.ScrapApp.Server.Scraps;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
 import home.holymiko.ScrapApp.Server.Entity.Enum.GrahamGrade;
+import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
 
 import java.util.Locale;
@@ -222,6 +223,26 @@ public class Extractor {
             case "ungraded" -> { return GrahamGrade.UNGRADED; }
             case "ncav" -> { return GrahamGrade.NCAV; }
             default -> { return GrahamGrade.UNKNOWN; }
+        }
+    }
+
+    /**
+     * Name is converted to lower case.
+     * @param name of Product
+     * @return metal of product
+     */
+    public static Metal metalExtractor(String name) {
+        name = name.toLowerCase(Locale.ROOT);
+        if (name.contains("zlat")) {
+            return Metal.GOLD;
+        } else if (name.contains("stříbr")) {
+            return Metal.SILVER;
+        } else if (name.contains("platin")) {
+            return Metal.PLATINUM;
+        } else if (name.contains("pallad")) {
+            return Metal.PALLADIUM;
+        } else {
+            return Metal.UNKNOWN;
         }
     }
 }
