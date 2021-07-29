@@ -13,6 +13,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ScrapMetal extends Scrap {
@@ -91,8 +93,12 @@ public class ScrapMetal extends Scrap {
             return;
         }
 
+        // Year specials are being saved separately
+        Pattern pattern = Pattern.compile("20[12]\\d");
+
         if(products.isEmpty() || nameLowerCase.contains("rok")
-        || nameLowerCase.contains("lunarni") || nameLowerCase.contains("výročí")) {
+        || nameLowerCase.contains("lunarni") || nameLowerCase.contains("výročí")
+        || pattern.matcher(nameLowerCase).find()) {
             List<Link> links = new ArrayList<>();
             links.add(link);
             priceByProductScrap( new Product(name, producer, form, metal, grams, links, null, new ArrayList<>()), link );
@@ -101,23 +107,14 @@ public class ScrapMetal extends Scrap {
         }
 
         if (products.size() == 1) {
-            Product product = products.get(0);
-            try {
-                product.getLinks().add(link);
-                priceByProductScrap(product, link);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println(product.getName());
-                System.out.println(link.getLink());
-            }
+            products.get(0).getLinks().add(link);
+            priceByProductScrap(products.get(0), link);
             return;
         }
 
-        System.out.println();
-        System.out.println("???????????????????");
-        System.out.println(producer+" "+metal+" "+form+" "+grams+" "+link.getLink());
-        System.out.println("???????????????????");
-        System.out.println();
+        System.out.println("\n???????????????????");
+        System.out.println(name + " " +producer+" "+metal+" "+form+" "+grams+" "+link.getLink());
+        System.out.println("???????????????????\n");
 
     }
 
@@ -126,11 +123,6 @@ public class ScrapMetal extends Scrap {
      * @param link of Product
      */
     private void productOrPriceScrap(final Link link) {
-        if(link == null){
-            System.out.println("\n\nLink is NULL\n\n");
-            return;
-        }
-
         Optional<Product> optionalProduct = this.productService.findByLink(link.getLink());
 
         if (optionalProduct.isEmpty()) {
@@ -201,16 +193,17 @@ public class ScrapMetal extends Scrap {
             buyPrice = Extractor.priceExtractor(((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText());
         } catch (Exception e) {
             System.out.println("WARNING - Kupni cena = 0");
-//            e.printStackTrace();
         }
         try {
             redemptionPrice = Extractor.priceExtractor(redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice)));
         } catch (Exception e) {
             System.out.println("WARNING - Vykupni cena = 0");
-//            e.printStackTrace();
         }
-        Price newPrice = new Price(LocalDateTime.now(), buyPrice, redemptionPrice, dealer);
-        addPriceToProduct(product, newPrice);
+
+        addPriceToProduct(
+                product,
+                new Price(LocalDateTime.now(), buyPrice, redemptionPrice, dealer)
+        );
         System.out.println("> New price saved - "+link.getLink());
     }
 
@@ -238,11 +231,12 @@ public class ScrapMetal extends Scrap {
                 printerCounter++;
                 continue;
             }
+            // Scraps new price for each product's link
             optionalProduct.get().getLinks().forEach(link -> priceByProductScrap(optionalProduct.get(), link));
             printAndSleep(DELAY, productIds.size());
         }
         printerCounter = 0;
-        System.out.println("Prices scraped");
+        System.out.println(">> Prices scraped");
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
     }
 
@@ -297,6 +291,11 @@ public class ScrapMetal extends Scrap {
 
     /////// FILTER
 
+    /**
+     * Filtration based on text of the link
+     * @param link
+     * @return False for filter being filtered
+     */
     protected static boolean linkFilter(String link) {
         if (link.contains("etuje")) {
             System.out.println("Link vyřazen: etuje - " + link);
@@ -310,10 +309,12 @@ public class ScrapMetal extends Scrap {
             System.out.println("Link vyřazen: kapsle - " + link);
             return false;
         }
-        if (link.contains("slit") || link.contains("minc") || link.contains("lunarni-serie-rok") || link.contains("tolar"))
+        if (link.contains("slit") || link.contains("minc") || link.contains("lunarni-serie-rok") || link.contains("tolar")) {
             return true;
-        if (link.contains("goldbarren") || link.contains("krugerrand") || link.contains("sliek"))
+        }
+        if (link.contains("goldbarren") || link.contains("krugerrand") || link.contains("sliek")) {
             return true;
+        }
         System.out.println("Link vyřazen: " + link);
         return false;
     }
@@ -336,6 +337,11 @@ public class ScrapMetal extends Scrap {
         System.out.println("WARNING - Duplicates in DB table LINK");
     }
 
+    /**
+     * Price is added to Product. LatestPrice is updated.
+     * @param product
+     * @param price
+     */
     private void addPriceToProduct(Product product, Price price) {
         List<Price> priceList = product.getPrices();
         this.priceService.save(price);
