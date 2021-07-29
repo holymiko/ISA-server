@@ -14,16 +14,18 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    Optional<Product> findByLink(Link link);
+    Optional<Product> findByLinks(Link link);
 
-    Optional<Product> findByLink_Link(String link);
+    Optional<Product> findByLinks_Link(String link);
 
     List<Product> findProductsByMetal(Metal metal);
 
-    Optional<Product> findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer dealer, Producer producer, Metal metal, Form form, double grams);
+    Optional<Product> findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer dealer, Producer producer, Metal metal, Form form, double grams);
 
-    List<Product> findProductsByMetalAndLatestPrice_PriceIsLessThanOrderByGrams(Metal metal, double maxPrice);
+    List<Product> findProductByProducerAndMetalAndFormAndGrams(Producer producer, Metal metal, Form form, double grams);
 
-    List<Product> findProductsByMetalAndLatestPrice_PriceIsLessThanOrderByLatestPrice_Price(Metal metal, double maxPrice);
+//    List<Product> findProductsByMetalAndLatestPrice_PriceIsLessThanOrderByGrams(Metal metal, double maxPrice);
+
+//    List<Product> findProductsByMetalAndLatestPrice_PriceIsLessThanOrderByLatestPrice_Price(Metal metal, double maxPrice);
 
 }

@@ -4,10 +4,14 @@ import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Product {
@@ -20,50 +24,62 @@ public class Product {
     private Form form;
     private Metal metal;
     private double grams;
-    @OneToOne
-    private Link link;      // + Dealer
-    @OneToOne
-    private Price latestPrice;
+
     @OneToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
+    private List<Link> links;      // + Dealer
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
+    private List<Price> latestPrices;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<Price> prices;
 
     public Product() {
     }
 
-    public Product(Producer producer, Form form, Metal metal, String name, double grams, Link link, Price latestPrice, List<Price> prices) {
+    public Product(String name, Producer producer, Form form, Metal metal, double grams, List<Link> links, List<Price> latestPrices, List<Price> prices) {
+        this.name = name;
         this.producer = producer;
         this.form = form;
         this.metal = metal;
-        this.name = name;
         this.grams = grams;
-        this.link = link;
-        this.latestPrice = latestPrice;
+        this.links = links;
+        this.latestPrices = latestPrices;
         this.prices = prices;
     }
 
-    public void setLatestPrice() {
-        Price latestPrice = prices.get(0);
-        for (Price price : prices) {
-            if (latestPrice.getDateTime().compareTo(price.getDateTime()) < 0)
-                latestPrice = price;
-        }
-        this.latestPrice = latestPrice;
+    public void setLatestPrices(List<Price> latestPrices) {
+        this.latestPrices = latestPrices;
     }
 
     public void setLatestPrice(Price latestPrice) {
-        this.latestPrice = latestPrice;
+        if(this.latestPrices == null) {
+            this.latestPrices = Collections.singletonList(latestPrice);
+            return;
+        }
+        this.latestPrices = this.latestPrices.stream()
+                .filter(price -> price.getDealer() != latestPrice.getDealer())      // Filter Dealer to prevent duplicate
+                .collect(Collectors.toList());
+        this.latestPrices.add(latestPrice);
     }
 
-    public Price getLatestPrice() {
-        return this.latestPrice;
+    public List<Price> getLatestPrices() {
+        return this.latestPrices;
+    }
+
+    public Price getLatestPriceByDealer(Dealer dealer) {
+        return this.latestPrices.stream().filter(price -> price.getDealer() == dealer).collect(Collectors.toList()).get(0);
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setLink(Link link) {
-        this.link = link;
+    public void setLink(List<Link> link) {
+        this.links = link;
     }
 
     public void setPrices(List<Price> prices) {
@@ -72,10 +88,6 @@ public class Product {
 
     public void setGrams(double grams) {
         this.grams = grams;
-    }
-
-    public Dealer getDealer() {
-        return this.link.getDealer();
     }
 
     public double getGrams() {
@@ -94,8 +106,8 @@ public class Product {
         return name;
     }
 
-    public Link getLink() {
-        return link;
+    public List<Link> getLinks() {
+        return links;
     }
 
     public Metal getMetal() {

@@ -1,5 +1,6 @@
 package home.holymiko.ScrapApp.Server.Entity;
 
+import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -7,41 +8,35 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-public class Investment {
+public class InvestmentMetal {
     @Id
     @GeneratedValue
     private long id;
     @ManyToOne(fetch = FetchType.EAGER)             // To avoid problem with Hibernate closing session
     @Fetch(FetchMode.SELECT)                        // To avoid duplicates
     private Product product;
+    private Dealer dealer;
     private double yield;
     private double beginPrice;
     private double endPrice;
     private LocalDate beginDate;
     private LocalDate endDate;
 
-    public Investment(Product product, double beginPrice, LocalDate beginDate) {
+    public InvestmentMetal(Product product, Dealer dealer, double beginPrice, LocalDate beginDate) {
         this.product = product;
+        this.dealer = dealer;
         this.beginPrice = beginPrice;
         this.beginDate = beginDate;
     }
 
-    public Investment(Product product, LocalDate beginDate) {
-        this.product = product;
-        this.beginDate = beginDate;
-    }
-
-    public Investment(Product product) { this.product = product; }
-
-    public Investment() {
-
+    public InvestmentMetal() {
     }
 
 
     ///// SET
 
     public void setYield() {
-        setYield(getProduct().getLatestPrice().getRedemption() / getBeginPrice());
+        setYield(getProduct().getLatestPriceByDealer(dealer).getRedemption() / getBeginPrice());
     }
 
     public void setYield(double yield) {

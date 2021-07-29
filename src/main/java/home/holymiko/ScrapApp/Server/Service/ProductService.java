@@ -34,9 +34,13 @@ public class ProductService {
                 product.getMetalString(),
                 product.getName(),
                 product.getGrams(),
-                product.getLink().getLink(),
-                product.getLatestPrice(),
-                product.getPrices().stream()
+                product.getLinks()
+                        .stream()
+                        .map(Link::getLink)
+                        .collect(Collectors.toList()),
+                product.getLatestPrices(),
+                product.getPrices()
+                        .stream()
                         .map(Price::getDateTime)
                         .collect(Collectors.toList())
         );
@@ -60,8 +64,8 @@ public class ProductService {
         return productRepository.findAll()
                 .stream()
                 .filter(product ->
-                    product.getGrams() >= 0 &&
-                    product.getLatestPrice().getPrice() >= 0
+                    product.getGrams() >= 0 //&&
+//                    product.getLatestPrices().getPrice() >= 0     TODO
                 )
                 .map(this::toDTO)
                 .collect(Collectors.toList());
@@ -79,11 +83,11 @@ public class ProductService {
     }
 
     public Optional<Product> findByLink(Link link) {
-        return this.productRepository.findByLink(link);
+        return this.productRepository.findByLinks(link);
     }
 
     public Optional<Product> findByLink(String link) {
-        return this.productRepository.findByLink_Link(link);
+        return this.productRepository.findByLinks_Link(link);
     }
 
     public List<Product> findAll() {
@@ -108,9 +112,8 @@ public class ProductService {
         return investments;
     }
 
-    public Product findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(Dealer dealer, Producer producer, Metal metal, Form form, double grams) {
-        Optional<Product> optional = this.productRepository.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(dealer, producer, metal, form, grams);
-        return optional.orElse(null);           // Returns optional if its present
+    public List<Product> findProductByProducerAndMetalAndFormAndGrams(Producer producer, Metal metal, Form form, double grams) {
+        return this.productRepository.findProductByProducerAndMetalAndFormAndGrams(producer, metal, form, grams);
     }
 
     public List<Price> findProductPrices(Long id) {

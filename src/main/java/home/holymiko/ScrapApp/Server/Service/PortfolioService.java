@@ -3,8 +3,8 @@ package home.holymiko.ScrapApp.Server.Service;
 import home.holymiko.ScrapApp.Server.DTO.PortfolioCreateDTO;
 import home.holymiko.ScrapApp.Server.DTO.PortfolioDTO;
 import home.holymiko.ScrapApp.Server.DTO.Portfolio_Investment_DTO;
+import home.holymiko.ScrapApp.Server.Entity.InvestmentMetal;
 import home.holymiko.ScrapApp.Server.Entity.Portfolio;
-import home.holymiko.ScrapApp.Server.Entity.Investment;
 import home.holymiko.ScrapApp.Server.Entity.Product;
 import home.holymiko.ScrapApp.Server.Repository.PortfolioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public class PortfolioService {
                 portfolio.getYield(),
                 portfolio.getInvestments()
                         .stream()
-                        .map(Investment::getId)
+                        .map(InvestmentMetal::getId)
                         .collect(Collectors.toList())
         );
     }
@@ -137,19 +137,19 @@ public class PortfolioService {
 
     @Transactional
     public void save(PortfolioCreateDTO portfolioCreateDTO) {
-        List<Product> productList = this.productService.findProducts( portfolioCreateDTO.getInvestmentIds() );
-        List<Investment> investmentList = new ArrayList<>();
-
-        for (Product product:productList) {
-            investmentList.add(this.investmentService.save(product));
-        }
-        this.portfolioRepository.save(
-                new Portfolio(
-                        investmentList,
-                        portfolioCreateDTO.getOwner()
-                )
-        );
-        System.out.println(">> Save PortfolioCreateDTO " + portfolioCreateDTO.getOwner());
+//        List<Product> productList = this.productService.findProducts( portfolioCreateDTO.getInvestmentIds() );
+//        List<InvestmentMetal> investmentMetalList = new ArrayList<>();
+//
+//        for (Product product:productList) {
+//            investmentMetalList.add(this.investmentService.save(product));
+//        }
+//        this.portfolioRepository.save(
+//                new Portfolio(
+//                        investmentMetalList,
+//                        portfolioCreateDTO.getOwner()
+//                )
+//        );
+//        System.out.println(">> Save PortfolioCreateDTO " + portfolioCreateDTO.getOwner());
     }
 
     @Transactional
@@ -165,7 +165,7 @@ public class PortfolioService {
     @Transactional
     public void refresh(long portfolioId) {
         portfolioRepository.findById(portfolioId).ifPresent(portfolio -> {
-            portfolio.getInvestments().forEach(Investment::setYield);
+            portfolio.getInvestments().forEach(InvestmentMetal::setYield);
             portfolio.setBeginPrice();
             portfolio.setValue();
             portfolio.setYield();
@@ -173,9 +173,9 @@ public class PortfolioService {
     }
 
     @Transactional
-    public List<Investment> addInvestmentToPortfolio(String portfolioOwner, Investment investment) {
-        List<Investment> investmentList = this.portfolioRepository.findByOwner(portfolioOwner).get().getInvestments();
-        investmentList.add(investment);
-        return investmentList;
+    public List<InvestmentMetal> addInvestmentToPortfolio(String portfolioOwner, InvestmentMetal investmentMetal) {
+        List<InvestmentMetal> investmentMetalList = this.portfolioRepository.findByOwner(portfolioOwner).get().getInvestments();
+        investmentMetalList.add(investmentMetal);
+        return investmentMetalList;
     }
 }

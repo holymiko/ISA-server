@@ -10,22 +10,22 @@ public class ProductDTO {
     private final String metal;
     private final String name;
     private final double grams;
-    private final String link;
-    private final Price latestPrice;
+    private final List<String> links;
+    private final List<Price> latestPrices;
     private final List<LocalDateTime> prices;
 
-    public ProductDTO(long id, String metal, String name, double grams, String link, Price latestPrice, List<LocalDateTime> prices) {
+    public ProductDTO(long id, String metal, String name, double grams, List<String> link, List<Price> latestPrices, List<LocalDateTime> prices) {
         this.id = id;
         this.metal = metal;
         this.name = name;
         this.grams = grams;
-        this.link = link;
-        this.latestPrice = latestPrice;
+        this.links = link;
+        this.latestPrices = latestPrices;
         this.prices = prices;
     }
 
-    public Price getLatestPrice() {
-        return this.latestPrice;
+    public List<Price> getLatestPrices() {
+        return this.latestPrices;
     }
 
     public double getGrams() {
@@ -44,8 +44,8 @@ public class ProductDTO {
         return name;
     }
 
-    public String getLink() {
-        return link;
+    public List<String> getLinks() {
+        return links;
     }
 
     public String getMetal() {

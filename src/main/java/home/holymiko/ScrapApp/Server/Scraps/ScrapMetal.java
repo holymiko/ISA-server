@@ -60,32 +60,51 @@ public class ScrapMetal extends Scrap {
     protected void productByLink(final Link link) {
         loadPage(link.getLink());
 
-        Product product;
         String name = "";
         String nameLowerCase = "";
+
         try {
             name = ((HtmlElement) page.getFirstByXPath(xPathProductName)).asText();
             nameLowerCase = name.toLowerCase(Locale.ROOT);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        final double weight = Extractor.weightExtractor(name);
+        final Metal metal;
+        final double grams = Extractor.weightExtractor(name);
         final Form form = Extractor.formExtractor(name);
         final Producer producer = Extractor.producerExtractor(name);
 
         if (nameLowerCase.contains("zlat")) {
-            product = new Product(producer, form, Metal.GOLD, name, weight, link, null, new ArrayList<>());
+            metal = Metal.GOLD;
         } else if (nameLowerCase.contains("stříbr")) {
-            product = new Product(producer, form, Metal.SILVER, name, weight, link, null, new ArrayList<>());
+            metal = Metal.SILVER;
         } else if (nameLowerCase.contains("platin")) {
-            product = new Product(producer, form, Metal.PLATINUM, name, weight, link, null, new ArrayList<>());
+            metal = Metal.PLATINUM;
         } else if (nameLowerCase.contains("pallad")) {
-            product = new Product(producer, form, Metal.PALLADIUM, name, weight, link, null, new ArrayList<>());
+            metal = Metal.PALLADIUM;
         } else {
-            product = new Product(producer, form, Metal.UNKNOWN, name, weight, link, null, new ArrayList<>());
+            metal = Metal.UNKNOWN;
         }
 
-        priceByProductScrap(product);
+        List<Product> product = productService.findProductByProducerAndMetalAndFormAndGrams(producer, metal, form, grams);
+
+//        if(product == null) {
+//            product = new Product(name, producer, form, metal, grams, Collections.singletonList(link), null, new ArrayList<>());
+//        } else {
+//            product.getLinks().add(link);
+//        }
+
+        if(product.isEmpty()) {
+            priceByProductScrap( new Product(name, producer, form, metal, grams, Collections.singletonList(link), null, new ArrayList<>()) );
+        } else if (product.size() == 1) {
+            product.get(0).getLinks().add(link);
+            priceByProductScrap(product.get(0));
+        } else {
+            System.out.println("???????????????????");
+            System.out.println(producer+" "+metal+" "+form+" "+grams);
+            System.out.println("???????????????????");
+        }
+
         System.out.println("Product saved");
     }
 
@@ -120,10 +139,9 @@ public class ScrapMetal extends Scrap {
      * Scraps products based on Links from DB
      */
     public void allProducts() {
-        productsByDealer(Dealer.BESSERGOLD);
-        productsByDealer(Dealer.ZLATAKY);
+        productsByDealer(dealer);
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
-        System.out.println("All products scraped");
+        System.out.println("All "+dealer+" products scraped");
     }
 
     public void productsByDealer(Dealer dealer) {
@@ -140,8 +158,10 @@ public class ScrapMetal extends Scrap {
         // Set prevents one Product to be scrapped more times
         Set<Link> linkSet = optionalPortfolio.get().getInvestments()
                 .stream()
-                .map(investment -> investment.getProduct().getLink())
-                .collect(Collectors.toSet());
+                .map(investment -> investment.getProduct().getLinks())
+                .flatMap(List::stream)
+                .collect(Collectors.toSet())
+                ;
 
         productsByOptionalLinks( new ArrayList<>(linkSet) );
         portfolioService.refresh(portfolioId);
@@ -154,29 +174,29 @@ public class ScrapMetal extends Scrap {
     /**
      * Scraps new price for already known product
      * @param product already saved in DB
-     * @return new price
      */
-    protected Price priceByProductScrap(Product product) {
-        loadPage(product.getLink().getLink());
+    protected void priceByProductScrap(Product product) {
+        for (Link link : product.getLinks() ) {
+            loadPage(link.getLink());
 
-        double buyPrice = 0.0;
-        double redemptionPrice = 0.0;
-        try {
-            buyPrice = Extractor.priceExtractor(((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText());
-        } catch (Exception e) {
-            System.out.println("WARNING - Kupni cena = 0");
+            double buyPrice = 0.0;
+            double redemptionPrice = 0.0;
+            try {
+                buyPrice = Extractor.priceExtractor(((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText());
+            } catch (Exception e) {
+                System.out.println("WARNING - Kupni cena = 0");
 //            e.printStackTrace();
-        }
-        try {
-            redemptionPrice = Extractor.priceExtractor(redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice)));
-        } catch (Exception e) {
-            System.out.println("WARNING - Vykupni cena = 0");
+            }
+            try {
+                redemptionPrice = Extractor.priceExtractor(redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice)));
+            } catch (Exception e) {
+                System.out.println("WARNING - Vykupni cena = 0");
 //            e.printStackTrace();
+            }
+            Price newPrice = new Price(LocalDateTime.now(), buyPrice, redemptionPrice, dealer);
+            addPriceToProduct(product, newPrice);
+            System.out.println("> New price saved");
         }
-        Price newPrice = new Price(LocalDateTime.now(), buyPrice, redemptionPrice, dealer);
-        addPriceToProduct(product, newPrice);
-        System.out.println("> New price saved");
-        return newPrice;
     }
 
     /**
@@ -301,7 +321,7 @@ public class ScrapMetal extends Scrap {
         System.out.println("WARNING - Duplicates in DB table LINK");
     }
 
-    protected void addPriceToProduct(Product product, Price price) {
+    private void addPriceToProduct(Product product, Price price) {
         List<Price> priceList = product.getPrices();
         this.priceService.save(price);
         priceList.add(price);

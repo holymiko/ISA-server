@@ -11,6 +11,7 @@ public class Extractor {
 
     private static final double TROY_OUNCE = 31.1034768;
     private static final double OUNCE = 28.349523125;
+    private static final double TOLAR = 28.07;
 
     /**
      * Extracts Producer from text
@@ -19,7 +20,8 @@ public class Extractor {
      */
     public static Producer producerExtractor(String text) {
         text = text.toLowerCase();
-        if (text.contains("perth") || text.contains("rok") || text.contains("kangaroo") || text.contains("kookaburra") || text.contains("koala")) {
+        if (text.contains("perth") || text.contains("rok") || text.contains("kangaroo")
+        || text.contains("kookaburra") || text.contains("koala") || text.contains("austrálie")) {
             return Producer.PERTH_MINT;
         } else if(text.contains("argor")) {
             return Producer.ARGOR_HERAEUS;
@@ -49,8 +51,6 @@ public class Extractor {
             return Producer.POBJOY_MINT;
         } else if (text.contains("kanada")){
             return Producer.ROYAL_CANADIAN_MINT;
-        } else if (text.contains("austrálie")) {
-            return Producer.PERTH_MINT;
         } else if (text.contains("usa") || text.contains("american")) {
             return Producer.UNITED_STATES_MINT;
         }
@@ -65,8 +65,14 @@ public class Extractor {
      */
     public static Form formExtractor(String text) {
         text = text.toLowerCase();
+        if(text.contains("paket") || text.contains("odběr 100 ks a více")) {
+            return Form.PACKET;
+        }
         if(text.contains("mince") || text.contains("coin") || text.contains("tolar")){
             return Form.COIN;
+        }
+        if(text.contains("kinebar")){
+            return Form.KINEBAR;
         }
         if(text.contains("bar") || text.contains("slitek")){
             return Form.BAR;
@@ -146,6 +152,10 @@ public class Extractor {
             String s = matcher.group();
             s = s.replace(" kg", "");
             return Double.parseDouble(s) * 1000;
+        }
+
+        if (text.contains("tolar") || text.contains("taler")) {
+            return TOLAR;
         }
 
         return -1;

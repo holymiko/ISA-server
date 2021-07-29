@@ -27,7 +27,7 @@ public class PortfolioController {
     private void start() {
 //        this.portfolioService.addInvestmentToPortfolio("Mikolas",
 //                this.investmentService.save(
-//                    new Investment (
+//                    new InvestmentMetal (
 //                            this.productService.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(
 //                                    Dealer.BESSERGOLD,
 //                                    Producer.MUNZE_OSTERREICH,
@@ -78,13 +78,13 @@ public class PortfolioController {
 
     @GetMapping({"/dto/portfolio-investments", "/dto/portfolio-investments/" })
     public List<Portfolio_Investment_DTO> asPortfolio_Investment_DTO() {
-        System.out.println("Get all portfolios as Portfolio-Investment DTO");
+        System.out.println("Get all portfolios as Portfolio-InvestmentMetal DTO");
         return portfolioService.findAllAsPortfolioInvestmentDTO();
     }
 
     @GetMapping("/dto/portfolio-investments/id/{id}")
     public Portfolio_Investment_DTO byIdAsPortfolio_Investment_DTO(@PathVariable long id) {
-        System.out.println("Get by Id as Portfolio-Investment DTO");
+        System.out.println("Get by Id as Portfolio-InvestmentMetal DTO");
 
         Optional<Portfolio_Investment_DTO> optionalPortfolio = portfolioService.findByIdAsPortfolioInvestmentDTO(id);
         if (optionalPortfolio.isPresent()) {
@@ -100,7 +100,7 @@ public class PortfolioController {
     @PostMapping({"/", ""})
     public void createPortfolio(@RequestBody PortfolioCreateDTO portfolioCreateDTO) {
         System.out.println("Add Portfolio");
-        this.portfolioService.save(portfolioCreateDTO);
+//        this.portfolioService.save(portfolioCreateDTO);
     }
 
 }

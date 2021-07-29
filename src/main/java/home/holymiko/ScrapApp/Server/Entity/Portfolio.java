@@ -13,10 +13,10 @@ public class Portfolio {
     private double value;
     private double yield;
     @OneToMany(fetch = FetchType.EAGER)
-    private List<Investment> investments;
+    private List<InvestmentMetal> investmentMetals;
 
-    public Portfolio(List<Investment> investments, String owner) {
-        this.investments = investments;
+    public Portfolio(List<InvestmentMetal> investmentMetals, String owner) {
+        this.investmentMetals = investmentMetals;
         this.owner = owner;
         this.setBeginPrice();
         this.setYield();
@@ -30,8 +30,8 @@ public class Portfolio {
 
     public void setBeginPrice() {
         double total = 0;
-        for (Investment investment : this.investments) {
-            total += investment.getBeginPrice();
+        for (InvestmentMetal investmentMetal : this.investmentMetals) {
+            total += investmentMetal.getBeginPrice();
         }
         this.beginPrice = total;
     }
@@ -43,8 +43,8 @@ public class Portfolio {
 
     public void setValue() {
         double totalRedemption = 0;
-        for (Investment investment : this.investments)
-            totalRedemption += investment.getProduct().getLatestPrice().getRedemption();
+        for (InvestmentMetal investmentMetal : this.investmentMetals)
+            totalRedemption += investmentMetal.getProduct().getLatestPrices().get(0).getRedemption();    // TODO where bought
         this.value = totalRedemption;
     }
 
@@ -73,8 +73,8 @@ public class Portfolio {
         return value;
     }
 
-    public List<Investment> getInvestments() {
-        return investments;
+    public List<InvestmentMetal> getInvestments() {
+        return investmentMetals;
     }
 
     public String getOwner() {
