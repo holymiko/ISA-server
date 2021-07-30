@@ -100,8 +100,7 @@ public class ProductService {
 
     public List<Product> findProducts(List<Long> investmentIds) {
         List<Product> investments = new ArrayList<>();
-        for (Long id:
-                investmentIds) {
+        for (Long id : investmentIds) {
             Optional<Product> optionalProduct = this.productRepository.findById(id);
             if(optionalProduct.isPresent()){
                 investments.add(optionalProduct.get());

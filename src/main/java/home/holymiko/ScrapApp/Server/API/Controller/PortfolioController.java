@@ -22,17 +22,19 @@ public class PortfolioController {
     @Autowired
     public PortfolioController(PortfolioService portfolioService) {
         this.portfolioService = portfolioService;
+//        start();
     }
 
     private void start() {
-//        this.portfolioService.addInvestmentToPortfolio("Mikolas",
+        portfolioService.saveInitPortfolios();
+//        this.portfolioService.addInvestmentToPortfolio("Carlos",
 //                this.investmentService.save(
 //                    new InvestmentMetal (
 //                            this.productService.findProductByLink_DealerAndProducerAndMetalAndFormAndGrams(
 //                                    Dealer.BESSERGOLD,
 //                                    Producer.MUNZE_OSTERREICH,
 //                                    Metal.GOLD,
-//                                    Form.BAR,
+//                                    Form.KINEBAR,
 //                                    10
 //                            ), 14569.00, LocalDate.of(2021, 5, 18))));
 

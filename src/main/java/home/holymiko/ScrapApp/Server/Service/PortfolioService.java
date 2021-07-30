@@ -158,6 +158,12 @@ public class PortfolioService {
         System.out.println(">> Save Portfolio");
     }
 
+    @Transactional
+    public void save(String name) {
+        this.portfolioRepository.save(new Portfolio(new ArrayList<>(), name));
+        System.out.println(">> Save Portfolio");
+    }
+
     /**
      * Updates portfolio values.
      * @param portfolioId

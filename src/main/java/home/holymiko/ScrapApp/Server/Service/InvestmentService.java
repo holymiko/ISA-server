@@ -6,9 +6,11 @@ import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
 import home.holymiko.ScrapApp.Server.Entity.InvestmentMetal;
+import home.holymiko.ScrapApp.Server.Entity.Product;
 import home.holymiko.ScrapApp.Server.Repository.InvestmentRepository;
 import home.holymiko.ScrapApp.Server.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -77,7 +79,7 @@ public class InvestmentService {
 //        Optional<Product> optionalProduct = this.productRepository.findById(product.getId());
 //        if(optionalProduct.isPresent()){
 //            System.out.println("localDate");
-//            InvestmentMetal investmentMetal = new InvestmentMetal( product, LocalDate.of(100,1,1));
+//            InvestmentMetal investmentMetal = new InvestmentMetal( product,  LocalDate.of(100,1,1));
 //            this.investmentRepository.save(investmentMetal);
 //            return this.investmentRepository.findById(investmentMetal.getId()).get();
 //        }
@@ -93,6 +95,7 @@ public class InvestmentService {
 
     @Transactional
     public List<InvestmentMetal> saveCarlosInvestments() {
+        InvestmentMetal goldenBar0 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.GOLD, Form.KINEBAR,10).get(), Dealer.BESSERGOLD, 14569.00, LocalDate.of(2021, 5, 18));
         InvestmentMetal goldenBar1 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.GOLD, Form.BAR, 2).get(), Dealer.BESSERGOLD, 3164.75, LocalDate.of(2021, 1, 19));
         InvestmentMetal goldenBar2 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.GOLD, Form.BAR, 2).get(), Dealer.BESSERGOLD, 3547.00, LocalDate.of(2020, 10, 12));
 
@@ -111,6 +114,7 @@ public class InvestmentService {
         InvestmentMetal platinumBar1 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.PLATINUM, Form.BAR, 5).get(), Dealer.BESSERGOLD, 4409.18, LocalDate.of(2019, 2, 18));
 
         List<InvestmentMetal> investmentMetalList = new ArrayList<>() {{
+            add(goldenBar0);
             add(goldenBar1);
             add(goldenBar2);
             add(silverBar1);
@@ -125,6 +129,7 @@ public class InvestmentService {
             add(silverWienerCoin3);
         }};
 
+        this.investmentRepository.save(goldenBar0);
         this.investmentRepository.save(goldenBar1);
         this.investmentRepository.save(goldenBar2);
         this.investmentRepository.save(silverBar1);
