@@ -29,7 +29,7 @@ public class ScrapMetal extends Scrap {
     protected final String searchUrlPlatinum;
     protected final String searchUrlPalladium;
 
-    private static final long DELAY = 700;
+    private static final long ETHICAL_DELAY = 700;
 
 
     private final String xPathProductList;
@@ -87,10 +87,11 @@ public class ScrapMetal extends Scrap {
             List<Link> links = new ArrayList<>();
             links.add(link);
             priceByProductScrap( new Product(name, producer, form, metal, grams, links, null, new ArrayList<>()), link );
-            System.out.println("Product saved");
+            System.out.println(">> Product saved");
             return;
         }
 
+        // Price from another dealer added to product
         if (products.size() == 1) {
             products.get(0).getLinks().add(link);
             priceByProductScrap(products.get(0), link);
@@ -124,8 +125,10 @@ public class ScrapMetal extends Scrap {
      */
     private void productsOrPricesScrap(final List<Link> links) {
         for (Link link : links) {
+            long start = System.nanoTime();
             productOrPriceScrap(link);
-            printAndSleep(DELAY, links.size());
+            // Sleep time is dynamic, according to time took by scrap procedure
+            dynamicSleepAndStatusPrint(ETHICAL_DELAY, start, links.size());
         }
         printerCounter = 0;
     }
@@ -200,8 +203,15 @@ public class ScrapMetal extends Scrap {
         System.out.println("ScrapMetal pricesByMetal");
         List<Product> productList = this.productService.findByMetal(metal);
         for (Product product : productList) {
-            product.getLinks().forEach(link -> priceByProductScrap(product, link));
-            printAndSleep(DELAY, productList.size());
+            long start = System.nanoTime();
+
+            // Scraps new price for each product's link
+            product.getLinks().forEach(
+                    link -> priceByProductScrap(product, link)
+            );
+
+            // Sleep time is dynamic, according to time took by scrap procedure
+            dynamicSleepAndStatusPrint(ETHICAL_DELAY, start, productList.size());
         }
         printerCounter = 0;
         System.out.println(metal+" prices scraped");
@@ -211,14 +221,21 @@ public class ScrapMetal extends Scrap {
     public void pricesByProductIds(List<Long> productIds){
         System.out.println("ScrapMetal pricesByProductIds");
         for (Long productId : productIds) {
+            long start = System.nanoTime();
             Optional<Product> optionalProduct = this.productService.findById(productId);
+
             if(optionalProduct.isEmpty()){
                 printerCounter++;
                 continue;
             }
+
             // Scraps new price for each product's link
-            optionalProduct.get().getLinks().forEach(link -> priceByProductScrap(optionalProduct.get(), link));
-            printAndSleep(DELAY, productIds.size());
+            optionalProduct.get().getLinks().forEach(
+                    link -> priceByProductScrap(optionalProduct.get(), link)
+            );
+
+            // Sleep time is dynamic, according to time took by scrap procedure
+            dynamicSleepAndStatusPrint(ETHICAL_DELAY, start, productIds.size());
         }
         printerCounter = 0;
         System.out.println(">> Prices scraped");
@@ -240,7 +257,10 @@ public class ScrapMetal extends Scrap {
 
         System.out.println(elements.size()+" HTMLElements to scrap");
 
-        elements.forEach( element -> scrapLink(element, searchUrl) );
+        // Scraps new link for each element
+        elements.forEach(
+                element -> scrapLink(element, searchUrl)
+        );
 
         System.out.println("Total number of links: " + linkService.findAll().size());
     }
@@ -278,7 +298,7 @@ public class ScrapMetal extends Scrap {
 
     /**
      * Filtration based on text of the link
-     * @param link
+     * @param link Link about to be filtered
      * @return False for filter being filtered
      */
     protected static boolean linkFilter(String link) {
@@ -324,8 +344,8 @@ public class ScrapMetal extends Scrap {
 
     /**
      * Price is added to Product. LatestPrice is updated.
-     * @param product
-     * @param price
+     * @param product Product where the Price gonna be added
+     * @param price Price to be added to Product
      */
     private void addPriceToProduct(Product product, Price price) {
         List<Price> priceList = product.getPrices();

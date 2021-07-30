@@ -15,7 +15,7 @@ import java.util.*;
 @Component
 public class ScrapSerenity extends Scrap {
     private static final double MIN_RATING_SCORE = 6.5;
-    private static final long DELAY = 700;
+    private static final long ETHICAL_DELAY = 700;
     private static final String BASE_URL = "https://www.serenitystocks.com/stock/";
 
     private final TickerService tickerService;
@@ -42,12 +42,11 @@ public class ScrapSerenity extends Scrap {
     public void tickersScrap(TickerState tickerState) {
         System.out.println("Trying to scrap "+tickerState+" tickers");
         printTotalStatus();
-        int i = 0;
 
         List<Ticker> tickers = this.tickerService.findByTickerState(tickerState);
 
         for (Ticker ticker : tickers) {
-
+            long start = System.nanoTime();
             if( !loadPage(BASE_URL + ticker.getTicker().toLowerCase(Locale.ROOT) )) {
                 this.tickerService.update(ticker, TickerState.NOTFOUND);
                 System.out.println(">"+ticker.getTicker()+"<");
@@ -64,11 +63,9 @@ public class ScrapSerenity extends Scrap {
                     System.out.println(">"+ticker.getTicker()+"< Bad");
                 }
             }
-
-            sleep(DELAY);
-            i++;
-            printScrapingStatus(i, tickers.size());
+            dynamicSleepAndStatusPrint(ETHICAL_DELAY, start, tickers.size());
         }
+        printerCounter = 0;
         printTotalStatus();
     }
 
@@ -158,14 +155,6 @@ public class ScrapSerenity extends Scrap {
         System.out.println("Unknown: "+Math.round(unknown)+"  "+df.format(unknown*100/total)+"%");
         System.out.println("Total: "+Math.round(total));
         System.out.println();
-    }
-
-    private static void printScrapingStatus(int i, int size) {
-        if(i % 50 == 0) {
-            System.out.println();
-            System.out.println(i+"/"+size);
-            System.out.println();
-        }
     }
 
 }

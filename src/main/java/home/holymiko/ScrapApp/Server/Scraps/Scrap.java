@@ -27,11 +27,24 @@ public class Scrap {
         }
     }
 
-    protected void printAndSleep(long delay, int size){
+    /**
+     * Sleep time is dynamic, according to time took by scrap procedure
+     * @param ethical_delay Constant
+     * @param start Time of scrap procedure start
+     * @param size of list being scraped
+     */
+    protected void dynamicSleepAndStatusPrint(final long ethical_delay, final long start, final int size){
         printerCounter++;
-        if ((printerCounter % 10) == 0)
+        if ((printerCounter % 10) == 0) {
             System.out.println(printerCounter + "/" + size);
-        sleep(delay);
+        }
+
+        // Sleep time is dynamic, according to time took by scrap procedure
+        long delay = ethical_delay - (System.nanoTime()-start);
+
+        if(delay > 0){
+            sleep(delay);
+        }
     }
 
     /**
