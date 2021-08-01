@@ -30,7 +30,7 @@ public class ScrapMetal extends Scrap {
     protected final String searchUrlPalladium;
 
     private static final long ETHICAL_DELAY = 700;
-
+    private static final int INTERVAL_PRINT = 10;
 
     private final String xPathProductList;
     private final String xPathProductName;
@@ -128,7 +128,7 @@ public class ScrapMetal extends Scrap {
             long start = System.nanoTime();
             productOrPriceScrap(link);
             // Sleep time is dynamic, according to time took by scrap procedure
-            dynamicSleepAndStatusPrint(ETHICAL_DELAY, start, links.size());
+            dynamicSleepAndStatusPrint(ETHICAL_DELAY, start, INTERVAL_PRINT, links.size());
         }
         printerCounter = 0;
     }
@@ -211,7 +211,7 @@ public class ScrapMetal extends Scrap {
             );
 
             // Sleep time is dynamic, according to time took by scrap procedure
-            dynamicSleepAndStatusPrint(ETHICAL_DELAY, start, productList.size());
+            dynamicSleepAndStatusPrint(ETHICAL_DELAY, start, INTERVAL_PRINT, productList.size());
         }
         printerCounter = 0;
         System.out.println(metal+" prices scraped");
@@ -235,7 +235,7 @@ public class ScrapMetal extends Scrap {
             );
 
             // Sleep time is dynamic, according to time took by scrap procedure
-            dynamicSleepAndStatusPrint(ETHICAL_DELAY, start, productIds.size());
+            dynamicSleepAndStatusPrint(ETHICAL_DELAY, start, INTERVAL_PRINT, productIds.size());
         }
         printerCounter = 0;
         System.out.println(">> Prices scraped");
@@ -299,7 +299,7 @@ public class ScrapMetal extends Scrap {
     /**
      * Filtration based on text of the link
      * @param link Link about to be filtered
-     * @return False for filter being filtered
+     * @return False for link being filtered
      */
     protected static boolean linkFilter(String link) {
         if (link.contains("etuje")) {

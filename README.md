@@ -55,12 +55,12 @@ Datové zdroje jsou rozšířeny o Zlaťáky (www.zlataky.cz)
 Ve třídě **ScrapMetal** je provedeno mnoho optimalizací a recyklací kódu. 
 Tato třída nyní sjednocuje všechny metody pro scrapování drahých kovů.  
 Specifické informace pro jednotlivé dealery jsou uvedeny v potomcích třídy ScrapMetal (**ScrapBessergold**,  **ScrapZlataky**).  
-Metody pro extrakci dat z třídy ScrapMetal jsou vyčleněny do nové třídy **Extractor**
+Metody pro extrakci dat z třídy ScrapMetal jsou vyčleněny do nové třídy **Extractor**.
 
 Opravy ve třídě **ScrapSerenity** umožňují opakované scrapování, při kterém je automaticky upraven **TickerState**.
 
 Etické spoždění pro scrapování je nyní dynamické. 
-Skutečná doba uspání algoritmu, mezi každým odeslaným dotazem, závisý na čase potřebném ke scrapování produktu. (viz. metoda **dynamicSleepAndStatusPrint**)
+Skutečná doba uspání algoritmu, mezi každým odeslaným dotazem, závisý na čase potřebném ke scrapování produktu (viz. metoda **dynamicSleepAndStatusPrint**).
 
 ### Změny v databázi
 Stejné produkty od různých dealerů jsou automaticky spojovány do jednoho.
@@ -76,6 +76,7 @@ Do entity je přidán atribut **Dealer**, aby byly ceny přidružené k produktu
 
 
 ## ToDo
+- [ ] Portfolio a Investment optimalizace
 - [ ] Auto export do txt pro scrapSerenity
 - [ ] Stock to Investments
 - [ ] Gold to silver ratio

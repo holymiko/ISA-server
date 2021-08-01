@@ -63,7 +63,7 @@ public class ScrapSerenity extends Scrap {
                     System.out.println(">"+ticker.getTicker()+"< Bad");
                 }
             }
-            dynamicSleepAndStatusPrint(ETHICAL_DELAY, start, tickers.size());
+            dynamicSleepAndStatusPrint(ETHICAL_DELAY, start, 50, tickers.size());
         }
         printerCounter = 0;
         printTotalStatus();

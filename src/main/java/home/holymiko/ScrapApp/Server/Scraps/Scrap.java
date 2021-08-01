@@ -19,7 +19,7 @@ public class Scrap {
         client.getOptions().setPrintContentOnFailingStatusCode(false);
     }
 
-    protected void sleep(long delay) {
+    private void sleep(long delay) {
         try {
             Thread.sleep(delay);
         } catch (Exception e) {
@@ -27,23 +27,30 @@ public class Scrap {
         }
     }
 
+    protected void dynamicSleepAndStatusPrint(final long ethical_delay, final long start, final int interval, final int size) {
+        statusPrint(interval, size);
+        dynamicSleep(ethical_delay, start);
+    }
+
     /**
      * Sleep time is dynamic, according to time took by scrap procedure
      * @param ethical_delay Constant
      * @param start Time of scrap procedure start
-     * @param size of list being scraped
      */
-    protected void dynamicSleepAndStatusPrint(final long ethical_delay, final long start, final int size){
-        printerCounter++;
-        if ((printerCounter % 10) == 0) {
-            System.out.println(printerCounter + "/" + size);
-        }
+    protected void dynamicSleep(final long ethical_delay, final long start){
 
         // Sleep time is dynamic, according to time took by scrap procedure
         long delay = ethical_delay - (System.nanoTime()-start);
 
         if(delay > 0){
             sleep(delay);
+        }
+    }
+
+    protected void statusPrint(final int interval, final int size) {
+        printerCounter++;
+        if ((printerCounter % interval) == 0) {
+            System.out.println(printerCounter + "/" + size);
         }
     }
 
