@@ -19,7 +19,7 @@ public class Scrap {
         client.getOptions().setPrintContentOnFailingStatusCode(false);
     }
 
-    private void sleep(long delay) {
+    private void sleep(final long delay) {
         try {
             Thread.sleep(delay);
         } catch (Exception e) {
@@ -27,21 +27,21 @@ public class Scrap {
         }
     }
 
-    protected void dynamicSleepAndStatusPrint(final long ethical_delay, final long start, final int interval, final int size) {
+    protected void dynamicSleepAndStatusPrint(final long ethical_delay, final long startTime, final int interval, final int size) {
         statusPrint(interval, size);
-        dynamicSleep(ethical_delay, start);
+        dynamicSleep(ethical_delay, startTime);
     }
 
     /**
      * Sleep time is dynamic, according to time took by scrap procedure
      * @param ethical_delay Constant
-     * @param start Time of scrap procedure start
+     * @param startTime Time of scrap procedure start
      */
-    protected void dynamicSleep(final long ethical_delay, final long start){
+    protected void dynamicSleep(final long ethical_delay, final long startTime){
 
         // Sleep time is dynamic, according to time took by scrap procedure
-        long delay = ethical_delay - (System.nanoTime()-start);
-
+        long delay = ethical_delay - (System.nanoTime()/1_000_000 - startTime/1_000_000);
+//        System.out.println("Delay "+delay);
         if(delay > 0){
             sleep(delay);
         }
@@ -50,7 +50,7 @@ public class Scrap {
     protected void statusPrint(final int interval, final int size) {
         printerCounter++;
         if ((printerCounter % interval) == 0) {
-            System.out.println(printerCounter + "/" + size);
+            System.out.println(printerCounter + "/" + size + "\n");
         }
     }
 
@@ -59,7 +59,7 @@ public class Scrap {
      * @param link URL of the page
      * @return True if page was found and loaded successfully.
      */
-    protected boolean loadPage(String link){
+    protected boolean loadPage(final String link){
         page = null;
         try {
             page = client.getPage(link);                // Product page

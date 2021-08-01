@@ -10,7 +10,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Extractor {
+public class Extract {
 
     private static final double TROY_OUNCE = 31.1034768;
     private static final double OUNCE = 28.349523125;

@@ -30,7 +30,7 @@ public class ScrapMetal extends Scrap {
     protected final String searchUrlPalladium;
 
     private static final long ETHICAL_DELAY = 700;
-    private static final int INTERVAL_PRINT = 10;
+    private static final int PRINT_INTERVAL = 10;
 
     private final String xPathProductList;
     private final String xPathProductName;
@@ -67,10 +67,10 @@ public class ScrapMetal extends Scrap {
             e.printStackTrace();
         }
         final String nameLowerCase = name.toLowerCase(Locale.ROOT);
-        final Form form = Extractor.formExtractor(nameLowerCase);
-        final Metal metal = Extractor.metalExtractor(nameLowerCase);
-        final double grams = Extractor.weightExtractor(nameLowerCase);
-        final Producer producer = Extractor.producerExtractor(nameLowerCase);
+        final Form form = Extract.formExtractor(nameLowerCase);
+        final Metal metal = Extract.metalExtractor(nameLowerCase);
+        final double grams = Extract.weightExtractor(nameLowerCase);
+        final Producer producer = Extract.producerExtractor(nameLowerCase);
         final List<Product> products = productService.findProductByProducerAndMetalAndFormAndGrams(producer, metal, form, grams);
 
         if(name.equals("") || producer == Producer.UNKNOWN || form == Form.UNKNOWN || metal == Metal.UNKNOWN ) {
@@ -125,10 +125,10 @@ public class ScrapMetal extends Scrap {
      */
     private void productsOrPricesScrap(final List<Link> links) {
         for (Link link : links) {
-            long start = System.nanoTime();
+            long startTime = System.nanoTime();
             productOrPriceScrap(link);
             // Sleep time is dynamic, according to time took by scrap procedure
-            dynamicSleepAndStatusPrint(ETHICAL_DELAY, start, INTERVAL_PRINT, links.size());
+            dynamicSleepAndStatusPrint(ETHICAL_DELAY, startTime, PRINT_INTERVAL, links.size());
         }
         printerCounter = 0;
     }
@@ -178,12 +178,12 @@ public class ScrapMetal extends Scrap {
         double buyPrice = 0.0;
         double redemptionPrice = 0.0;
         try {
-            buyPrice = Extractor.priceExtractor(((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText());
+            buyPrice = Extract.priceExtractor(((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText());
         } catch (Exception e) {
             System.out.println("WARNING - Kupni cena = 0");
         }
         try {
-            redemptionPrice = Extractor.priceExtractor(redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice)));
+            redemptionPrice = Extract.priceExtractor(redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice)));
         } catch (Exception e) {
             System.out.println("WARNING - Vykupni cena = 0");
         }
@@ -203,7 +203,7 @@ public class ScrapMetal extends Scrap {
         System.out.println("ScrapMetal pricesByMetal");
         List<Product> productList = this.productService.findByMetal(metal);
         for (Product product : productList) {
-            long start = System.nanoTime();
+            long startTime = System.nanoTime();
 
             // Scraps new price for each product's link
             product.getLinks().forEach(
@@ -211,7 +211,7 @@ public class ScrapMetal extends Scrap {
             );
 
             // Sleep time is dynamic, according to time took by scrap procedure
-            dynamicSleepAndStatusPrint(ETHICAL_DELAY, start, INTERVAL_PRINT, productList.size());
+            dynamicSleepAndStatusPrint(ETHICAL_DELAY, startTime, PRINT_INTERVAL, productList.size());
         }
         printerCounter = 0;
         System.out.println(metal+" prices scraped");
@@ -221,7 +221,7 @@ public class ScrapMetal extends Scrap {
     public void pricesByProductIds(List<Long> productIds){
         System.out.println("ScrapMetal pricesByProductIds");
         for (Long productId : productIds) {
-            long start = System.nanoTime();
+            long startTime = System.nanoTime();
             Optional<Product> optionalProduct = this.productService.findById(productId);
 
             if(optionalProduct.isEmpty()){
@@ -235,7 +235,7 @@ public class ScrapMetal extends Scrap {
             );
 
             // Sleep time is dynamic, according to time took by scrap procedure
-            dynamicSleepAndStatusPrint(ETHICAL_DELAY, start, INTERVAL_PRINT, productIds.size());
+            dynamicSleepAndStatusPrint(ETHICAL_DELAY, startTime, PRINT_INTERVAL, productIds.size());
         }
         printerCounter = 0;
         System.out.println(">> Prices scraped");

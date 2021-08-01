@@ -2,6 +2,7 @@ package home.holymiko.ScrapApp.Server.Scraps;
 
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import home.holymiko.ScrapApp.Server.API.Export;
 import home.holymiko.ScrapApp.Server.Entity.Enum.*;
 import home.holymiko.ScrapApp.Server.Entity.*;
 import home.holymiko.ScrapApp.Server.Service.StockService;
@@ -15,7 +16,7 @@ import java.util.*;
 @Component
 public class ScrapSerenity extends Scrap {
     private static final double MIN_RATING_SCORE = 6.5;
-    private static final long ETHICAL_DELAY = 700;
+    private static final long ETHICAL_DELAY = 1000;
     private static final String BASE_URL = "https://www.serenitystocks.com/stock/";
 
     private final TickerService tickerService;
@@ -33,9 +34,9 @@ public class ScrapSerenity extends Scrap {
 
     public void run() {
         printTotalStatus();
-//        tickerService.exportTickers();
+//        Export.exportTickers(tickerService.findAll());
+//        Export.exportStocks(stockService.findAll());
 //        tickersScrap(TickerState.GOOD);
-//        tickerService.loadTickers();
 //        fixer("$");
     }
 
@@ -46,7 +47,7 @@ public class ScrapSerenity extends Scrap {
         List<Ticker> tickers = this.tickerService.findByTickerState(tickerState);
 
         for (Ticker ticker : tickers) {
-            long start = System.nanoTime();
+            long startTime = System.nanoTime();
             if( !loadPage(BASE_URL + ticker.getTicker().toLowerCase(Locale.ROOT) )) {
                 this.tickerService.update(ticker, TickerState.NOTFOUND);
                 System.out.println(">"+ticker.getTicker()+"<");
@@ -63,13 +64,16 @@ public class ScrapSerenity extends Scrap {
                     System.out.println(">"+ticker.getTicker()+"< Bad");
                 }
             }
-            dynamicSleepAndStatusPrint(ETHICAL_DELAY, start, 50, tickers.size());
+//            sleep(ETHICAL_DELAY);
+            dynamicSleepAndStatusPrint(ETHICAL_DELAY, startTime, 50, tickers.size());
         }
         printerCounter = 0;
         printTotalStatus();
+        Export.exportTickers(tickerService.findAll());
+        Export.exportStocks(stockService.findAll());
     }
 
-    public void stockScrap(final Ticker ticker, final Double ratingScore) {
+    private void stockScrap(final Ticker ticker, final Double ratingScore) {
         List<Double> ratings = new ArrayList<>();          // Graham Ratings
         List<Double> results = new ArrayList<>();          // Graham Results
         GrahamGrade grade = null;
@@ -78,15 +82,15 @@ public class ScrapSerenity extends Scrap {
         String currency = ((DomText) page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div[9]/div/div/text()")).asText();
 
         for(int i = 2; i <= 11; i++) {
-            ratings.add( Extractor.serenityElementToDouble( page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div["+i+"]/div[2]/div")) );
+            ratings.add( Extract.serenityElementToDouble( page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div["+i+"]/div[2]/div")) );
         }
         for(int i = 2; i <= 8; i++) {
             HtmlElement htmlElement = page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div["+i+"]/div[2]/div");
             if(i == 5) {
-                grade = Extractor.gradeExtractor(htmlElement);
+                grade = Extract.gradeExtractor(htmlElement);
                 continue;
             }
-            results.add( Extractor.serenityElementToDouble(htmlElement) );
+            results.add( Extract.serenityElementToDouble(htmlElement) );
         }
 
 //        printScrapStock(header, ratingScore, ratings, results, currency);
