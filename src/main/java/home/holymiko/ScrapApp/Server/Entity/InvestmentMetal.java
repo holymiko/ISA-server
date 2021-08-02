@@ -50,6 +50,10 @@ public class InvestmentMetal {
         return yield;
     }
 
+    public Dealer getDealer() {
+        return dealer;
+    }
+
     public String getTextYield() {
         if (yield >= 1)
             return "+" + String.format("%.2f", (yield - 1) * 100) + "%";

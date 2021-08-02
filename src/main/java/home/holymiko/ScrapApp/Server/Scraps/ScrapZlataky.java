@@ -51,6 +51,12 @@ public class ScrapZlataky extends ScrapMetal {
         );
     }
 
+    /////// PRICE
+
+    @Override
+    protected String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
+        return redemptionPriceHtml.asText().split(":")[1];          // Výkupní cena (osvobozeno od DPH): xxxx,xx Kč
+    }
 
     /////// LINK
 

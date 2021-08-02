@@ -2,15 +2,18 @@ package home.holymiko.ScrapApp.Server.API.Controller;
 
 import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
 import home.holymiko.ScrapApp.Server.Entity.Enum.TickerState;
+import home.holymiko.ScrapApp.Server.Entity.Product;
 import home.holymiko.ScrapApp.Server.Scraps.ScrapBessergold;
 import home.holymiko.ScrapApp.Server.Scraps.ScrapSerenity;
 import home.holymiko.ScrapApp.Server.Scraps.ScrapZlataky;
+import home.holymiko.ScrapApp.Server.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,15 +40,15 @@ public class ScrapController {
     private final ScrapBessergold scrapBessergold;
     private final ScrapZlataky scrapZlataky;
     private final ScrapSerenity scrapSerenity;
+    private final ProductService productService;
 
     @Autowired
-    public ScrapController(ScrapBessergold scrapBessergold, ScrapZlataky scrapZlataky, ScrapSerenity scrapSerenity) {
+    public ScrapController(ScrapBessergold scrapBessergold, ScrapZlataky scrapZlataky, ScrapSerenity scrapSerenity, ProductService productService) {
         this.scrapBessergold = scrapBessergold;
         this.scrapZlataky = scrapZlataky;
         this.scrapSerenity = scrapSerenity;
+        this.productService = productService;
     }
-
-
 
     @RequestMapping({"/all", "/all/"})
     public void all() {
@@ -124,6 +127,7 @@ public class ScrapController {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then " + MINUTES_DELAY + " ago");
                 }
                 this.scrapBessergold.pricesByMetal(Metal.GOLD);
+                this.scrapZlataky.pricesByMetal(Metal.GOLD);
                 lastGold = LocalDateTime.now();
             }
             case "silver" -> {
@@ -132,6 +136,7 @@ public class ScrapController {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then " + MINUTES_DELAY + " ago");
                 }
                 this.scrapBessergold.pricesByMetal(Metal.SILVER);
+                this.scrapZlataky.pricesByMetal(Metal.SILVER);
                 lastSilver = LocalDateTime.now();
             }
             case "platinum" -> {
@@ -140,6 +145,7 @@ public class ScrapController {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then " + MINUTES_DELAY + " ago");
                 }
                 this.scrapBessergold.pricesByMetal(Metal.PLATINUM);
+                this.scrapZlataky.pricesByMetal(Metal.PLATINUM);
                 lastPlatinum = LocalDateTime.now();
             }
             case "palladium" -> {
@@ -148,6 +154,7 @@ public class ScrapController {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then " + MINUTES_DELAY + " ago");
                 }
                 this.scrapBessergold.pricesByMetal(Metal.PALLADIUM);
+                this.scrapZlataky.pricesByMetal(Metal.PALLADIUM);
                 lastPalladium = LocalDateTime.now();
             }
             default -> {
@@ -167,6 +174,7 @@ public class ScrapController {
 
         try {
             this.scrapBessergold.productsByPortfolio(id);
+            this.scrapZlataky.productsByPortfolio(id);
         } catch (ResponseStatusException e){
             isRunning = false;
             throw e;
@@ -183,7 +191,8 @@ public class ScrapController {
         isRunning = true;
 
         try {
-            this.scrapBessergold.pricesByProductIds(productIds);
+            this.scrapBessergold.pricesByProducts(productIds);
+            this.scrapZlataky.pricesByProducts(productIds);
         } catch (ResponseStatusException e){
             isRunning = false;
             throw e;

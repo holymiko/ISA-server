@@ -57,7 +57,7 @@ public class ScrapMetal extends Scrap {
 
     /////// PRODUCT
 
-    private void productByLink(final Link link) {
+    private void productByLink(Link link) {
         loadPage(link.getLink());
 
         String name = "";
@@ -86,7 +86,11 @@ public class ScrapMetal extends Scrap {
         || pattern.matcher(nameLowerCase).find()) {
             List<Link> links = new ArrayList<>();
             links.add(link);
-            priceByProductScrap( new Product(name, producer, form, metal, grams, links, null, new ArrayList<>()), link );
+            Product product = new Product(name, producer, form, metal, grams, links, new ArrayList<>(), new ArrayList<>());
+            productService.save(product);
+            link.setProduct(product);
+            linkService.save(link);
+            priceScrap(link);
             System.out.println(">> Product saved");
             return;
         }
@@ -94,7 +98,9 @@ public class ScrapMetal extends Scrap {
         // Price from another dealer added to product
         if (products.size() == 1) {
             products.get(0).getLinks().add(link);
-            priceByProductScrap(products.get(0), link);
+            link.setProduct(products.get(0));
+            linkService.save(link);
+            priceScrap(link);
             return;
         }
 
@@ -115,7 +121,7 @@ public class ScrapMetal extends Scrap {
             productByLink(link);
             return;
         }
-        priceByProductScrap(optionalProduct.get(), link);
+        priceScrap(link);
     }
 
     /**
@@ -147,7 +153,7 @@ public class ScrapMetal extends Scrap {
     }
 
     public void productsByPortfolio(long portfolioId) throws ResponseStatusException {
-        System.out.println("ScrapMetal Portfolio-Products");
+        System.out.println("ScrapMetal productsByPortfolio");
         Optional<Portfolio> optionalPortfolio = portfolioService.findById(portfolioId);
         if (optionalPortfolio.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No portfolio with such ID");
@@ -156,9 +162,15 @@ public class ScrapMetal extends Scrap {
         // Set prevents one Product to be scrapped more times
         Set<Link> linkSet = optionalPortfolio.get().getInvestments()
                 .stream()
-                .map(investment -> investment.getProduct().getLinks())
-                .flatMap(List::stream)
-                .collect(Collectors.toSet());
+                .map(
+                        investment -> linkService.findByDealerAndProductId(dealer, investment.getProduct().getId())
+                ).filter(
+                        Optional::isPresent
+                ).map(
+                        Optional::get
+                ).collect(
+                        Collectors.toSet()
+                );
 
         productsOrPricesScrap( new ArrayList<>(linkSet) );
         portfolioService.refresh(portfolioId);
@@ -170,9 +182,9 @@ public class ScrapMetal extends Scrap {
 
     /**
      * Scraps new price for already known product
-     * @param product already saved in DB
+     * @param link Link from which the price gonna be scrapped
      */
-    protected void priceByProductScrap(Product product, Link link) {
+    protected void priceScrap(final Link link) {
         loadPage(link.getLink());
 
         double buyPrice = 0.0;
@@ -189,10 +201,10 @@ public class ScrapMetal extends Scrap {
         }
 
         addPriceToProduct(
-                product,
-                new Price(LocalDateTime.now(), buyPrice, redemptionPrice, dealer)
+                link.getProduct(),
+                new Price(LocalDateTime.now(), buyPrice, redemptionPrice, link.getDealer())
         );
-        System.out.println("> New price saved - "+link.getLink());
+        System.out.println("> New price saved - " + link.getLink());
     }
 
     /**
@@ -201,43 +213,38 @@ public class ScrapMetal extends Scrap {
      */
     public void pricesByMetal(Metal metal){
         System.out.println("ScrapMetal pricesByMetal");
-        List<Product> productList = this.productService.findByMetal(metal);
-        for (Product product : productList) {
-            long startTime = System.nanoTime();
 
-            // Scraps new price for each product's link
-            product.getLinks().forEach(
-                    link -> priceByProductScrap(product, link)
-            );
+        scrapGivenProducts(
+                productService.findByMetal(metal).stream()
+                    .map(
+                            Product::getId
+                    )
+                    .collect(Collectors.toList())
+        );
 
-            // Sleep time is dynamic, according to time took by scrap procedure
-            dynamicSleepAndStatusPrint(ETHICAL_DELAY, startTime, PRINT_INTERVAL, productList.size());
-        }
-        printerCounter = 0;
         System.out.println(metal+" prices scraped");
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
     }
 
-    public void pricesByProductIds(List<Long> productIds){
-        System.out.println("ScrapMetal pricesByProductIds");
-        for (Long productId : productIds) {
+    private void scrapGivenProducts(final List<Long> productIds) {
+        for (long productId : productIds) {
             long startTime = System.nanoTime();
-            Optional<Product> optionalProduct = this.productService.findById(productId);
 
-            if(optionalProduct.isEmpty()){
-                printerCounter++;
-                continue;
-            }
-
-            // Scraps new price for each product's link
-            optionalProduct.get().getLinks().forEach(
-                    link -> priceByProductScrap(optionalProduct.get(), link)
+            // Scraps new price for this.dealer product link
+            linkService.findByDealerAndProductId(dealer, productId)
+                    .ifPresent(
+                            this::priceScrap
             );
 
             // Sleep time is dynamic, according to time took by scrap procedure
             dynamicSleepAndStatusPrint(ETHICAL_DELAY, startTime, PRINT_INTERVAL, productIds.size());
         }
         printerCounter = 0;
+    }
+
+    public void pricesByProducts(List<Long> productIds){
+        System.out.println("ScrapMetal pricesByProducts");
+        scrapGivenProducts(productIds);
         System.out.println(">> Prices scraped");
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
     }

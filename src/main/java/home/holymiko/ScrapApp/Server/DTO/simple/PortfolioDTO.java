@@ -1,23 +1,22 @@
-package home.holymiko.ScrapApp.Server.DTO;
+package home.holymiko.ScrapApp.Server.DTO.simple;
 
 import java.util.List;
 
-public class Portfolio_Investment_DTO {
-
+public class PortfolioDTO {
     private final long id;
     private final String owner;
     private final double beginPrice;
     private final double value;
     private final double yield;
-    private final List<InvestmentDTO> investments;
+    private final List<Long> investmentIds;
 
-    public Portfolio_Investment_DTO(long id, String owner, double beginPrice, double value, double yield, List<InvestmentDTO> investmentDTOS) {
+    public PortfolioDTO(long id, String owner, double beginPrice, double value, double yield, List<Long> investments) {
         this.id = id;
         this.owner = owner;
         this.beginPrice = beginPrice;
         this.value = value;
         this.yield = yield;
-        this.investments = investmentDTOS;
+        this.investmentIds = investments;
     }
 
     public long getId() {
@@ -28,6 +27,12 @@ public class Portfolio_Investment_DTO {
         return yield;
     }
 
+    public String getTextYield() {
+        if (yield >= 1)
+            return "+" + String.format("%.2f", (yield - 1) * 100) + "%";
+        return "-" + String.format("%.2f", (100 - yield * 100)) + "%";
+    }
+
     public double getBeginPrice() {
         return beginPrice;
     }
@@ -36,13 +41,12 @@ public class Portfolio_Investment_DTO {
         return value;
     }
 
-    public List<InvestmentDTO> getInvestments() {
-        return investments;
+    public List<Long> getInvestmentIds() {
+        return investmentIds;
     }
 
     public String getOwner() {
-                return owner;
-            }
+        return owner;
+    }
 
 }
-

@@ -1,11 +1,10 @@
 package home.holymiko.ScrapApp.Server.Service;
 
-import home.holymiko.ScrapApp.Server.DTO.PortfolioCreateDTO;
-import home.holymiko.ScrapApp.Server.DTO.PortfolioDTO;
-import home.holymiko.ScrapApp.Server.DTO.Portfolio_Investment_DTO;
+import home.holymiko.ScrapApp.Server.DTO.create.PortfolioCreateDTO;
+import home.holymiko.ScrapApp.Server.DTO.simple.PortfolioDTO;
+import home.holymiko.ScrapApp.Server.DTO.advanced.PortfolioDTO_Investments;
 import home.holymiko.ScrapApp.Server.Entity.InvestmentMetal;
 import home.holymiko.ScrapApp.Server.Entity.Portfolio;
-import home.holymiko.ScrapApp.Server.Entity.Product;
 import home.holymiko.ScrapApp.Server.Repository.PortfolioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,8 +61,8 @@ public class PortfolioService {
      * @param portfolio
      * @return Portfolio with collection of InvestmentDTOs
      */
-    private Portfolio_Investment_DTO toPortfolioInvestmentDTO(Portfolio portfolio) {
-        return new Portfolio_Investment_DTO(
+    private PortfolioDTO_Investments toPortfolioInvestmentDTO(Portfolio portfolio) {
+        return new PortfolioDTO_Investments(
                 portfolio.getId(),
                 portfolio.getOwner(),
                 portfolio.getBeginPrice(),
@@ -86,14 +85,14 @@ public class PortfolioService {
                 .collect(Collectors.toList());
     }
 
-    public List<Portfolio_Investment_DTO> findAllAsPortfolioInvestmentDTO() {
+    public List<PortfolioDTO_Investments> findAllAsPortfolioInvestmentDTO() {
         return portfolioRepository.findAll()
                 .stream()
                 .map(this::toPortfolioInvestmentDTO)
                 .collect(Collectors.toList());
     }
 
-    public Optional<Portfolio_Investment_DTO> findByIdAsPortfolioInvestmentDTO(Long portfolioId) {
+    public Optional<PortfolioDTO_Investments> findByIdAsPortfolioInvestmentDTO(Long portfolioId) {
         return portfolioRepository.findById(portfolioId)
                 .map(this::toPortfolioInvestmentDTO);
     }

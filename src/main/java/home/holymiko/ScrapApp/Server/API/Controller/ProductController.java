@@ -1,6 +1,7 @@
 package home.holymiko.ScrapApp.Server.API.Controller;
 
-import home.holymiko.ScrapApp.Server.DTO.ProductDTO;
+import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_AllPrices;
+import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_LatestPrices;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
 import home.holymiko.ScrapApp.Server.Entity.Product;
 import home.holymiko.ScrapApp.Server.Service.ProductService;
@@ -27,9 +28,9 @@ public class ProductController {
     /////// GET
 
     @GetMapping("/id/{id}")
-    public Product byId(@PathVariable long id) {
+    public ProductDTO_AllPrices byId(@PathVariable long id) {
         System.out.println("Get product by Id");
-        Optional<Product> optionalProduct = productService.findById(id);
+        Optional<ProductDTO_AllPrices> optionalProduct = productService.findByIdAsDTOAllPrices(id);
         if (optionalProduct.isPresent()) {
             return optionalProduct.get();
         }
@@ -51,16 +52,16 @@ public class ProductController {
     /////// GET DTO
 
     @GetMapping({ "/dto/", "/dto"})
-    public List<ProductDTO> allAsDTO() {
+    public List<ProductDTO_LatestPrices> allAsDTO() {
         System.out.println("Get all products as DTO");
         return productService.findAllAsDTO();
     }
 
     @GetMapping("/dto/id/{id}")
-    public ProductDTO byIdAsDTO(@PathVariable long id) {
+    public ProductDTO_LatestPrices byIdAsDTO(@PathVariable long id) {
         System.out.println("Get by Id "+id+" as Product DTO");
 
-        Optional<ProductDTO> optionalPortfolio = productService.findByIdAsDTO(id);
+        Optional<ProductDTO_LatestPrices> optionalPortfolio = productService.findByIdAsDTO(id);
         if (optionalPortfolio.isPresent()) {
             return optionalPortfolio.get();
         }
@@ -69,7 +70,7 @@ public class ProductController {
     }
 
     @GetMapping({ "/dto/metal/{metal}", "/dto/metal/{metal}/"})
-    public List<ProductDTO> byMetalAsDTO(@PathVariable String metal) {
+    public List<ProductDTO_LatestPrices> byMetalAsDTO(@PathVariable String metal) {
         System.out.println("Get products byMetal "+metal+" as DTO");
         return switch (metal) {
             case "gold" -> this.productService.findByMetalAsDTO(Metal.GOLD);

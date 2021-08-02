@@ -6,6 +6,7 @@ import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Link {
@@ -15,6 +16,8 @@ public class Link {
     private Dealer dealer;
     @NotNull
     private String link;
+    @ManyToOne
+    private Product product;
 
     public Link() {
     }
@@ -22,6 +25,18 @@ public class Link {
     public Link(Dealer dealer, String link) {
         this.dealer = dealer;
         this.link = link;
+    }
+
+    public void setDealer(Dealer dealer) {
+        this.dealer = dealer;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public Dealer getDealer() {

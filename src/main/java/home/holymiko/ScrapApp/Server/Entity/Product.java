@@ -25,7 +25,7 @@ public class Product {
     private Metal metal;
     private double grams;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private List<Link> links;      // + Dealer
 
@@ -71,7 +71,10 @@ public class Product {
     }
 
     public Price getLatestPriceByDealer(Dealer dealer) {
-        return this.latestPrices.stream().filter(price -> price.getDealer() == dealer).collect(Collectors.toList()).get(0);
+        return this.latestPrices.stream()
+                .filter(
+                        price -> price.getDealer() == dealer
+                ).collect(Collectors.toList()).get(0);
     }
 
     public void setName(String name) {

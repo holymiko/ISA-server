@@ -1,16 +1,14 @@
 package home.holymiko.ScrapApp.Server.Service;
 
-import home.holymiko.ScrapApp.Server.DTO.InvestmentDTO;
+import home.holymiko.ScrapApp.Server.DTO.simple.InvestmentMetalDTO;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
 import home.holymiko.ScrapApp.Server.Entity.InvestmentMetal;
-import home.holymiko.ScrapApp.Server.Entity.Product;
 import home.holymiko.ScrapApp.Server.Repository.InvestmentRepository;
 import home.holymiko.ScrapApp.Server.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -38,10 +36,11 @@ public class InvestmentService {
     }
 
 
-    public InvestmentDTO toDTO(InvestmentMetal investmentMetal){
-        return new InvestmentDTO(
+    public InvestmentMetalDTO toDTO(InvestmentMetal investmentMetal){
+        return new InvestmentMetalDTO(
                 investmentMetal.getId(),
-                productService.toDTO(investmentMetal.getProduct()),
+                productService.toDTOLatestPrices(investmentMetal.getProduct()),
+                investmentMetal.getDealer(),
                 investmentMetal.getYield(),
                 investmentMetal.getBeginPrice(),
                 investmentMetal.getEndPrice(),
@@ -53,23 +52,23 @@ public class InvestmentService {
 
     ////// FIND
 
-    public List<InvestmentMetal> longToInvestments(List<Long> investmentIds) {
-        List<InvestmentMetal> investmentMetals = new ArrayList<>();
-        for (Long id:
-                investmentIds) {
-            Optional<InvestmentMetal> optionalInvestment = this.investmentRepository.findById(id);
-            if(optionalInvestment.isPresent()){
-                investmentMetals.add(optionalInvestment.get());
-            } else {
-                System.out.println("InvestmentMetal by ID does exist");
-            }
-        }
-        return investmentMetals;
-    }
-
-    public Optional<InvestmentMetal> findById(Long id) {
-        return this.investmentRepository.findById(id);
-    }
+//    public List<InvestmentMetal> longToInvestments(List<Long> investmentIds) {
+//        List<InvestmentMetal> investmentMetals = new ArrayList<>();
+//        for (Long id:
+//                investmentIds) {
+//            Optional<InvestmentMetal> optionalInvestment = this.investmentRepository.findById(id);
+//            if(optionalInvestment.isPresent()){
+//                investmentMetals.add(optionalInvestment.get());
+//            } else {
+//                System.out.println("InvestmentMetal by ID does exist");
+//            }
+//        }
+//        return investmentMetals;
+//    }
+//
+//    public Optional<InvestmentMetal> findById(Long id) {
+//        return this.investmentRepository.findById(id);
+//    }
 
 
     ////// POST
@@ -95,23 +94,186 @@ public class InvestmentService {
 
     @Transactional
     public List<InvestmentMetal> saveCarlosInvestments() {
-        InvestmentMetal goldenBar0 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.GOLD, Form.KINEBAR,10).get(), Dealer.BESSERGOLD, 14569.00, LocalDate.of(2021, 5, 18));
-        InvestmentMetal goldenBar1 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.GOLD, Form.BAR, 2).get(), Dealer.BESSERGOLD, 3164.75, LocalDate.of(2021, 1, 19));
-        InvestmentMetal goldenBar2 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.GOLD, Form.BAR, 2).get(), Dealer.BESSERGOLD, 3547.00, LocalDate.of(2020, 10, 12));
 
-        InvestmentMetal silverBar1 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 1000).get(), Dealer.BESSERGOLD, 17832.76, LocalDate.of(2020, 1, 22));
-        InvestmentMetal silverBar2 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500).get(), Dealer.BESSERGOLD, 7752.67, LocalDate.of(2018, 10, 17));
-        InvestmentMetal silverBar3 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500).get(), Dealer.BESSERGOLD, 7375.80, LocalDate.of(2018, 9, 10));
+        // GOLD BAR
 
-        InvestmentMetal silverMapleCoin1 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ROYAL_CANADIAN_MINT, Metal.SILVER, Form.COIN, TROY_OUNCE).get(), Dealer.BESSERGOLD, 848.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverMapleCoin2 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ROYAL_CANADIAN_MINT, Metal.SILVER, Form.COIN, TROY_OUNCE).get(), Dealer.BESSERGOLD, 848.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverMapleCoin3 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ROYAL_CANADIAN_MINT, Metal.SILVER, Form.COIN, TROY_OUNCE).get(), Dealer.BESSERGOLD, 848.00, LocalDate.of(2021, 1, 25));
+        InvestmentMetal goldenBar0 = new InvestmentMetal(
+                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(
+                        Dealer.BESSERGOLD,
+                        Producer.MUNZE_OSTERREICH,
+                        Metal.GOLD,
+                        Form.KINEBAR,
+                        10
+                ).get(),
+                Dealer.BESSERGOLD,
+                14569.00,
+                LocalDate.of(2021, 5, 18)
+        );
 
-        InvestmentMetal silverWienerCoin1 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.SILVER, Form.COIN, TROY_OUNCE).get(), Dealer.BESSERGOLD, 868.00, LocalDate.of(2020, 12, 10));
-        InvestmentMetal silverWienerCoin2 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.SILVER, Form.COIN, TROY_OUNCE).get(), Dealer.BESSERGOLD, 845.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverWienerCoin3 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.SILVER, Form.COIN, TROY_OUNCE).get(), Dealer.BESSERGOLD, 845.00, LocalDate.of(2021, 1, 25));
+        InvestmentMetal goldenBar1 = new InvestmentMetal(
+                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(
+                        Dealer.BESSERGOLD,
+                        Producer.MUNZE_OSTERREICH,
+                        Metal.GOLD,
+                        Form.BAR,
+                        2
+                ).get(),
+                Dealer.BESSERGOLD,
+                3164.75,
+                LocalDate.of(2021, 1, 19)
+        );
 
-        InvestmentMetal platinumBar1 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.PLATINUM, Form.BAR, 5).get(), Dealer.BESSERGOLD, 4409.18, LocalDate.of(2019, 2, 18));
+        InvestmentMetal goldenBar2 = new InvestmentMetal(
+                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(
+                        Dealer.BESSERGOLD,
+                        Producer.MUNZE_OSTERREICH,
+                        Metal.GOLD,
+                        Form.BAR,
+                        2
+                ).get(),
+                Dealer.ZLATAKY,
+                3547.00,
+                LocalDate.of(2020, 10, 12)
+        );
+
+
+        // SILVER BAR
+
+        InvestmentMetal silverBar1 = new InvestmentMetal(
+                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(
+                        Dealer.BESSERGOLD,
+                        Producer.ARGOR_HERAEUS,
+                        Metal.SILVER,
+                        Form.BAR,
+                        1000
+                ).get(),
+                Dealer.BESSERGOLD,
+                17832.76,
+                LocalDate.of(2020, 1, 22)
+        );
+
+        InvestmentMetal silverBar2 = new InvestmentMetal(
+                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(
+                        Dealer.BESSERGOLD,
+                        Producer.ARGOR_HERAEUS,
+                        Metal.SILVER,
+                        Form.BAR,
+                        500
+                ).get(),
+                Dealer.BESSERGOLD,
+                7752.67,
+                LocalDate.of(2018, 10, 17)
+        );
+
+        InvestmentMetal silverBar3 = new InvestmentMetal(
+                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(
+                        Dealer.BESSERGOLD,
+                        Producer.ARGOR_HERAEUS,
+                        Metal.SILVER,
+                        Form.BAR,
+                        500
+                ).get(),
+                Dealer.BESSERGOLD,
+                7375.80,
+                LocalDate.of(2018, 9, 10)
+        );
+
+
+        // SILVER COIN
+
+        InvestmentMetal silverMapleCoin1 = new InvestmentMetal(
+                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(
+                        Dealer.BESSERGOLD,
+                        Producer.ROYAL_CANADIAN_MINT,
+                        Metal.SILVER,
+                        Form.COIN,
+                        TROY_OUNCE
+                ).get(),
+                Dealer.ZLATAKY,
+                848.00,
+                LocalDate.of(2021, 1, 25)
+        );
+
+        InvestmentMetal silverMapleCoin2 = new InvestmentMetal(
+                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(
+                        Dealer.BESSERGOLD,
+                        Producer.ROYAL_CANADIAN_MINT,
+                        Metal.SILVER,
+                        Form.COIN,
+                        TROY_OUNCE
+                ).get(),
+                Dealer.ZLATAKY,
+                848.00,
+                LocalDate.of(2021, 1, 25)
+        );
+
+        InvestmentMetal silverMapleCoin3 = new InvestmentMetal(
+                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(
+                        Dealer.BESSERGOLD,
+                        Producer.ROYAL_CANADIAN_MINT,
+                        Metal.SILVER,
+                        Form.COIN,
+                        TROY_OUNCE
+                ).get(),
+                Dealer.ZLATAKY,
+                848.00,
+                LocalDate.of(2021, 1, 25)
+        );
+
+        InvestmentMetal silverWienerCoin1 = new InvestmentMetal(
+                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(
+                        Dealer.BESSERGOLD,
+                        Producer.MUNZE_OSTERREICH,
+                        Metal.SILVER,
+                        Form.COIN,
+                        TROY_OUNCE
+                ).get(),
+                Dealer.ZLATAKY,
+                868.00,
+                LocalDate.of(2020, 12, 10)
+        );
+
+        InvestmentMetal silverWienerCoin2 = new InvestmentMetal(
+                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(
+                        Dealer.BESSERGOLD,
+                        Producer.MUNZE_OSTERREICH,
+                        Metal.SILVER,
+                        Form.COIN,
+                        TROY_OUNCE
+                ).get(),
+                Dealer.ZLATAKY,
+                845.00,
+                LocalDate.of(2021, 1, 25)
+        );
+
+        InvestmentMetal silverWienerCoin3 = new InvestmentMetal(
+                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(
+                        Dealer.BESSERGOLD,
+                        Producer.MUNZE_OSTERREICH,
+                        Metal.SILVER,
+                        Form.COIN,
+                        TROY_OUNCE
+                ).get(),
+                Dealer.ZLATAKY,
+                845.00,
+                LocalDate.of(2021, 1, 25)
+        );
+
+
+        // PLATINUM
+
+        InvestmentMetal platinumBar1 = new InvestmentMetal(
+                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(
+                        Dealer.BESSERGOLD,
+                        Producer.ARGOR_HERAEUS,
+                        Metal.PLATINUM,
+                        Form.BAR,
+                        5
+                ).get(),
+                Dealer.BESSERGOLD,
+                4409.18,
+                LocalDate.of(2019, 2, 18)
+        );
 
         List<InvestmentMetal> investmentMetalList = new ArrayList<>() {{
             add(goldenBar0);
@@ -147,7 +309,8 @@ public class InvestmentService {
 
     @Transactional
     public List<InvestmentMetal> saveSanchezInvestments() {
-        InvestmentMetal silverBar1 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500).get(), Dealer.BESSERGOLD, 7752.67, LocalDate.of(2018, 10, 17));
+        InvestmentMetal silverBar1 = new InvestmentMetal(
+                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500).get(), Dealer.BESSERGOLD, 7752.67, LocalDate.of(2018, 10, 17));
         InvestmentMetal silverBar2 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500).get(), Dealer.BESSERGOLD, 7375.80, LocalDate.of(2018, 9, 10));
         InvestmentMetal silverBar3 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500).get(), Dealer.BESSERGOLD, 7375.80, LocalDate.of(2018, 9, 10));
         InvestmentMetal silverBar4 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGrams(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500).get(), Dealer.BESSERGOLD, 7752.67, LocalDate.of(2018, 10, 17));

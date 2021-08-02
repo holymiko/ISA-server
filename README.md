@@ -77,7 +77,7 @@ Do entity je přidán atribut **Dealer**, aby byly ceny přidružené k produktu
 
 ## ToDo
 - [ ] Portfolio a Investment optimalizace
-- [ ] Stock to Investments
+- [ ] Stock investments
 - [ ] Gold to silver ratio
 
 <br/>

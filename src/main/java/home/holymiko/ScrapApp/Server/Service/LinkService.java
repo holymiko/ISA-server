@@ -4,11 +4,13 @@ import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
 import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
 import home.holymiko.ScrapApp.Server.Entity.Link;
+import home.holymiko.ScrapApp.Server.Entity.Product;
 import home.holymiko.ScrapApp.Server.Repository.LinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LinkService {
@@ -33,6 +35,10 @@ public class LinkService {
 
     public List<Link> findByDealer(Dealer dealer) {
         return linkRepository.findByDealer(dealer);
+    }
+
+    public Optional<Link> findByDealerAndProductId(Dealer dealer, long product) {
+        return linkRepository.findByDealerAndProduct_Id(dealer, product);
     }
 
 //    public List<Link> findByProducer(Producer producer) {

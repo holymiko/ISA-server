@@ -1,8 +1,8 @@
 package home.holymiko.ScrapApp.Server.API.Controller;
 
-import home.holymiko.ScrapApp.Server.DTO.PortfolioCreateDTO;
-import home.holymiko.ScrapApp.Server.DTO.PortfolioDTO;
-import home.holymiko.ScrapApp.Server.DTO.Portfolio_Investment_DTO;
+import home.holymiko.ScrapApp.Server.DTO.create.PortfolioCreateDTO;
+import home.holymiko.ScrapApp.Server.DTO.simple.PortfolioDTO;
+import home.holymiko.ScrapApp.Server.DTO.advanced.PortfolioDTO_Investments;
 import home.holymiko.ScrapApp.Server.Entity.Portfolio;
 import home.holymiko.ScrapApp.Server.Service.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,16 +79,16 @@ public class PortfolioController {
     }
 
     @GetMapping({"/dto/portfolio-investments", "/dto/portfolio-investments/" })
-    public List<Portfolio_Investment_DTO> asPortfolio_Investment_DTO() {
+    public List<PortfolioDTO_Investments> asPortfolio_Investment_DTO() {
         System.out.println("Get all portfolios as Portfolio-InvestmentMetal DTO");
         return portfolioService.findAllAsPortfolioInvestmentDTO();
     }
 
     @GetMapping("/dto/portfolio-investments/id/{id}")
-    public Portfolio_Investment_DTO byIdAsPortfolio_Investment_DTO(@PathVariable long id) {
+    public PortfolioDTO_Investments byIdAsPortfolio_Investment_DTO(@PathVariable long id) {
         System.out.println("Get by Id as Portfolio-InvestmentMetal DTO");
 
-        Optional<Portfolio_Investment_DTO> optionalPortfolio = portfolioService.findByIdAsPortfolioInvestmentDTO(id);
+        Optional<PortfolioDTO_Investments> optionalPortfolio = portfolioService.findByIdAsPortfolioInvestmentDTO(id);
         if (optionalPortfolio.isPresent()) {
             return optionalPortfolio.get();
         }

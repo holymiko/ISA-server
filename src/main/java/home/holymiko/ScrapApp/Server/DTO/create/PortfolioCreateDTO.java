@@ -1,4 +1,4 @@
-package home.holymiko.ScrapApp.Server.DTO;
+package home.holymiko.ScrapApp.Server.DTO.create;
 
 import java.util.List;
 

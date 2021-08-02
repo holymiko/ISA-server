@@ -43,8 +43,9 @@ public class Portfolio {
 
     public void setValue() {
         double totalRedemption = 0;
-        for (InvestmentMetal investmentMetal : this.investmentMetals)
-            totalRedemption += investmentMetal.getProduct().getLatestPrices().get(0).getRedemption();    // TODO where bought
+        for (InvestmentMetal investmentMetal : this.investmentMetals) {
+            totalRedemption += investmentMetal.getProduct().getLatestPriceByDealer( investmentMetal.getDealer() ).getRedemption();
+        }
         this.value = totalRedemption;
     }
 
