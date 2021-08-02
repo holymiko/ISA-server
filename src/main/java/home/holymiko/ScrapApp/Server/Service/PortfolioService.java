@@ -32,7 +32,7 @@ public class PortfolioService {
 
     /**
      * Converts Portfolio's Investments to IDs
-     * @param portfolio
+     * @param portfolio Portfolio to be converted
      * @return Portfolio with collection of IDs
      */
     private PortfolioDTO toPortfolioDTO(Portfolio portfolio) {
@@ -58,7 +58,7 @@ public class PortfolioService {
 
     /**
      * Converts Portfolio's Investments to InvestmentDTOs
-     * @param portfolio
+     * @param portfolio Portfolio to be converted
      * @return Portfolio with collection of InvestmentDTOs
      */
     private PortfolioDTO_Investments toPortfolioInvestmentDTO(Portfolio portfolio) {
@@ -134,8 +134,8 @@ public class PortfolioService {
         }
     }
 
-    @Transactional
-    public void save(PortfolioCreateDTO portfolioCreateDTO) {
+//    @Transactional
+//    public void save(PortfolioCreateDTO portfolioCreateDTO) {
 //        List<Product> productList = this.productService.findProducts( portfolioCreateDTO.getInvestmentIds() );
 //        List<InvestmentMetal> investmentMetalList = new ArrayList<>();
 //
@@ -149,38 +149,40 @@ public class PortfolioService {
 //                )
 //        );
 //        System.out.println(">> Save PortfolioCreateDTO " + portfolioCreateDTO.getOwner());
-    }
+//    }
 
-    @Transactional
-    public void save(Portfolio portfolio) {
-        this.portfolioRepository.save(portfolio);
-        System.out.println(">> Save Portfolio");
-    }
-
-    @Transactional
-    public void save(String name) {
-        this.portfolioRepository.save(new Portfolio(new ArrayList<>(), name));
-        System.out.println(">> Save Portfolio");
-    }
+//    @Transactional
+//    public void save(Portfolio portfolio) {
+//        this.portfolioRepository.save(portfolio);
+//        System.out.println(">> Save Portfolio");
+//    }
+//
+//    @Transactional
+//    public void save(String name) {
+//        this.portfolioRepository.save(new Portfolio(new ArrayList<>(), name));
+//        System.out.println(">> Save Portfolio");
+//    }
 
     /**
      * Updates portfolio values.
-     * @param portfolioId
+     * @param portfolioId Id of portfolio to be refreshed
      */
     @Transactional
     public void refresh(long portfolioId) {
-        portfolioRepository.findById(portfolioId).ifPresent(portfolio -> {
-            portfolio.getInvestments().forEach(InvestmentMetal::setYield);
-            portfolio.setBeginPrice();
-            portfolio.setValue();
-            portfolio.setYield();
-        });
+        portfolioRepository.findById(portfolioId).ifPresent(
+                portfolio -> {
+                    portfolio.getInvestments().forEach(InvestmentMetal::setYield);
+                    portfolio.setBeginPrice();
+                    portfolio.setValue();
+                    portfolio.setYield();
+                }
+        );
     }
 
-    @Transactional
-    public List<InvestmentMetal> addInvestmentToPortfolio(String portfolioOwner, InvestmentMetal investmentMetal) {
-        List<InvestmentMetal> investmentMetalList = this.portfolioRepository.findByOwner(portfolioOwner).get().getInvestments();
-        investmentMetalList.add(investmentMetal);
-        return investmentMetalList;
-    }
+//    @Transactional
+//    public List<InvestmentMetal> addInvestmentToPortfolio(String portfolioOwner, InvestmentMetal investmentMetal) {
+//        List<InvestmentMetal> investmentMetalList = this.portfolioRepository.findByOwner(portfolioOwner).get().getInvestments();
+//        investmentMetalList.add(investmentMetal);
+//        return investmentMetalList;
+//    }
 }

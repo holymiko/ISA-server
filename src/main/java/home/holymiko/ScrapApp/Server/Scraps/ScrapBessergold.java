@@ -24,15 +24,13 @@ public class ScrapBessergold extends ScrapMetal {
     public ScrapBessergold(LinkService linkService,
                            PriceService priceService,
                            ProductService productService,
-                           PortfolioService portfolioService,
-                           InvestmentService investmentService) {
+                           PortfolioService portfolioService) {
         super(
                 Dealer.BESSERGOLD,
                 linkService,
                 priceService,
                 portfolioService,
                 productService,
-                investmentService,
                 SEARCH_URL_GOLD,
                 SEARCH_URL_SILVER,
                 SEARCH_URL_PLATINUM,

@@ -22,7 +22,6 @@ public class ScrapMetal extends Scrap {
     protected final PriceService priceService;
     protected final PortfolioService portfolioService;
     protected final ProductService productService;
-    protected final InvestmentService investmentService;
 
     protected final String searchUrlGold;
     protected final String searchUrlSilver;
@@ -37,14 +36,13 @@ public class ScrapMetal extends Scrap {
     private final String xPathBuyPrice;
     private final String xPathRedemptionPrice;
 
-    public ScrapMetal(Dealer dealer, LinkService linkService, PriceService priceService, PortfolioService portfolioService, ProductService productService, InvestmentService investmentService, String searchUrlGold, String searchUrlSilver, String searchUrlPlatinum, String searchUrlPalladium, String xPathProductList, String xPathProductName, String xPathBuyPrice, String xPathRedemptionPrice) {
+    public ScrapMetal(Dealer dealer, LinkService linkService, PriceService priceService, PortfolioService portfolioService, ProductService productService, String searchUrlGold, String searchUrlSilver, String searchUrlPlatinum, String searchUrlPalladium, String xPathProductList, String xPathProductName, String xPathBuyPrice, String xPathRedemptionPrice) {
         super();
         this.dealer = dealer;
         this.linkService = linkService;
         this.priceService = priceService;
         this.portfolioService = portfolioService;
         this.productService = productService;
-        this.investmentService = investmentService;
         this.searchUrlGold = searchUrlGold;
         this.searchUrlSilver = searchUrlSilver;
         this.searchUrlPlatinum = searchUrlPlatinum;

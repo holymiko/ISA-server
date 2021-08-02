@@ -31,15 +31,13 @@ public class ScrapZlataky extends ScrapMetal {
     public ScrapZlataky(LinkService linkService,
                         PriceService priceService,
                         ProductService productService,
-                        PortfolioService portfolioService,
-                        InvestmentService investmentService) {
+                        PortfolioService portfolioService) {
         super(
                 Dealer.ZLATAKY,
                 linkService,
                 priceService,
                 portfolioService,
                 productService,
-                investmentService,
                 SEARCH_URL_GOLD_BAR,       // Wont be used, method overwritten
                 SEARCH_URL_SILVER_BAR,     // Wont be used, method overwritten
                 SEARCH_URL_PLATINUM,
