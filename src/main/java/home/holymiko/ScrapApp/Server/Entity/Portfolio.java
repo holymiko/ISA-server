@@ -1,9 +1,12 @@
 package home.holymiko.ScrapApp.Server.Entity;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Getter
 public class Portfolio {
     @Id
     @GeneratedValue
@@ -56,30 +59,6 @@ public class Portfolio {
         if (yield >= 1)
             return "+" + String.format("%.2f", (yield - 1) * 100) + "%";
         return "-" + String.format("%.2f", (100 - yield * 100)) + "%";
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public double getYield() {
-        return yield;
-    }
-
-    public double getBeginPrice() {
-        return beginPrice;
-    }
-
-    public double getValue() {
-        return value;
-    }
-
-    public List<InvestmentMetal> getInvestments() {
-        return investmentMetals;
-    }
-
-    public String getOwner() {
-        return owner;
     }
 
 }

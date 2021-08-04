@@ -1,11 +1,13 @@
 package home.holymiko.ScrapApp.Server.Entity;
 
-import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
+import home.holymiko.ScrapApp.Server.Enum.Dealer;
+import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
 public class Price {
 
     @Id
@@ -22,22 +24,6 @@ public class Price {
         this.price = price;
         this.redemption = redemption;
         this.dealer = dealer;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public double getRedemption() {
-        return redemption;
-    }
-
-    public Dealer getDealer() {
-        return dealer;
     }
 
     @Override

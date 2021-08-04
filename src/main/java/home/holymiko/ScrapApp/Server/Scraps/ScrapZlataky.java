@@ -2,7 +2,7 @@ package home.holymiko.ScrapApp.Server.Scraps;
 
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
+import home.holymiko.ScrapApp.Server.Enum.Dealer;
 import home.holymiko.ScrapApp.Server.Entity.Link;
 import home.holymiko.ScrapApp.Server.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;

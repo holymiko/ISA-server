@@ -3,15 +3,15 @@ package home.holymiko.ScrapApp.Server.Service;
 import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_LatestPrices;
 import home.holymiko.ScrapApp.Server.Entity.*;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
+import home.holymiko.ScrapApp.Server.Enum.Form;
+import home.holymiko.ScrapApp.Server.Enum.Metal;
+import home.holymiko.ScrapApp.Server.Enum.Producer;
 import home.holymiko.ScrapApp.Server.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +32,7 @@ public class ProductService {
     public ProductDTO_LatestPrices toDTOLatestPrices(Product product) {
         return new ProductDTO_LatestPrices(
                 product.getId(),
-                product.getMetalString(),
+                product.getMetal().name(),
                 product.getName(),
                 product.getGrams(),
                 product.getLinks()
@@ -46,7 +46,7 @@ public class ProductService {
     public ProductDTO_AllPrices toDTOAllPrices(Product product) {
         return new ProductDTO_AllPrices(
                 product.getId(),
-                product.getMetalString(),
+                product.getMetal().name(),
                 product.getName(),
                 product.getGrams(),
                 product.getLinks()
@@ -116,8 +116,8 @@ public class ProductService {
         return this.productRepository.findByLinks_Link(link);
     }
 
-    public List<Product> findProductByProducerAndMetalAndFormAndGrams(Producer producer, Metal metal, Form form, double grams) {
-        return this.productRepository.findProductByProducerAndMetalAndFormAndGrams(producer, metal, form, grams);
+    public List<Product> findProductByProducerAndMetalAndFormAndGramsAndYear(Producer producer, Metal metal, Form form, double grams, int year) {
+        return this.productRepository.findProductByProducerAndMetalAndFormAndGramsAndYear(producer, metal, form, grams, year);
     }
 
 //    public Optional<Product> findById(Long id) {

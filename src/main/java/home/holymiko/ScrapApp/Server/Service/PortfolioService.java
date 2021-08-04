@@ -42,7 +42,7 @@ public class PortfolioService {
                 portfolio.getBeginPrice(),
                 portfolio.getValue(),
                 portfolio.getYield(),
-                portfolio.getInvestments()
+                portfolio.getInvestmentMetals()
                         .stream()
                         .map(InvestmentMetal::getId)
                         .collect(Collectors.toList())
@@ -68,7 +68,7 @@ public class PortfolioService {
                 portfolio.getBeginPrice(),
                 portfolio.getValue(),
                 portfolio.getYield(),
-                portfolio.getInvestments()
+                portfolio.getInvestmentMetals()
                         .stream()
                         .map(investmentService::toDTO)
                         .collect(Collectors.toList())
@@ -171,7 +171,7 @@ public class PortfolioService {
     public void refresh(long portfolioId) {
         portfolioRepository.findById(portfolioId).ifPresent(
                 portfolio -> {
-                    portfolio.getInvestments().forEach(InvestmentMetal::setYield);
+                    portfolio.getInvestmentMetals().forEach(InvestmentMetal::setYield);
                     portfolio.setBeginPrice();
                     portfolio.setValue();
                     portfolio.setYield();

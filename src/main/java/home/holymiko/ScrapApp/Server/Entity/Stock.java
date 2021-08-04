@@ -1,6 +1,7 @@
 package home.holymiko.ScrapApp.Server.Entity;
 
-import home.holymiko.ScrapApp.Server.Entity.Enum.GrahamGrade;
+import home.holymiko.ScrapApp.Server.Enum.GrahamGrade;
+import lombok.Getter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 @Entity
+@Getter
 public class Stock {
     @Id
     @GeneratedValue
@@ -147,87 +149,4 @@ public class Stock {
         this.intrinsicValue = intrinsicValue;
     }
 
-
-
-    ///// GET
-
-    public String getName() {
-        return name;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public Ticker getTicker() {
-        return ticker;
-    }
-
-    public Double getRatingScore() {
-        return ratingScore;
-    }
-
-    public Double getSizeInSales() {
-        return sizeInSales;
-    }
-
-    public Double getAssetsLiabilities() {
-        return assetsLiabilities;
-    }
-
-    public Double getNetAssetsLongTermDebt() {
-        return netAssetsLongTermDebt;
-    }
-
-    public Double getEarningsStability() {
-        return earningsStability;
-    }
-
-    public Double getDividend() {
-        return dividend;
-    }
-
-    public Double getNcav() {
-        return ncav;
-    }
-
-    public Double getEquityDebt() {
-        return equityDebt;
-    }
-
-    public Double getSizeInAssets() {
-        return sizeInAssets;
-    }
-
-    public Double getDefensivePrice() {
-        return defensivePrice;
-    }
-
-    public Double getEnterprisingPrice() {
-        return enterprisingPrice;
-    }
-
-    public Double getNcavPrice() {
-        return ncavPrice;
-    }
-
-    public GrahamGrade getGrahamGrade() {
-        return grahamGrade;
-    }
-
-    public Double getIntrinsicPrice() {
-        return intrinsicPrice;
-    }
-
-    public Double getPreviousClose() {
-        return previousClose;
-    }
-
-    public Double getIntrinsicValue() {
-        return intrinsicValue;
-    }
 }

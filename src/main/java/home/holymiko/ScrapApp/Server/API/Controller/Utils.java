@@ -1,5 +1,6 @@
 package home.holymiko.ScrapApp.Server.API.Controller;
 
+@Deprecated
 public class Utils {
 
 //    public static void printProducts(List<Product> products) {

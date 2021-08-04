@@ -1,11 +1,12 @@
 package home.holymiko.ScrapApp.Server.Scraps;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
-import home.holymiko.ScrapApp.Server.Entity.Enum.GrahamGrade;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
+import home.holymiko.ScrapApp.Server.Enum.Form;
+import home.holymiko.ScrapApp.Server.Enum.GrahamGrade;
+import home.holymiko.ScrapApp.Server.Enum.Metal;
+import home.holymiko.ScrapApp.Server.Enum.Producer;
 
+import java.time.Year;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -196,6 +197,14 @@ public class Extract {
         return -1;
     }
 
+    public static int yearExtractor(String name) {
+        Pattern pattern = Pattern.compile("20[12]\\d");
+        Matcher matcher = pattern.matcher(name);
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group());
+        }
+        return Year.now().getValue();
+    }
 
     /**
      * Extracts price from text format.

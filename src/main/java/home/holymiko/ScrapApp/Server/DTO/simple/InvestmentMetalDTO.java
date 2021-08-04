@@ -1,7 +1,7 @@
 package home.holymiko.ScrapApp.Server.DTO.simple;
 
 import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_LatestPrices;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
+import home.holymiko.ScrapApp.Server.Enum.Dealer;
 
 import java.time.LocalDate;
 

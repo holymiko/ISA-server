@@ -1,6 +1,7 @@
 package home.holymiko.ScrapApp.Server.Entity;
 
-import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
+import home.holymiko.ScrapApp.Server.Enum.Dealer;
+import lombok.Getter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@Getter
 public class InvestmentMetal {
     @Id
     @GeneratedValue
@@ -46,42 +48,10 @@ public class InvestmentMetal {
 
     ///// GET
 
-    public double getYield() {
-        return yield;
-    }
-
-    public Dealer getDealer() {
-        return dealer;
-    }
-
     public String getTextYield() {
         if (yield >= 1)
             return "+" + String.format("%.2f", (yield - 1) * 100) + "%";
         return "-" + String.format("%.2f", (100 - yield * 100)) + "%";
-    }
-
-    public double getBeginPrice() {
-        return beginPrice;
-    }
-
-    public double getEndPrice() {
-        return endPrice;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public LocalDate getBeginDate() {
-        return beginDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
     }
 
     @Override

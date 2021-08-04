@@ -1,19 +1,21 @@
 package home.holymiko.ScrapApp.Server.Entity;
 
-import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
+import home.holymiko.ScrapApp.Server.Enum.Dealer;
+import home.holymiko.ScrapApp.Server.Enum.Form;
+import home.holymiko.ScrapApp.Server.Enum.Metal;
+import home.holymiko.ScrapApp.Server.Enum.Producer;
+import lombok.Getter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.time.Year;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
+@Getter
 public class Product {
 
     @Id
@@ -24,6 +26,7 @@ public class Product {
     private Form form;
     private Metal metal;
     private double grams;
+    private int year;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
@@ -40,15 +43,23 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, Producer producer, Form form, Metal metal, double grams, List<Link> links, List<Price> latestPrices, List<Price> prices) {
+    public Product(String name, Producer producer, Form form, Metal metal, double grams, int year, List<Link> links, List<Price> latestPrices, List<Price> prices) {
         this.name = name;
         this.producer = producer;
         this.form = form;
         this.metal = metal;
         this.grams = grams;
+        this.year = year;
         this.links = links;
         this.latestPrices = latestPrices;
         this.prices = prices;
+    }
+
+    public Price getLatestPriceByDealer(Dealer dealer) {
+        return this.latestPrices.stream()
+                .filter(
+                        price -> price.getDealer() == dealer
+                ).collect(Collectors.toList()).get(0);
     }
 
     public void setLatestPrices(List<Price> latestPrices) {
@@ -66,17 +77,6 @@ public class Product {
         this.latestPrices.add(latestPrice);
     }
 
-    public List<Price> getLatestPrices() {
-        return this.latestPrices;
-    }
-
-    public Price getLatestPriceByDealer(Dealer dealer) {
-        return this.latestPrices.stream()
-                .filter(
-                        price -> price.getDealer() == dealer
-                ).collect(Collectors.toList()).get(0);
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -91,42 +91,6 @@ public class Product {
 
     public void setGrams(double grams) {
         this.grams = grams;
-    }
-
-    public double getGrams() {
-        return grams;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public List<Price> getPrices() {
-        return prices;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public List<Link> getLinks() {
-        return links;
-    }
-
-    public Metal getMetal() {
-        return metal;
-    }
-
-    public Producer getProducer() {
-        return producer;
-    }
-
-    public Form getForm() {
-        return form;
-    }
-
-    public String getMetalString() {
-        return metal.toString();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package home.holymiko.ScrapApp.Server.API.Controller;
 
-import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
-import home.holymiko.ScrapApp.Server.Entity.Enum.TickerState;
+import home.holymiko.ScrapApp.Server.Enum.Metal;
+import home.holymiko.ScrapApp.Server.Enum.TickerState;
 import home.holymiko.ScrapApp.Server.Scraps.ScrapBessergold;
 import home.holymiko.ScrapApp.Server.Scraps.ScrapMetal;
 import home.holymiko.ScrapApp.Server.Scraps.ScrapSerenity;

@@ -2,7 +2,7 @@ package home.holymiko.ScrapApp.Server.API.Controller;
 
 import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_LatestPrices;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
+import home.holymiko.ScrapApp.Server.Enum.Metal;
 import home.holymiko.ScrapApp.Server.Entity.Product;
 import home.holymiko.ScrapApp.Server.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;

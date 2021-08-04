@@ -1,11 +1,13 @@
 package home.holymiko.ScrapApp.Server.Entity;
 
-import home.holymiko.ScrapApp.Server.Entity.Enum.TickerState;
+import home.holymiko.ScrapApp.Server.Enum.TickerState;
+import lombok.Getter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
+@Getter
 public class Ticker {
     @Id
     private String ticker;
@@ -21,13 +23,5 @@ public class Ticker {
 
     public void setTickerState(TickerState tickerState) {
         this.tickerState = tickerState;
-    }
-
-    public String getTicker() {
-        return ticker;
-    }
-
-    public TickerState getTickerState() {
-        return tickerState;
     }
 }

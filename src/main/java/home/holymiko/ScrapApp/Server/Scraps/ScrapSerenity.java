@@ -3,7 +3,7 @@ package home.holymiko.ScrapApp.Server.Scraps;
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import home.holymiko.ScrapApp.Server.API.Export;
-import home.holymiko.ScrapApp.Server.Entity.Enum.*;
+import home.holymiko.ScrapApp.Server.Enum.*;
 import home.holymiko.ScrapApp.Server.Entity.*;
 import home.holymiko.ScrapApp.Server.Service.StockService;
 import home.holymiko.ScrapApp.Server.Service.TickerService;

@@ -1,4 +1,4 @@
-package home.holymiko.ScrapApp.Server.Entity.Enum;
+package home.holymiko.ScrapApp.Server.Enum;
 
 public enum Producer {
     UNKNOWN, ARGOR_HERAEUS, HERAEUS, MUNZE_OSTERREICH, PERTH_MINT, VALCAMBI,

@@ -1,10 +1,10 @@
 package home.holymiko.ScrapApp.Server.Scraps;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Dealer;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Form;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Metal;
-import home.holymiko.ScrapApp.Server.Entity.Enum.Producer;
+import home.holymiko.ScrapApp.Server.Enum.Dealer;
+import home.holymiko.ScrapApp.Server.Enum.Form;
+import home.holymiko.ScrapApp.Server.Enum.Metal;
+import home.holymiko.ScrapApp.Server.Enum.Producer;
 import home.holymiko.ScrapApp.Server.Entity.*;
 import home.holymiko.ScrapApp.Server.Service.*;
 import org.springframework.http.HttpStatus;
@@ -12,8 +12,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ScrapMetal extends Scrap {
@@ -55,7 +55,7 @@ public class ScrapMetal extends Scrap {
 
     /////// PRODUCT
 
-    private void productByLink(Link link) {
+    private void productScrap(Link link) {
         loadPage(link.getLink());
 
         String name = "";
@@ -65,26 +65,24 @@ public class ScrapMetal extends Scrap {
             e.printStackTrace();
         }
         final String nameLowerCase = name.toLowerCase(Locale.ROOT);
+        final int year = Extract.yearExtractor(nameLowerCase);
         final Form form = Extract.formExtractor(nameLowerCase);
         final Metal metal = Extract.metalExtractor(nameLowerCase);
         final double grams = Extract.weightExtractor(nameLowerCase);
         final Producer producer = Extract.producerExtractor(nameLowerCase);
-        final List<Product> products = productService.findProductByProducerAndMetalAndFormAndGrams(producer, metal, form, grams);
+        final List<Product> products = productService.findProductByProducerAndMetalAndFormAndGramsAndYear(producer, metal, form, grams, year);
 
         if(name.equals("") || producer == Producer.UNKNOWN || form == Form.UNKNOWN || metal == Metal.UNKNOWN ) {
             System.out.println("FATAL ERROR: "+name +" "+ producer+" "+metal+" "+form+" "+grams+ " "+link.getLink());
             return;
         }
 
-        // Year specials are being saved separately
-        Pattern pattern = Pattern.compile("20[12]\\d");
 
-        if(products.isEmpty() || nameLowerCase.contains("rok")
-        || nameLowerCase.contains("lunarni") || nameLowerCase.contains("výročí")
-        || pattern.matcher(nameLowerCase).find()) {
+        // New product saved
+        if(products.isEmpty() || specialName(nameLowerCase)) {
             List<Link> links = new ArrayList<>();
             links.add(link);
-            Product product = new Product(name, producer, form, metal, grams, links, new ArrayList<>(), new ArrayList<>());
+            Product product = new Product(name, producer, form, metal, grams, year, links, new ArrayList<>(), new ArrayList<>());
             productService.save(product);
             link.setProduct(product);
             linkService.save(link);
@@ -116,7 +114,7 @@ public class ScrapMetal extends Scrap {
         Optional<Product> optionalProduct = this.productService.findByLink(link.getLink());
 
         if (optionalProduct.isEmpty()) {
-            productByLink(link);
+            productScrap(link);
             return;
         }
         priceScrap(link);
@@ -158,7 +156,7 @@ public class ScrapMetal extends Scrap {
         }
 
         // Set prevents one Product to be scrapped more times
-        Set<Link> linkSet = optionalPortfolio.get().getInvestments()
+        Set<Link> linkSet = optionalPortfolio.get().getInvestmentMetals()
                 .stream()
                 .map(
                         investment -> linkService.findByDealerAndProductId(dealer, investment.getProduct().getId())
@@ -363,6 +361,12 @@ public class ScrapMetal extends Scrap {
 
     protected String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
         return redemptionPriceHtml.asText();
+    }
+
+    private static boolean specialName(String name) {
+        name = name.toLowerCase(Locale.ROOT);
+        return name.contains("lunární") || name.contains("výročí") || name.contains("rush") || name.contains("horečka");
+        // TODO Add attribute type to Product
     }
 
 }
