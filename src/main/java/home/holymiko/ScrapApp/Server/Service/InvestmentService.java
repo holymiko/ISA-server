@@ -41,12 +41,18 @@ public class InvestmentService {
                 investmentMetal.getId(),
                 productService.toDTOLatestPrices(investmentMetal.getProduct()),
                 investmentMetal.getDealer(),
-                investmentMetal.getYield(),
+                getYield(investmentMetal),
                 investmentMetal.getBeginPrice(),
                 investmentMetal.getEndPrice(),
                 investmentMetal.getBeginDate(),
                 investmentMetal.getEndDate()
         );
+    }
+
+    public double getYield(InvestmentMetal investmentMetal) {
+        return investmentMetal.getProduct().getLatestPriceByDealer(
+                investmentMetal.getDealer()
+        ).getRedemption() / investmentMetal.getBeginPrice();
     }
 
 

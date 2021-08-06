@@ -1,6 +1,5 @@
 package home.holymiko.ScrapApp.Server.Service;
 
-import home.holymiko.ScrapApp.Server.DTO.create.PortfolioCreateDTO;
 import home.holymiko.ScrapApp.Server.DTO.simple.PortfolioDTO;
 import home.holymiko.ScrapApp.Server.DTO.advanced.PortfolioDTO_Investments;
 import home.holymiko.ScrapApp.Server.Entity.InvestmentMetal;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,9 +37,9 @@ public class PortfolioService {
         return new PortfolioDTO(
                 portfolio.getId(),
                 portfolio.getOwner(),
-                portfolio.getBeginPrice(),
-                portfolio.getValue(),
-                portfolio.getYield(),
+                beginPrice,
+                value,
+                value / beginPrice,
                 portfolio.getInvestmentMetals()
                         .stream()
                         .map(InvestmentMetal::getId)
@@ -62,12 +60,15 @@ public class PortfolioService {
      * @return Portfolio with collection of InvestmentDTOs
      */
     private PortfolioDTO_Investments toPortfolioInvestmentDTO(Portfolio portfolio) {
+        double beginPrice = getPortfolioBeginPrice(portfolio);
+        double value = getPortfolioValue(portfolio);
+
         return new PortfolioDTO_Investments(
                 portfolio.getId(),
                 portfolio.getOwner(),
-                portfolio.getBeginPrice(),
-                portfolio.getValue(),
-                portfolio.getYield(),
+                beginPrice,
+                value,
+                value / beginPrice,
                 portfolio.getInvestmentMetals()
                         .stream()
                         .map(investmentService::toDTO)
@@ -120,17 +121,14 @@ public class PortfolioService {
         if(this.portfolioRepository.findByOwner("Carlos").isEmpty()) {
             Portfolio portfolio = new Portfolio(this.investmentService.saveCarlosInvestments(), "Carlos");
             this.portfolioRepository.save(portfolio);
-            refresh(portfolioRepository.findByOwner("Carlos").get().getId());
         }
         if(this.portfolioRepository.findByOwner("Sanchez").isEmpty()) {
             Portfolio portfolio = new Portfolio(this.investmentService.saveSanchezInvestments(), "Sanchez");
             this.portfolioRepository.save(portfolio);
-            refresh(portfolioRepository.findByOwner("Sanchez").get().getId());
         }
         if(this.portfolioRepository.findByOwner("Eduardo").isEmpty()) {
             Portfolio portfolio = new Portfolio(this.investmentService.saveEduardoInvestments(), "Eduardo");
             this.portfolioRepository.save(portfolio);
-            refresh(portfolioRepository.findByOwner("Eduardo").get().getId());
         }
     }
 
@@ -163,26 +161,29 @@ public class PortfolioService {
 //        System.out.println(">> Save Portfolio");
 //    }
 
-    /**
-     * Updates portfolio values.
-     * @param portfolioId Id of portfolio to be refreshed
-     */
-    @Transactional
-    public void refresh(long portfolioId) {
-        portfolioRepository.findById(portfolioId).ifPresent(
-                portfolio -> {
-                    portfolio.getInvestmentMetals().forEach(InvestmentMetal::setYield);
-                    portfolio.setBeginPrice();
-                    portfolio.setValue();
-                    portfolio.setYield();
-                }
-        );
-    }
-
 //    @Transactional
 //    public List<InvestmentMetal> addInvestmentToPortfolio(String portfolioOwner, InvestmentMetal investmentMetal) {
 //        List<InvestmentMetal> investmentMetalList = this.portfolioRepository.findByOwner(portfolioOwner).get().getInvestments();
 //        investmentMetalList.add(investmentMetal);
 //        return investmentMetalList;
 //    }
+
+    private double getPortfolioBeginPrice(Portfolio portfolio) {
+        return portfolio.getInvestmentMetals()
+                .stream()
+                .map(
+                        InvestmentMetal::getBeginPrice
+                ).reduce(0.0, Double::sum);
+    }
+
+    private double getPortfolioValue(Portfolio portfolio) {
+        return portfolio.getInvestmentMetals()
+                .stream()
+                .map(
+                        investmentMetal ->
+                                investmentMetal.getProduct().getLatestPriceByDealer(
+                                        investmentMetal.getDealer()
+                                ).getRedemption()
+                ).reduce(0.0, Double::sum);
+    }
 }

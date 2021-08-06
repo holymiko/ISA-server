@@ -18,7 +18,6 @@ public class InvestmentMetal {
     @Fetch(FetchMode.SELECT)                        // To avoid duplicates
     private Product product;
     private Dealer dealer;
-    private double yield;
     private double beginPrice;
     private double endPrice;
     private LocalDate beginDate;
@@ -34,25 +33,6 @@ public class InvestmentMetal {
     public InvestmentMetal() {
     }
 
-
-    ///// SET
-
-    public void setYield() {
-        setYield(getProduct().getLatestPriceByDealer(dealer).getRedemption() / getBeginPrice());
-    }
-
-    public void setYield(double yield) {
-        this.yield = yield;
-    }
-
-
-    ///// GET
-
-    public String getTextYield() {
-        if (yield >= 1)
-            return "+" + String.format("%.2f", (yield - 1) * 100) + "%";
-        return "-" + String.format("%.2f", (100 - yield * 100)) + "%";
-    }
 
     @Override
     public String toString() {
