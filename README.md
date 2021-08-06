@@ -67,16 +67,22 @@ Stejné produkty od různých dealerů jsou automaticky spojovány do jednoho.
 **Produkt** tak nyní může obsahovat více **links** a **latestPrices**.
 
 Z entity **Price** jsou odstraněny atributy **split** (spread) a **pricePerGram**. 
-Tyto parametry jsou nyní vypočítávány na klientu. Množství dat v databázi je tím optimalizováno.
-Do entity je přidán atribut **Dealer**, aby byly ceny přidružené k produktu rozlišitelné.
+Je možné je vypočítat a tak se nyní vyskytují pouze v **PriceDTO**.  
+Ze stejného důvodu byly odstraněny atributy **Portfolio.beginPrice**, **Portfolio.value**, **Portfolio.yield** a **InvestmentMetal.yield**. 
+Množství dat v databázi je tím optimalizováno.
 
+Do entity **Price** je přidán atribut **dealer**, aby byly ceny přidružené k produktu rozlišitelné.
+
+Entita **Produkt** obsahuje nový atribut **year** pro přesnější určení.
 
 
 <br />
 
 
 ## ToDo
-- [ ] Portfolio a Investment optimalizace
+- [ ] Add Silverum
+- [ ] Scrap prices from product list for Bessergold & Silverum.
+- [ ] Scrap redemption prices from https://www.bessergold.cz/vykup.html
 - [ ] Stock investments
 - [ ] Gold to silver ratio
 
