@@ -34,6 +34,9 @@ public class PortfolioService {
      * @return Portfolio with collection of IDs
      */
     private PortfolioDTO toPortfolioDTO(Portfolio portfolio) {
+        double beginPrice = getPortfolioBeginPrice(portfolio);
+        double value = getPortfolioValue(portfolio);
+
         return new PortfolioDTO(
                 portfolio.getId(),
                 portfolio.getOwner(),

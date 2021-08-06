@@ -50,4 +50,10 @@ public class Utils {
 //        System.out.println( "----------------------------------------------------------------------------\n");
 //        System.out.printf( "%103.0f%10.0f%13s\n", portfolio.getBeginPrice(), portfolio.getValue(), portfolio.getTextYield());
 //    }
+//
+//    public String getTextYield(Double yield) {
+//        if (yield >= 1)
+//            return "+" + String.format("%.2f", (yield - 1) * 100) + "%";
+//        return "-" + String.format("%.2f", (100 - yield * 100)) + "%";
+//    }
 }
