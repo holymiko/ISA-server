@@ -8,6 +8,9 @@ import home.holymiko.ScrapApp.Server.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 @Component
 public class ScrapBessergold extends ScrapMetal {
     private static final String SEARCH_URL_GOLD = "https://www.bessergold.cz/investicni-zlato.html?product_list_limit=all";
@@ -31,10 +34,26 @@ public class ScrapBessergold extends ScrapMetal {
                 priceService,
                 portfolioService,
                 productService,
-                SEARCH_URL_GOLD,
-                SEARCH_URL_SILVER,
-                SEARCH_URL_PLATINUM,
-                SEARCH_URL_PALLADIUM,
+                new ArrayList<>(
+                        Collections.singletonList(
+                                SEARCH_URL_GOLD
+                        )
+                ),
+                new ArrayList<>(
+                        Collections.singletonList(
+                                SEARCH_URL_SILVER
+                        )
+                ),
+                new ArrayList<>(
+                        Collections.singletonList(
+                                SEARCH_URL_PLATINUM
+                        )
+                ),
+                new ArrayList<>(
+                        Collections.singletonList(
+                                SEARCH_URL_PALLADIUM
+                        )
+                ),
                 X_PATH_PRODUCT_LIST,
                 X_PATH_PRODUCT_NAME,
                 X_PATH_BUY_PRICE,

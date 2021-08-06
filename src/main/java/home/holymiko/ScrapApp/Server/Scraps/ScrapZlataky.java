@@ -8,6 +8,10 @@ import home.holymiko.ScrapApp.Server.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+
 @Component
 public class ScrapZlataky extends ScrapMetal {
 
@@ -38,10 +42,28 @@ public class ScrapZlataky extends ScrapMetal {
                 priceService,
                 portfolioService,
                 productService,
-                SEARCH_URL_GOLD_BAR,       // Wont be used, method overwritten
-                SEARCH_URL_SILVER_BAR,     // Wont be used, method overwritten
-                SEARCH_URL_PLATINUM,
-                SEARCH_URL_PALLADIUM,
+                new ArrayList<>(
+                        Arrays.asList(
+                                SEARCH_URL_GOLD_BAR,
+                                SEARCH_URL_GOLD_COIN
+                        )
+                ),
+                new ArrayList<>(
+                        Arrays.asList(
+                                SEARCH_URL_SILVER_BAR,
+                                SEARCH_URL_SILVER_COIN
+                        )
+                ),
+                new ArrayList<>(
+                        Collections.singletonList(
+                                SEARCH_URL_PLATINUM
+                        )
+                ),
+                new ArrayList<>(
+                        Collections.singletonList(
+                                SEARCH_URL_PALLADIUM
+                        )
+                ),
                 X_PATH_PRODUCT_LIST,
                 X_PATH_PRODUCT_NAME,
                 X_PATH_BUY_PRICE,
@@ -67,19 +89,6 @@ public class ScrapZlataky extends ScrapMetal {
             return;
         }
         System.out.println("Error: "+htmlItem.asText());
-    }
-
-
-    @Override
-    public void goldLinksScrap() {
-        scrapLinks(SEARCH_URL_GOLD_COIN);
-        scrapLinks(SEARCH_URL_GOLD_BAR);
-    }
-
-    @Override
-    public void silverLinksScrap() {
-        scrapLinks(SEARCH_URL_SILVER_COIN);
-        scrapLinks(SEARCH_URL_SILVER_BAR);
     }
 
 }

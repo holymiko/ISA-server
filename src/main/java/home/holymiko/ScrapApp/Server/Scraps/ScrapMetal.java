@@ -12,7 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.Year;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,10 +22,10 @@ public class ScrapMetal extends Scrap {
     protected final PortfolioService portfolioService;
     protected final ProductService productService;
 
-    protected final String searchUrlGold;
-    protected final String searchUrlSilver;
-    protected final String searchUrlPlatinum;
-    protected final String searchUrlPalladium;
+    protected final List<String> searchUrlGold;
+    protected final List<String> searchUrlSilver;
+    protected final List<String> searchUrlPlatinum;
+    protected final List<String> searchUrlPalladium;
 
     private static final long ETHICAL_DELAY = 700;
     private static final int PRINT_INTERVAL = 10;
@@ -36,7 +35,7 @@ public class ScrapMetal extends Scrap {
     private final String xPathBuyPrice;
     private final String xPathRedemptionPrice;
 
-    public ScrapMetal(Dealer dealer, LinkService linkService, PriceService priceService, PortfolioService portfolioService, ProductService productService, String searchUrlGold, String searchUrlSilver, String searchUrlPlatinum, String searchUrlPalladium, String xPathProductList, String xPathProductName, String xPathBuyPrice, String xPathRedemptionPrice) {
+    public ScrapMetal(Dealer dealer, LinkService linkService, PriceService priceService, PortfolioService portfolioService, ProductService productService, List<String> searchUrlGold, List<String> searchUrlSilver, List<String> searchUrlPlatinum, List<String> searchUrlPalladium, String xPathProductList, String xPathProductName, String xPathBuyPrice, String xPathRedemptionPrice) {
         super();
         this.dealer = dealer;
         this.linkService = linkService;
@@ -169,7 +168,6 @@ public class ScrapMetal extends Scrap {
                 );
 
         productsOrPricesScrap( new ArrayList<>(linkSet) );
-        portfolioService.refresh(portfolioId);
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
     }
 
@@ -280,19 +278,27 @@ public class ScrapMetal extends Scrap {
     }
 
     public void goldLinksScrap() {
-        scrapLinks(searchUrlGold);
+        searchUrlGold.forEach(
+                this::scrapLinks
+        );
     }
 
     public void silverLinksScrap() {
-        scrapLinks(searchUrlSilver);
+        searchUrlSilver.forEach(
+                this::scrapLinks
+        );
     }
 
     public void platinumLinksScrap() {
-        scrapLinks(searchUrlPlatinum);
+        searchUrlPlatinum.forEach(
+                this::scrapLinks
+        );
     }
 
     public void palladiumLinksScrap() {
-        scrapLinks(searchUrlPalladium);
+        searchUrlPalladium.forEach(
+                this::scrapLinks
+        );
     }
 
 
