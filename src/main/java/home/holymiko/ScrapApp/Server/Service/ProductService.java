@@ -2,6 +2,7 @@ package home.holymiko.ScrapApp.Server.Service;
 
 import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_LatestPrices;
+import home.holymiko.ScrapApp.Server.DTO.simple.PriceDTO;
 import home.holymiko.ScrapApp.Server.Entity.*;
 import home.holymiko.ScrapApp.Server.Enum.Form;
 import home.holymiko.ScrapApp.Server.Enum.Metal;
@@ -29,6 +30,19 @@ public class ProductService {
 
     //////// toDTO
 
+    private List<PriceDTO> toPriceDTOs(List<Price> prices, double grams){
+        return prices.stream().map(
+                price -> new PriceDTO(
+                        price.getDateTime(),
+                        price.getPrice(),
+                        price.getRedemption(),
+                        price.getDealer(),
+                        price.getRedemption() / price.getPrice(),
+                        price.getPrice() / grams
+                )
+        ).collect(Collectors.toList());
+    }
+
     public ProductDTO_LatestPrices toDTOLatestPrices(Product product) {
         return new ProductDTO_LatestPrices(
                 product.getId(),
@@ -39,7 +53,10 @@ public class ProductService {
                         .stream()
                         .map(Link::getLink)
                         .collect(Collectors.toList()),
-                product.getLatestPrices()
+                toPriceDTOs(
+                        product.getLatestPrices(),
+                        product.getGrams()
+                )
         );
     }
 
@@ -53,8 +70,14 @@ public class ProductService {
                         .stream()
                         .map(Link::getLink)
                         .collect(Collectors.toList()),
-                product.getLatestPrices(),
-                product.getPrices()
+                toPriceDTOs(
+                        product.getLatestPrices(),
+                        product.getGrams()
+                ),
+                toPriceDTOs(
+                        product.getPrices(),
+                        product.getGrams()
+                )
         );
     }
 
