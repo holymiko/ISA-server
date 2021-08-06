@@ -2,9 +2,11 @@ package home.holymiko.ScrapApp.Server.DTO.simple;
 
 import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_LatestPrices;
 import home.holymiko.ScrapApp.Server.Enum.Dealer;
+import lombok.Getter;
 
 import java.time.LocalDate;
 
+@Getter
 public class InvestmentMetalDTO {
     private final long id;
     private final ProductDTO_LatestPrices product;
@@ -24,37 +26,5 @@ public class InvestmentMetalDTO {
         this.endPrice = endPrice;
         this.beginDate = beginDate;
         this.endDate = endDate;
-    }
-
-    public Dealer getDealer() {
-        return dealer;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public double getYield() {
-        return yield;
-    }
-
-    public double getBeginPrice() {
-        return beginPrice;
-    }
-
-    public double getEndPrice() {
-        return endPrice;
-    }
-
-    public ProductDTO_LatestPrices getProduct() {
-        return product;
-    }
-
-    public LocalDate getBeginDate() {
-        return beginDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
     }
 }

@@ -1,7 +1,10 @@
 package home.holymiko.ScrapApp.Server.DTO.simple;
 
+import lombok.Getter;
+
 import java.util.List;
 
+@Getter
 public class PortfolioDTO {
     private final long id;
     private final String owner;
@@ -19,34 +22,10 @@ public class PortfolioDTO {
         this.investmentIds = investments;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public double getYield() {
-        return yield;
-    }
-
     public String getTextYield() {
         if (yield >= 1)
             return "+" + String.format("%.2f", (yield - 1) * 100) + "%";
         return "-" + String.format("%.2f", (100 - yield * 100)) + "%";
-    }
-
-    public double getBeginPrice() {
-        return beginPrice;
-    }
-
-    public double getValue() {
-        return value;
-    }
-
-    public List<Long> getInvestmentIds() {
-        return investmentIds;
-    }
-
-    public String getOwner() {
-        return owner;
     }
 
 }

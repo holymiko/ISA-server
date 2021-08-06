@@ -1,9 +1,11 @@
 package home.holymiko.ScrapApp.Server.DTO.advanced;
 
 import home.holymiko.ScrapApp.Server.DTO.simple.InvestmentMetalDTO;
+import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 public class PortfolioDTO_Investments {
 
     private final long id;
@@ -21,30 +23,5 @@ public class PortfolioDTO_Investments {
         this.yield = yield;
         this.investments = investmentMetalDTOS;
     }
-
-    public long getId() {
-        return id;
-    }
-
-    public double getYield() {
-        return yield;
-    }
-
-    public double getBeginPrice() {
-        return beginPrice;
-    }
-
-    public double getValue() {
-        return value;
-    }
-
-    public List<InvestmentMetalDTO> getInvestments() {
-        return investments;
-    }
-
-    public String getOwner() {
-                return owner;
-            }
-
 }
 
