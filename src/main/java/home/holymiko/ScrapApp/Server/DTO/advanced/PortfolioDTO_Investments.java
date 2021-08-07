@@ -1,6 +1,5 @@
 package home.holymiko.ScrapApp.Server.DTO.advanced;
 
-import home.holymiko.ScrapApp.Server.DTO.simple.InvestmentMetalDTO;
 import lombok.Getter;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package home.holymiko.ScrapApp.Server.API;
+package home.holymiko.ScrapApp.Server.API.Port;
 
 import home.holymiko.ScrapApp.Server.Enum.TickerState;
 import home.holymiko.ScrapApp.Server.Entity.Ticker;

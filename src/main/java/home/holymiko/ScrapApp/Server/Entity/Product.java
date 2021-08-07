@@ -11,6 +11,7 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import java.time.Year;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,6 +61,17 @@ public class Product {
                 .filter(
                         price -> price.getDealer() == dealer
                 ).collect(Collectors.toList()).get(0);
+    }
+
+    public double getBestRedemption() {
+        return this.latestPrices
+                .stream()
+                .map(
+                        Price::getRedemption
+                )
+                .max(
+                        Comparator.naturalOrder()
+                ).get();
     }
 
     public void setLatestPrices(List<Price> latestPrices) {

@@ -1,4 +1,4 @@
-package home.holymiko.ScrapApp.Server.Scraps;
+package home.holymiko.ScrapApp.Server.Scraper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import home.holymiko.ScrapApp.Server.Enum.Dealer;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ScrapMetal extends Scrap {
+public class MetalScraper extends Scraper {
     protected final Dealer dealer;
     protected final LinkService linkService;
     protected final PriceService priceService;
@@ -35,7 +35,7 @@ public class ScrapMetal extends Scrap {
     private final String xPathBuyPrice;
     private final String xPathRedemptionPrice;
 
-    public ScrapMetal(Dealer dealer, LinkService linkService, PriceService priceService, PortfolioService portfolioService, ProductService productService, List<String> searchUrlGold, List<String> searchUrlSilver, List<String> searchUrlPlatinum, List<String> searchUrlPalladium, String xPathProductList, String xPathProductName, String xPathBuyPrice, String xPathRedemptionPrice) {
+    public MetalScraper(Dealer dealer, LinkService linkService, PriceService priceService, PortfolioService portfolioService, ProductService productService, List<String> searchUrlGold, List<String> searchUrlSilver, List<String> searchUrlPlatinum, List<String> searchUrlPalladium, String xPathProductList, String xPathProductName, String xPathBuyPrice, String xPathRedemptionPrice) {
         super();
         this.dealer = dealer;
         this.linkService = linkService;
@@ -64,11 +64,11 @@ public class ScrapMetal extends Scrap {
             e.printStackTrace();
         }
         final String nameLowerCase = name.toLowerCase(Locale.ROOT);
-        final int year = Extract.yearExtractor(nameLowerCase);
-        final Form form = Extract.formExtractor(nameLowerCase);
-        final Metal metal = Extract.metalExtractor(nameLowerCase);
-        final double grams = Extract.weightExtractor(nameLowerCase);
-        final Producer producer = Extract.producerExtractor(nameLowerCase);
+        final int year = Extractor.yearExtract(nameLowerCase);
+        final Form form = Extractor.formExtract(nameLowerCase);
+        final Metal metal = Extractor.metalExtractor(nameLowerCase);
+        final double grams = Extractor.weightExtract(nameLowerCase);
+        final Producer producer = Extractor.producerExtract(nameLowerCase);
         final List<Product> products = productService.findProductByProducerAndMetalAndFormAndGramsAndYear(producer, metal, form, grams, year);
 
         if(name.equals("") || producer == Producer.UNKNOWN || form == Form.UNKNOWN || metal == Metal.UNKNOWN ) {
@@ -148,7 +148,7 @@ public class ScrapMetal extends Scrap {
     }
 
     public void productsByPortfolio(long portfolioId) throws ResponseStatusException {
-        System.out.println("ScrapMetal productsByPortfolio");
+        System.out.println("MetalScraper productsByPortfolio");
         Optional<Portfolio> optionalPortfolio = portfolioService.findById(portfolioId);
         if (optionalPortfolio.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No portfolio with such ID");
@@ -184,12 +184,12 @@ public class ScrapMetal extends Scrap {
         double buyPrice = 0.0;
         double redemptionPrice = 0.0;
         try {
-            buyPrice = Extract.priceExtractor(((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText());
+            buyPrice = Extractor.numberExtract(((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText());
         } catch (Exception e) {
             System.out.println("WARNING - Kupni cena = 0");
         }
         try {
-            redemptionPrice = Extract.priceExtractor(redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice)));
+            redemptionPrice = Extractor.numberExtract(redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice)));
         } catch (Exception e) {
             System.out.println("WARNING - Vykupni cena = 0");
         }
@@ -206,7 +206,7 @@ public class ScrapMetal extends Scrap {
      * @param metal Enum
      */
     public void pricesByMetal(Metal metal){
-        System.out.println("ScrapMetal pricesByMetal");
+        System.out.println("MetalScraper pricesByMetal");
 
         scrapGivenProducts(
                 productService.findByMetal(metal).stream()
@@ -237,7 +237,7 @@ public class ScrapMetal extends Scrap {
     }
 
     public void pricesByProducts(List<Long> productIds){
-        System.out.println("ScrapMetal pricesByProducts");
+        System.out.println("MetalScraper pricesByProducts");
         scrapGivenProducts(productIds);
         System.out.println(">> Prices scraped");
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");

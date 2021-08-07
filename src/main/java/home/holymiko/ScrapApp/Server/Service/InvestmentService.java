@@ -1,6 +1,7 @@
 package home.holymiko.ScrapApp.Server.Service;
 
-import home.holymiko.ScrapApp.Server.DTO.simple.InvestmentMetalDTO;
+import home.holymiko.ScrapApp.Server.DTO.advanced.InvestmentMetalDTO;
+import home.holymiko.ScrapApp.Server.Entity.Product;
 import home.holymiko.ScrapApp.Server.Enum.Dealer;
 import home.holymiko.ScrapApp.Server.Enum.Form;
 import home.holymiko.ScrapApp.Server.Enum.Metal;
@@ -14,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class InvestmentService {
                 investmentMetal.getId(),
                 productService.toDTOLatestPrices(investmentMetal.getProduct()),
                 investmentMetal.getDealer(),
-                getYield(investmentMetal),
+                investmentMetal.getYield(),
                 investmentMetal.getBeginPrice(),
                 investmentMetal.getEndPrice(),
                 investmentMetal.getBeginDate(),
@@ -49,11 +49,7 @@ public class InvestmentService {
         );
     }
 
-    public double getYield(InvestmentMetal investmentMetal) {
-        return investmentMetal.getProduct().getLatestPriceByDealer(
-                investmentMetal.getDealer()
-        ).getRedemption() / investmentMetal.getBeginPrice();
-    }
+
 
 
     ////// FIND
@@ -98,10 +94,21 @@ public class InvestmentService {
         return this.investmentRepository.findById(investmentMetal.getId()).get();
     }
 
+    private List<InvestmentMetal> duplicateInvestmentMetals(int times, Product product, Dealer dealer, double beginPrice, LocalDate localeDate) {
+        List<InvestmentMetal> result = new ArrayList<>();
+        for (int i = 0; i < times; i++) {
+            result.add(
+                    new InvestmentMetal(product, dealer, beginPrice, localeDate)
+            );
+        }
+        return  result;
+    }
+
     @Transactional
     public List<InvestmentMetal> saveCarlosInvestments() {
 
-        // GOLD BAR
+        //////// GOLD ////////
+        //////// GOLD BAR
 
         InvestmentMetal goldenBar0 = new InvestmentMetal(
                 this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
@@ -146,7 +153,19 @@ public class InvestmentService {
         );
 
 
-        // SILVER BAR
+        //////// SILVER ////////
+        //////// SILVER BAR
+
+        Product silverBar2 =
+                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
+                        Dealer.BESSERGOLD,
+                        Producer.ARGOR_HERAEUS,
+                        Metal.SILVER,
+                        Form.BAR,
+                        500,
+                        2021
+                ).get();
+
 
         InvestmentMetal silverBar1 = new InvestmentMetal(
                 this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
@@ -162,123 +181,57 @@ public class InvestmentService {
                 LocalDate.of(2020, 1, 22)
         );
 
-        InvestmentMetal silverBar2 = new InvestmentMetal(
-                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
-                        Dealer.BESSERGOLD,
-                        Producer.ARGOR_HERAEUS,
-                        Metal.SILVER,
-                        Form.BAR,
-                        500,
-                        2021
-                ).get(),
+        InvestmentMetal silverBar21 = new InvestmentMetal(
+                silverBar2,
                 Dealer.BESSERGOLD,
                 7752.67,
                 LocalDate.of(2018, 10, 17)
         );
 
-        InvestmentMetal silverBar3 = new InvestmentMetal(
-                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
-                        Dealer.BESSERGOLD,
-                        Producer.ARGOR_HERAEUS,
-                        Metal.SILVER,
-                        Form.BAR,
-                        500,
-                        2021
-                ).get(),
+        InvestmentMetal silverBar22 = new InvestmentMetal(
+                silverBar2,
                 Dealer.BESSERGOLD,
                 7375.80,
                 LocalDate.of(2018, 9, 10)
         );
 
 
-        // SILVER COIN
+        //////// SILVER COIN
 
-        InvestmentMetal silverMapleCoin1 = new InvestmentMetal(
-                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
-                        Dealer.BESSERGOLD,
-                        Producer.ROYAL_CANADIAN_MINT,
-                        Metal.SILVER,
-                        Form.COIN,
-                        TROY_OUNCE,
-                        2021
-                ).get(),
-                Dealer.ZLATAKY,
-                848.00,
-                LocalDate.of(2021, 1, 25)
+        Product silverWienerCoin = getWienerCoin(2021);
+
+        List<InvestmentMetal> silverMapleCoins1 = duplicateInvestmentMetals(
+                    3,
+                    this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
+                            Dealer.BESSERGOLD,
+                            Producer.ROYAL_CANADIAN_MINT,
+                            Metal.SILVER,
+                            Form.COIN,
+                            TROY_OUNCE,
+                            2021
+                    ).get(),
+                    Dealer.ZLATAKY,
+                    848.00,
+                    LocalDate.of(2021, 1, 25)
         );
 
-        InvestmentMetal silverMapleCoin2 = new InvestmentMetal(
-                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
-                        Dealer.BESSERGOLD,
-                        Producer.ROYAL_CANADIAN_MINT,
-                        Metal.SILVER,
-                        Form.COIN,
-                        TROY_OUNCE,
-                        2021
-                ).get(),
+        List<InvestmentMetal> silverWienerCoins1 = duplicateInvestmentMetals(
+                2,
+                silverWienerCoin,
                 Dealer.ZLATAKY,
-                848.00,
-                LocalDate.of(2021, 1, 25)
-        );
-
-        InvestmentMetal silverMapleCoin3 = new InvestmentMetal(
-                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
-                        Dealer.BESSERGOLD,
-                        Producer.ROYAL_CANADIAN_MINT,
-                        Metal.SILVER,
-                        Form.COIN,
-                        TROY_OUNCE,
-                        2021
-                ).get(),
-                Dealer.ZLATAKY,
-                848.00,
+                845.00,
                 LocalDate.of(2021, 1, 25)
         );
 
         InvestmentMetal silverWienerCoin1 = new InvestmentMetal(
-                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
-                        Dealer.BESSERGOLD,
-                        Producer.MUNZE_OSTERREICH,
-                        Metal.SILVER,
-                        Form.COIN,
-                        TROY_OUNCE,
-                        2021
-                ).get(),
+                silverWienerCoin,
                 Dealer.ZLATAKY,
                 868.00,
                 LocalDate.of(2020, 12, 10)
         );
 
-        InvestmentMetal silverWienerCoin2 = new InvestmentMetal(
-                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
-                        Dealer.BESSERGOLD,
-                        Producer.MUNZE_OSTERREICH,
-                        Metal.SILVER,
-                        Form.COIN,
-                        TROY_OUNCE,
-                        2021
-                ).get(),
-                Dealer.ZLATAKY,
-                845.00,
-                LocalDate.of(2021, 1, 25)
-        );
 
-        InvestmentMetal silverWienerCoin3 = new InvestmentMetal(
-                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
-                        Dealer.BESSERGOLD,
-                        Producer.MUNZE_OSTERREICH,
-                        Metal.SILVER,
-                        Form.COIN,
-                        TROY_OUNCE,
-                        2021
-                ).get(),
-                Dealer.ZLATAKY,
-                845.00,
-                LocalDate.of(2021, 1, 25)
-        );
-
-
-        // PLATINUM
+        //////// PLATINUM ////////
 
         InvestmentMetal platinumBar1 = new InvestmentMetal(
                 this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
@@ -299,39 +252,26 @@ public class InvestmentService {
             add(goldenBar1);
             add(goldenBar2);
             add(silverBar1);
-            add(silverBar2);
-            add(silverBar3);
-            add(platinumBar1);
-            add(silverMapleCoin1);
-            add(silverMapleCoin2);
-            add(silverMapleCoin3);
+            add(silverBar21);
+            add(silverBar22);
+            addAll(silverMapleCoins1);
+            addAll(silverWienerCoins1);
             add(silverWienerCoin1);
-            add(silverWienerCoin2);
-            add(silverWienerCoin3);
+            add(platinumBar1);
         }};
 
-        this.investmentRepository.save(goldenBar0);
-        this.investmentRepository.save(goldenBar1);
-        this.investmentRepository.save(goldenBar2);
-        this.investmentRepository.save(silverBar1);
-        this.investmentRepository.save(silverBar2);
-        this.investmentRepository.save(silverBar3);
-        this.investmentRepository.save(platinumBar1);
-        this.investmentRepository.save(silverMapleCoin1);
-        this.investmentRepository.save(silverMapleCoin2);
-        this.investmentRepository.save(silverMapleCoin3);
-        this.investmentRepository.save(silverWienerCoin1);
-        this.investmentRepository.save(silverWienerCoin2);
-        this.investmentRepository.save(silverWienerCoin3);
+        investmentMetalList.forEach(
+                this.investmentRepository::save
+        );
+
         return investmentMetalList;
     }
 
     @Transactional
     public List<InvestmentMetal> saveSanchezInvestments() {
-        InvestmentMetal silverBar1 = new InvestmentMetal(
-                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500, 2021).get(), Dealer.BESSERGOLD, 7752.67, LocalDate.of(2018, 10, 17));
         InvestmentMetal silverBar2 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500, 2021).get(), Dealer.BESSERGOLD, 7375.80, LocalDate.of(2018, 9, 10));
         InvestmentMetal silverBar3 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500, 2021).get(), Dealer.BESSERGOLD, 7375.80, LocalDate.of(2018, 9, 10));
+        InvestmentMetal silverBar1 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500, 2021).get(), Dealer.BESSERGOLD, 7752.67, LocalDate.of(2018, 10, 17));
         InvestmentMetal silverBar4 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500, 2021).get(), Dealer.BESSERGOLD, 7752.67, LocalDate.of(2018, 10, 17));
 
         List<InvestmentMetal> investmentMetalList = new ArrayList<>() {{
@@ -341,84 +281,69 @@ public class InvestmentService {
             add(silverBar4);
         }};
 
-        this.investmentRepository.save(silverBar1);
-        this.investmentRepository.save(silverBar2);
-        this.investmentRepository.save(silverBar3);
-        this.investmentRepository.save(silverBar4);
+        investmentMetalList.forEach(
+                this.investmentRepository::save
+        );
+
         return investmentMetalList;
     }
 
     @Transactional
     public List<InvestmentMetal> saveEduardoInvestments() {
-        InvestmentMetal silverMapleCoin1 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ROYAL_CANADIAN_MINT, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 848.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverMapleCoin2 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ROYAL_CANADIAN_MINT, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 848.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverMapleCoin3 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ROYAL_CANADIAN_MINT, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 848.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverMapleCoin4 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ROYAL_CANADIAN_MINT, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 848.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverMapleCoin5 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ROYAL_CANADIAN_MINT, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 848.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverMapleCoin6 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ROYAL_CANADIAN_MINT, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 848.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverMapleCoin7 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ROYAL_CANADIAN_MINT, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 848.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverMapleCoin8 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ROYAL_CANADIAN_MINT, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 848.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverMapleCoin9 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ROYAL_CANADIAN_MINT, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 848.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverMapleCoin10 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ROYAL_CANADIAN_MINT, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 848.00, LocalDate.of(2021, 1, 25));
+        Product silverWienerCoin = getWienerCoin(2021);
 
+        List<InvestmentMetal> silverMapleCoin1 = duplicateInvestmentMetals(
+                10,
+                productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
+                        Dealer.BESSERGOLD,
+                        Producer.ROYAL_CANADIAN_MINT,
+                        Metal.SILVER,
+                        Form.COIN,
+                        TROY_OUNCE,
+                        2021
+                ).get(),
+                Dealer.BESSERGOLD,
+                848.00,
+                LocalDate.of(2021, 1, 25)
+        );
 
-        InvestmentMetal silverWienerCoin1 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 868.00, LocalDate.of(2020, 12, 10));
-        InvestmentMetal silverWienerCoin2 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 845.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverWienerCoin3 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 845.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverWienerCoin4 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 868.00, LocalDate.of(2020, 12, 10));
-        InvestmentMetal silverWienerCoin5 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 845.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverWienerCoin6 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 845.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverWienerCoin7 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 868.00, LocalDate.of(2020, 12, 10));
-        InvestmentMetal silverWienerCoin8 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 845.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverWienerCoin9 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 845.00, LocalDate.of(2021, 1, 25));
-        InvestmentMetal silverWienerCoin10 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.MUNZE_OSTERREICH, Metal.SILVER, Form.COIN, TROY_OUNCE, 2021).get(), Dealer.BESSERGOLD, 845.00, LocalDate.of(2021, 1, 25));
+        List<InvestmentMetal> silverWienerCoins1 = duplicateInvestmentMetals(
+                3,
+                silverWienerCoin,
+                Dealer.BESSERGOLD,
+                868.00,
+                LocalDate.of(2020, 12, 10)
+        );
+
+        List<InvestmentMetal> silverWienerCoins2 = duplicateInvestmentMetals(
+                3,
+                silverWienerCoin,
+                Dealer.BESSERGOLD,
+                845.00,
+                LocalDate.of(2021, 1, 25)
+        );
 
         List<InvestmentMetal> investmentMetalList = new ArrayList<>() {{
-            add(silverMapleCoin1);
-            add(silverMapleCoin2);
-            add(silverMapleCoin3);
-            add(silverMapleCoin4);
-            add(silverMapleCoin5);
-            add(silverMapleCoin6);
-            add(silverMapleCoin7);
-            add(silverMapleCoin8);
-            add(silverMapleCoin9);
-            add(silverMapleCoin10);
-
-            add(silverWienerCoin1);
-            add(silverWienerCoin2);
-            add(silverWienerCoin3);
-            add(silverWienerCoin4);
-            add(silverWienerCoin5);
-            add(silverWienerCoin6);
-            add(silverWienerCoin7);
-            add(silverWienerCoin8);
-            add(silverWienerCoin9);
-            add(silverWienerCoin10);
+            addAll(silverMapleCoin1);
+            addAll(silverWienerCoins1);
+            addAll(silverWienerCoins2);
         }};
 
-        this.investmentRepository.save(silverMapleCoin1);
-        this.investmentRepository.save(silverMapleCoin2);
-        this.investmentRepository.save(silverMapleCoin3);
-        this.investmentRepository.save(silverMapleCoin4);
-        this.investmentRepository.save(silverMapleCoin5);
-        this.investmentRepository.save(silverMapleCoin6);
-        this.investmentRepository.save(silverMapleCoin7);
-        this.investmentRepository.save(silverMapleCoin8);
-        this.investmentRepository.save(silverMapleCoin9);
-        this.investmentRepository.save(silverMapleCoin10);
-
-        this.investmentRepository.save(silverWienerCoin1);
-        this.investmentRepository.save(silverWienerCoin2);
-        this.investmentRepository.save(silverWienerCoin3);
-        this.investmentRepository.save(silverWienerCoin4);
-        this.investmentRepository.save(silverWienerCoin5);
-        this.investmentRepository.save(silverWienerCoin6);
-        this.investmentRepository.save(silverWienerCoin7);
-        this.investmentRepository.save(silverWienerCoin8);
-        this.investmentRepository.save(silverWienerCoin9);
-        this.investmentRepository.save(silverWienerCoin10);
+        investmentMetalList.forEach(
+                this.investmentRepository::save
+        );
 
         return investmentMetalList;
+    }
+
+    private Product getWienerCoin(int year) {
+        return this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
+                Dealer.BESSERGOLD,
+                Producer.MUNZE_OSTERREICH,
+                Metal.SILVER,
+                Form.COIN,
+                TROY_OUNCE,
+                year
+        ).get();
     }
 }

@@ -1,4 +1,4 @@
-package home.holymiko.ScrapApp.Server.Scraps;
+package home.holymiko.ScrapApp.Server.Scraper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import home.holymiko.ScrapApp.Server.Enum.Form;
@@ -11,7 +11,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Extract {
+public class Extractor {
 
     private static final double TROY_OUNCE = 31.1034768;
     private static final double OUNCE = 28.349523125;
@@ -22,7 +22,7 @@ public class Extract {
      * @param text including producer's name
      * @return Enum class Producer
      */
-    public static Producer producerExtractor(String text) {
+    public static Producer producerExtract(String text) {
         text = text.toLowerCase();
 
         if (text.contains("perth") || text.contains("rok") || text.contains("kangaroo")
@@ -85,7 +85,7 @@ public class Extract {
      * @param text including name of form
      * @return Enum class Form
      */
-    public static Form formExtractor(String text) {
+    public static Form formExtract(String text) {
         text = text.toLowerCase();
         if(text.contains("combibar") || text.contains("multidisc") || text.contains("multigram")) {
             return Form.COMBIBAR;
@@ -113,7 +113,7 @@ public class Extract {
      * @param text including number with unit
      * @return Grams
      */
-    public static double weightExtractor(String text) {
+    public static double weightExtract(String text) {
 //        text = text.replace("\u00a0", "");         // &nbsp;
         text = text.toLowerCase(Locale.ROOT);
 
@@ -197,7 +197,7 @@ public class Extract {
         return -1;
     }
 
-    public static int yearExtractor(String name) {
+    public static int yearExtract(String name) {
         Pattern pattern = Pattern.compile("20[12]\\d");
         Matcher matcher = pattern.matcher(name);
         if (matcher.find()) {
@@ -207,22 +207,17 @@ public class Extract {
     }
 
     /**
-     * Extracts price from text format.
+     * Extracts number from text format.
      * @param text text including only number and currency
      * @return price from text
      */
-    public static Double priceExtractor(String text) {
+    public static Double numberExtract(String text) {
         text = text.replace("\u00a0", "");         // &nbsp;
+        text = text.replace(" ", "");
         text = text.replace(",", ".");             // -> Double
         text = text.replace("Kč", "");
-        return Double.parseDouble( text.replace(" ", "") );
-    }
-
-    public static Double serenityElementToDouble(final HtmlElement element) {
-        String result = element.asText();
-        result = result.replace("%", "");
-        result = result.replace(",", "");
-        return Double.parseDouble(result);
+        text = text.replace("%", "");
+        return Double.parseDouble(text);
     }
 
     public static GrahamGrade gradeExtractor(final HtmlElement element) {

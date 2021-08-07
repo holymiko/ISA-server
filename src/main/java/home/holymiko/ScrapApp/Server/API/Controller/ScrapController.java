@@ -2,10 +2,10 @@ package home.holymiko.ScrapApp.Server.API.Controller;
 
 import home.holymiko.ScrapApp.Server.Enum.Metal;
 import home.holymiko.ScrapApp.Server.Enum.TickerState;
-import home.holymiko.ScrapApp.Server.Scraps.ScrapBessergold;
-import home.holymiko.ScrapApp.Server.Scraps.ScrapMetal;
-import home.holymiko.ScrapApp.Server.Scraps.ScrapSerenity;
-import home.holymiko.ScrapApp.Server.Scraps.ScrapZlataky;
+import home.holymiko.ScrapApp.Server.Scraper.DealerScraper.BessergoldScraper;
+import home.holymiko.ScrapApp.Server.Scraper.MetalScraper;
+import home.holymiko.ScrapApp.Server.Scraper.SerenityScraper;
+import home.holymiko.ScrapApp.Server.Scraper.DealerScraper.ZlatakyScraper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -37,15 +37,15 @@ public class ScrapController {
 
     private boolean isRunning = false;
 
-    private final ScrapBessergold scrapBessergold;
-    private final ScrapZlataky scrapZlataky;
-    private final ScrapSerenity scrapSerenity;
+    private final BessergoldScraper scrapBessergold;
+    private final ZlatakyScraper scrapZlataky;
+    private final SerenityScraper scrapSerenity;
 
     // Used for Polymorphic calling
-    private final List<ScrapMetal> scrapMetals = new ArrayList<>();
+    private final List<MetalScraper> scrapMetals = new ArrayList<>();
 
     @Autowired
-    public ScrapController(ScrapBessergold scrapBessergold, ScrapZlataky scrapZlataky, ScrapSerenity scrapSerenity) {
+    public ScrapController(BessergoldScraper scrapBessergold, ZlatakyScraper scrapZlataky, SerenityScraper scrapSerenity) {
         this.scrapBessergold = scrapBessergold;
         this.scrapZlataky = scrapZlataky;
         this.scrapSerenity = scrapSerenity;
@@ -164,7 +164,7 @@ public class ScrapController {
             throw e;
         }
         isRunning = false;
-        throw new ResponseStatusException(HttpStatus.OK, "ScrapMetal done");
+        throw new ResponseStatusException(HttpStatus.OK, "MetalScraper done");
     }
 
     @RequestMapping({"/productsIds", "/productsIds/"})              // Wasn't tested
@@ -183,7 +183,7 @@ public class ScrapController {
             throw e;
         }
         isRunning = false;
-        throw new ResponseStatusException(HttpStatus.OK, "ScrapMetal done");
+        throw new ResponseStatusException(HttpStatus.OK, "MetalScraper done");
     }
 
     @RequestMapping({"/serenity", "/serenity/"})
@@ -220,7 +220,7 @@ public class ScrapController {
 
                 // Scraps from all dealers
                 this.scrapMetals.forEach(
-                        ScrapMetal::goldLinksScrap
+                        MetalScraper::goldLinksScrap
                 );
 
                 lastGoldLinks = LocalDateTime.now();
@@ -230,7 +230,7 @@ public class ScrapController {
 
                 // Scraps from all dealers
                 this.scrapMetals.forEach(
-                        ScrapMetal::silverLinksScrap
+                        MetalScraper::silverLinksScrap
                 );
 
                 lastSilverLinks = LocalDateTime.now();
@@ -240,7 +240,7 @@ public class ScrapController {
 
                 // Scraps from all dealers
                 this.scrapMetals.forEach(
-                        ScrapMetal::platinumLinksScrap
+                        MetalScraper::platinumLinksScrap
                 );
 
                 lastPlatinumLinks = LocalDateTime.now();
@@ -250,7 +250,7 @@ public class ScrapController {
 
                 // Scraps from all dealers
                 this.scrapMetals.forEach(
-                        ScrapMetal::platinumLinksScrap
+                        MetalScraper::platinumLinksScrap
                 );
 
                 lastPalladiumLinks = LocalDateTime.now();
@@ -279,27 +279,27 @@ public class ScrapController {
     private void isRunningCheck() throws ResponseStatusException {
         if( isRunning ) {
             System.out.println("ScrapController - TOO MANY REQUESTS");
-            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Another ScrapMetal is running right now");
+            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Another MetalScraper is running right now");
         }
     }
 
     private void scrapAllProductsOrPrices() {
-        System.out.println("Scrap ALL products");
+        System.out.println("Scraper ALL products");
 
         // Scraps from all dealers
         this.scrapMetals.forEach(
-                ScrapMetal::byDealerScrap
+                MetalScraper::byDealerScrap
         );
 
         lastAllProducts = LocalDateTime.now();
     }
 
     private void scrapAllLinks() {
-        System.out.println("Scrap ALL links");
+        System.out.println("Scraper ALL links");
 
         // Scraps from all dealers
         this.scrapMetals.forEach(
-                ScrapMetal::allLinksScrap
+                MetalScraper::allLinksScrap
         );
 
         lastAllLinks = LocalDateTime.now();

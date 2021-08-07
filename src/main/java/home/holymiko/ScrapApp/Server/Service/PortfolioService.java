@@ -34,19 +34,15 @@ public class PortfolioService {
      * @return Portfolio with collection of IDs
      */
     private PortfolioDTO toPortfolioDTO(Portfolio portfolio) {
-        double beginPrice = getPortfolioBeginPrice(portfolio);
-        double value = getPortfolioValue(portfolio);
+        double beginPrice = portfolio.getBeginPrice();
+        double value = portfolio.getPortfolioValue();
 
         return new PortfolioDTO(
                 portfolio.getId(),
                 portfolio.getOwner(),
                 beginPrice,
                 value,
-                value / beginPrice,
-                portfolio.getInvestmentMetals()
-                        .stream()
-                        .map(InvestmentMetal::getId)
-                        .collect(Collectors.toList())
+                value / beginPrice
         );
     }
 
@@ -63,8 +59,8 @@ public class PortfolioService {
      * @return Portfolio with collection of InvestmentDTOs
      */
     private PortfolioDTO_Investments toPortfolioInvestmentDTO(Portfolio portfolio) {
-        double beginPrice = getPortfolioBeginPrice(portfolio);
-        double value = getPortfolioValue(portfolio);
+        double beginPrice = portfolio.getBeginPrice();
+        double value = portfolio.getPortfolioValue();
 
         return new PortfolioDTO_Investments(
                 portfolio.getId(),
@@ -171,22 +167,5 @@ public class PortfolioService {
 //        return investmentMetalList;
 //    }
 
-    private double getPortfolioBeginPrice(Portfolio portfolio) {
-        return portfolio.getInvestmentMetals()
-                .stream()
-                .map(
-                        InvestmentMetal::getBeginPrice
-                ).reduce(0.0, Double::sum);
-    }
 
-    private double getPortfolioValue(Portfolio portfolio) {
-        return portfolio.getInvestmentMetals()
-                .stream()
-                .map(
-                        investmentMetal ->
-                                investmentMetal.getProduct().getLatestPriceByDealer(
-                                        investmentMetal.getDealer()
-                                ).getRedemption()
-                ).reduce(0.0, Double::sum);
-    }
 }

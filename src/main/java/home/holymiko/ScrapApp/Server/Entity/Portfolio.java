@@ -23,4 +23,21 @@ public class Portfolio {
     public Portfolio() {
     }
 
+    public double getBeginPrice() {
+        return this.getInvestmentMetals()
+                .stream()
+                .map(
+                        InvestmentMetal::getBeginPrice
+                ).reduce(0.0, Double::sum);
+    }
+
+    public double getPortfolioValue() {
+        return this.getInvestmentMetals()
+                .stream()
+                .map(
+                        investmentMetal ->
+                                investmentMetal.getProduct().getBestRedemption()
+                ).reduce(0.0, Double::sum);
+    }
+
 }

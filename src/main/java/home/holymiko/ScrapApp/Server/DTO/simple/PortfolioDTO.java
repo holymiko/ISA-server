@@ -2,8 +2,6 @@ package home.holymiko.ScrapApp.Server.DTO.simple;
 
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 public class PortfolioDTO {
     private final long id;
@@ -11,15 +9,13 @@ public class PortfolioDTO {
     private final double beginPrice;
     private final double value;
     private final double yield;
-    private final List<Long> investmentIds;
 
-    public PortfolioDTO(long id, String owner, double beginPrice, double value, double yield, List<Long> investments) {
+    public PortfolioDTO(long id, String owner, double beginPrice, double value, double yield) {
         this.id = id;
         this.owner = owner;
         this.beginPrice = beginPrice;
         this.value = value;
         this.yield = yield;
-        this.investmentIds = investments;
     }
 
     public String getTextYield() {

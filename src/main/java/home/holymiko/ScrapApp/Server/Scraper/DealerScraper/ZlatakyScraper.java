@@ -1,9 +1,10 @@
-package home.holymiko.ScrapApp.Server.Scraps;
+package home.holymiko.ScrapApp.Server.Scraper.DealerScraper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import home.holymiko.ScrapApp.Server.Enum.Dealer;
 import home.holymiko.ScrapApp.Server.Entity.Link;
+import home.holymiko.ScrapApp.Server.Scraper.MetalScraper;
 import home.holymiko.ScrapApp.Server.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Component
-public class ScrapZlataky extends ScrapMetal {
+public class ZlatakyScraper extends MetalScraper {
 
     private static final String BASE_URL = "https://zlataky.cz";
     private static final String SEARCH_URL_GOLD_COIN = "https://zlataky.cz/investicni-zlate-mince?ext=0&filter_weight=on&sort=3a&filter_in_stock=1&page=all";
@@ -32,10 +33,10 @@ public class ScrapZlataky extends ScrapMetal {
     private static final String X_PATH_REDEMPTION_PRICE = ".//*[@id=\"product_price_purchase\"]";
 
     @Autowired
-    public ScrapZlataky(LinkService linkService,
-                        PriceService priceService,
-                        ProductService productService,
-                        PortfolioService portfolioService) {
+    public ZlatakyScraper(LinkService linkService,
+                          PriceService priceService,
+                          ProductService productService,
+                          PortfolioService portfolioService) {
         super(
                 Dealer.ZLATAKY,
                 linkService,

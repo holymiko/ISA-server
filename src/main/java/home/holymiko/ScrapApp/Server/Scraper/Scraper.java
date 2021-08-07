@@ -1,14 +1,14 @@
-package home.holymiko.ScrapApp.Server.Scraps;
+package home.holymiko.ScrapApp.Server.Scraper;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-public class Scrap {
+public class Scraper {
     protected HtmlPage page;
     protected final WebClient client;
     protected static int printerCounter = 0;
 
-    public Scrap() {
+    public Scraper() {
         client = new WebClient();
         setClient();
     }
@@ -47,7 +47,7 @@ public class Scrap {
         }
     }
 
-    protected void statusPrint(final int interval, final int size) {
+    protected static void statusPrint(final int interval, final int size) {
         printerCounter++;
         if ((printerCounter % interval) == 0) {
             System.out.println(printerCounter + "/" + size + "\n");

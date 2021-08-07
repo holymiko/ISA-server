@@ -1,9 +1,10 @@
-package home.holymiko.ScrapApp.Server.Scraps;
+package home.holymiko.ScrapApp.Server.Scraper.DealerScraper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import home.holymiko.ScrapApp.Server.Enum.Dealer;
 import home.holymiko.ScrapApp.Server.Entity.Link;
+import home.holymiko.ScrapApp.Server.Scraper.MetalScraper;
 import home.holymiko.ScrapApp.Server.Service.LinkService;
 import home.holymiko.ScrapApp.Server.Service.PortfolioService;
 import home.holymiko.ScrapApp.Server.Service.PriceService;
@@ -17,7 +18,7 @@ import java.util.Collections;
 
 @Deprecated
 @Component
-public class ScrapSilverum extends ScrapMetal {
+public class SilverumScraper extends MetalScraper {
     private static final String SEARCH_URL_GOLD = "https://www.bessergold.cz/investicni-zlato.html?product_list_limit=all";
     private static final String SEARCH_URL_SILVER = "https://www.bessergold.cz/investicni-stribro.html?product_list_limit=all";
     private static final String SEARCH_URL_PLATINUM = "https://www.bessergold.cz/investicni-platina.html?product_list_limit=all";
@@ -29,10 +30,10 @@ public class ScrapSilverum extends ScrapMetal {
     private static final String X_PATH_REDEMPTION_PRICE = ".//div[@class='vykupni-cena']";
 
     @Autowired
-    public ScrapSilverum(LinkService linkService,
-                         PriceService priceService,
-                         ProductService productService,
-                         PortfolioService portfolioService) {
+    public SilverumScraper(LinkService linkService,
+                           PriceService priceService,
+                           ProductService productService,
+                           PortfolioService portfolioService) {
         super(
                 Dealer.SILVERUM,
                 linkService,

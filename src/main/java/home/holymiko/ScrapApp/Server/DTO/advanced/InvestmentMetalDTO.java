@@ -1,6 +1,5 @@
-package home.holymiko.ScrapApp.Server.DTO.simple;
+package home.holymiko.ScrapApp.Server.DTO.advanced;
 
-import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_LatestPrices;
 import home.holymiko.ScrapApp.Server.Enum.Dealer;
 import lombok.Getter;
 

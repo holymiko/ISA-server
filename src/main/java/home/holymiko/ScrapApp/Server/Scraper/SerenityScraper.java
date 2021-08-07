@@ -1,8 +1,8 @@
-package home.holymiko.ScrapApp.Server.Scraps;
+package home.holymiko.ScrapApp.Server.Scraper;
 
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import home.holymiko.ScrapApp.Server.API.Export;
+import home.holymiko.ScrapApp.Server.API.Port.Export;
 import home.holymiko.ScrapApp.Server.Enum.*;
 import home.holymiko.ScrapApp.Server.Entity.*;
 import home.holymiko.ScrapApp.Server.Service.StockService;
@@ -14,7 +14,7 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 @Component
-public class ScrapSerenity extends Scrap {
+public class SerenityScraper extends Scraper {
     private static final double MIN_RATING_SCORE = 6.5;
     private static final long ETHICAL_DELAY = 1000;
     private static final String BASE_URL = "https://www.serenitystocks.com/stock/";
@@ -23,7 +23,7 @@ public class ScrapSerenity extends Scrap {
     private final StockService stockService;
 
     @Autowired
-    public ScrapSerenity(TickerService tickerService, StockService stockService) {
+    public SerenityScraper(TickerService tickerService, StockService stockService) {
         super();
         this.tickerService = tickerService;
         this.stockService = stockService;
@@ -82,15 +82,24 @@ public class ScrapSerenity extends Scrap {
         String currency = ((DomText) page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div[9]/div/div/text()")).asText();
 
         for(int i = 2; i <= 11; i++) {
-            ratings.add( Extract.serenityElementToDouble( page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div["+i+"]/div[2]/div")) );
+            ratings.add(
+                    Extractor.numberExtract(
+                            ((HtmlElement) page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div["+i+"]/div[2]/div"))
+                                    .asText()
+                    )
+            );
         }
         for(int i = 2; i <= 8; i++) {
             HtmlElement htmlElement = page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div["+i+"]/div[2]/div");
             if(i == 5) {
-                grade = Extract.gradeExtractor(htmlElement);
+                grade = Extractor.gradeExtractor(htmlElement);
                 continue;
             }
-            results.add( Extract.serenityElementToDouble(htmlElement) );
+            results.add(
+                    Extractor.numberExtract(
+                            htmlElement.asText()
+                    )
+            );
         }
 
 //        printScrapStock(header, ratingScore, ratings, results, currency);
