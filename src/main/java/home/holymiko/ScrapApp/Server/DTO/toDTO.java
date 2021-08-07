@@ -1,7 +1,7 @@
 package home.holymiko.ScrapApp.Server.DTO;
 
 import home.holymiko.ScrapApp.Server.DTO.advanced.*;
-import home.holymiko.ScrapApp.Server.DTO.simple.PortfolioDTO;
+import home.holymiko.ScrapApp.Server.DTO.advanced.PortfolioDTO_InvestmentCount;
 import home.holymiko.ScrapApp.Server.DTO.simple.PriceDTO;
 import home.holymiko.ScrapApp.Server.Entity.*;
 
@@ -100,13 +100,13 @@ public class toDTO {
     public static InvestmentMetalDTO_OneLatestPrice metalToDTO(InvestmentMetal investmentMetal){
         return new InvestmentMetalDTO_OneLatestPrice(
                 investmentMetal.getId(),
-                toDTOOneLatestPrice(investmentMetal.getProduct()),
                 investmentMetal.getDealer(),
                 investmentMetal.getYield(),
                 investmentMetal.getBeginPrice(),
                 investmentMetal.getEndPrice(),
                 investmentMetal.getBeginDate(),
-                investmentMetal.getEndDate()
+                investmentMetal.getEndDate(),
+                toDTOOneLatestPrice(investmentMetal.getProduct())
         );
     }
 
@@ -115,11 +115,11 @@ public class toDTO {
      * @param portfolio Portfolio to be converted
      * @return Portfolio with collection of IDs
      */
-    public static PortfolioDTO toPortfolioDTO(Portfolio portfolio) {
+    public static PortfolioDTO_InvestmentCount toPortfolioDTO(Portfolio portfolio) {
         double beginPrice = portfolio.getBeginPrice();
         double value = portfolio.getPortfolioValue();
 
-        return new PortfolioDTO(
+        return new PortfolioDTO_InvestmentCount(
                 portfolio.getId(),
                 portfolio.getOwner(),
                 beginPrice,
@@ -129,7 +129,7 @@ public class toDTO {
         );
     }
 
-    public static Optional<PortfolioDTO> toPortfolioDTO(Optional<Portfolio> optionalPortfolio) {
+    public static Optional<PortfolioDTO_InvestmentCount> toPortfolioDTO(Optional<Portfolio> optionalPortfolio) {
         if (optionalPortfolio.isEmpty()) {
             return Optional.empty();
         }

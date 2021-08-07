@@ -1,7 +1,7 @@
 package home.holymiko.ScrapApp.Server.API.Controller;
 
 import home.holymiko.ScrapApp.Server.DTO.create.PortfolioCreateDTO;
-import home.holymiko.ScrapApp.Server.DTO.simple.PortfolioDTO;
+import home.holymiko.ScrapApp.Server.DTO.advanced.PortfolioDTO_InvestmentCount;
 import home.holymiko.ScrapApp.Server.DTO.advanced.PortfolioDTO_Investments;
 import home.holymiko.ScrapApp.Server.Entity.Portfolio;
 import home.holymiko.ScrapApp.Server.Service.PortfolioService;
@@ -73,7 +73,7 @@ public class PortfolioController {
     /////// GET DTO
 
     @GetMapping({"/dto/portfolio","/dto/portfolio/", "/dto/", "/dto"})
-    public List<PortfolioDTO> asDTO() {
+    public List<PortfolioDTO_InvestmentCount> asDTO() {
         System.out.println("Get all portfolios as DTO");
         return portfolioService.findAllAsPortfolioDTO();
     }

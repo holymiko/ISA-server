@@ -1,9 +1,8 @@
 package home.holymiko.ScrapApp.Server.Service;
 
-import home.holymiko.ScrapApp.Server.DTO.simple.PortfolioDTO;
+import home.holymiko.ScrapApp.Server.DTO.advanced.PortfolioDTO_InvestmentCount;
 import home.holymiko.ScrapApp.Server.DTO.advanced.PortfolioDTO_Investments;
 import home.holymiko.ScrapApp.Server.DTO.toDTO;
-import home.holymiko.ScrapApp.Server.Entity.InvestmentMetal;
 import home.holymiko.ScrapApp.Server.Entity.Portfolio;
 import home.holymiko.ScrapApp.Server.Repository.PortfolioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ public class PortfolioService {
 
     ////// FIND AS DTO
 
-    public List<PortfolioDTO> findAllAsPortfolioDTO() {
+    public List<PortfolioDTO_InvestmentCount> findAllAsPortfolioDTO() {
         return portfolioRepository.findAll()
                 .stream()
                 .map(toDTO::toPortfolioDTO)

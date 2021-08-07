@@ -1,29 +1,18 @@
 package home.holymiko.ScrapApp.Server.DTO.advanced;
 
+import home.holymiko.ScrapApp.Server.DTO.simple.InvestmentMetalDTO;
 import home.holymiko.ScrapApp.Server.Enum.Dealer;
 import lombok.Getter;
 
 import java.time.LocalDate;
 
 @Getter
-public class InvestmentMetalDTO_OneLatestPrice {
-    private final long id;
-    private final ProductDTO_OneLatestPrice product;
-    private final Dealer dealer;
-    private final double yield;
-    private final double beginPrice;
-    private final double endPrice;
-    private final LocalDate beginDate;
-    private final LocalDate endDate;
+public class InvestmentMetalDTO_OneLatestPrice extends InvestmentMetalDTO {
 
-    public InvestmentMetalDTO_OneLatestPrice(long id, ProductDTO_OneLatestPrice product, Dealer dealer, double yield, double beginPrice, double endPrice, LocalDate beginDate, LocalDate endDate) {
-        this.id = id;
+    private final ProductDTO_OneLatestPrice product;
+
+    public InvestmentMetalDTO_OneLatestPrice(long id, Dealer dealer, double yield, double beginPrice, double endPrice, LocalDate beginDate, LocalDate endDate, ProductDTO_OneLatestPrice product) {
+        super(id, dealer, yield, beginPrice, endPrice, beginDate, endDate);
         this.product = product;
-        this.dealer = dealer;
-        this.yield = yield;
-        this.beginPrice = beginPrice;
-        this.endPrice = endPrice;
-        this.beginDate = beginDate;
-        this.endDate = endDate;
     }
 }
