@@ -2,7 +2,9 @@ package home.holymiko.ScrapApp.Server.Service;
 
 import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_LatestPrices;
+import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_OneLatestPrice;
 import home.holymiko.ScrapApp.Server.DTO.simple.PriceDTO;
+import home.holymiko.ScrapApp.Server.DTO.toDTO;
 import home.holymiko.ScrapApp.Server.Entity.*;
 import home.holymiko.ScrapApp.Server.Enum.Form;
 import home.holymiko.ScrapApp.Server.Enum.Metal;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,90 +30,15 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-
-    //////// toDTO
-
-    private List<PriceDTO> toPriceDTOs(List<Price> prices, double grams){
-        return prices.stream().map(
-                price -> new PriceDTO(
-                        price.getDateTime(),
-                        price.getPrice(),
-                        price.getRedemption(),
-                        price.getDealer(),
-                        price.getRedemption() / price.getPrice(),
-                        price.getPrice() / grams
-                )
-        ).collect(Collectors.toList());
-    }
-
-    public ProductDTO_LatestPrices toDTOLatestPrices(Product product) {
-        return new ProductDTO_LatestPrices(
-                product.getId(),
-                product.getMetal().name(),
-                product.getName(),
-                product.getGrams(),
-                product.getLinks()
-                        .stream()
-                        .map(Link::getLink)
-                        .collect(Collectors.toList()),
-                toPriceDTOs(
-                        product.getLatestPrices(),
-                        product.getGrams()
-                )
-        );
-    }
-
-    public ProductDTO_AllPrices toDTOAllPrices(Product product) {
-        return new ProductDTO_AllPrices(
-                product.getId(),
-                product.getMetal().name(),
-                product.getName(),
-                product.getGrams(),
-                product.getLinks()
-                        .stream()
-                        .map(Link::getLink)
-                        .collect(Collectors.toList()),
-                toPriceDTOs(
-                        product.getLatestPrices(),
-                        product.getGrams()
-                ),
-                toPriceDTOs(
-                        product.getPrices(),
-                        product.getGrams()
-                )
-        );
-    }
-
-    public Optional<ProductDTO_AllPrices> toDTOAllPrices(Optional<Product> optionalProduct) {
-        if (optionalProduct.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(
-                toDTOAllPrices(optionalProduct.get())
-        );
-    }
-
-    public Optional<ProductDTO_LatestPrices> toDTOLatestPrices(Optional<Product> optionalProduct) {
-        if (optionalProduct.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(
-                toDTOLatestPrices(optionalProduct.get())
-        );
-    }
-
-
-
-
     /////////// FIND AS DTO
 
     public Optional<ProductDTO_LatestPrices> findByIdAsDTO(Long id) {
         Optional<Product> optionalProductDTO = this.productRepository.findById(id);
-        return optionalProductDTO.map(this::toDTOLatestPrices);
+        return optionalProductDTO.map(toDTO::toDTOLatestPrices);
     }
 
     public Optional<ProductDTO_AllPrices> findByIdAsDTOAllPrices(Long id) {
-        return toDTOAllPrices(this.productRepository.findById(id));
+        return toDTO.toDTOAllPrices(this.productRepository.findById(id));
     }
 
     public List<ProductDTO_LatestPrices> findAllAsDTO() {
@@ -120,12 +48,12 @@ public class ProductService {
                     product.getGrams() >= 0 //&&
 //                    product.getLatestPrices().getPrice() >= 0     TODO
                 )
-                .map(this::toDTOLatestPrices)
+                .map(toDTO::toDTOLatestPrices)
                 .collect(Collectors.toList());
     }
 
     public List<ProductDTO_LatestPrices> findByMetalAsDTO(Metal metal) {
-        return productRepository.findProductsByMetal(metal).stream().map(this::toDTOLatestPrices).collect(Collectors.toList());
+        return productRepository.findProductsByMetal(metal).stream().map(toDTO::toDTOLatestPrices).collect(Collectors.toList());
     }
 
 

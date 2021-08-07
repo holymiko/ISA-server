@@ -36,7 +36,7 @@ public class Portfolio {
                 .stream()
                 .map(
                         investmentMetal ->
-                                investmentMetal.getProduct().getBestRedemption()
+                                investmentMetal.getProduct().getPriceByBestRedemption().getRedemption()
                 ).reduce(0.0, Double::sum);
     }
 

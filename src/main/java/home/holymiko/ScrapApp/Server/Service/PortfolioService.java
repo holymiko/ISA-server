@@ -2,6 +2,7 @@ package home.holymiko.ScrapApp.Server.Service;
 
 import home.holymiko.ScrapApp.Server.DTO.simple.PortfolioDTO;
 import home.holymiko.ScrapApp.Server.DTO.advanced.PortfolioDTO_Investments;
+import home.holymiko.ScrapApp.Server.DTO.toDTO;
 import home.holymiko.ScrapApp.Server.Entity.InvestmentMetal;
 import home.holymiko.ScrapApp.Server.Entity.Portfolio;
 import home.holymiko.ScrapApp.Server.Repository.PortfolioRepository;
@@ -26,75 +27,25 @@ public class PortfolioService {
         this.investmentService = investmentService;
     }
 
-    /////// to DTO
-
-    /**
-     * Converts Portfolio's Investments to IDs
-     * @param portfolio Portfolio to be converted
-     * @return Portfolio with collection of IDs
-     */
-    private PortfolioDTO toPortfolioDTO(Portfolio portfolio) {
-        double beginPrice = portfolio.getBeginPrice();
-        double value = portfolio.getPortfolioValue();
-
-        return new PortfolioDTO(
-                portfolio.getId(),
-                portfolio.getOwner(),
-                beginPrice,
-                value,
-                value / beginPrice
-        );
-    }
-
-    private Optional<PortfolioDTO> toPortfolioDTO(Optional<Portfolio> optionalPortfolio) {
-        if (optionalPortfolio.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(toPortfolioDTO(optionalPortfolio.get()));
-    }
-
-    /**
-     * Converts Portfolio's Investments to InvestmentDTOs
-     * @param portfolio Portfolio to be converted
-     * @return Portfolio with collection of InvestmentDTOs
-     */
-    private PortfolioDTO_Investments toPortfolioInvestmentDTO(Portfolio portfolio) {
-        double beginPrice = portfolio.getBeginPrice();
-        double value = portfolio.getPortfolioValue();
-
-        return new PortfolioDTO_Investments(
-                portfolio.getId(),
-                portfolio.getOwner(),
-                beginPrice,
-                value,
-                value / beginPrice,
-                portfolio.getInvestmentMetals()
-                        .stream()
-                        .map(investmentService::toDTO)
-                        .collect(Collectors.toList())
-        );
-    }
-
-
     ////// FIND AS DTO
 
     public List<PortfolioDTO> findAllAsPortfolioDTO() {
         return portfolioRepository.findAll()
                 .stream()
-                .map(this::toPortfolioDTO)
+                .map(toDTO::toPortfolioDTO)
                 .collect(Collectors.toList());
     }
 
     public List<PortfolioDTO_Investments> findAllAsPortfolioInvestmentDTO() {
         return portfolioRepository.findAll()
                 .stream()
-                .map(this::toPortfolioInvestmentDTO)
+                .map(toDTO::toPortfolioInvestmentDTO)
                 .collect(Collectors.toList());
     }
 
     public Optional<PortfolioDTO_Investments> findByIdAsPortfolioInvestmentDTO(Long portfolioId) {
         return portfolioRepository.findById(portfolioId)
-                .map(this::toPortfolioInvestmentDTO);
+                .map(toDTO::toPortfolioInvestmentDTO);
     }
 
 

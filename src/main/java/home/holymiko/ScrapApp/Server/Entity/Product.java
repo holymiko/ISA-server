@@ -63,15 +63,17 @@ public class Product {
                 ).collect(Collectors.toList()).get(0);
     }
 
-    public double getBestRedemption() {
-        return this.latestPrices
-                .stream()
-                .map(
-                        Price::getRedemption
-                )
-                .max(
-                        Comparator.naturalOrder()
-                ).get();
+    public Price getPriceByBestRedemption() {
+        if(latestPrices == null || latestPrices.isEmpty()) {
+            return null;
+        }
+        Price max = latestPrices.get(0);
+        for (Price price : latestPrices) {
+            if(price.getRedemption() > max.getRedemption()) {
+                max = price;
+            }
+        }
+        return max;
     }
 
     public void setLatestPrices(List<Price> latestPrices) {

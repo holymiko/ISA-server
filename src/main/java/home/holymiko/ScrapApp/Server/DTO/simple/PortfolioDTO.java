@@ -9,13 +9,15 @@ public class PortfolioDTO {
     private final double beginPrice;
     private final double value;
     private final double yield;
+    private final double investmentCount;
 
-    public PortfolioDTO(long id, String owner, double beginPrice, double value, double yield) {
+    public PortfolioDTO(long id, String owner, double beginPrice, double value, double yield, double investmentCount) {
         this.id = id;
         this.owner = owner;
         this.beginPrice = beginPrice;
         this.value = value;
         this.yield = yield;
+        this.investmentCount = investmentCount;
     }
 
     public String getTextYield() {

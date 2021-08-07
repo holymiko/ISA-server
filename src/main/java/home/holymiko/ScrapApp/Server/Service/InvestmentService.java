@@ -1,6 +1,5 @@
 package home.holymiko.ScrapApp.Server.Service;
 
-import home.holymiko.ScrapApp.Server.DTO.advanced.InvestmentMetalDTO_LatestPrices;
 import home.holymiko.ScrapApp.Server.Entity.Product;
 import home.holymiko.ScrapApp.Server.Enum.Dealer;
 import home.holymiko.ScrapApp.Server.Enum.Form;
@@ -34,22 +33,6 @@ public class InvestmentService {
         this.investmentRepository = investmentRepository;
         this.productService = productService;
     }
-
-
-    public InvestmentMetalDTO_LatestPrices toDTO(InvestmentMetal investmentMetal){
-        return new InvestmentMetalDTO_LatestPrices(
-                investmentMetal.getId(),
-                productService.toDTOLatestPrices(investmentMetal.getProduct()),
-                investmentMetal.getDealer(),
-                investmentMetal.getYield(),
-                investmentMetal.getBeginPrice(),
-                investmentMetal.getEndPrice(),
-                investmentMetal.getBeginDate(),
-                investmentMetal.getEndDate()
-        );
-    }
-
-
 
 
     ////// FIND
