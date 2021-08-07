@@ -12,15 +12,15 @@ public class PortfolioDTO_Investments {
     private final double beginPrice;
     private final double value;
     private final double yield;
-    private final List<InvestmentMetalDTO> investments;
+    private final List<InvestmentMetalDTO_LatestPrices> investments;
 
-    public PortfolioDTO_Investments(long id, String owner, double beginPrice, double value, double yield, List<InvestmentMetalDTO> investmentMetalDTOS) {
+    public PortfolioDTO_Investments(long id, String owner, double beginPrice, double value, double yield, List<InvestmentMetalDTO_LatestPrices> investmentMetalDTOLatestPrices) {
         this.id = id;
         this.owner = owner;
         this.beginPrice = beginPrice;
         this.value = value;
         this.yield = yield;
-        this.investments = investmentMetalDTOS;
+        this.investments = investmentMetalDTOLatestPrices;
     }
 }
 

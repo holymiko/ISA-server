@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 
 @Getter
-public class InvestmentMetalDTO {
+public class InvestmentMetalDTO_LatestPrices {
     private final long id;
     private final ProductDTO_LatestPrices product;
     private final Dealer dealer;
@@ -16,7 +16,7 @@ public class InvestmentMetalDTO {
     private final LocalDate beginDate;
     private final LocalDate endDate;
 
-    public InvestmentMetalDTO(long id, ProductDTO_LatestPrices product, Dealer dealer, double yield, double beginPrice, double endPrice, LocalDate beginDate, LocalDate endDate) {
+    public InvestmentMetalDTO_LatestPrices(long id, ProductDTO_LatestPrices product, Dealer dealer, double yield, double beginPrice, double endPrice, LocalDate beginDate, LocalDate endDate) {
         this.id = id;
         this.product = product;
         this.dealer = dealer;
