@@ -1,8 +1,7 @@
 package home.holymiko.ScrapApp.Server.API.Controller;
 
 import home.holymiko.ScrapApp.Server.DTO.create.PortfolioCreateDTO;
-import home.holymiko.ScrapApp.Server.DTO.advanced.PortfolioDTO_InvestmentCount;
-import home.holymiko.ScrapApp.Server.DTO.advanced.PortfolioDTO_Investments;
+import home.holymiko.ScrapApp.Server.DTO.simple.PortfolioDTO;
 import home.holymiko.ScrapApp.Server.Entity.Portfolio;
 import home.holymiko.ScrapApp.Server.Service.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:3000")         // Requesty z teto adresy jsou legit
 @RestController
-@RequestMapping("/api/v1/portfolio")         // Na url/api/v1/portfolio se zavola HTTP request
+@RequestMapping("/api/v2/portfolio")         // Na url/api/v1/portfolio se zavola HTTP request
 public class PortfolioController {
     private final PortfolioService portfolioService;
 
@@ -72,23 +71,20 @@ public class PortfolioController {
 
     /////// GET DTO
 
-    @GetMapping({"/dto/portfolio","/dto/portfolio/", "/dto/", "/dto"})
-    public List<PortfolioDTO_InvestmentCount> asDTO() {
+    @GetMapping({"/dto/{dtoSwitch}","/dto/{dtoSwitch}/"})
+    public List<PortfolioDTO> asDTO(@PathVariable int dtoSwitch) {
         System.out.println("Get all portfolios as DTO");
-        return portfolioService.findAllAsPortfolioDTO();
+        return portfolioService.findAllAsPortfolioDTO(dtoSwitch);
     }
 
-    @GetMapping({"/dto/portfolio-investments", "/dto/portfolio-investments/" })
-    public List<PortfolioDTO_Investments> asPortfolio_Investment_DTO() {
-        System.out.println("Get all portfolios as Portfolio-InvestmentMetal DTO");
-        return portfolioService.findAllAsPortfolioInvestmentDTO();
-    }
-
-    @GetMapping("/dto/portfolio-investments/id/{id}")
-    public PortfolioDTO_Investments byIdAsPortfolio_Investment_DTO(@PathVariable long id) {
+    @GetMapping("/dto/{dtoSwitch}/id/{id}")
+    public PortfolioDTO byIdAsDTO(
+            @PathVariable("dtoSwitch") int dtoSwitch,
+            @PathVariable("id") long id
+    ) {
         System.out.println("Get by Id as Portfolio-InvestmentMetal DTO");
 
-        Optional<PortfolioDTO_Investments> optionalPortfolio = portfolioService.findByIdAsPortfolioInvestmentDTO(id);
+        Optional<PortfolioDTO> optionalPortfolio = portfolioService.findByIdAsPortfolioDTO(id, dtoSwitch);
         if (optionalPortfolio.isPresent()) {
             return optionalPortfolio.get();
         }

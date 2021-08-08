@@ -2,8 +2,6 @@ package home.holymiko.ScrapApp.Server.Service;
 
 import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_LatestPrices;
-import home.holymiko.ScrapApp.Server.DTO.advanced.ProductDTO_OneLatestPrice;
-import home.holymiko.ScrapApp.Server.DTO.simple.PriceDTO;
 import home.holymiko.ScrapApp.Server.DTO.toDTO;
 import home.holymiko.ScrapApp.Server.Entity.*;
 import home.holymiko.ScrapApp.Server.Enum.Form;
@@ -14,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Year;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,11 +30,11 @@ public class ProductService {
 
     public Optional<ProductDTO_LatestPrices> findByIdAsDTO(Long id) {
         Optional<Product> optionalProductDTO = this.productRepository.findById(id);
-        return optionalProductDTO.map(toDTO::toDTOLatestPrices);
+        return optionalProductDTO.map(toDTO::toDTO_LatestPrices);
     }
 
     public Optional<ProductDTO_AllPrices> findByIdAsDTOAllPrices(Long id) {
-        return toDTO.toDTOAllPrices(this.productRepository.findById(id));
+        return toDTO.toDTO_AllPrices(this.productRepository.findById(id));
     }
 
     public List<ProductDTO_LatestPrices> findAllAsDTO() {
@@ -48,12 +44,15 @@ public class ProductService {
                     product.getGrams() >= 0 //&&
 //                    product.getLatestPrices().getPrice() >= 0     TODO
                 )
-                .map(toDTO::toDTOLatestPrices)
+                .map(toDTO::toDTO_LatestPrices)
                 .collect(Collectors.toList());
     }
 
     public List<ProductDTO_LatestPrices> findByMetalAsDTO(Metal metal) {
-        return productRepository.findProductsByMetal(metal).stream().map(toDTO::toDTOLatestPrices).collect(Collectors.toList());
+        return productRepository.findProductsByMetal(metal)
+                .stream()
+                .map(toDTO::toDTO_LatestPrices)
+                .collect(Collectors.toList());
     }
 
 

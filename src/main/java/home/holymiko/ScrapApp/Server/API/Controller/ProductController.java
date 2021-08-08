@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/api/v1/product")         // Na url/api/v1/herbivores se zavola HTTP request
+@RequestMapping("/api/v2/product")         // Na url/api/v1/herbivores se zavola HTTP request
 public class ProductController {
 
     private final ProductService productService;

@@ -1,7 +1,6 @@
 package home.holymiko.ScrapApp.Server.Service;
 
-import home.holymiko.ScrapApp.Server.DTO.advanced.PortfolioDTO_InvestmentCount;
-import home.holymiko.ScrapApp.Server.DTO.advanced.PortfolioDTO_Investments;
+import home.holymiko.ScrapApp.Server.DTO.simple.PortfolioDTO;
 import home.holymiko.ScrapApp.Server.DTO.toDTO;
 import home.holymiko.ScrapApp.Server.Entity.Portfolio;
 import home.holymiko.ScrapApp.Server.Repository.PortfolioRepository;
@@ -9,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,23 +29,61 @@ public class PortfolioService {
 
     ////// FIND AS DTO
 
-    public List<PortfolioDTO_InvestmentCount> findAllAsPortfolioDTO() {
-        return portfolioRepository.findAll()
-                .stream()
-                .map(toDTO::toPortfolioDTO)
-                .collect(Collectors.toList());
+    public List<PortfolioDTO> findAllAsPortfolioDTO(int switcher) {
+        return findAllAsPortfolioDTO(findAll(), switcher);
     }
 
-    public List<PortfolioDTO_Investments> findAllAsPortfolioInvestmentDTO() {
-        return portfolioRepository.findAll()
-                .stream()
-                .map(toDTO::toPortfolioInvestmentDTO)
-                .collect(Collectors.toList());
+    public List<PortfolioDTO> findAllAsPortfolioDTO(List<Portfolio> portfolioList, int switcher) {
+        return switch (switcher) {
+            case 0 -> portfolioList
+                        .stream()
+                        .map(
+                                toDTO::toSimpleDTO
+                        )
+                        .collect(Collectors.toList());
+            case 1 -> portfolioList
+                        .stream()
+                        .map(
+                                toDTO::toPortfolioDTO_InvestmentCount
+                        )
+                        .collect(Collectors.toList());
+            case 2 -> portfolioList
+                        .stream()
+                        .map(
+                                toDTO::toDTO_LatestPrices
+                        )
+                        .collect(Collectors.toList());
+            case 3 -> portfolioList
+                        .stream()
+                        .map(
+                                toDTO::toDTO_OneLatestPrice
+                        )
+                        .collect(Collectors.toList());
+            case 4 -> portfolioList
+                        .stream()
+                        .map(
+                                toDTO::toDTO_LatestPrices_OneLatestPrice
+                        )
+                        .collect(Collectors.toList());
+            case 5 -> portfolioList
+                        .stream()
+                        .map(
+                                toDTO::toDTO_AllPrices
+                        )
+                        .collect(Collectors.toList());
+            default -> new ArrayList<>();
+        };
     }
 
-    public Optional<PortfolioDTO_Investments> findByIdAsPortfolioInvestmentDTO(Long portfolioId) {
+    public Optional<PortfolioDTO> findByIdAsPortfolioDTO(Long portfolioId, int dtoSwitch) {
         return portfolioRepository.findById(portfolioId)
-                .map(toDTO::toPortfolioInvestmentDTO);
+                .map(
+                        portfolio ->
+                                findAllAsPortfolioDTO(
+                                        Collections.singletonList(portfolio),
+                                        dtoSwitch
+                                ).get(0)
+                );
     }
 
 

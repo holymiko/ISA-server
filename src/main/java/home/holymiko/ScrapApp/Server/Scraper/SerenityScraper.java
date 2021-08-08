@@ -64,7 +64,6 @@ public class SerenityScraper extends Scraper {
                     System.out.println(">"+ticker.getTicker()+"< Bad");
                 }
             }
-//            sleep(ETHICAL_DELAY);
             dynamicSleepAndStatusPrint(ETHICAL_DELAY, startTime, 50, tickers.size());
         }
         printerCounter = 0;

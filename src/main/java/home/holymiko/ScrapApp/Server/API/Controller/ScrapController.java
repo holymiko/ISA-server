@@ -18,7 +18,7 @@ import java.util.Locale;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/api/v1/scrap")
+@RequestMapping("/api/v2/scrap")
 public class ScrapController {
     private static final long MINUTES_DELAY = 15;
     private static final long YEAR_DELAY = 1000L;
