@@ -17,7 +17,6 @@ public abstract class ProductMapper {
     private static final String LATEST_PRICE_DTO = "java( priceMapper.toPriceDTO(product.getPriceByBestRedemption(), product.getGrams()) )";
     private static final String LATEST_PRICES_DTOS = "java( priceMapper.toPriceDTOs(product.getLatestPrices(), product.getGrams()) )";
 
-
     @Autowired
     protected PriceMapper priceMapper;
 
