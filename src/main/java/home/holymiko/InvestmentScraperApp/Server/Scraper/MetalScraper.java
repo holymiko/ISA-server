@@ -2,7 +2,6 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.PortfolioDTO_ProductDTO;
-import home.holymiko.InvestmentScraperApp.Server.DTO.simple.PortfolioDTO;
 import home.holymiko.InvestmentScraperApp.Server.DTO.simple.ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Enum.Form;
@@ -161,7 +160,7 @@ public class MetalScraper extends Scraper {
         Set<Link> linkSet = optionalPortfolio.get().getInvestments()
                 .stream()
                 .map(
-                        investment -> linkService.findByDealerAndProductId(dealer, investment.getProduct().getId())
+                        investment -> linkService.findByDealerAndProductId(dealer, investment.getProductDTO().getId())
                 ).filter(
                         Optional::isPresent
                 ).map(

@@ -7,6 +7,7 @@ import home.holymiko.InvestmentScraperApp.Server.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Enum.Producer;
+import home.holymiko.InvestmentScraperApp.Server.Mapper.ProductMapper;
 import home.holymiko.InvestmentScraperApp.Server.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,21 +21,33 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final toDTO toDTO;
+    private final ProductMapper productMapper;
 
     @Autowired
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, home.holymiko.InvestmentScraperApp.Server.DTO.toDTO toDTO, ProductMapper productMapper) {
         this.productRepository = productRepository;
+        this.toDTO = toDTO;
+        this.productMapper = productMapper;
     }
 
     /////////// FIND AS DTO
 
     public Optional<ProductDTO_LatestPrices> findByIdAsDTO(Long id) {
         Optional<Product> optionalProductDTO = this.productRepository.findById(id);
-        return optionalProductDTO.map(toDTO::toDTO_LatestPrices);
+        return optionalProductDTO.map(
+                productMapper::toProductDTO_LatestPrices
+        );
     }
 
     public Optional<ProductDTO_AllPrices> findByIdAsDTOAllPrices(Long id) {
-        return toDTO.toDTO_AllPrices(this.productRepository.findById(id));
+        Optional<Product> optionalProduct = this.productRepository.findById(id);
+
+        if(optionalProduct.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(productMapper.toProductDTO_AllPrices(optionalProduct.get()));
     }
 
     public List<ProductDTO_LatestPrices> findAllAsDTO() {
@@ -44,14 +57,14 @@ public class ProductService {
                     product.getGrams() >= 0 //&&
 //                    product.getLatestPrices().getPrice() >= 0     TODO
                 )
-                .map(toDTO::toDTO_LatestPrices)
+                .map(productMapper::toProductDTO_LatestPrices)
                 .collect(Collectors.toList());
     }
 
     public List<ProductDTO_LatestPrices> findByMetalAsDTO(Metal metal) {
         return productRepository.findProductsByMetal(metal)
                 .stream()
-                .map(toDTO::toDTO_LatestPrices)
+                .map(productMapper::toProductDTO_LatestPrices)
                 .collect(Collectors.toList());
     }
 
@@ -62,7 +75,7 @@ public class ProductService {
         return this.productRepository.findProductsByMetal(metal)
                 .stream()
                 .map(
-                        toDTO::toDTO_LatestPrices
+                        productMapper::toProductDTO_LatestPrices
                 )
                 .collect(Collectors.toList());
     }

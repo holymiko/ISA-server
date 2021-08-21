@@ -74,6 +74,13 @@ public class Product {
         return max;
     }
 
+    public List<String> getLinksAsString() {
+        return links
+                .stream()
+                .map(Link::getLink)
+                .collect(Collectors.toList());
+    }
+
     public void setLatestPrices(List<Price> latestPrices) {
         this.latestPrices = latestPrices;
     }

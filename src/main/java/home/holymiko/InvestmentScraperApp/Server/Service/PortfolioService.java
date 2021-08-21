@@ -20,14 +20,15 @@ public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
     private final ProductService productService;
     private final InvestmentService investmentService;
+    private final toDTO toDTO;
 
     @Autowired
-    public PortfolioService(PortfolioRepository portfolioRepository, ProductService productService, InvestmentService investmentService) {
+    public PortfolioService(PortfolioRepository portfolioRepository, ProductService productService, InvestmentService investmentService, home.holymiko.InvestmentScraperApp.Server.DTO.toDTO toDTO) {
         this.portfolioRepository = portfolioRepository;
         this.productService = productService;
         this.investmentService = investmentService;
+        this.toDTO = toDTO;
     }
-
     ////// FIND AS DTO
 
     public List<PortfolioDTO> findAllAsPortfolioDTO(int switcher) {

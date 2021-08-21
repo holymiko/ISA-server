@@ -11,11 +11,18 @@ public class PortfolioDTO {
     private final double value;
     private final double yield;
 
-    public PortfolioDTO(long id, String owner, double beginPrice, double value, double yield) {
+    public PortfolioDTO(long id, String owner, double beginPrice, double value) {
         this.id = id;
         this.owner = owner;
         this.beginPrice = beginPrice;
         this.value = value;
-        this.yield = yield;
+
+        if(value > 0) {
+            this.yield = value / beginPrice;
+        } else {
+            this.yield = 0;
+        }
     }
+
+
 }

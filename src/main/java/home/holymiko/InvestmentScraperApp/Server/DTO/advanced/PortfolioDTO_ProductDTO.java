@@ -10,8 +10,8 @@ public class PortfolioDTO_ProductDTO extends PortfolioDTO {
 
     private final List<InvestmentMetalDTO_ProductDTO> investments;
 
-    public PortfolioDTO_ProductDTO(long id, String owner, double beginPrice, double value, double yield, List<InvestmentMetalDTO_ProductDTO> investments) {
-        super(id, owner, beginPrice, value, yield);
+    public PortfolioDTO_ProductDTO(long id, String owner, double beginPrice, double value, List<InvestmentMetalDTO_ProductDTO> investments) {
+        super(id, owner, beginPrice, value);
         this.investments = investments;
     }
 }
