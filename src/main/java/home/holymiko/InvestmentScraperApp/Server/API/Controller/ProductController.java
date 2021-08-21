@@ -1,5 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
+import home.holymiko.InvestmentScraperApp.Server.Core.Annotation.ResourceNotFound;
 import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.ProductDTO_LatestPrices;
 import home.holymiko.InvestmentScraperApp.Server.Enum.Metal;
@@ -27,14 +28,11 @@ public class ProductController {
 
     /////// GET
 
+    @ResourceNotFound
     @GetMapping("/id/{id}")
-    public ProductDTO_AllPrices byId(@PathVariable long id) {
+    public Optional<ProductDTO_AllPrices> byId(@PathVariable long id) {
         System.out.println("Get product by Id");
-        Optional<ProductDTO_AllPrices> optionalProduct = productService.findByIdAsDTOAllPrices(id);
-        if (optionalProduct.isPresent()) {
-            return optionalProduct.get();
-        }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return productService.findByIdAsDTOAllPrices(id);
     }
 
     @GetMapping({ "/metal/{metal}", "/metal/{metal}/"})
@@ -51,22 +49,17 @@ public class ProductController {
 
     /////// GET DTO
 
+    @ResourceNotFound
+    @GetMapping("/dto/id/{id}")
+    public Optional<ProductDTO_LatestPrices> byIdAsDTO(@PathVariable long id) {
+        System.out.println("Get by Id "+id+" as Product DTO");
+        return productService.findByIdAsDTO(id);
+    }
+
     @GetMapping({ "/dto/", "/dto"})
     public List<ProductDTO_LatestPrices> allAsDTO() {
         System.out.println("Get all products as DTO");
         return productService.findAllAsDTO();
-    }
-
-    @GetMapping("/dto/id/{id}")
-    public ProductDTO_LatestPrices byIdAsDTO(@PathVariable long id) {
-        System.out.println("Get by Id "+id+" as Product DTO");
-
-        Optional<ProductDTO_LatestPrices> optionalPortfolio = productService.findByIdAsDTO(id);
-        if (optionalPortfolio.isPresent()) {
-            return optionalPortfolio.get();
-        }
-
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping({ "/dto/metal/{metal}", "/dto/metal/{metal}/"})

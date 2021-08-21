@@ -1,0 +1,262 @@
+GET http://localhost:8080/api/v2/portfolio/owner/NO
+
+<> 2021-08-21T121226.200.json
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/owner/NO
+
+<> 2021-08-21T121223.200.json
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/owner/NO
+
+<> 2021-08-21T121132.404.json
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/owner/NO
+
+<> 2021-08-21T121129.404.json
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/owner/NO
+
+<> 2021-08-21T121126.404.json
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/owner/NO
+
+<> 2021-08-21T121057.404.json
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/id/3194
+
+<> 2021-08-21T120723.404.json
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/owner/Carlos
+
+<> 2021-08-21T115933.200.json
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/owner/NO
+
+<> 2021-08-21T115926.404.json
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/owner/Carlos
+
+<> 2021-08-21T115913.200.json
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/id/3194
+
+<> 2021-08-21T115908.404.json
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/id/3194
+
+<> 2021-08-21T115902.404.json
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/id/3194
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/id/3194
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/id/3194
+
+<> 2021-08-21T115503.404.json
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/id/3194
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/id/3194
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/id/3194
+
+<> 2021-08-21T115252.404.json
+
+###
+
+GET http://localhost:8080/api/v2/product/metal/platinum
+
+<> 2021-08-21T113814.200.json
+
+###
+
+GET http://localhost:8080/api/v2/product/metal/platinum
+
+<> 2021-08-21T113605.200.json
+
+###
+
+GET http://localhost:8080/api/v2/product/metal/gold
+
+<> 2021-08-21T113547.200.json
+
+###
+
+PUT http://localhost:8080/api/v2/scrap/portfolio/3194
+
+<> 2021-08-21T113518.404.json
+
+###
+
+PUT http://localhost:8080/api/v2/portfolio/scrap/3194
+
+<> 2021-08-21T113454.404.json
+
+###
+
+PUT http://localhost:8080/api/v1/portfolio/scrap/3194
+
+<> 2021-08-21T113448.404.json
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/owner/Carlos
+
+<> 2021-08-21T113119.200.json
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/owner/Carlos
+
+<> 2021-08-21T111358.200.json
+
+###
+
+GET http://localhost:8080/api/v2/portfolio/
+
+<> 2021-08-21T111303.200.json
+
+###
+
+GET http://localhost:8080/api/v1/portfolio/
+
+<> 2021-08-21T111237.404.json
+
+###
+
+GET http://localhost:8080/api/v1/portfolio/owner/Mikolas
+
+<> 2021-08-21T111231.404.json
+
+###
+
+GET http://localhost:8080/api/v1/scrap/links
+
+###
+
+GET http://localhost:8080/api/v1/scrap/all
+
+###
+
+GET http://localhost:8080/api/v1/scrap/all
+
+###
+
+GET http://localhost:8080/api/v1/scrap/links
+
+<> 2021-08-02T214014.400.json
+
+###
+
+GET http://localhost:8080/api/v1/scrap/links
+
+<> 2021-08-02T213956.429.json
+
+###
+
+GET http://localhost:8080/api/v1/scrap/dealer/zlataky
+
+###
+
+GET http://localhost:8080/api/v1/scrap/dealer/zlataky
+
+###
+
+GET http://localhost:8080/api/v1/scrap/all
+
+###
+
+GET http://localhost:8080/api/v1/scrap/products
+
+###
+
+GET http://localhost:8080/api/v1/scrap/products
+
+<> 2021-08-01T202157.500.json
+
+###
+
+GET http://localhost:8080/api/v1/scrap/all
+
+<> 2021-08-01T201857.500.json
+
+###
+
+GET http://localhost:8080/api/v1/scrap/all
+
+<> 2021-08-01T200032.500.json
+
+###
+
+GET http://localhost:8080/api/v1/scrap/all
+
+<> 2021-08-01T195831.500.json
+
+###
+
+GET http://localhost:8080/api/v1/scrap/all
+
+###
+
+GET http://localhost:8080/api/v1/scrap/all
+
+###
+
+GET http://localhost:8080/api/v1/scrap/serenity
+
+###
+
+GET http://localhost:8080/api/v1/scrap/serenity
+
+###
+
+GET http://localhost:8080/api/v1/scrap/serenity
+
+###
+
+GET http://localhost:8080/api/v1/scrap/serenity
+
+###
+
+GET http://localhost:8080/api/v1/scrap/serenity
+
+###
+
+GET http://localhost:8080/api/v1/scrap/serenity
+
+###
+

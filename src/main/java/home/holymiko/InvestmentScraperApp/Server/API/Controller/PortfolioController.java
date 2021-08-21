@@ -1,13 +1,12 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
+import home.holymiko.InvestmentScraperApp.Server.Core.Annotation.ResourceNotFound;
 import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.DTO.create.PortfolioCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.DTO.simple.PortfolioDTO;
 import home.holymiko.InvestmentScraperApp.Server.Service.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,28 +46,17 @@ public class PortfolioController {
         return portfolioService.findAllAsDTO();
     }
 
+    @ResourceNotFound
     @GetMapping("/id/{id}")
-    public PortfolioDTO byId(@PathVariable long id) {
+    public Optional<PortfolioDTO_ProductDTO> byId(@PathVariable long id) {
         System.out.println("Get by Id");
-        Optional<PortfolioDTO_ProductDTO> optionalPortfolio = portfolioService.findById(id);
-        if (optionalPortfolio.isPresent()) {
-            return optionalPortfolio.get();
-        } else {
-            String tryOwner = "Mikolas";
-            optionalPortfolio = portfolioService.findByOwner(tryOwner);
-            if (optionalPortfolio.isPresent())
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Try: " + byOwner(tryOwner).getId());
-            else
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id: " + id + " not found.\nTried byOwner: " + tryOwner + " - didn't work");
-        }
+        return portfolioService.findById(id);
     }
 
+    @ResourceNotFound
     @GetMapping("/owner/{owner}")
-    public PortfolioDTO byOwner(@PathVariable String owner) {
-        return portfolioService.findByOwner(owner)
-                .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Try owner Mikolas")
-                );
+    public Optional<PortfolioDTO_ProductDTO> byOwner(@PathVariable String owner) {
+        return portfolioService.findByOwner(owner);
     }
 
 
@@ -80,19 +68,14 @@ public class PortfolioController {
         return portfolioService.findAllAsPortfolioDTO(dtoSwitch);
     }
 
+    @ResourceNotFound
     @GetMapping("/dto/{dtoSwitch}/id/{id}")
-    public PortfolioDTO byIdAsDTO(
+    public Optional<PortfolioDTO> byIdAsDTO(
             @PathVariable("dtoSwitch") int dtoSwitch,
             @PathVariable("id") long id
     ) {
         System.out.println("Get by Id as Portfolio-InvestmentMetal DTO");
-
-        Optional<PortfolioDTO> optionalPortfolio = portfolioService.findByIdAsPortfolioDTO(id, dtoSwitch);
-        if (optionalPortfolio.isPresent()) {
-            return optionalPortfolio.get();
-        }
-
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return portfolioService.findByIdAsPortfolioDTO(id, dtoSwitch);
     }
 
 
