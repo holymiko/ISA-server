@@ -2,8 +2,8 @@ package home.holymiko.InvestmentScraperApp.Server.Service;
 
 import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.DTO.simple.PortfolioDTO;
-import home.holymiko.InvestmentScraperApp.Server.DTO.toDTO;
 import home.holymiko.InvestmentScraperApp.Server.Entity.Portfolio;
+import home.holymiko.InvestmentScraperApp.Server.Mapper.PortfolioMapper;
 import home.holymiko.InvestmentScraperApp.Server.Repository.PortfolioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,15 +20,16 @@ public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
     private final ProductService productService;
     private final InvestmentService investmentService;
-    private final toDTO toDTO;
+    private final PortfolioMapper portfolioMapper;
 
     @Autowired
-    public PortfolioService(PortfolioRepository portfolioRepository, ProductService productService, InvestmentService investmentService, home.holymiko.InvestmentScraperApp.Server.DTO.toDTO toDTO) {
+    public PortfolioService(PortfolioRepository portfolioRepository, ProductService productService, InvestmentService investmentService, PortfolioMapper portfolioMapper) {
         this.portfolioRepository = portfolioRepository;
         this.productService = productService;
         this.investmentService = investmentService;
-        this.toDTO = toDTO;
+        this.portfolioMapper = portfolioMapper;
     }
+
     ////// FIND AS DTO
 
     public List<PortfolioDTO> findAllAsPortfolioDTO(int switcher) {
@@ -40,37 +41,37 @@ public class PortfolioService {
             case 0 -> portfolioList
                         .stream()
                         .map(
-                                toDTO::toSimpleDTO
+                                portfolioMapper::toPortfolioDTO
                         )
                         .collect(Collectors.toList());
             case 1 -> portfolioList
                         .stream()
                         .map(
-                                toDTO::toPortfolioDTO_InvestmentCount
+                                portfolioMapper::toPortfolioDTO_InvestmentCount
                         )
                         .collect(Collectors.toList());
             case 2 -> portfolioList
                         .stream()
                         .map(
-                                toDTO::toDTO_LatestPrices
+                                portfolioMapper::toDTO_LatestPrices
                         )
                         .collect(Collectors.toList());
             case 3 -> portfolioList
                         .stream()
                         .map(
-                                toDTO::toDTO_OneLatestPrice
+                                portfolioMapper::toDTO_OneLatestPrice
                         )
                         .collect(Collectors.toList());
             case 4 -> portfolioList
                         .stream()
                         .map(
-                                toDTO::toDTO_LatestPrices_OneLatestPrice
+                                portfolioMapper::toDTO_LatestPrices_OneLatestPrice
                         )
                         .collect(Collectors.toList());
             case 5 -> portfolioList
                         .stream()
                         .map(
-                                toDTO::toDTO_AllPrices
+                                portfolioMapper::toDTO_AllPrices
                         )
                         .collect(Collectors.toList());
             default -> new ArrayList<>();
@@ -94,14 +95,14 @@ public class PortfolioService {
     public Optional<PortfolioDTO_ProductDTO> findById(Long id) {
         return portfolioRepository.findById(id)
                 .map(
-                        toDTO::toDTO_AllPrices
+                        portfolioMapper::toDTO_AllPrices
                 );
     }
 
     public Optional<PortfolioDTO_ProductDTO> findByOwner(String owner) {
         return portfolioRepository.findByOwner(owner)
                 .map(
-                        toDTO::toDTO_AllPrices
+                        portfolioMapper::toDTO_AllPrices
                 );
     }
 
@@ -109,7 +110,7 @@ public class PortfolioService {
         return portfolioRepository.findAll()
                 .stream()
                 .map(
-                        toDTO::toSimpleDTO
+                        portfolioMapper::toPortfolioDTO
                 )
                 .collect(Collectors.toList());
     }

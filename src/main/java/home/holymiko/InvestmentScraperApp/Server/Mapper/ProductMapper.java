@@ -27,7 +27,7 @@ public abstract class ProductMapper {
     public abstract ProductDTO_OneLatestPrice toProductDTO_OneLatestPrice(Product product, PriceDTO priceDTO);
 
     @Mapping(target = "latestPrice", expression = LATEST_PRICE_DTO)
-    public abstract ProductDTO_OneLatestPrice toProductDTO_OneLatestPrice(Product product, @Context PriceMapper priceMapper);
+    public abstract ProductDTO_OneLatestPrice toProductDTO_OneLatestPrice(Product product);
 
     @Mappings({
             @Mapping(target = "links", expression = LINKS_AS_STRINGS),

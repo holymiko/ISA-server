@@ -2,7 +2,6 @@ package home.holymiko.InvestmentScraperApp.Server.Service;
 
 import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.ProductDTO_LatestPrices;
-import home.holymiko.InvestmentScraperApp.Server.DTO.toDTO;
 import home.holymiko.InvestmentScraperApp.Server.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Enum.Metal;
@@ -21,13 +20,11 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final toDTO toDTO;
     private final ProductMapper productMapper;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, home.holymiko.InvestmentScraperApp.Server.DTO.toDTO toDTO, ProductMapper productMapper) {
+    public ProductService(ProductRepository productRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
-        this.toDTO = toDTO;
         this.productMapper = productMapper;
     }
 
