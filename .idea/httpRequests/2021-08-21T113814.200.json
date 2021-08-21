@@ -1,0 +1,243 @@
+[
+  {
+    "id": 38887,
+    "metal": "PLATINUM",
+    "name": "Platinová mince 1 oz (trojská unce) ROK BUVOLA Austrálie 2021",
+    "grams": 31.1034768,
+    "links": [
+      "https://www.bessergold.cz/investicni-platina/platinova-mince-1-oz-trojska-unce-rok-buvola-australie-2021.html",
+      "https://www.bessergold.cz/investicni-platina/platinova-mince-1-trojska-unce-koala-australie.html",
+      "https://www.bessergold.cz/investicni-platina/platypus-1-trojska-unce-platinova-mince-australie.html"
+    ],
+    "latestPrices": [
+      {
+        "dateTime": "2021-08-04T13:05:12.854536",
+        "price": 35781.35,
+        "redemption": 26318.55,
+        "dealer": "BESSERGOLD",
+        "spread": 0.7355382063561046,
+        "pricePerGram": 1150.3971157333767
+      }
+    ]
+  },
+  {
+    "id": 38888,
+    "metal": "PLATINUM",
+    "name": "Platinový slitek 1 g ARGOR-HERAEUS (Švýcarsko)",
+    "grams": 1.0,
+    "links": [
+      "https://www.bessergold.cz/investicni-platina/platinovy-slitek-1-g-argor-heraeus-svycarsko.html"
+    ],
+    "latestPrices": [
+      {
+        "dateTime": "2021-08-04T13:04:17.574675",
+        "price": 1596.3,
+        "redemption": 1121.24,
+        "dealer": "BESSERGOLD",
+        "spread": 0.702399298377498,
+        "pricePerGram": 1596.3
+      }
+    ]
+  },
+  {
+    "id": 38889,
+    "metal": "PLATINUM",
+    "name": "Platinový slitek 5 g ARGOR-HERAEUS (Švýcarsko)",
+    "grams": 5.0,
+    "links": [
+      "https://www.bessergold.cz/investicni-platina/platinovy-slitek-5-g-argor-heraeus-svycarsko.html"
+    ],
+    "latestPrices": [
+      {
+        "dateTime": "2021-08-08T11:04:10.619495",
+        "price": 5932.58,
+        "redemption": 4265.64,
+        "dealer": "BESSERGOLD",
+        "spread": 0.7190193811124335,
+        "pricePerGram": 1186.516
+      }
+    ]
+  },
+  {
+    "id": 38890,
+    "metal": "PLATINUM",
+    "name": "Platinový slitek 10 g ARGOR-HERAEUS (Švýcarsko)",
+    "grams": 10.0,
+    "links": [
+      "https://www.bessergold.cz/investicni-platina/platinovy-slitek-10-g-argor-heraeus-svycarsko.html",
+      "https://www.bessergold.cz/catalog/product/view/id/2052/s/platinovy-slitek-multicard-10-g-argor-heraeus/category/96/"
+    ],
+    "latestPrices": [
+      {
+        "dateTime": "2021-08-04T13:04:30.174595",
+        "price": 11682.32,
+        "redemption": 8689.38,
+        "dealer": "BESSERGOLD",
+        "spread": 0.7438060248306843,
+        "pricePerGram": 1168.232
+      }
+    ]
+  },
+  {
+    "id": 38891,
+    "metal": "PLATINUM",
+    "name": "Platinový slitek 1 oz (trojská unce) ARGOR-HERAEUS / HERAEUS (Švýcarsko/Německo)",
+    "grams": 31.1034768,
+    "links": [
+      "https://www.bessergold.cz/investicni-platina/platinovy-slitek-1-trojska-unce-argor-heraeus-svycarsko.html"
+    ],
+    "latestPrices": [
+      {
+        "dateTime": "2021-08-04T13:04:34.258301",
+        "price": 35503.91,
+        "redemption": 25380.92,
+        "dealer": "BESSERGOLD",
+        "spread": 0.7148767558277382,
+        "pricePerGram": 1141.4772126053767
+      }
+    ]
+  },
+  {
+    "id": 38892,
+    "metal": "PLATINUM",
+    "name": "Platinový slitek 100g ARGOR-HERAEUS / HERAEUS (Švýcarsko/Německo)",
+    "grams": 100.0,
+    "links": [
+      "https://zlataky.cz/100-g-argor-heraeus-sa-svycarsko-investicni-platinovy-slitek",
+      "https://www.bessergold.cz/catalog/product/view/id/1870/s/platinovy-slitek-100-g-argor-heraeus-umicore-svycarsko-nemecko/category/96/"
+    ],
+    "latestPrices": [
+      {
+        "dateTime": "2021-08-04T13:04:38.632823",
+        "price": 106389.06,
+        "redemption": 72889.71,
+        "dealer": "BESSERGOLD",
+        "spread": 0.6851241095654009,
+        "pricePerGram": 1063.8906
+      },
+      {
+        "dateTime": "2021-08-04T13:13:32.037107",
+        "price": 0.0,
+        "redemption": 0.0,
+        "dealer": "ZLATAKY",
+        "spread": "NaN",
+        "pricePerGram": 0.0
+      }
+    ]
+  },
+  {
+    "id": 38893,
+    "metal": "PLATINUM",
+    "name": "Platinová mince 1 oz (trojská unce) WIENER PHILHARMONIKER Rakousko 2020",
+    "grams": 31.1034768,
+    "links": [
+      "https://www.bessergold.cz/investicni-platina/wiener-philharmoniker-1-trojska-unce-platinova-mince-rakousko.html"
+    ],
+    "latestPrices": [
+      {
+        "dateTime": "2021-08-04T13:04:42.621011",
+        "price": 37168.04,
+        "redemption": 27645.83,
+        "dealer": "BESSERGOLD",
+        "spread": 0.7438065068806426,
+        "pricePerGram": 1194.9802344926277
+      }
+    ]
+  },
+  {
+    "id": 38894,
+    "metal": "PLATINUM",
+    "name": "Platinová mince 1 oz (trojská unce) BRITANNIA Velká Británie 2019",
+    "grams": 31.1034768,
+    "links": [
+      "https://www.bessergold.cz/investicni-platina/platinova-mince-1-oz-trojska-unce-britannia-velka-britanie-2018.html"
+    ],
+    "latestPrices": [
+      {
+        "dateTime": "2021-08-04T13:04:46.858708",
+        "price": 37168.04,
+        "redemption": 25956.2,
+        "dealer": "BESSERGOLD",
+        "spread": 0.6983472897683063,
+        "pricePerGram": 1194.9802344926277
+      }
+    ]
+  },
+  {
+    "id": 38895,
+    "metal": "PLATINUM",
+    "name": "Platinová mince 1 oz (trojská unce) MAPLE LEAF Kanada 2019",
+    "grams": 31.1034768,
+    "links": [
+      "https://www.bessergold.cz/investicni-platina/maple-leaf-1-trojska-unce-platinova-mince-kanada.html"
+    ],
+    "latestPrices": [
+      {
+        "dateTime": "2021-08-04T13:04:55.471899",
+        "price": 37168.04,
+        "redemption": 27645.83,
+        "dealer": "BESSERGOLD",
+        "spread": 0.7438065068806426,
+        "pricePerGram": 1194.9802344926277
+      }
+    ]
+  },
+  {
+    "id": 38896,
+    "metal": "PLATINUM",
+    "name": "Platinová mince 1 oz (trojská unce) KANGAROO Austrálie 2020",
+    "grams": 31.1034768,
+    "links": [
+      "https://www.bessergold.cz/investicni-platina/kangaroo-1-trojska-unce-platinova-mince-australie.html",
+      "https://www.bessergold.cz/investicni-platina/platinova-mince-1-oz-trojska-unce-rok-mysi-australie-2020.html"
+    ],
+    "latestPrices": [
+      {
+        "dateTime": "2021-08-04T13:05:03.809798",
+        "price": 37417.68,
+        "redemption": 27831.47,
+        "dealer": "BESSERGOLD",
+        "spread": 0.7438053348042958,
+        "pricePerGram": 1203.0063468660198
+      }
+    ]
+  },
+  {
+    "id": 38897,
+    "metal": "PLATINUM",
+    "name": "Platinová mince 1 oz (trojská unce) NOBLE Isle of Man",
+    "grams": 31.1034768,
+    "links": [
+      "https://www.bessergold.cz/investicni-platina/noble-1-trojska-unce-platinova-mince-isle-of-man.html"
+    ],
+    "latestPrices": [
+      {
+        "dateTime": "2021-08-04T13:05:08.343078",
+        "price": 37445.48,
+        "redemption": 27852.12,
+        "dealer": "BESSERGOLD",
+        "spread": 0.7438045927038456,
+        "pricePerGram": 1203.900137620628
+      }
+    ]
+  },
+  {
+    "id": 38958,
+    "metal": "PLATINUM",
+    "name": "Platinová investiční mince Wiener Philharmoniker 1 Oz",
+    "grams": 31.1034768,
+    "links": [
+      "https://zlataky.cz/platinova-investicni-mince-wiener-philharmoniker-1-oz"
+    ],
+    "latestPrices": [
+      {
+        "dateTime": "2021-08-04T13:13:30.088109",
+        "price": 39680.0,
+        "redemption": 0.0,
+        "dealer": "ZLATAKY",
+        "spread": 0.0,
+        "pricePerGram": 1275.7416238431583
+      }
+    ]
+  }
+]

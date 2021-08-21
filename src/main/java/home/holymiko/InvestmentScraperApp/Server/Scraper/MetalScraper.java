@@ -1,6 +1,9 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.PortfolioDTO_ProductDTO;
+import home.holymiko.InvestmentScraperApp.Server.DTO.simple.PortfolioDTO;
+import home.holymiko.InvestmentScraperApp.Server.DTO.simple.ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Enum.Metal;
@@ -149,13 +152,13 @@ public class MetalScraper extends Scraper {
 
     public void productsByPortfolio(long portfolioId) throws ResponseStatusException {
         System.out.println("MetalScraper productsByPortfolio");
-        Optional<Portfolio> optionalPortfolio = portfolioService.findById(portfolioId);
+        Optional<PortfolioDTO_ProductDTO> optionalPortfolio = portfolioService.findById(portfolioId);
         if (optionalPortfolio.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No portfolio with such ID");
         }
 
         // Set prevents one Product to be scrapped more times
-        Set<Link> linkSet = optionalPortfolio.get().getInvestmentMetals()
+        Set<Link> linkSet = optionalPortfolio.get().getInvestments()
                 .stream()
                 .map(
                         investment -> linkService.findByDealerAndProductId(dealer, investment.getProduct().getId())
@@ -211,7 +214,7 @@ public class MetalScraper extends Scraper {
         scrapGivenProducts(
                 productService.findByMetal(metal).stream()
                     .map(
-                            Product::getId
+                            ProductDTO::getId
                     )
                     .collect(Collectors.toList())
         );

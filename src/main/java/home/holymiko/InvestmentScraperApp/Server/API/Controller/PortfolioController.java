@@ -1,8 +1,8 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
+import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.DTO.create.PortfolioCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.DTO.simple.PortfolioDTO;
-import home.holymiko.InvestmentScraperApp.Server.Entity.Portfolio;
 import home.holymiko.InvestmentScraperApp.Server.Service.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,15 +42,15 @@ public class PortfolioController {
     /////// GET
 
     @GetMapping({"/", ""})
-    public List<Portfolio> all() {
+    public List<PortfolioDTO> all() {
         System.out.println("Get all portfolios");
-        return portfolioService.findAll();
+        return portfolioService.findAllAsDTO();
     }
 
     @GetMapping("/id/{id}")
-    public Portfolio byId(@PathVariable long id) {
+    public PortfolioDTO byId(@PathVariable long id) {
         System.out.println("Get by Id");
-        Optional<Portfolio> optionalPortfolio = portfolioService.findById(id);
+        Optional<PortfolioDTO_ProductDTO> optionalPortfolio = portfolioService.findById(id);
         if (optionalPortfolio.isPresent()) {
             return optionalPortfolio.get();
         } else {
@@ -64,8 +64,11 @@ public class PortfolioController {
     }
 
     @GetMapping("/owner/{owner}")
-    public Portfolio byOwner(@PathVariable String owner) {
-        return portfolioService.findByOwner(owner).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Try owner Mikolas"));
+    public PortfolioDTO byOwner(@PathVariable String owner) {
+        return portfolioService.findByOwner(owner)
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Try owner Mikolas")
+                );
     }
 
 

@@ -1,32 +1,41 @@
 
 
-GET http://localhost:8080/api/v1/scrap/all
 ###
 
-GET http://localhost:8080/api/v1/scrap/serenity
+GET http://localhost:8080/api/v2/product/metal/platinum
+
+### SCRAP
+
+GET http://localhost:8080/api/v2/scrap/all
 ###
 
-GET http://localhost:8080/api/v1/scrap/links
+GET http://localhost:8080/api/v2/scrap/serenity
 ###
 
-GET http://localhost:8080/api/v1/scrap/products
+GET http://localhost:8080/api/v2/scrap/links
+###
+
+GET http://localhost:8080/api/v2/scrap/products
 ###
 
 GET http://localhost:8080/api/v2/scrap/dealer/zlataky
 ###
 
+### PORTFOLIO
+
 GET http://localhost:8080/api/v2/portfolio/id/3194
-
 ###
+
 GET http://localhost:8080/api/v2/portfolio/owner/Carlos
-
 ###
+
 GET http://localhost:8080/api/v2/portfolio/
 ###
 
-PUT http://localhost:8080/api/v1/portfolio/scrap/3194
+GET http://localhost:8080/api/v2/portfolio/31
 ###
-POST http://localhost:8080/api/v1/portfolio
+
+POST http://localhost:8080/api/v2/portfolio
 Accept: */*
 Cache-Control: no-cache
 Content-Type: application/json
@@ -35,8 +44,4 @@ Content-Type: application/json
 
 ################################################
 
-GET http://localhost:8080/api/v1/portfolio/31
-
-###
-
-DELETE http://localhost:8080/api/v1/portfolio/4
+DELETE http://localhost:8080/api/v2/portfolio/4

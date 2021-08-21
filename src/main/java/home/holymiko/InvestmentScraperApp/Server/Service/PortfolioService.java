@@ -1,5 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
+import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.DTO.simple.PortfolioDTO;
 import home.holymiko.InvestmentScraperApp.Server.DTO.toDTO;
 import home.holymiko.InvestmentScraperApp.Server.Entity.Portfolio;
@@ -89,12 +90,27 @@ public class PortfolioService {
 
     ////// FIND
 
-    public Optional<Portfolio> findById(Long id) {
-        return portfolioRepository.findById(id);
+    public Optional<PortfolioDTO_ProductDTO> findById(Long id) {
+        return portfolioRepository.findById(id)
+                .map(
+                        toDTO::toDTO_AllPrices
+                );
     }
 
-    public Optional<Portfolio> findByOwner(String owner) {
-        return portfolioRepository.findByOwner(owner);
+    public Optional<PortfolioDTO_ProductDTO> findByOwner(String owner) {
+        return portfolioRepository.findByOwner(owner)
+                .map(
+                        toDTO::toDTO_AllPrices
+                );
+    }
+
+    public List<PortfolioDTO> findAllAsDTO() {
+        return portfolioRepository.findAll()
+                .stream()
+                .map(
+                        toDTO::toSimpleDTO
+                )
+                .collect(Collectors.toList());
     }
 
     public List<Portfolio> findAll() {

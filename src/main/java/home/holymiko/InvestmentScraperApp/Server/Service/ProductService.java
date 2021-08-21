@@ -58,8 +58,13 @@ public class ProductService {
 
     /////////// FIND
 
-    public List<Product> findByMetal(Metal metal) {
-        return this.productRepository.findProductsByMetal(metal);
+    public List<ProductDTO_LatestPrices> findByMetal(Metal metal) {
+        return this.productRepository.findProductsByMetal(metal)
+                .stream()
+                .map(
+                        toDTO::toDTO_LatestPrices
+                )
+                .collect(Collectors.toList());
     }
 
     public Optional<Product> findByLink(String link) {

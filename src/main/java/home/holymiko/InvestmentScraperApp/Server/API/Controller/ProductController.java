@@ -38,7 +38,7 @@ public class ProductController {
     }
 
     @GetMapping({ "/metal/{metal}", "/metal/{metal}/"})
-    public List<Product> byMetal(@PathVariable String metal) {
+    public List<ProductDTO_LatestPrices> byMetal(@PathVariable String metal) {
         System.out.println("Get products byMetal "+metal);
         return switch (metal) {
             case "gold" -> this.productService.findByMetal(Metal.GOLD);

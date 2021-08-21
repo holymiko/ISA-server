@@ -277,7 +277,7 @@ public class toDTO {
         );
     }
 
-    public static PortfolioDTO toDTO_AllPrices(Portfolio portfolio) {
+    public static PortfolioDTO_ProductDTO toDTO_AllPrices(Portfolio portfolio) {
         double beginPrice = portfolio.getBeginPrice();
         double value = portfolio.getPortfolioValue();
 
