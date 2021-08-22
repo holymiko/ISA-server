@@ -29,8 +29,8 @@ https://zlataky.cz/
 
 ## Aplikační rozhraní
 
-Data je možné získat na http://localhost:8080/api/v1/ +`entita` Jsou poskytovány ve formátu JSON.
-Je možné získat celou entitu či optimalizovaný formát `DTO` (Data Transfer Object).
+Data je možné získat na http://localhost:8080/api/v2/ +`entita` Jsou poskytovány ve formátu JSON.
+Entity jsou k dispozici v optimalizovaném formátu `DTO` (Data Transfer Object).
 
 <br />
 
