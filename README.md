@@ -55,12 +55,16 @@ Datové zdroje jsou rozšířeny o Zlaťáky (www.zlataky.cz)
 Ve třídě **ScrapMetal** je provedeno mnoho optimalizací a recyklací kódu. 
 Tato třída nyní sjednocuje všechny metody pro scrapování drahých kovů.  
 Specifické informace pro jednotlivé dealery jsou uvedeny v potomcích třídy ScrapMetal (**ScrapBessergold**,  **ScrapZlataky**).  
-Metody pro extrakci dat z třídy ScrapMetal jsou vyčleněny do nové třídy **Extractor**.
+Metody pro extrakci dat z HTML ve třídě ScrapMetal jsou vyčleněny do nové třídy **Extractor**.
 
 Opravy ve třídě **ScrapSerenity** umožňují opakované scrapování, při kterém je automaticky upraven **TickerState**.
 
 Etické spoždění pro scrapování je nyní dynamické. 
 Skutečná doba uspání algoritmu, mezi každým odeslaným dotazem, závisý na čase potřebném ke scrapování produktu (viz. metoda **dynamicSleepAndStatusPrint**).
+
+Na převod datových typů se používá **@Mapper**, který automaticky generuje kód. Tento kód je často modifikovám pomocí **@Mapping(expression)**
+
+Byl položen základ vlastních annotací a výjimek.
 
 ### Změny v databázi
 Stejné produkty od různých dealerů jsou automaticky spojovány do jednoho.
@@ -68,8 +72,7 @@ Stejné produkty od různých dealerů jsou automaticky spojovány do jednoho.
 
 Z entity **Price** jsou odstraněny atributy **split** (spread) a **pricePerGram**. 
 Je možné je vypočítat a tak se nyní vyskytují pouze v **PriceDTO**.  
-Ze stejného důvodu byly odstraněny atributy **Portfolio.beginPrice**, **Portfolio.value**, **Portfolio.yield** a **InvestmentMetal.yield**. 
-Množství dat v databázi je tím optimalizováno.
+Ze stejného důvodu byly odstraněny atributy **Portfolio.beginPrice**, **Portfolio.value**, **Portfolio.yield** a **InvestmentMetal.yield**.
 
 Do entity **Price** je přidán atribut **dealer**, aby byly ceny přidružené k produktu rozlišitelné.
 
@@ -80,7 +83,12 @@ Entita **Produkt** obsahuje nový atribut **year** pro přesnější určení.
 
 
 ## ToDo
-- [ ] Add Silverum
+- [ ] Final and Static
+- [ ] Documentation
+- [ ] Postman tests
+- [ ] Class documentation
+- [ ] Add Silverum.cz
+- [ ] Lambda.orElseThrow discussion
 - [ ] Scrap prices from product list for Bessergold & Silverum.
 - [ ] Scrap redemption prices from https://www.bessergold.cz/vykup.html
 - [ ] Stock investments
