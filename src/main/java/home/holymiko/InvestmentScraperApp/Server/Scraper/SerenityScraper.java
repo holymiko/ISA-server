@@ -33,7 +33,7 @@ public class SerenityScraper extends Scraper {
 
 
     public void run() {
-        printTotalStatus();
+        printSerenityStatus();
 //        Export.exportTickers(tickerService.findAll());
 //        Export.exportStocks(stockService.findAll());
 //        tickersScrap(TickerState.GOOD);
@@ -42,7 +42,7 @@ public class SerenityScraper extends Scraper {
 
     public void tickersScrap(TickerState tickerState) {
         System.out.println("Trying to scrap "+tickerState+" tickers");
-        printTotalStatus();
+        printSerenityStatus();
 
         List<Ticker> tickers = this.tickerService.findByTickerState(tickerState);
 
@@ -67,7 +67,7 @@ public class SerenityScraper extends Scraper {
             dynamicSleepAndStatusPrint(ETHICAL_DELAY, startTime, 50, tickers.size());
         }
         printerCounter = 0;
-        printTotalStatus();
+        printSerenityStatus();
         Export.exportTickers(tickerService.findAll());
         Export.exportStocks(stockService.findAll());
     }
@@ -151,22 +151,39 @@ public class SerenityScraper extends Scraper {
         System.out.println();
     }
 
-    private void printTotalStatus() {
-        final double total = tickerService.findAll().size();
-        final double good = tickerService.findByTickerState(TickerState.GOOD).size();
-        final double bad = tickerService.findByTickerState(TickerState.BAD).size();
-        final double notfound = tickerService.findByTickerState(TickerState.NOTFOUND).size();
-        final double unknown = tickerService.findByTickerState(TickerState.UNKNOWN).size();
-        final DecimalFormat df = new DecimalFormat("###.###");
+    private void printSerenityStatus() {
+        printSerenityStatus(
+                tickerService.findByTickerState(TickerState.GOOD).size(),
+                tickerService.findByTickerState(TickerState.BAD).size(),
+                tickerService.findByTickerState(TickerState.NOTFOUND).size(),
+                tickerService.findByTickerState(TickerState.UNKNOWN).size()
+        );
+    }
+
+    private void printSerenityStatus(double good, double bad, double notfound, double unknown) {
+        final double sum = good + bad + notfound;
+        final double totalTickers = sum + unknown;
 
         System.out.println();
-        System.out.println("Good: "+Math.round(good)+"  "+df.format(good*100/(notfound+bad+good))+"%");
-        System.out.println("Bad: "+Math.round(bad)+"  "+df.format(bad*100/(notfound+bad+good))+"%");
-        System.out.println("NotFound: "+Math.round(notfound)+"  "+df.format(notfound*100/(notfound+bad+good))+"%");
+        System.out.println("Stock scraper status");
+        System.out.println("-----------------------------------------------------------------");
+        System.out.println("Good: "+Math.round(good)+"  " + printMethod(good, sum)+"%");
+        System.out.println("Bad: "+Math.round(bad)+"  " + printMethod(bad, sum)+"%");
+        System.out.println("NotFound: "+Math.round(notfound)+"  " + printMethod(notfound, sum)+"%");
         System.out.println();
-        System.out.println("Unknown: "+Math.round(unknown)+"  "+df.format(unknown*100/total)+"%");
-        System.out.println("Total: "+Math.round(total));
+        System.out.println("Unknown: "+Math.round(unknown)+"  " + printMethod(unknown, sum)+"%");
+        System.out.println("Total: "+Math.round(totalTickers));
         System.out.println();
+    }
+
+
+    private Integer printMethod(double tickerState, double sum) {
+        final DecimalFormat df = new DecimalFormat("###,###");
+        return Math.round(
+                Long.parseLong(
+                        df.format(tickerState*100/(sum))
+                )
+        );
     }
 
 }
