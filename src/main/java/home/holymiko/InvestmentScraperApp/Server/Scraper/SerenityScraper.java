@@ -82,7 +82,7 @@ public class SerenityScraper extends Scraper {
 
         for(int i = 2; i <= 11; i++) {
             ratings.add(
-                    Extractor.numberExtract(
+                    Extractor.numberExtractSerenity(
                             ((HtmlElement) page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div["+i+"]/div[2]/div"))
                                     .asText()
                     )
@@ -95,7 +95,7 @@ public class SerenityScraper extends Scraper {
                 continue;
             }
             results.add(
-                    Extractor.numberExtract(
+                    Extractor.numberExtractSerenity(
                             htmlElement.asText()
                     )
             );

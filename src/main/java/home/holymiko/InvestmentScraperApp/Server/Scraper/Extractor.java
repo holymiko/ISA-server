@@ -220,6 +220,16 @@ public class Extractor {
         return Double.parseDouble(text);
     }
 
+    /**
+     * Applies specifications of class
+     * @param text text including only number and currency
+     * @return price from text
+     */
+    public static Double numberExtractSerenity(String text) {
+        text = text.replace(",", "");             // -> Double
+        return numberExtract(text);
+    }
+
     public static GrahamGrade gradeExtractor(final HtmlElement element) {
         switch (element.asText().toLowerCase(Locale.ROOT)) {
             case "enterprising" -> { return GrahamGrade.ENTERPRISING; }
