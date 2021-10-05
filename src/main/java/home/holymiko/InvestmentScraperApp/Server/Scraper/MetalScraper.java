@@ -66,11 +66,11 @@ public class MetalScraper extends Scraper {
             e.printStackTrace();
         }
         final String nameLowerCase = name.toLowerCase(Locale.ROOT);
-        final int year = Extractor.yearExtract(nameLowerCase);
-        final Form form = Extractor.formExtract(nameLowerCase);
-        final Metal metal = Extractor.metalExtractor(nameLowerCase);
-        final double grams = Extractor.weightExtract(nameLowerCase);
-        final Producer producer = Extractor.producerExtract(nameLowerCase);
+        final int year = Extract.yearExtract(nameLowerCase);
+        final Form form = Extract.formExtract(nameLowerCase);
+        final Metal metal = Extract.metalExtractor(nameLowerCase);
+        final double grams = Extract.weightExtract(nameLowerCase);
+        final Producer producer = Extract.producerExtract(nameLowerCase);
         final List<Product> products = productService.findProductByProducerAndMetalAndFormAndGramsAndYear(producer, metal, form, grams, year);
 
         if(name.equals("") || producer == Producer.UNKNOWN || form == Form.UNKNOWN || metal == Metal.UNKNOWN ) {
@@ -186,12 +186,12 @@ public class MetalScraper extends Scraper {
         double buyPrice = 0.0;
         double redemptionPrice = 0.0;
         try {
-            buyPrice = Extractor.numberExtract(((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText());
+            buyPrice = Extract.numberExtract(((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText());
         } catch (Exception e) {
             System.out.println("WARNING - Kupni cena = 0");
         }
         try {
-            redemptionPrice = Extractor.numberExtract(redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice)));
+            redemptionPrice = Extract.numberExtract(redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice)));
         } catch (Exception e) {
             System.out.println("WARNING - Vykupni cena = 0");
         }
