@@ -54,7 +54,48 @@ public class MetalScraper extends Scraper {
         this.xPathRedemptionPrice = xPathRedemptionPrice;
     }
 
-    /////// PRODUCT
+    ////////////// PRODUCT
+
+    /////// PUBLIC
+
+    /**
+     * Scraps products based on Links from DB
+     */
+    public void allProducts() {
+        productsOrPricesScrap( linkService.findAll() );
+        System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
+        System.out.println("All products scraped");
+    }
+
+    public void productByDealer() {
+        productsOrPricesScrap( linkService.findByDealer(dealer) );
+    }
+
+    public void productByPortfolio(long portfolioId) throws ResponseStatusException {
+        System.out.println("MetalScraper productsByPortfolio");
+        Optional<PortfolioDTO_ProductDTO> optionalPortfolio = portfolioService.findById(portfolioId);
+        if (optionalPortfolio.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No portfolio with such ID");
+        }
+
+        // Set prevents one Product to be scrapped more times
+        Set<Link> linkSet = optionalPortfolio.get().getInvestments()
+                .stream()
+                .map(
+                        investment -> linkService.findByDealerAndProductId(dealer, investment.getProductDTO().getId())
+                ).filter(
+                        Optional::isPresent
+                ).map(
+                        Optional::get
+                ).collect(
+                        Collectors.toSet()
+                );
+
+        productsOrPricesScrap( new ArrayList<>(linkSet) );
+        System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
+    }
+
+    /////// PRIVATE
 
     private void productScrap(Link link) {
         loadPage(link.getLink());
@@ -136,45 +177,38 @@ public class MetalScraper extends Scraper {
         printerCounter = 0;
     }
 
+
+    ////////////// PRICE
+
+    /////// PUBLIC
+
     /**
-     * Scraps products based on Links from DB
+     * Scraps prices by metal from all dealers
+     * @param metal Enum
      */
-    public void allProducts() {
-        productsOrPricesScrap( linkService.findAll() );
-        System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
-        System.out.println("All products scraped");
-    }
+    public void pricesByMetal(Metal metal){
+        System.out.println("MetalScraper pricesByMetal");
 
-    public void byDealerScrap() {
-        productsOrPricesScrap( linkService.findByDealer(dealer) );
-    }
+        scrapGivenProducts(
+                productService.findByMetal(metal).stream()
+                        .map(
+                                ProductDTO::getId
+                        )
+                        .collect(Collectors.toList())
+        );
 
-    public void productsByPortfolio(long portfolioId) throws ResponseStatusException {
-        System.out.println("MetalScraper productsByPortfolio");
-        Optional<PortfolioDTO_ProductDTO> optionalPortfolio = portfolioService.findById(portfolioId);
-        if (optionalPortfolio.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No portfolio with such ID");
-        }
-
-        // Set prevents one Product to be scrapped more times
-        Set<Link> linkSet = optionalPortfolio.get().getInvestments()
-                .stream()
-                .map(
-                        investment -> linkService.findByDealerAndProductId(dealer, investment.getProductDTO().getId())
-                ).filter(
-                        Optional::isPresent
-                ).map(
-                        Optional::get
-                ).collect(
-                        Collectors.toSet()
-                );
-
-        productsOrPricesScrap( new ArrayList<>(linkSet) );
+        System.out.println(metal+" prices scraped");
         System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
     }
 
+    public void pricesByProducts(List<Long> productIds){
+        System.out.println("MetalScraper pricesByProducts");
+        scrapGivenProducts(productIds);
+        System.out.println(">> Prices scraped");
+        System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
+    }
 
-    /////// PRICE
+    /////// PROTECTED
 
     /**
      * Scraps new price for already known product
@@ -203,25 +237,6 @@ public class MetalScraper extends Scraper {
         System.out.println("> New price saved - " + link.getLink());
     }
 
-    /**
-     * Scraps prices by metal from all dealers
-     * @param metal Enum
-     */
-    public void pricesByMetal(Metal metal){
-        System.out.println("MetalScraper pricesByMetal");
-
-        scrapGivenProducts(
-                productService.findByMetal(metal).stream()
-                    .map(
-                            ProductDTO::getId
-                    )
-                    .collect(Collectors.toList())
-        );
-
-        System.out.println(metal+" prices scraped");
-        System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
-    }
-
     private void scrapGivenProducts(final List<Long> productIds) {
         for (long productId : productIds) {
             long startTime = System.nanoTime();
@@ -238,15 +253,28 @@ public class MetalScraper extends Scraper {
         printerCounter = 0;
     }
 
-    public void pricesByProducts(List<Long> productIds){
-        System.out.println("MetalScraper pricesByProducts");
-        scrapGivenProducts(productIds);
-        System.out.println(">> Prices scraped");
-        System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
+
+    ///////////////////// LINK
+
+    /////// PUBLIC
+
+    public void allLinksScrap() {
+        linkScrap(Metal.GOLD);
+        linkScrap(Metal.SILVER);
+        linkScrap(Metal.PLATINUM);
+        linkScrap(Metal.PALLADIUM);
     }
 
+    public void linkScrap(Metal metal) {
+        switch (metal) {
+            case GOLD -> searchUrlGold.forEach(this::scrapLinks);
+            case SILVER -> searchUrlSilver.forEach(this::scrapLinks);
+            case PLATINUM -> searchUrlPlatinum.forEach(this::scrapLinks);
+            case PALLADIUM -> searchUrlPalladium.forEach(this::scrapLinks);
+        }
+    }
 
-    /////// LINK
+    /////// PROTECTED
 
     /**
      * Finds list of elements, based on class variable xPathProductList
@@ -272,40 +300,10 @@ public class MetalScraper extends Scraper {
         throw new AbstractMethodError("Abstract method is supposed to be overwritten");
     }
 
-    public void allLinksScrap() {
-        goldLinksScrap();
-        silverLinksScrap();
-        platinumLinksScrap();
-        palladiumLinksScrap();
-    }
 
-    public void goldLinksScrap() {
-        searchUrlGold.forEach(
-                this::scrapLinks
-        );
-    }
+    ////////////// FILTER
 
-    public void silverLinksScrap() {
-        searchUrlSilver.forEach(
-                this::scrapLinks
-        );
-    }
-
-    public void platinumLinksScrap() {
-        searchUrlPlatinum.forEach(
-                this::scrapLinks
-        );
-    }
-
-    public void palladiumLinksScrap() {
-        searchUrlPalladium.forEach(
-                this::scrapLinks
-        );
-    }
-
-
-
-    /////// FILTER
+    /////// PROTECTED
 
     /**
      * Filtration based on text of the link
@@ -353,6 +351,12 @@ public class MetalScraper extends Scraper {
         System.out.println("WARNING - Duplicates in DB table LINK");
     }
 
+    protected String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
+        return redemptionPriceHtml.asText();
+    }
+
+    /////// PRIVATE
+
     /**
      * Price is added to Product. LatestPrice is updated.
      * @param product Product where the Price gonna be added
@@ -365,10 +369,6 @@ public class MetalScraper extends Scraper {
         product.setLatestPrice(price);
         product.setPrices(priceList);
         this.productService.save(product);
-    }
-
-    protected String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
-        return redemptionPriceHtml.asText();
     }
 
     private static boolean specialName(String name) {

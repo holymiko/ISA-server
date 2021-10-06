@@ -37,20 +37,20 @@ public class ScrapController {
 
     private boolean isRunning = false;
 
-    private final BessergoldScraper scrapBessergold;
-    private final ZlatakyScraper scrapZlataky;
-    private final SerenityScraper scrapSerenity;
+    private final BessergoldScraper bessergoldScraper;
+    private final ZlatakyScraper zlatakyScraper;
+    private final SerenityScraper serenityScraper;
 
     // Used for Polymorphic calling
     private final List<MetalScraper> scrapMetals = new ArrayList<>();
 
     @Autowired
-    public ScrapController(BessergoldScraper scrapBessergold, ZlatakyScraper scrapZlataky, SerenityScraper scrapSerenity) {
-        this.scrapBessergold = scrapBessergold;
-        this.scrapZlataky = scrapZlataky;
-        this.scrapSerenity = scrapSerenity;
-        this.scrapMetals.add(scrapBessergold);
-        this.scrapMetals.add(scrapZlataky);
+    public ScrapController(BessergoldScraper bessergoldScraper, ZlatakyScraper zlatakyScraper, SerenityScraper serenityScraper) {
+        this.bessergoldScraper = bessergoldScraper;
+        this.zlatakyScraper = zlatakyScraper;
+        this.serenityScraper = serenityScraper;
+        this.scrapMetals.add(bessergoldScraper);
+        this.scrapMetals.add(zlatakyScraper);
     }
 
     @RequestMapping({"/all", "/all/"})
@@ -83,8 +83,8 @@ public class ScrapController {
         System.out.println("Trying to scrap "+dealer+" products");
 
         switch (dealer.toLowerCase(Locale.ROOT)) {
-            case "bessergold" -> this.scrapBessergold.byDealerScrap();
-            case "zlataky" -> this.scrapZlataky.byDealerScrap();
+            case "bessergold" -> this.bessergoldScraper.productByDealer();
+            case "zlataky" -> this.zlatakyScraper.productByDealer();
             default -> {
                 isRunning = false;
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -104,7 +104,7 @@ public class ScrapController {
         System.out.println("Trying to scrap "+metal+" prices");
 
         switch (metal.toLowerCase(Locale.ROOT)) {
-            case "gold" -> {
+            case "GoldScraper" -> {
                 dateTimeCheck(lastGold);
 
                 // Scraps prices from all dealers
@@ -157,7 +157,7 @@ public class ScrapController {
         try {
             // Scraps products from all dealers
             this.scrapMetals.forEach(
-                    scrapMetal -> scrapMetal.productsByPortfolio(id)
+                    scrapMetal -> scrapMetal.productByPortfolio(id)
             );
         } catch (ResponseStatusException e){
             isRunning = false;
@@ -188,7 +188,7 @@ public class ScrapController {
 
     @RequestMapping({"/serenity", "/serenity/"})
     public void serenity() {
-        this.scrapSerenity.tickersScrap(TickerState.GOOD);
+        this.serenityScraper.tickersScrap(TickerState.GOOD);
     }
 
     //////// Links
@@ -215,48 +215,34 @@ public class ScrapController {
         System.out.println("Trying to scrap "+string+" links");
 
         switch (string.toLowerCase(Locale.ROOT)) {
+            // GOLD
             case "gold" -> {
                 dateTimeCheck(lastGoldLinks);
-
-                // Scraps from all dealers
-                this.scrapMetals.forEach(
-                        MetalScraper::goldLinksScrap
-                );
-
+                scrapAllDealers(Metal.GOLD);
                 lastGoldLinks = LocalDateTime.now();
             }
+            // SILVER
             case "silver" -> {
                 dateTimeCheck(lastSilverLinks);
-
-                // Scraps from all dealers
-                this.scrapMetals.forEach(
-                        MetalScraper::silverLinksScrap
-                );
-
+                scrapAllDealers(Metal.SILVER);
                 lastSilverLinks = LocalDateTime.now();
             }
+            // PLATINUM
             case "platinum" -> {
                 dateTimeCheck(lastPlatinumLinks);
-
-                // Scraps from all dealers
-                this.scrapMetals.forEach(
-                        MetalScraper::platinumLinksScrap
-                );
-
+                scrapAllDealers(Metal.PLATINUM);
                 lastPlatinumLinks = LocalDateTime.now();
             }
+            // PALLADIUM
             case "palladium" -> {
                 dateTimeCheck(lastPalladiumLinks);
-
-                // Scraps from all dealers
-                this.scrapMetals.forEach(
-                        MetalScraper::platinumLinksScrap
-                );
-
+                scrapAllDealers(Metal.PALLADIUM);
                 lastPalladiumLinks = LocalDateTime.now();
             }
-            case "bessergold" -> this.scrapBessergold.byDealerScrap();
-            case "zlataky" -> this.scrapZlataky.byDealerScrap();
+            // BESSERGOLD
+            case "bessergold" -> this.bessergoldScraper.productByDealer();
+            // ZLATAKY
+            case "zlataky" -> this.zlatakyScraper.productByDealer();
 
             default -> {
                 isRunning = false;
@@ -288,7 +274,7 @@ public class ScrapController {
 
         // Scraps from all dealers
         this.scrapMetals.forEach(
-                MetalScraper::byDealerScrap
+                MetalScraper::productByDealer
         );
 
         lastAllProducts = LocalDateTime.now();
@@ -304,5 +290,16 @@ public class ScrapController {
 
         lastAllLinks = LocalDateTime.now();
     }
+
+    /**
+     * Scraps from all dealers same metal
+     * @param metal
+     */
+    private void scrapAllDealers(Metal metal) {
+        this.scrapMetals.forEach(
+                metalScraper -> metalScraper.linkScrap(metal)
+        );
+    }
+
 
 }

@@ -33,6 +33,7 @@ public class SerenityScraper extends Scraper {
         run();
     }
 
+    ////// PUBLIC
 
     public void run() {
         printSerenityStatus();
@@ -73,6 +74,8 @@ public class SerenityScraper extends Scraper {
         Export.exportTickers(tickerService.findAll());
         Export.exportStocks(stockService.findAll());
     }
+
+    ////// PRIVATE
 
     private void stockScrap(final Ticker ticker, final Double ratingScore) {
         List<Double> ratings = new ArrayList<>();          // Graham Ratings
@@ -162,24 +165,25 @@ public class SerenityScraper extends Scraper {
         );
     }
 
-    private void printSerenityStatus(double good, double bad, double notfound, double unknown) {
+    private static void printSerenityStatus(double good, double bad, double notfound, double unknown) {
         final double sum = good + bad + notfound;
         final double totalTickers = sum + unknown;
 
         System.out.println();
-        System.out.println("Stock scraper status");
+        System.out.println("Serenity Scraper");
         System.out.println("-----------------------------------------------------------------");
-        System.out.println("Good: "+Math.round(good)+"  " + printMethod(good, sum)+"%");
-        System.out.println("Bad: "+Math.round(bad)+"  " + printMethod(bad, sum)+"%");
-        System.out.println("NotFound: "+Math.round(notfound)+"  " + printMethod(notfound, sum)+"%");
-        System.out.println();
-        System.out.println("Unknown: "+Math.round(unknown)+"  " + printMethod(unknown, sum)+"%");
-        System.out.println("Total: "+Math.round(totalTickers));
+        System.out.format("Good:     %12d  %3d%s%n", Math.round(good), printMethod(good, sum), "%");
+        System.out.format("Bad:      %12d  %3d%s%n", Math.round(bad), printMethod(bad, sum), "%");
+        System.out.format("NotFound: %12d  %3d%s%n", Math.round(notfound), printMethod(notfound, sum), "%");
+        System.out.println(
+                unknown > 0 ? "Unknown: " + Math.round(unknown) + "  " + printMethod(unknown, sum) + "%" : ""
+        );
+        System.out.format("Total: %15d%n", Math.round(totalTickers));
         System.out.println();
     }
 
 
-    private Integer printMethod(double tickerState, double sum) {
+    private static Integer printMethod(double tickerState, double sum) {
         final DecimalFormat df = new DecimalFormat("###,###");
         return Math.round(
                 Long.parseLong(
