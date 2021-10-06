@@ -30,7 +30,7 @@ public class CurrencyService {
     public CurrencyService(EurCzkScraper eurCzkScraper, CurrencyRatioRepository currencyRatioRepository) {
         this.eurCzkScraper = eurCzkScraper;
         this.currencyRatioRepository = currencyRatioRepository;
-        System.out.println(save().getRatio());
+//        System.out.println(save().getRatio());
     }
 
     @Transactional
