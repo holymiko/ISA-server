@@ -26,19 +26,17 @@ public class CurrencyService {
     private final EurCzkScraper eurCzkScraper;
     private final CurrencyRatioRepository currencyRatioRepository;
 
-    private static final double TROY_OUNCE = 31.1034768;
-
     @Autowired
     public CurrencyService(EurCzkScraper eurCzkScraper, CurrencyRatioRepository currencyRatioRepository) {
         this.eurCzkScraper = eurCzkScraper;
         this.currencyRatioRepository = currencyRatioRepository;
+        System.out.println(save().getRatio());
     }
 
     @Transactional
     public CurrencyRatio save() throws ResponseStatusException {
         System.out.println("CurrencyRatio.save");
         return currencyRatioRepository.save(eurCzkScraper.scrap());
-//        return currencyRatioRepository.findById(investmentMetal.getId()).get();
     }
 
 }
