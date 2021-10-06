@@ -1,6 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
-import home.holymiko.InvestmentScraperApp.Server.Core.Annotation.ResourceNotFound;
+import home.holymiko.InvestmentScraperApp.Server.Core.annotation.ResourceNotFound;
 import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.DTO.create.PortfolioCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.DTO.simple.PortfolioDTO;

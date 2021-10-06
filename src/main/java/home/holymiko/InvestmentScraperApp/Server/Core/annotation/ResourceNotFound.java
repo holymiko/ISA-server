@@ -1,4 +1,4 @@
-package home.holymiko.InvestmentScraperApp.Server.Core.Annotation;
+package home.holymiko.InvestmentScraperApp.Server.Core.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,10 +1,12 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper;
+package home.holymiko.InvestmentScraperApp.Server.Scraper.sources;
 
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import home.holymiko.InvestmentScraperApp.Server.API.Port.Export;
 import home.holymiko.InvestmentScraperApp.Server.Enum.*;
 import home.holymiko.InvestmentScraperApp.Server.Entity.*;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.Extract;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.Scraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.StockService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 import org.springframework.beans.factory.annotation.Autowired;

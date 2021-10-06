@@ -1,4 +1,4 @@
-package home.holymiko.InvestmentScraperApp.Server.Core.Exception;
+package home.holymiko.InvestmentScraperApp.Server.Core.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

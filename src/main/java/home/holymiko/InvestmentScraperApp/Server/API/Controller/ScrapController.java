@@ -2,10 +2,10 @@ package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Enum.TickerState;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.DealerScraper.BessergoldScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.BessergoldScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.SerenityScraper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.DealerScraper.ZlatakyScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.SerenityScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.ZlatakyScraper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

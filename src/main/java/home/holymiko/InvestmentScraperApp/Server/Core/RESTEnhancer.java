@@ -1,7 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.Core;
 
-import home.holymiko.InvestmentScraperApp.Server.Core.Annotation.ResourceNotFound;
-import home.holymiko.InvestmentScraperApp.Server.Core.Exception.ResourceNotFoundException;
+import home.holymiko.InvestmentScraperApp.Server.Core.annotation.ResourceNotFound;
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
