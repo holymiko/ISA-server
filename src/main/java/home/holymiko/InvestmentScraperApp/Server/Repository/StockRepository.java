@@ -18,6 +18,8 @@ public interface StockRepository extends JpaRepository<Stock, Integer> {
 
     Optional<Stock> findByTicker(Ticker ticker);
 
+    List<Stock> findByTicker(List<Ticker> ticker);
+
     List<Stock>  findByRatingScore(Double x);
 
     List<Stock> findByCurrency(String x);

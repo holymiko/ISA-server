@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class SerenityScraper extends Scraper {
@@ -48,6 +49,18 @@ public class SerenityScraper extends Scraper {
         printSerenityStatus();
 
         List<Ticker> tickers = this.tickerService.findByTickerState(tickerState);
+
+//        // Currency filter
+//        tickers = stockService.findByTicker(tickers)
+//                .stream()
+//                .filter(
+//                        stock -> stock.getCurrency().equals("USD") &&
+//                                stock.getCurrency().equals("EUR") &&
+//                                stock.getCurrency().equals("GBP") &&
+//                                stock.getCurrency().equals("HKD")
+//                ).map(
+//                        Stock::getTicker
+//                ).collect(Collectors.toList());
 
         for (Ticker ticker : tickers) {
             long startTime = System.nanoTime();

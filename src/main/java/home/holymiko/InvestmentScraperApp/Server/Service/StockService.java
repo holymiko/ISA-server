@@ -32,6 +32,10 @@ public class StockService {
         return this.stockRepository.findByTicker(ticker);
     }
 
+    public List<Stock> findByTicker(List<Ticker> ticker) {
+        return this.stockRepository.findByTicker(ticker);
+    }
+
     public List<Stock> findByGrahamGrade(GrahamGrade grahamGrade) {
         return this.stockRepository.findByGrahamGrade(grahamGrade);
     }
