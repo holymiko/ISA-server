@@ -51,20 +51,21 @@ public class SerenityScraper extends Scraper {
 
         for (Ticker ticker : tickers) {
             long startTime = System.nanoTime();
+
             if( !loadPage(BASE_URL + ticker.getTicker().toLowerCase(Locale.ROOT) )) {
                 this.tickerService.update(ticker, TickerState.NOTFOUND);
-                System.out.println(">"+ticker.getTicker()+"<");
-            }
-            else {
+                System.out.println(">" + ticker.getTicker() + "<");
+            } else {
                 HtmlElement htmlElement = page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div[12]/div/div/h3/span");
                 double ratingScore = Double.parseDouble( htmlElement.asText().replace("Rating Score = ", ""));
+
                 if (ratingScore >= MIN_RATING_SCORE) {
                     this.tickerService.update(ticker, TickerState.GOOD);
                     stockScrap(ticker, ratingScore);
                 } else {
                     this.stockService.deleteByTicker(ticker);
                     this.tickerService.update(ticker, TickerState.BAD);
-                    System.out.println(">"+ticker.getTicker()+"< Bad");
+                    System.out.println(">" + ticker.getTicker() + "< Bad");
                 }
             }
             dynamicSleepAndStatusPrint(ETHICAL_DELAY, startTime, 50, tickers.size());
