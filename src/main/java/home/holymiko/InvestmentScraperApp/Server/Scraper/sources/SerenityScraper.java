@@ -48,19 +48,19 @@ public class SerenityScraper extends Scraper {
         System.out.println("Trying to scrap "+tickerState+" tickers");
         printSerenityStatus();
 
-        List<Ticker> tickers = this.tickerService.findByTickerState(tickerState);
+        Set<Ticker> tickers = this.tickerService.findByTickerState(tickerState);
 
-//        // Currency filter
-//        tickers = stockService.findByTicker(tickers)
-//                .stream()
-//                .filter(
-//                        stock -> stock.getCurrency().equals("USD") &&
-//                                stock.getCurrency().equals("EUR") &&
-//                                stock.getCurrency().equals("GBP") &&
-//                                stock.getCurrency().equals("HKD")
-//                ).map(
-//                        Stock::getTicker
-//                ).collect(Collectors.toList());
+        // Currency filter
+        tickers = stockService.findByTickerState(tickers)
+                .stream()
+                .filter(
+                        stock -> stock.getCurrency().equals("USD") ||
+                                stock.getCurrency().equals("EUR") ||
+                                stock.getCurrency().equals("GBP") ||
+                                stock.getCurrency().equals("HKD")
+                ).map(
+                        Stock::getTicker
+                ).collect(Collectors.toSet());
 
         for (Ticker ticker : tickers) {
             long startTime = System.nanoTime();
@@ -134,7 +134,7 @@ public class SerenityScraper extends Scraper {
     }
 
     private void fixer(String target) {
-        List<Ticker> tickers = this.tickerService.findByTickerState(TickerState.NOTFOUND);
+        Set<Ticker> tickers = this.tickerService.findByTickerState(TickerState.NOTFOUND);
         int i = 0;
         for (Ticker ticker: tickers) {
             if(ticker.getTicker().contains(target)) {

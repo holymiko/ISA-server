@@ -3,13 +3,13 @@ package home.holymiko.InvestmentScraperApp.Server.Service;
 import home.holymiko.InvestmentScraperApp.Server.Enum.GrahamGrade;
 import home.holymiko.InvestmentScraperApp.Server.Entity.Stock;
 import home.holymiko.InvestmentScraperApp.Server.Entity.Ticker;
+import home.holymiko.InvestmentScraperApp.Server.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class StockService {
@@ -28,12 +28,20 @@ public class StockService {
         return this.stockRepository.findById(id);
     }
 
-    public Optional<Stock> findByTicker(Ticker ticker) {
+    public Optional<Stock> findByTickerState(Ticker ticker) {
         return this.stockRepository.findByTicker(ticker);
     }
 
-    public List<Stock> findByTicker(List<Ticker> ticker) {
-        return this.stockRepository.findByTicker(ticker);
+    public Set<Stock> findByTickerState(Set<Ticker> tickers) {
+        Set<Stock> stocks = new HashSet<>();
+
+        for (Ticker ticker : tickers) {
+            stockRepository.findByTicker(ticker).ifPresent(
+                    stocks::add
+            );
+        }
+
+        return stocks;
     }
 
     public List<Stock> findByGrahamGrade(GrahamGrade grahamGrade) {

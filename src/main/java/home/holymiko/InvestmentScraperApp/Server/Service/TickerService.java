@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TickerService {
@@ -27,7 +28,7 @@ public class TickerService {
 
     public List<Ticker> findAll() { return this.tickerRepository.findAll(); }
 
-    public List<Ticker> findByTickerState(TickerState tickerState) { return tickerRepository.findByTickerState(tickerState); }
+    public Set<Ticker> findByTickerState(TickerState tickerState) { return tickerRepository.findByTickerState(tickerState); }
 
     public Ticker findById(String x) throws ResponseStatusException{
         Optional<Ticker> optionalTicker = this.tickerRepository.findById(x);
