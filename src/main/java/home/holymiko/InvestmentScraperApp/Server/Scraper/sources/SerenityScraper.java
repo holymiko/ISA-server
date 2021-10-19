@@ -34,7 +34,7 @@ public class SerenityScraper extends Scraper {
         run();
     }
 
-    ////// PUBLIC
+    //////////// PUBLIC
 
     public void run() {
         printSerenityStatus();
@@ -45,22 +45,13 @@ public class SerenityScraper extends Scraper {
     }
 
     public void tickersScrap(TickerState tickerState) {
-        System.out.println("Trying to scrap "+tickerState+" tickers");
+        System.out.println("Trying to scrap " + tickerState + " tickers");
         printSerenityStatus();
 
         Set<Ticker> tickers = this.tickerService.findByTickerState(tickerState);
 
         // Currency filter
-        tickers = stockService.findByTickerState(tickers)
-                .stream()
-                .filter(
-                        stock -> stock.getCurrency().equals("USD") ||
-                                stock.getCurrency().equals("EUR") ||
-                                stock.getCurrency().equals("GBP") ||
-                                stock.getCurrency().equals("HKD")
-                ).map(
-                        Stock::getTicker
-                ).collect(Collectors.toSet());
+        tickers = filterTickersByCurrencies(tickers, new HashSet<>(Arrays.asList("USD", "EUR", "GBP", "CHF", "HKD")));
 
         for (Ticker ticker : tickers) {
             long startTime = System.nanoTime();
@@ -89,7 +80,7 @@ public class SerenityScraper extends Scraper {
         Export.exportStocks(stockService.findAll());
     }
 
-    ////// PRIVATE
+    //////////// PRIVATE
 
     private void stockScrap(final Ticker ticker, final Double ratingScore) {
         List<Double> ratings = new ArrayList<>();          // Graham Ratings
@@ -133,6 +124,16 @@ public class SerenityScraper extends Scraper {
         this.stockService.save(stock);
     }
 
+    private Set<Ticker> filterTickersByCurrencies(Set<Ticker> tickers, Set<String> currencies) {
+        return stockService.findByTickerState(tickers)
+                .stream()
+                .filter(
+                        stock -> currencies.contains( stock.getCurrency() )
+                ).map(
+                        Stock::getTicker
+                ).collect(Collectors.toSet());
+    }
+
     private void fixer(String target) {
         Set<Ticker> tickers = this.tickerService.findByTickerState(TickerState.NOTFOUND);
         int i = 0;
@@ -148,6 +149,8 @@ public class SerenityScraper extends Scraper {
         }
         System.out.println("Total saved: "+i);
     }
+
+    ////// PRINT
 
     private static void printScrapStock(final String header, final Double ratingScore, final List<Double> ratings, final List<Double> results, final String currency) {
         System.out.println(header);
@@ -195,7 +198,6 @@ public class SerenityScraper extends Scraper {
         System.out.format("Total: %15d%n", Math.round(totalTickers));
         System.out.println();
     }
-
 
     private static Integer printMethod(double tickerState, double sum) {
         final DecimalFormat df = new DecimalFormat("###,###");
