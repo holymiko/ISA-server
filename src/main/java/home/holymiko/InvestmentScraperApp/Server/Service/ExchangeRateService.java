@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Date;
+
+
 @Service
 public class ExchangeRateService {
 
@@ -19,8 +22,13 @@ public class ExchangeRateService {
 
     @Transactional
     public ExchangeRate save(ExchangeRate exchangeRate) throws ResponseStatusException {
-        System.out.println("CurrencyRatio.save");
+//        System.out.println("CurrencyRatio.save");
         return exchangeRateRepository.save(exchangeRate);
+    }
+
+    @Transactional
+    public void delete(String code, Date date) {
+        exchangeRateRepository.deleteByCodeAndDate(code, date);
     }
 
 }

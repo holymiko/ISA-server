@@ -1,11 +1,14 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Enum.TickerState;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.BessergoldScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.SerenityScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.ZlatakyScraper;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -40,17 +43,26 @@ public class ScrapController {
     private final BessergoldScraper bessergoldScraper;
     private final ZlatakyScraper zlatakyScraper;
     private final SerenityScraper serenityScraper;
+    private final CNBScraper cnbScraper;
 
     // Used for Polymorphic calling
     private final List<MetalScraper> scrapMetals = new ArrayList<>();
 
     @Autowired
-    public ScrapController(BessergoldScraper bessergoldScraper, ZlatakyScraper zlatakyScraper, SerenityScraper serenityScraper) {
+    public ScrapController(BessergoldScraper bessergoldScraper, ZlatakyScraper zlatakyScraper, SerenityScraper serenityScraper, CNBScraper cnbScraper) {
         this.bessergoldScraper = bessergoldScraper;
         this.zlatakyScraper = zlatakyScraper;
         this.serenityScraper = serenityScraper;
+        this.cnbScraper = cnbScraper;
         this.scrapMetals.add(bessergoldScraper);
         this.scrapMetals.add(zlatakyScraper);
+
+        try {
+            cnbScraper.scrapExchangeRate();
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @RequestMapping({"/all", "/all/"})
