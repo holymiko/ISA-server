@@ -30,14 +30,12 @@ public class SerenityScraper extends Scraper {
         super();
         this.tickerService = tickerService;
         this.stockService = stockService;
-
-        run();
     }
 
     //////////// PUBLIC
 
     public void run() {
-        printSerenityStatus();
+//        printSerenityStatus();
 //        Export.exportTickers(tickerService.findAll());
 //        Export.exportStocks(stockService.findAll());
 //        tickersScrap(TickerState.GOOD);
@@ -152,6 +150,15 @@ public class SerenityScraper extends Scraper {
 
     ////// PRINT
 
+    public void printSerenityStatus() {
+        printSerenityStatus(
+                tickerService.findByTickerState(TickerState.GOOD).size(),
+                tickerService.findByTickerState(TickerState.BAD).size(),
+                tickerService.findByTickerState(TickerState.NOTFOUND).size(),
+                tickerService.findByTickerState(TickerState.UNKNOWN).size()
+        );
+    }
+
     private static void printScrapStock(final String header, final Double ratingScore, final List<Double> ratings, final List<Double> results, final String currency) {
         System.out.println(header);
         for (Double x : ratings) {
@@ -171,15 +178,6 @@ public class SerenityScraper extends Scraper {
         System.out.println("  Intrinsic Value = "+intrinsicValue);
         System.out.println("  "+currency);
         System.out.println();
-    }
-
-    private void printSerenityStatus() {
-        printSerenityStatus(
-                tickerService.findByTickerState(TickerState.GOOD).size(),
-                tickerService.findByTickerState(TickerState.BAD).size(),
-                tickerService.findByTickerState(TickerState.NOTFOUND).size(),
-                tickerService.findByTickerState(TickerState.UNKNOWN).size()
-        );
     }
 
     private static void printSerenityStatus(double good, double bad, double notfound, double unknown) {

@@ -8,7 +8,6 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.Bes
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.SerenityScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.ZlatakyScraper;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -56,13 +55,6 @@ public class ScrapController {
         this.cnbScraper = cnbScraper;
         this.scrapMetals.add(bessergoldScraper);
         this.scrapMetals.add(zlatakyScraper);
-
-        try {
-            cnbScraper.scrapExchangeRate();
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-
     }
 
     @RequestMapping({"/all", "/all/"})
