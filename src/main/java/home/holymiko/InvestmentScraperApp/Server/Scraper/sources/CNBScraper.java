@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Date;
 
-
+/*
+Class scraping data from Czech National Bank
+ */
 @Component
 public class CNBScraper extends Scraper {
 
