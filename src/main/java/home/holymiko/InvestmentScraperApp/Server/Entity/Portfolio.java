@@ -1,6 +1,8 @@
 package home.holymiko.InvestmentScraperApp.Server.Entity;
 
 import lombok.Getter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,32 +14,51 @@ public class Portfolio {
     @GeneratedValue
     private long id;
     private String owner;
+
     @OneToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<InvestmentMetal> investmentMetals;
 
-    public Portfolio(List<InvestmentMetal> investmentMetals, String owner) {
-        this.investmentMetals = investmentMetals;
+    @OneToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
+    private List<InvestmentStock> investmentStocks;
+
+    public Portfolio(String owner, List<InvestmentMetal> investmentMetals, List<InvestmentStock> investmentStocks) {
         this.owner = owner;
+        this.investmentMetals = investmentMetals;
+        this.investmentStocks = investmentStocks;
     }
 
     public Portfolio() {
     }
 
     public double getBeginPrice() {
-        return this.getInvestmentMetals()
+        return investmentMetals
                 .stream()
                 .map(
                         InvestmentMetal::getBeginPrice
-                ).reduce(0.0, Double::sum);
+                ).reduce(0.0, Double::sum)
+            +
+                investmentStocks
+                        .stream()
+                        .map(
+                                InvestmentStock::getBeginPrice
+                        ).reduce(0.0, Double::sum);
     }
 
     public double getPortfolioValue() {
-        return this.getInvestmentMetals()
+        return investmentMetals
                 .stream()
                 .map(
                         investmentMetal ->
                                 investmentMetal.getProduct().getPriceByBestRedemption().getRedemption()
-                ).reduce(0.0, Double::sum);
+                ).reduce(0.0, Double::sum)
+            +
+                investmentStocks
+                        .stream()
+                        .map(
+                                stock -> stock.getStock().getPreviousClose()
+                        ).reduce(0.0, Double::sum);
     }
 
 }

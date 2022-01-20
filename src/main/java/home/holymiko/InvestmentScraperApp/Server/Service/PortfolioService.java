@@ -5,6 +5,7 @@ import home.holymiko.InvestmentScraperApp.Server.DTO.simple.PortfolioDTO;
 import home.holymiko.InvestmentScraperApp.Server.Entity.Portfolio;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.PortfolioMapper;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PortfolioRepository;
+import home.holymiko.InvestmentScraperApp.Server.Utils.InvestmentInit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,14 +20,12 @@ import java.util.stream.Collectors;
 public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
     private final ProductService productService;
-    private final InvestmentService investmentService;
     private final PortfolioMapper portfolioMapper;
 
     @Autowired
-    public PortfolioService(PortfolioRepository portfolioRepository, ProductService productService, InvestmentService investmentService, PortfolioMapper portfolioMapper) {
+    public PortfolioService(PortfolioRepository portfolioRepository, ProductService productService, PortfolioMapper portfolioMapper) {
         this.portfolioRepository = portfolioRepository;
         this.productService = productService;
-        this.investmentService = investmentService;
         this.portfolioMapper = portfolioMapper;
     }
 
@@ -122,21 +121,7 @@ public class PortfolioService {
 
     ////// POST, PUT
 
-    @Transactional
-    public void saveInitPortfolios() {
-        if(this.portfolioRepository.findByOwner("Carlos").isEmpty()) {
-            Portfolio portfolio = new Portfolio(this.investmentService.saveCarlosInvestments(), "Carlos");
-            this.portfolioRepository.save(portfolio);
-        }
-        if(this.portfolioRepository.findByOwner("Sanchez").isEmpty()) {
-            Portfolio portfolio = new Portfolio(this.investmentService.saveSanchezInvestments(), "Sanchez");
-            this.portfolioRepository.save(portfolio);
-        }
-        if(this.portfolioRepository.findByOwner("Eduardo").isEmpty()) {
-            Portfolio portfolio = new Portfolio(this.investmentService.saveEduardoInvestments(), "Eduardo");
-            this.portfolioRepository.save(portfolio);
-        }
-    }
+
 
 //    @Transactional
 //    public void save(PortfolioCreateDTO portfolioCreateDTO) {
@@ -155,11 +140,11 @@ public class PortfolioService {
 //        System.out.println(">> Save PortfolioCreateDTO " + portfolioCreateDTO.getOwner());
 //    }
 
-//    @Transactional
-//    public void save(Portfolio portfolio) {
-//        this.portfolioRepository.save(portfolio);
-//        System.out.println(">> Save Portfolio");
-//    }
+    @Transactional
+    public void save(Portfolio portfolio) {
+        this.portfolioRepository.save(portfolio);
+        System.out.println(">> Save Portfolio");
+    }
 //
 //    @Transactional
 //    public void save(String name) {

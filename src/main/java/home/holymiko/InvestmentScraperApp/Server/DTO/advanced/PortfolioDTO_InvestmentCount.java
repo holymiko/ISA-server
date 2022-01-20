@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class PortfolioDTO_InvestmentCount extends PortfolioDTO {
-
+    // TODO Adapt for InvestmentStock. Modify client side as well
     private final double investmentCount;
 
     public PortfolioDTO_InvestmentCount(long id, String owner, double beginPrice, double value, double investmentCount) {
