@@ -16,13 +16,13 @@ import java.util.Set;
 
 @Service
 public class TickerService {
+
     private final TickerRepository tickerRepository;
 
     @Autowired
     public TickerService(TickerRepository tickerRepository) {
         this.tickerRepository = tickerRepository;
     }
-
 
 
     ////// FIND
