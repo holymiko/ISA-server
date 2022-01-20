@@ -22,7 +22,6 @@ public class InvestmentService {
 
     private final ProductRepository productRepository;
     private final InvestmentRepository investmentRepository;
-
     private final ProductService productService;
 
 
@@ -34,8 +33,13 @@ public class InvestmentService {
     }
 
 
-    ////// FIND
+    @Transactional
+    public InvestmentMetal save(InvestmentMetal investmentMetal) throws ResponseStatusException {
+        this.investmentRepository.save(investmentMetal);
+        return this.investmentRepository.findById(investmentMetal.getId()).get();
+    }
 
+    ////// FIND
 //    public List<InvestmentMetal> longToInvestments(List<Long> investmentIds) {
 //        List<InvestmentMetal> investmentMetals = new ArrayList<>();
 //        for (Long id:
@@ -56,7 +60,6 @@ public class InvestmentService {
 
 
     ////// POST
-
 //    @Transactional
 //    public InvestmentMetal save(Product product) throws ResponseStatusException {
 //        Optional<Product> optionalProduct = this.productRepository.findById(product.getId());
@@ -68,11 +71,5 @@ public class InvestmentService {
 //        }
 //        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product with such ID not found");
 //    }
-
-    @Transactional
-    public InvestmentMetal save(InvestmentMetal investmentMetal) throws ResponseStatusException {
-        this.investmentRepository.save(investmentMetal);
-        return this.investmentRepository.findById(investmentMetal.getId()).get();
-    }
 
 }
