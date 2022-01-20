@@ -9,10 +9,10 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Scraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.StockService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
+import home.holymiko.InvestmentScraperApp.Server.Utils.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,7 +44,12 @@ public class SerenityScraper extends Scraper {
 
     public void tickersScrap(TickerState tickerState) {
         System.out.println("Trying to scrap " + tickerState + " tickers");
-        printSerenityStatus();
+        ConsolePrinter.printTickerStatus(
+                tickerService.findByTickerState(TickerState.GOOD).size(),
+                tickerService.findByTickerState(TickerState.BAD).size(),
+                tickerService.findByTickerState(TickerState.NOTFOUND).size(),
+                tickerService.findByTickerState(TickerState.UNKNOWN).size()
+        );
 
         Set<Ticker> tickers = this.tickerService.findByTickerState(tickerState);
 
@@ -73,7 +78,7 @@ public class SerenityScraper extends Scraper {
             dynamicSleepAndStatusPrint(ETHICAL_DELAY, startTime, 50, tickers.size());
         }
         printerCounter = 0;
-        printSerenityStatus();
+        tickerService.printTickerStatus();
         Export.exportTickers(tickerService.findAll());
         Export.exportStocks(stockService.findAll());
     }
@@ -110,7 +115,7 @@ public class SerenityScraper extends Scraper {
         }
 
 //        printScrapStock(header, ratingScore, ratings, results, currency);
-        printScrapStockShort(header, ratingScore, results.get(5), currency);
+        ConsolePrinter.printScrapStockShort(header, ratingScore, results.get(5), currency);
 
         Stock stock = new Stock(
                 header, ticker, grade, currency, ratingScore,
@@ -146,64 +151,6 @@ public class SerenityScraper extends Scraper {
             }
         }
         System.out.println("Total saved: "+i);
-    }
-
-    ////// PRINT
-
-    public void printSerenityStatus() {
-        printSerenityStatus(
-                tickerService.findByTickerState(TickerState.GOOD).size(),
-                tickerService.findByTickerState(TickerState.BAD).size(),
-                tickerService.findByTickerState(TickerState.NOTFOUND).size(),
-                tickerService.findByTickerState(TickerState.UNKNOWN).size()
-        );
-    }
-
-    private static void printScrapStock(final String header, final Double ratingScore, final List<Double> ratings, final List<Double> results, final String currency) {
-        System.out.println(header);
-        for (Double x : ratings) {
-            System.out.println(x);
-        }
-        System.out.println("Rating Score = "+ratingScore);
-        for (Double x : results) {
-            System.out.println(x);
-        }
-        System.out.println(currency);
-        System.out.println();
-    }
-
-    private static void printScrapStockShort(final String header, final Double ratingScore, final Double intrinsicValue, final String currency) {
-        System.out.println(header);
-        System.out.println("  Rating Score = "+ratingScore);
-        System.out.println("  Intrinsic Value = "+intrinsicValue);
-        System.out.println("  "+currency);
-        System.out.println();
-    }
-
-    private static void printSerenityStatus(double good, double bad, double notfound, double unknown) {
-        final double sum = good + bad + notfound;
-        final double totalTickers = sum + unknown;
-
-        System.out.println();
-        System.out.println("Serenity Scraper");
-        System.out.println("-----------------------------------------------------------------");
-        System.out.format("Good:     %12d  %3d%s%n", Math.round(good), printMethod(good, sum), "%");
-        System.out.format("Bad:      %12d  %3d%s%n", Math.round(bad), printMethod(bad, sum), "%");
-        System.out.format("NotFound: %12d  %3d%s%n", Math.round(notfound), printMethod(notfound, sum), "%");
-        System.out.println(
-                unknown > 0 ? "Unknown: " + Math.round(unknown) + "  " + printMethod(unknown, sum) + "%" : ""
-        );
-        System.out.format("Total: %15d%n", Math.round(totalTickers));
-        System.out.println();
-    }
-
-    private static Integer printMethod(double tickerState, double sum) {
-        final DecimalFormat df = new DecimalFormat("###,###");
-        return Math.round(
-                Long.parseLong(
-                        df.format(tickerState*100/(sum))
-                )
-        );
     }
 
 }

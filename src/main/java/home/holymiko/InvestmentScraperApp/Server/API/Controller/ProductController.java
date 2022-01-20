@@ -38,7 +38,7 @@ public class ProductController {
     public List<ProductDTO_LatestPrices> byMetal(@PathVariable String metal) {
         System.out.println("Get products byMetal "+metal);
         return switch (metal) {
-            case "GoldScraper" -> this.productService.findByMetal(Metal.GOLD);
+            case "gold" -> this.productService.findByMetal(Metal.GOLD);
             case "silver" -> this.productService.findByMetal(Metal.SILVER);
             case "platinum" -> this.productService.findByMetal(Metal.PLATINUM);
             case "palladium" -> this.productService.findByMetal(Metal.PALLADIUM);
@@ -65,7 +65,7 @@ public class ProductController {
     public List<ProductDTO_LatestPrices> byMetalAsDTO(@PathVariable String metal) {
         System.out.println("Get products byMetal "+metal+" as DTO");
         return switch (metal) {
-            case "GoldScraper" -> this.productService.findByMetalAsDTO(Metal.GOLD);
+            case "gold" -> this.productService.findByMetalAsDTO(Metal.GOLD);
             case "silver" -> this.productService.findByMetalAsDTO(Metal.SILVER);
             case "platinum" -> this.productService.findByMetalAsDTO(Metal.PLATINUM);
             case "palladium" -> this.productService.findByMetalAsDTO(Metal.PALLADIUM);

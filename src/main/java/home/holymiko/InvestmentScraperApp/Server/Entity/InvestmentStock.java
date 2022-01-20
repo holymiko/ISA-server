@@ -10,40 +10,25 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
-public class InvestmentMetal {
+public class InvestmentStock {
     @Id
     @GeneratedValue
     private long id;
     @ManyToOne(fetch = FetchType.EAGER)             // To avoid problem with Hibernate closing session
     @Fetch(FetchMode.SELECT)                        // To avoid duplicates
-    private Product product;
-    private Dealer dealer;
+    private Stock stock;
     private double beginPrice;
     private double endPrice;
     private LocalDate beginDate;
     private LocalDate endDate;
 
-    public InvestmentMetal(Product product, Dealer dealer, double beginPrice, LocalDate beginDate) {
-        this.product = product;
-        this.dealer = dealer;
+    public InvestmentStock(Stock stock, double beginPrice, LocalDate beginDate) {
+        this.stock = stock;
         this.beginPrice = beginPrice;
         this.beginDate = beginDate;
     }
 
-    public InvestmentMetal() {
+    public InvestmentStock() {
     }
 
-    public double getYield() {
-        return this.getProduct().getPriceByBestRedemption().getRedemption() / getBeginPrice();
-    }
-
-
-    @Override
-    public String toString() {
-        return product.toString() +
-                ", beginPrice=" + beginPrice +
-                ", endPrice=" + endPrice +
-                ", beginDate=" + beginDate +
-                ", endDate=" + endDate;
-    }
 }
