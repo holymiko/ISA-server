@@ -2,7 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.Service;
 
 import home.holymiko.InvestmentScraperApp.Server.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Entity.Link;
-import home.holymiko.InvestmentScraperApp.Server.Repository.LinkRepository;
+import home.holymiko.InvestmentScraperApp.Server.API.Repository.LinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

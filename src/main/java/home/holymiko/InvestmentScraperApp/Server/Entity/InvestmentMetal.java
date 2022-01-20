@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
-public class InvestmentMetal {
+public class InvestmentMetal extends Investment {
     @Id
     @GeneratedValue
     private long id;

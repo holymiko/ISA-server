@@ -7,7 +7,7 @@ import home.holymiko.InvestmentScraperApp.Server.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Enum.Producer;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.ProductMapper;
-import home.holymiko.InvestmentScraperApp.Server.Repository.ProductRepository;
+import home.holymiko.InvestmentScraperApp.Server.API.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

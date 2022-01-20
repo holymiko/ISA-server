@@ -1,4 +1,4 @@
-package home.holymiko.InvestmentScraperApp.Server.Repository;
+package home.holymiko.InvestmentScraperApp.Server.API.Repository;
 
 import home.holymiko.InvestmentScraperApp.Server.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Enum.Form;

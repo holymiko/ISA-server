@@ -4,7 +4,7 @@ import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.PortfolioDTO_Produ
 import home.holymiko.InvestmentScraperApp.Server.DTO.simple.PortfolioDTO;
 import home.holymiko.InvestmentScraperApp.Server.Entity.Portfolio;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.PortfolioMapper;
-import home.holymiko.InvestmentScraperApp.Server.Repository.PortfolioRepository;
+import home.holymiko.InvestmentScraperApp.Server.API.Repository.PortfolioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
