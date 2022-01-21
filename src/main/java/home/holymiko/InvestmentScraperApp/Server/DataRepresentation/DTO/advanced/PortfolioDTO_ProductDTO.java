@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 public class PortfolioDTO_ProductDTO extends PortfolioDTO {
-    // TODO Adapt for InvestmentStock. Modify client side as well
+
     private final List<InvestmentMetalDTO_ProductDTO> investmentsMetal;
     private final List<InvestmentStockDTO_StockDTO> investmentsStock;
 
