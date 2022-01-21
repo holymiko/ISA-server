@@ -43,6 +43,10 @@ public class ScrapController {
     private final SerenityScraper serenityScraper;
     private final CNBScraper cnbScraper;
 
+    // TODO Endpoint for cnbScraper
+    // TODO Endpoint for scrap stock by ticker
+    // TODO method byPortfolio including stock scrap
+
     // Used for Polymorphic calling
     private final List<MetalScraper> scrapMetals = new ArrayList<>();
 

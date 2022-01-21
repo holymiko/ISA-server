@@ -79,7 +79,7 @@ public class MetalScraper extends Scraper {
         }
 
         // Set prevents one Product to be scrapped more times
-        Set<Link> linkSet = optionalPortfolio.get().getInvestments()
+        Set<Link> linkSet = optionalPortfolio.get().getInvestmentsMetal()
                 .stream()
                 .map(
                         investment -> linkService.findByDealerAndProductId(dealer, investment.getProductDTO().getId())
