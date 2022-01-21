@@ -1,10 +1,10 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Form;
-import home.holymiko.InvestmentScraperApp.Server.Enum.GrahamGrade;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Metal;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Producer;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Form;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.GrahamGrade;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Producer;
 
 import java.time.Year;
 import java.util.Locale;

@@ -1,8 +1,8 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Repository;
 
-import home.holymiko.InvestmentScraperApp.Server.Enum.GrahamGrade;
-import home.holymiko.InvestmentScraperApp.Server.Entity.Stock;
-import home.holymiko.InvestmentScraperApp.Server.Entity.Ticker;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.GrahamGrade;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Stock;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Ticker;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +17,8 @@ public interface StockRepository extends JpaRepository<Stock, Integer> {
     List<Stock> findByIntrinsicValue(Double x);
 
     Optional<Stock> findByTicker(Ticker ticker);
+
+    Optional<Stock> findByTicker_Ticker(String ticker);
 
     List<Stock>  findByRatingScore(Double x);
 

@@ -1,11 +1,11 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Repository;
 
-import home.holymiko.InvestmentScraperApp.Server.Enum.Dealer;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Form;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Producer;
-import home.holymiko.InvestmentScraperApp.Server.Entity.Link;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Metal;
-import home.holymiko.InvestmentScraperApp.Server.Entity.Product;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Form;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Producer;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Link;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

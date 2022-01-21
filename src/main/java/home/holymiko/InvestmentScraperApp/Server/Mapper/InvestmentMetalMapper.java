@@ -1,8 +1,8 @@
 package home.holymiko.InvestmentScraperApp.Server.Mapper;
 
-import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.InvestmentMetalDTO_ProductDTO;
-import home.holymiko.InvestmentScraperApp.Server.DTO.simple.InvestmentMetalDTO;
-import home.holymiko.InvestmentScraperApp.Server.Entity.InvestmentMetal;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.advanced.InvestmentMetalDTO_ProductDTO;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.simple.InvestmentMetalDTO;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.InvestmentMetal;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;

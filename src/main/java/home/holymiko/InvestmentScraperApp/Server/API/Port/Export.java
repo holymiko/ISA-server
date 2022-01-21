@@ -1,7 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Port;
 
-import home.holymiko.InvestmentScraperApp.Server.Entity.Stock;
-import home.holymiko.InvestmentScraperApp.Server.Entity.Ticker;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Stock;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Ticker;
 
 import java.io.File;
 import java.io.FileWriter;

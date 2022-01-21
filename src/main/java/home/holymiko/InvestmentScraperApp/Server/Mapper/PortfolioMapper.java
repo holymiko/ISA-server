@@ -1,10 +1,10 @@
 package home.holymiko.InvestmentScraperApp.Server.Mapper;
 
-import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.InvestmentMetalDTO_ProductDTO;
-import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.PortfolioDTO_InvestmentCount;
-import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.PortfolioDTO_ProductDTO;
-import home.holymiko.InvestmentScraperApp.Server.DTO.simple.PortfolioDTO;
-import home.holymiko.InvestmentScraperApp.Server.Entity.Portfolio;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.advanced.InvestmentMetalDTO_ProductDTO;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.advanced.PortfolioDTO_InvestmentCount;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.advanced.PortfolioDTO_ProductDTO;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.simple.PortfolioDTO;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Portfolio;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -16,6 +16,7 @@ import java.util.List;
 public abstract class PortfolioMapper {
 
     private static final String VALUE = "java( portfolio.getPortfolioValue() )";
+    private static final String INVESTMENT_COUNT = "java( portfolio.getInvestmentMetals().size() + portfolio.getInvestmentStocks().size() )";
     private static final String INVESTMENT_METAL_DTO_ALL_PRICES = "java( investmentMetalMapper.toDTO_AllPrices(portfolio.getInvestmentMetals()) )";
     private static final String INVESTMENT_METAL_DTO_LATEST_PRICES = "java( investmentMetalMapper.toDTO_LatestPrices(portfolio.getInvestmentMetals()) )";
     private static final String INVESTMENT_METAL_DTO_ONE_LATEST_PRICE = "java( investmentMetalMapper.toDTO_OneLatestPrice(portfolio.getInvestmentMetals()) )";
@@ -30,7 +31,7 @@ public abstract class PortfolioMapper {
 
     @Mappings({
             @Mapping(target = "value", expression = VALUE),
-            @Mapping(target = "investmentCount", expression = "java( portfolio.getInvestmentMetals().size() )")
+            @Mapping(target = "investmentCount", expression = INVESTMENT_COUNT)
     })
     public abstract PortfolioDTO_InvestmentCount toPortfolioDTO_InvestmentCount(Portfolio portfolio);
 

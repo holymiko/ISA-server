@@ -1,13 +1,13 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.PortfolioDTO_ProductDTO;
-import home.holymiko.InvestmentScraperApp.Server.DTO.simple.ProductDTO;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Dealer;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Form;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Metal;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Producer;
-import home.holymiko.InvestmentScraperApp.Server.Entity.*;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.advanced.PortfolioDTO_ProductDTO;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.simple.ProductDTO;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Form;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Producer;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

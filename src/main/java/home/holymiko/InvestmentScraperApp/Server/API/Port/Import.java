@@ -1,7 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Port;
 
-import home.holymiko.InvestmentScraperApp.Server.Enum.TickerState;
-import home.holymiko.InvestmentScraperApp.Server.Entity.Ticker;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Ticker;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 
 import java.io.File;

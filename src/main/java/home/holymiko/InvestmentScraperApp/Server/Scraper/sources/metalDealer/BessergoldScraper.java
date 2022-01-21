@@ -2,8 +2,8 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer;
 
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import home.holymiko.InvestmentScraperApp.Server.Entity.*;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Dealer;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;

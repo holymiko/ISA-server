@@ -1,11 +1,11 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
-import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.ProductDTO_AllPrices;
-import home.holymiko.InvestmentScraperApp.Server.DTO.advanced.ProductDTO_LatestPrices;
-import home.holymiko.InvestmentScraperApp.Server.Entity.*;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Form;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Metal;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Producer;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.advanced.ProductDTO_AllPrices;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.advanced.ProductDTO_LatestPrices;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Form;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Producer;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.ProductMapper;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;

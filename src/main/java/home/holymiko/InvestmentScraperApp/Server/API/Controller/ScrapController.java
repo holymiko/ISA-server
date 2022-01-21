@@ -1,8 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
-import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Metal;
-import home.holymiko.InvestmentScraperApp.Server.Enum.TickerState;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.BessergoldScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;

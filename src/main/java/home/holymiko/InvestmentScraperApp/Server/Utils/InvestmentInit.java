@@ -1,13 +1,12 @@
 package home.holymiko.InvestmentScraperApp.Server.Utils;
 
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.ProductRepository;
-import home.holymiko.InvestmentScraperApp.Server.Entity.InvestmentMetal;
-import home.holymiko.InvestmentScraperApp.Server.Entity.Portfolio;
-import home.holymiko.InvestmentScraperApp.Server.Entity.Product;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Dealer;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Form;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Metal;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Producer;
+import home.holymiko.InvestmentScraperApp.Server.API.Repository.StockRepository;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Form;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Producer;
 import home.holymiko.InvestmentScraperApp.Server.Service.InvestmentService;
 import home.holymiko.InvestmentScraperApp.Server.Service.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +21,14 @@ public class InvestmentInit {
 
     private static final double TROY_OUNCE = 31.1034768;
 
+    private final StockRepository stockRepository;
     private final ProductRepository productRepository;
     private final InvestmentService investmentService;
     private final PortfolioService portfolioService;
 
     @Autowired
-    public InvestmentInit(ProductRepository productRepository, InvestmentService investmentService, PortfolioService portfolioService) {
+    public InvestmentInit(StockRepository stockRepository, ProductRepository productRepository, InvestmentService investmentService, PortfolioService portfolioService) {
+        this.stockRepository = stockRepository;
         this.productRepository = productRepository;
         this.investmentService = investmentService;
         this.portfolioService = portfolioService;
@@ -44,6 +45,10 @@ public class InvestmentInit {
         }
         if(this.portfolioService.findByOwner("Eduardo").isEmpty()) {
             Portfolio portfolio = new Portfolio("Eduardo", this.saveEduardoMetalInvestments(), new ArrayList<>());
+            this.portfolioService.save(portfolio);
+        }
+        if(this.portfolioService.findByOwner("Filip").isEmpty()) {
+            Portfolio portfolio = new Portfolio("Filip", this.saveEduardoMetalInvestments(), this.saveSomeStockInvestments());
             this.portfolioService.save(portfolio);
         }
 
@@ -289,6 +294,29 @@ public class InvestmentInit {
             addAll(silverMapleCoin1);
             addAll(silverWienerCoins1);
             addAll(silverWienerCoins2);
+        }};
+
+        investmentMetalList.forEach(
+                this.investmentService::save
+        );
+
+        return investmentMetalList;
+    }
+
+    public List<InvestmentStock> saveSomeStockInvestments() {
+        Stock stock = this.stockRepository.findByTicker_Ticker("RINO").get();
+        Stock stock1 = this.stockRepository.findByTicker_Ticker("NC").get();
+        Stock stock2 = this.stockRepository.findByTicker_Ticker("CMC").get();
+
+        InvestmentStock silverBar1 = new InvestmentStock( stock, 10, stock.getPreviousClose(), LocalDate.of(2018, 9, 10));
+        InvestmentStock silverBar2 = new InvestmentStock( stock1, 10, stock1.getPreviousClose(), LocalDate.of(2018, 9, 10));
+        InvestmentStock silverBar3 = new InvestmentStock( stock2, 100, stock2.getPreviousClose(), LocalDate.of(2018, 9, 10));
+
+
+        List<InvestmentStock> investmentMetalList = new ArrayList<>() {{
+            add(silverBar1);
+            add(silverBar2);
+            add(silverBar3);
         }};
 
         investmentMetalList.forEach(

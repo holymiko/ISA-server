@@ -1,42 +1,40 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
-import home.holymiko.InvestmentScraperApp.Server.Entity.Product;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Dealer;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Form;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Metal;
-import home.holymiko.InvestmentScraperApp.Server.Enum.Producer;
-import home.holymiko.InvestmentScraperApp.Server.Entity.InvestmentMetal;
-import home.holymiko.InvestmentScraperApp.Server.API.Repository.InvestmentRepository;
+import home.holymiko.InvestmentScraperApp.Server.API.Repository.InvestmentStockRepository;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.InvestmentMetal;
+import home.holymiko.InvestmentScraperApp.Server.API.Repository.InvestmentMetalRepository;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.ProductRepository;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.InvestmentStock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 public class InvestmentService {
 
     private final ProductRepository productRepository;
-    private final InvestmentRepository investmentRepository;
+    private final InvestmentMetalRepository investmentMetalRepository;
+    private final InvestmentStockRepository investmentStockRepository;
     private final ProductService productService;
 
-
     @Autowired
-    public InvestmentService(ProductRepository productRepository, InvestmentRepository investmentRepository, ProductService productService) {
+    public InvestmentService(ProductRepository productRepository, InvestmentMetalRepository investmentMetalRepository, InvestmentStockRepository investmentStockRepository, ProductService productService) {
         this.productRepository = productRepository;
-        this.investmentRepository = investmentRepository;
+        this.investmentMetalRepository = investmentMetalRepository;
+        this.investmentStockRepository = investmentStockRepository;
         this.productService = productService;
     }
 
 
     @Transactional
     public InvestmentMetal save(InvestmentMetal investmentMetal) throws ResponseStatusException {
-        this.investmentRepository.save(investmentMetal);
-        return this.investmentRepository.findById(investmentMetal.getId()).get();
+        return this.investmentMetalRepository.save(investmentMetal);
+    }
+
+    @Transactional
+    public InvestmentStock save(InvestmentStock investmentMetal) throws ResponseStatusException {
+        return this.investmentStockRepository.save(investmentMetal);
     }
 
     ////// FIND
