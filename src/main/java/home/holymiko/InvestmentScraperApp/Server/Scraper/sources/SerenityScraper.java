@@ -54,6 +54,7 @@ public class SerenityScraper extends Scraper {
             long startTime = System.nanoTime();
 
             if( !loadPage(BASE_URL + ticker.getTicker().toLowerCase(Locale.ROOT) )) {
+                // TODO If I lose Internet connection, Tickers in DB are false rewritten ?!
                 this.tickerService.update(ticker, TickerState.NOTFOUND);
                 System.out.println(">" + ticker.getTicker() + "<");
             } else {
