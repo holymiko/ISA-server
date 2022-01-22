@@ -248,8 +248,8 @@ public class Extract {
      */
     public static Metal metalExtractor(String name) throws IllegalArgumentException {
         return switch (name.toLowerCase(Locale.ROOT)) {
-            case "zlat" -> Metal.GOLD;
-            case "stříbr" -> Metal.SILVER;
+            case "zlat", "gold" -> Metal.GOLD;
+            case "stříbr", "silver" -> Metal.SILVER;
             case "platin" -> Metal.PLATINUM;
             case "pallad" -> Metal.PALLADIUM;
             default -> throw new IllegalArgumentException("Invalid Enum argument");

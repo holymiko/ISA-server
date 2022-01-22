@@ -2,6 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.BessergoldScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
@@ -61,7 +62,14 @@ public class ScrapController {
 
         ScrapHistory.setIsRunning(true);
 
-        scrapAllProductsOrPrices();
+        System.out.println("Scraper ALL products");
+
+        // Scraps from all dealers
+        this.scrapMetals.forEach(
+                MetalScraper::productByDealer
+        );
+
+        ScrapHistory.timeUpdate(false);
 
         ScrapHistory.setIsRunning(false);
     }
@@ -96,16 +104,13 @@ public class ScrapController {
 
         System.out.println("Trying to scrap "+string+" prices");
 
-        Metal metal = switch (string.toLowerCase(Locale.ROOT)) {
-            case "gold" -> Metal.GOLD;
-            case "silver" -> Metal.SILVER;
-            case "platinum" -> Metal.PLATINUM;
-            case "palladium" -> Metal.PALLADIUM;
-            default -> {
-                ScrapHistory.setIsRunning(false);
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            }
-        };
+        Metal metal;
+        try{
+            metal = Extract.metalExtractor(string);
+        } catch (IllegalArgumentException e) {
+            ScrapHistory.setIsRunning(false);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
 
         scrapHistory.frequencyHandling(metal);
         // Scraps prices from all dealers
@@ -169,7 +174,14 @@ public class ScrapController {
 
         ScrapHistory.setIsRunning(true);
 
-        scrapAllLinks();
+        System.out.println("Scraper ALL links");
+
+        // Scraps from all dealers
+        this.scrapMetals.forEach(
+                MetalScraper::allLinksScrap
+        );
+
+        ScrapHistory.timeUpdate(true);
 
         ScrapHistory.setIsRunning(false);
     }
@@ -232,28 +244,6 @@ public class ScrapController {
             System.out.println("ScrapController - TOO MANY REQUESTS");
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Another MetalScraper is running right now");
         }
-    }
-
-    private void scrapAllProductsOrPrices() {
-        System.out.println("Scraper ALL products");
-
-        // Scraps from all dealers
-        this.scrapMetals.forEach(
-                MetalScraper::productByDealer
-        );
-
-        ScrapHistory.frequencyHandlingAll(false);
-    }
-
-    private void scrapAllLinks() {
-        System.out.println("Scraper ALL links");
-
-        // Scraps from all dealers
-        this.scrapMetals.forEach(
-                MetalScraper::allLinksScrap
-        );
-
-        ScrapHistory.timeUpdate(true);
     }
 
 }
