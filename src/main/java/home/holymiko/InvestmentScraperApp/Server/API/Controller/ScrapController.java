@@ -88,57 +88,32 @@ public class ScrapController {
     }
 
     @RequestMapping({"/metal/{metal}", "/metal/{metal}/"})
-    public void byMetal(@PathVariable String metal) {
+    public void byMetal(@PathVariable String string) {
         isRunningCheck();
         ScrapHistory.frequencyHandlingAll(false);
 
         ScrapHistory.setIsRunning(true);
 
-        System.out.println("Trying to scrap "+metal+" prices");
+        System.out.println("Trying to scrap "+string+" prices");
 
-        // TODO Convert data type of Metal
-        switch (metal.toLowerCase(Locale.ROOT)) {
-            case "gold" -> {
-                scrapHistory.frequencyHandling(Metal.GOLD);
-
-                // Scraps prices from all dealers
-                this.scrapMetals.forEach(
-                        scrapMetal -> scrapMetal.pricesByMetal(Metal.GOLD)
-                );
-                scrapHistory.timeUpdate(Metal.GOLD);
-            }
-            case "silver" -> {
-                scrapHistory.frequencyHandling(Metal.SILVER);
-
-                // Scraps prices from all dealers
-                this.scrapMetals.forEach(
-                        scrapMetal -> scrapMetal.pricesByMetal(Metal.SILVER)
-                );
-                scrapHistory.timeUpdate(Metal.SILVER);
-            }
-            case "platinum" -> {
-                scrapHistory.frequencyHandling(Metal.PLATINUM);
-
-                // Scraps prices from all dealers
-                this.scrapMetals.forEach(
-                        scrapMetal -> scrapMetal.pricesByMetal(Metal.PLATINUM)
-                );
-                scrapHistory.timeUpdate(Metal.PLATINUM);
-            }
-            case "palladium" -> {
-                scrapHistory.frequencyHandling(Metal.PALLADIUM);
-
-                // Scraps prices from all dealers
-                this.scrapMetals.forEach(
-                        scrapMetal -> scrapMetal.pricesByMetal(Metal.PALLADIUM)
-                );
-                scrapHistory.timeUpdate(Metal.PALLADIUM);
-            }
+        Metal metal = switch (string.toLowerCase(Locale.ROOT)) {
+            case "gold" -> Metal.GOLD;
+            case "silver" -> Metal.SILVER;
+            case "platinum" -> Metal.PLATINUM;
+            case "palladium" -> Metal.PALLADIUM;
             default -> {
                 ScrapHistory.setIsRunning(false);
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
-        }
+        };
+
+        scrapHistory.frequencyHandling(metal);
+        // Scraps prices from all dealers
+        this.scrapMetals.forEach(
+                scrapMetal -> scrapMetal.pricesByMetal(metal)
+        );
+        scrapHistory.timeUpdate(metal);
+
         ScrapHistory.setIsRunning(false);
     }
 
