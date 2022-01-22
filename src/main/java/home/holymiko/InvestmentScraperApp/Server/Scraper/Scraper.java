@@ -63,6 +63,7 @@ public class Scraper {
      */
     protected boolean loadPage(final String link){
         // TODO instead of boolean, throw ResourceNotFoundException
+        // TODO Test cases: No connection, 404 page, etc.
         page = null;
         try {
             page = client.getPage(link);                // Product page
