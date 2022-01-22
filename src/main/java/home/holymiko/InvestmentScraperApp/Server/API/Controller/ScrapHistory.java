@@ -63,8 +63,6 @@ public class ScrapHistory {
                 throw new ScrapRefusedException( "Updated less then " + MINUTES_DELAY + " minutes ago");
             }
         }
-
-
     }
 
     public void frequencyHandling(Metal metal) throws ScrapRefusedException {

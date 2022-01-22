@@ -1,6 +1,5 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
-import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapRefusedException;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.EnumKnown.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -98,8 +96,9 @@ public class ScrapController {
 
         System.out.println("Trying to scrap "+metal+" prices");
 
+        // TODO Convert data type of Metal
         switch (metal.toLowerCase(Locale.ROOT)) {
-            case "GoldScraper" -> {
+            case "gold" -> {
                 scrapHistory.frequencyHandling(Metal.GOLD);
 
                 // Scraps prices from all dealers
@@ -209,43 +208,45 @@ public class ScrapController {
 
         System.out.println("Trying to scrap "+string+" links");
 
-        // TODO Optimize
+        // Links by Dealer
         switch (string.toLowerCase(Locale.ROOT)) {
-            // GOLD
-            case "gold" -> {
-                scrapHistory.frequencyHandling(Metal.GOLD);
-                scrapAllDealers(Metal.GOLD);
-                scrapHistory.timeUpdateLink(Metal.GOLD);
-            }
-            // SILVER
-            case "silver" -> {
-                scrapHistory.frequencyHandling(Metal.SILVER);
-                scrapAllDealers(Metal.SILVER);
-                scrapHistory.timeUpdateLink(Metal.SILVER);
-            }
-            // PLATINUM
-            case "platinum" -> {
-                scrapHistory.frequencyHandling(Metal.PLATINUM);
-                scrapAllDealers(Metal.PLATINUM);
-                scrapHistory.timeUpdateLink(Metal.PLATINUM);
-            }
-            // PALLADIUM
-            case "palladium" -> {
-                scrapHistory.frequencyHandling(Metal.PALLADIUM);
-                scrapAllDealers(Metal.PALLADIUM);
-                scrapHistory.timeUpdateLink(Metal.PALLADIUM);
-            }
             // BESSERGOLD
-            case "bessergold" -> this.bessergoldScraper.productByDealer();
+            case "bessergold" -> {
+                this.bessergoldScraper.allLinksScrap();
+                ScrapHistory.setIsRunning(false);
+                return;
+            }
             // ZLATAKY
-            case "zlataky" -> this.zlatakyScraper.productByDealer();
+            case "zlataky" -> {
+                this.zlatakyScraper.allLinksScrap();
+                ScrapHistory.setIsRunning(false);
+                return;
+            }
+        }
+
+        // Links by Metal
+        Metal metal = switch (string.toLowerCase(Locale.ROOT)) {
+            // GOLD
+            case "gold" -> Metal.GOLD;
+            // SILVER
+            case "silver" -> Metal.SILVER;
+            // PLATINUM
+            case "platinum" -> Metal.PLATINUM;
+            // PALLADIUM
+            case "palladium" -> Metal.PALLADIUM;
 
             default -> {
                 ScrapHistory.setIsRunning(false);
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
-        }
-        ScrapHistory.setIsRunning(false);
+        };
+
+        // Metal scraping. Links from all dealers by metal
+        scrapHistory.frequencyHandling(metal);
+        this.scrapMetals.forEach(
+                metalScraper -> metalScraper.linkScrap(metal)
+        );
+        scrapHistory.timeUpdateLink(metal);
     }
 
 
@@ -277,18 +278,7 @@ public class ScrapController {
                 MetalScraper::allLinksScrap
         );
 
-        ScrapHistory.frequencyHandlingAll(true);
+        ScrapHistory.timeUpdate(true);
     }
-
-    /**
-     * Scraps from all dealers same metal
-     * @param metal
-     */
-    private void scrapAllDealers(Metal metal) {
-        this.scrapMetals.forEach(
-                metalScraper -> metalScraper.linkScrap(metal)
-        );
-    }
-
 
 }
