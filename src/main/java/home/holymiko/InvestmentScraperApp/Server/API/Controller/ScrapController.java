@@ -1,5 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapRefusedException;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Extract;
@@ -13,150 +15,132 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v2/scrap")
 public class ScrapController {
 
-    private final BessergoldScraper bessergoldScraper;
-    private final ZlatakyScraper zlatakyScraper;
     private final SerenityScraper serenityScraper;
     private final CNBScraper cnbScraper;
     private final ScrapHistory scrapHistory;
 
     // TODO Endpoint for cnbScraper
     // TODO Endpoint for scrap stock by ticker
-    // TODO method byPortfolio including stock scrap
+    // TODO method byPortfolio should include stock scraping
 
     // Used for Polymorphic calling
-    private final List<MetalScraper> scrapMetals = new ArrayList<>();
+    private final Map<Dealer, MetalScraper> scrapMetals = new HashMap<>();
 
     @Autowired
     public ScrapController(BessergoldScraper bessergoldScraper, ZlatakyScraper zlatakyScraper, SerenityScraper serenityScraper, CNBScraper cnbScraper, ScrapHistory scrapHistory) {
-        this.bessergoldScraper = bessergoldScraper;
-        this.zlatakyScraper = zlatakyScraper;
         this.serenityScraper = serenityScraper;
         this.cnbScraper = cnbScraper;
         this.scrapHistory = scrapHistory;
 
-        this.scrapMetals.add(bessergoldScraper);
-        this.scrapMetals.add(zlatakyScraper);
+        this.scrapMetals.put(Dealer.BESSERGOLD, bessergoldScraper);
+        this.scrapMetals.put(Dealer.ZLATAKY, zlatakyScraper);
     }
 
     @RequestMapping({"/all", "/all/"})
-    public void all() {
+    public void everything() {
         allLinks();
         allProducts();
+        serenity();
     }
 
     //////// Products
 
     @RequestMapping({"/products", "/products/"})
     public void allProducts() {
-        isRunningCheck();
         ScrapHistory.frequencyHandlingAll(false);
 
-        ScrapHistory.setIsRunning(true);
+        ScrapHistory.startRunning();
 
         System.out.println("Scraper ALL products");
 
         // Scraps from all dealers
-        this.scrapMetals.forEach(
+        this.scrapMetals.values().forEach(
                 MetalScraper::productByDealer
         );
 
         ScrapHistory.timeUpdate(false);
 
-        ScrapHistory.setIsRunning(false);
+        ScrapHistory.stopRunning();
     }
 
     @RequestMapping({"/dealer/{dealer}", "/dealer/{dealer}/"})
     public void scrapProductsByDealer(@PathVariable String dealer) {
-        isRunningCheck();
         ScrapHistory.frequencyHandlingAll(false);
+        ScrapHistory.isRunning();
 
-        ScrapHistory.setIsRunning(true);
+        Dealer dealerType;
 
         System.out.println("Trying to scrap "+dealer+" products");
 
-        switch (dealer.toLowerCase(Locale.ROOT)) {
-            case "bessergold" -> this.bessergoldScraper.productByDealer();
-            case "zlataky" -> this.zlatakyScraper.productByDealer();
-            default -> {
-                ScrapHistory.setIsRunning(false);
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            }
+        try {
+            // Try convert string to Dealer
+            dealerType = Extract.dealerConvert(dealer);
+        } catch (IllegalArgumentException ignored) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        ScrapHistory.setIsRunning(false);
+        ScrapHistory.startRunning();
+        scrapMetals.get(dealerType).productByDealer();
+        scrapHistory.timeUpdate(dealerType);
+        ScrapHistory.stopRunning();
     }
 
     @RequestMapping({"/metal/{metal}", "/metal/{metal}/"})
     public void byMetal(@PathVariable String string) {
-        isRunningCheck();
         ScrapHistory.frequencyHandlingAll(false);
+        ScrapHistory.isRunning();
 
-        ScrapHistory.setIsRunning(true);
+        Metal metal = extractAndCheckFrequency(string);
 
-        System.out.println("Trying to scrap "+string+" prices");
+        ScrapHistory.startRunning();
 
-        Metal metal;
-        try{
-            metal = Extract.metalExtractor(string);
-        } catch (IllegalArgumentException e) {
-            ScrapHistory.setIsRunning(false);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        scrapHistory.frequencyHandling(metal);
         // Scraps prices from all dealers
-        this.scrapMetals.forEach(
+        System.out.println("Trying to scrap "+string+" prices");
+        this.scrapMetals.values().forEach(
                 scrapMetal -> scrapMetal.pricesByMetal(metal)
         );
         scrapHistory.timeUpdate(metal);
-
-        ScrapHistory.setIsRunning(false);
+        ScrapHistory.stopRunning();
     }
 
     @RequestMapping({"/portfolio/{id}", "/portfolio/{id}/"})
     public void byPortfolio(@PathVariable long id) {
-        isRunningCheck();
-
-        ScrapHistory.setIsRunning(true);
+        ScrapHistory.startRunning();
 
         try {
             // Scraps products from all dealers
-            this.scrapMetals.forEach(
+            this.scrapMetals.values().forEach(
                     scrapMetal -> scrapMetal.productByPortfolio(id)
             );
         } catch (ResponseStatusException e){
-            ScrapHistory.setIsRunning(false);
+            ScrapHistory.stopRunning();
             throw e;
         }
-        ScrapHistory.setIsRunning(false);
+        ScrapHistory.stopRunning();
         throw new ResponseStatusException(HttpStatus.OK, "MetalScraper done");
     }
 
     @RequestMapping({"/productsIds", "/productsIds/"})              // Wasn't tested
     public void byProductIds(@RequestBody List<Long> productIds) {
-        isRunningCheck();
-
-        ScrapHistory.setIsRunning(true);
+        ScrapHistory.startRunning();
 
         try {
             // Scraps from all dealers
-            this.scrapMetals.forEach(
+            this.scrapMetals.values().forEach(
                     scrapMetal -> scrapMetal.pricesByProducts(productIds)
             );
         } catch (ResponseStatusException e){
-            ScrapHistory.setIsRunning(false);
+            ScrapHistory.stopRunning();
             throw e;
         }
-        ScrapHistory.setIsRunning(false);
+        ScrapHistory.stopRunning();
         throw new ResponseStatusException(HttpStatus.OK, "MetalScraper done");
     }
 
@@ -169,81 +153,66 @@ public class ScrapController {
 
     @RequestMapping({"/links", "/links/"})
     public void allLinks() {
-        isRunningCheck();
         ScrapHistory.frequencyHandlingAll(true);
 
-        ScrapHistory.setIsRunning(true);
+        ScrapHistory.startRunning();
 
         System.out.println("Scraper ALL links");
 
         // Scraps from all dealers
-        this.scrapMetals.forEach(
+        this.scrapMetals.values().forEach(
                 MetalScraper::allLinksScrap
         );
 
         ScrapHistory.timeUpdate(true);
 
-        ScrapHistory.setIsRunning(false);
+        ScrapHistory.stopRunning();
     }
 
     @RequestMapping({"/links/{string}", "/links/{string}/"})
     public void linksBy(@PathVariable String string) {
-        isRunningCheck();
         ScrapHistory.frequencyHandlingAll(true);
-
-        ScrapHistory.setIsRunning(true);
+        ScrapHistory.isRunning();
 
         System.out.println("Trying to scrap "+string+" links");
 
-        // Links by Dealer
-        switch (string.toLowerCase(Locale.ROOT)) {
-            // BESSERGOLD
-            case "bessergold" -> {
-                this.bessergoldScraper.allLinksScrap();
-                ScrapHistory.setIsRunning(false);
-                return;
-            }
-            // ZLATAKY
-            case "zlataky" -> {
-                this.zlatakyScraper.allLinksScrap();
-                ScrapHistory.setIsRunning(false);
-                return;
-            }
+        // 1. Try convert string to Dealer
+        try {
+            Dealer dealer = Extract.dealerConvert(string);
+            scrapHistory.frequencyHandling(dealer);
+            ScrapHistory.startRunning();
+            scrapMetals.get(dealer).allLinksScrap();
+            scrapHistory.timeUpdate(dealer);
+            ScrapHistory.stopRunning();
+            return;
+        } catch (IllegalArgumentException ignored) {
         }
 
-        // Links by Metal
-        Metal metal = switch (string.toLowerCase(Locale.ROOT)) {
-            // GOLD
-            case "gold" -> Metal.GOLD;
-            // SILVER
-            case "silver" -> Metal.SILVER;
-            // PLATINUM
-            case "platinum" -> Metal.PLATINUM;
-            // PALLADIUM
-            case "palladium" -> Metal.PALLADIUM;
-
-            default -> {
-                ScrapHistory.setIsRunning(false);
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-            }
-        };
+        // 2. Try convert string to Metal
+        Metal metal = extractAndCheckFrequency(string);
+        ScrapHistory.startRunning();
 
         // Metal scraping. Links from all dealers by metal
-        scrapHistory.frequencyHandling(metal);
-        this.scrapMetals.forEach(
+        this.scrapMetals.values().forEach(
                 metalScraper -> metalScraper.linkScrap(metal)
         );
         scrapHistory.timeUpdateLink(metal);
+        ScrapHistory.stopRunning();
     }
 
+    ////// PRIVATE
 
-    //////// PRIVATE
-
-    private void isRunningCheck() throws ResponseStatusException {
-        if( ScrapHistory.isRunning() ) {
-            System.out.println("ScrapController - TOO MANY REQUESTS");
-            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Another MetalScraper is running right now");
+    private Metal extractAndCheckFrequency(String string) throws ScrapRefusedException, ResponseStatusException {
+        // Extract the metal
+        Metal metal;
+        try{
+            metal = Extract.metalConvert(string);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+
+        scrapHistory.frequencyHandling(metal);
+        return metal;
     }
 
 }

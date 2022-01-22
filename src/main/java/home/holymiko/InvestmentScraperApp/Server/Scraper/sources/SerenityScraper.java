@@ -105,7 +105,7 @@ public class SerenityScraper extends Scraper {
         for(int i = 2; i <= 8; i++) {
             HtmlElement htmlElement = page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div["+i+"]/div[2]/div");
             if(i == 5) {
-                grade = Extract.gradeExtractor(htmlElement);
+                grade = Extract.gradeConvert(htmlElement);
                 continue;
             }
             results.add(

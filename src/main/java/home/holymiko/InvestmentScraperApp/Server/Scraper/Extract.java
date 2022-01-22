@@ -1,10 +1,10 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Form;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.GrahamGrade;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Producer;
+import home.holymiko.InvestmentScraperApp.Server.API.Controller.ScrapHistory;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Year;
 import java.util.Locale;
@@ -107,6 +107,19 @@ public class Extract {
         }
 
         throw new IllegalArgumentException("Invalid Enum argument");
+    }
+
+    /**
+     * Converts text to
+     * @param nameOfDealer including name of form
+     * @return Enum class Form
+     */
+    public static Dealer dealerConvert(String nameOfDealer) throws IllegalArgumentException {
+        return switch (nameOfDealer.toLowerCase(Locale.ROOT)) {
+            case "bessergold" -> Dealer.BESSERGOLD;
+            case "zlataky" -> Dealer.ZLATAKY;
+            default -> throw new IllegalArgumentException("Invalid Enum argument");
+        };
     }
 
     /**
@@ -231,7 +244,7 @@ public class Extract {
         return numberExtract(text);
     }
 
-    public static GrahamGrade gradeExtractor(final HtmlElement element) throws IllegalArgumentException {
+    public static GrahamGrade gradeConvert(final HtmlElement element) throws IllegalArgumentException {
         return switch (element.asText().toLowerCase(Locale.ROOT)) {
             case "enterprising" -> GrahamGrade.ENTERPRISING;
             case "defensive" -> GrahamGrade.DEFENSIVE;
@@ -242,17 +255,39 @@ public class Extract {
     }
 
     /**
-     * Name is converted to lower case.
-     * @param name of Product
-     * @return metal of product
+     * Converts String to Metal.
+     * Used case switch
+     * @param nameOfMetal - CaseInsensitive
+     * @return Enum
+     * @throws IllegalArgumentException - No Enum was found
      */
-    public static Metal metalExtractor(String name) throws IllegalArgumentException {
-        return switch (name.toLowerCase(Locale.ROOT)) {
-            case "zlat", "gold" -> Metal.GOLD;
-            case "stříbr", "silver" -> Metal.SILVER;
-            case "platin" -> Metal.PLATINUM;
-            case "pallad" -> Metal.PALLADIUM;
+    public static Metal metalConvert(String nameOfMetal) throws IllegalArgumentException {
+        return switch (nameOfMetal.toLowerCase(Locale.ROOT)) {
+            case "zlato", "gold" -> Metal.GOLD;
+            case "stříbro", "silver" -> Metal.SILVER;
+            case "platina", "platinum" -> Metal.PLATINUM;
+            case "palladium" -> Metal.PALLADIUM;
             default -> throw new IllegalArgumentException("Invalid Enum argument");
         };
+    }
+
+    /**.
+     * Uses String.contains
+     * @param textContainingNameOfMetal of Product. Any type of text containing name of Metal. CaseInsensitive
+     * @return metal of product
+     */
+    public static Metal metalExtractor(String textContainingNameOfMetal) {
+        textContainingNameOfMetal = textContainingNameOfMetal.toLowerCase(Locale.ROOT);
+        if (textContainingNameOfMetal.contains("zlat")) {
+            return Metal.GOLD;
+        } else if (textContainingNameOfMetal.contains("stříbr")) {
+            return Metal.SILVER;
+        } else if (textContainingNameOfMetal.contains("platin")) {
+            return Metal.PLATINUM;
+        } else if (textContainingNameOfMetal.contains("pallad")) {
+            return Metal.PALLADIUM;
+        } else {
+            throw new IllegalArgumentException("Invalid Enum argument");
+        }
     }
 }

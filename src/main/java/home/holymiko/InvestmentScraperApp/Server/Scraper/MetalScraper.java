@@ -24,10 +24,8 @@ public class MetalScraper extends Scraper {
     protected final PortfolioService portfolioService;
     protected final ProductService productService;
 
-    protected final List<String> searchUrlGold;
-    protected final List<String> searchUrlSilver;
-    protected final List<String> searchUrlPlatinum;
-    protected final List<String> searchUrlPalladium;
+    // Used for Polymorphic calling
+    protected final Map< Metal, List<String>> searchUrlMap = new HashMap<>();
 
     private static final long ETHICAL_DELAY = 700;
     private static final int PRINT_INTERVAL = 10;
@@ -44,14 +42,15 @@ public class MetalScraper extends Scraper {
         this.priceService = priceService;
         this.portfolioService = portfolioService;
         this.productService = productService;
-        this.searchUrlGold = searchUrlGold;
-        this.searchUrlSilver = searchUrlSilver;
-        this.searchUrlPlatinum = searchUrlPlatinum;
-        this.searchUrlPalladium = searchUrlPalladium;
         this.xPathProductList = xPathProductList;
         this.xPathProductName = xPathProductName;
         this.xPathBuyPrice = xPathBuyPrice;
         this.xPathRedemptionPrice = xPathRedemptionPrice;
+
+        searchUrlMap.put(Metal.GOLD, searchUrlGold);
+        searchUrlMap.put(Metal.SILVER, searchUrlSilver);
+        searchUrlMap.put(Metal.PLATINUM, searchUrlPlatinum);
+        searchUrlMap.put(Metal.PALLADIUM, searchUrlPalladium);
     }
 
     ////////////// PRODUCT
@@ -102,7 +101,6 @@ public class MetalScraper extends Scraper {
 
         String name = "";
         final Form form;
-        // TODO Covert the type
         final Metal metal;
         final Producer producer;
         try {
@@ -118,14 +116,15 @@ public class MetalScraper extends Scraper {
             metal = Extract.metalExtractor(nameLowerCase);
             producer = Extract.producerExtract(nameLowerCase);
         } catch (IllegalArgumentException e) {
-            System.out.println("FATAL ERROR: "+name +""+link.getLink()+" - failed on Form, Metal or Producer");
+            System.out.println("FATAL ERROR: "+name +" "+link.getLink()+" - failed on Form, Metal or Producer");
             return;
         }
 
         final List<Product> products = productService.findProductByProducerAndMetalAndFormAndGramsAndYear(producer, metal, form, grams, year);
 
         if(name.equals("") ) {
-
+            System.out.println("FATAL ERROR: Empty name - "+link.getLink());
+            return;
         }
 
 
@@ -268,19 +267,15 @@ public class MetalScraper extends Scraper {
     /////// PUBLIC
 
     public void allLinksScrap() {
-        linkScrap(Metal.GOLD);
-        linkScrap(Metal.SILVER);
-        linkScrap(Metal.PLATINUM);
-        linkScrap(Metal.PALLADIUM);
+        // Polymorphic call
+        searchUrlMap.values().stream()
+                .flatMap(Collection::stream)
+                .forEach(this::scrapLinks);
     }
 
     public void linkScrap(Metal metal) {
-        switch (metal) {
-            case GOLD -> searchUrlGold.forEach(this::scrapLinks);
-            case SILVER -> searchUrlSilver.forEach(this::scrapLinks);
-            case PLATINUM -> searchUrlPlatinum.forEach(this::scrapLinks);
-            case PALLADIUM -> searchUrlPalladium.forEach(this::scrapLinks);
-        }
+        searchUrlMap.get(metal)
+                .forEach(this::scrapLinks);
     }
 
     /////// PROTECTED

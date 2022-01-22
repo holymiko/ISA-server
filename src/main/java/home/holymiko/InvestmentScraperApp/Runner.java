@@ -32,6 +32,6 @@ public class Runner {
             e.printStackTrace();
         }
         tickerService.printTickerStatus();
-        investmentInit.saveInitPortfolios();
+//        investmentInit.saveInitPortfolios();
     }
 }
