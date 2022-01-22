@@ -35,7 +35,8 @@ public class Runner {
             e.printStackTrace();
         }
         tickerService.printTickerStatus();
-        scrapController.scrapEverything();
+//        scrapController.scrapEverything();
+//        scrapController.serenity();
 //        investmentInit.saveInitPortfolios();
     }
 }

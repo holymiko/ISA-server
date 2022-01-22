@@ -35,14 +35,6 @@ public class SerenityScraper extends Scraper {
 
     //////////// PUBLIC
 
-    public void run() {
-//        printSerenityStatus();
-//        Export.exportTickers(tickerService.findAll());
-//        Export.exportStocks(stockService.findAll());
-//        tickersScrap(TickerState.GOOD);
-//        fixer("$");
-    }
-
     public void tickersScrap(TickerState tickerState) {
         System.out.println("Trying to scrap " + tickerState + " tickers");
         ConsolePrinter.printTickerStatus(
@@ -55,7 +47,8 @@ public class SerenityScraper extends Scraper {
         Set<Ticker> tickers = this.tickerService.findByTickerState(tickerState);
 
         // Currency filter
-        tickers = filterTickersByCurrencies(tickers, new HashSet<>(Arrays.asList("USD", "EUR", "GBP", "CHF", "HKD")));
+        // TODO THis was not working for empty stock DB
+//        tickers = filterTickersByCurrencies(tickers, new HashSet<>(Arrays.asList("USD", "EUR", "GBP", "CHF", "HKD")));
 
         for (Ticker ticker : tickers) {
             long startTime = System.nanoTime();
@@ -69,7 +62,10 @@ public class SerenityScraper extends Scraper {
 
                 if (ratingScore >= MIN_RATING_SCORE) {
                     this.tickerService.update(ticker, TickerState.GOOD);
-                    stockScrap(ticker, ratingScore);
+                    try {
+                        // TODO Clean this throwing
+                        stockScrap(ticker, ratingScore);
+                    }catch (Exception ignored){}
                 } else {
                     this.stockService.deleteByTicker(ticker);
                     this.tickerService.update(ticker, TickerState.BAD);
@@ -138,6 +134,10 @@ public class SerenityScraper extends Scraper {
                 ).collect(Collectors.toSet());
     }
 
+    /**
+     * In past used for modification of NEW Tickers
+     * @param target
+     */
     private void fixer(String target) {
         Set<Ticker> tickers = this.tickerService.findByTickerState(TickerState.NOTFOUND);
         int i = 0;
