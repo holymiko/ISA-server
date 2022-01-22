@@ -44,7 +44,7 @@ public class ScrapController {
     }
 
     @RequestMapping({"/all", "/all/"})
-    public void everything() {
+    public void scrapEverything() {
         allLinks();
         allProducts();
         serenity();

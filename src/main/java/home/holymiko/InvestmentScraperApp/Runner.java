@@ -1,5 +1,6 @@
 package home.holymiko.InvestmentScraperApp;
 
+import home.holymiko.InvestmentScraperApp.Server.API.Controller.ScrapController;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
@@ -13,12 +14,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class Runner {
 
+    private final ScrapController scrapController;
     private final InvestmentInit investmentInit;
     private final TickerService tickerService;
     private final CNBScraper cnbScraper;
 
     @Autowired
-    public Runner(InvestmentInit investmentInit, TickerService tickerService, CNBScraper cnbScraper) {
+    public Runner(ScrapController scrapController, InvestmentInit investmentInit, TickerService tickerService, CNBScraper cnbScraper) {
+        this.scrapController = scrapController;
         this.investmentInit = investmentInit;
         this.tickerService = tickerService;
         this.cnbScraper = cnbScraper;
@@ -32,6 +35,7 @@ public class Runner {
             e.printStackTrace();
         }
         tickerService.printTickerStatus();
+        scrapController.scrapEverything();
 //        investmentInit.saveInitPortfolios();
     }
 }
