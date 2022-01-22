@@ -5,7 +5,7 @@ import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.advanced
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.simple.ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Form;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.EnumKnown.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Producer;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
@@ -109,12 +109,13 @@ public class MetalScraper extends Scraper {
         final String nameLowerCase = name.toLowerCase(Locale.ROOT);
         final int year = Extract.yearExtract(nameLowerCase);
         final Form form = Extract.formExtract(nameLowerCase);
-        final Metal metal = Extract.metalExtractor(nameLowerCase);
+        // TODO Covert the type
+        final home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal metal = Extract.metalExtractor(nameLowerCase);
         final double grams = Extract.weightExtract(nameLowerCase);
         final Producer producer = Extract.producerExtract(nameLowerCase);
         final List<Product> products = productService.findProductByProducerAndMetalAndFormAndGramsAndYear(producer, metal, form, grams, year);
 
-        if(name.equals("") || producer == Producer.UNKNOWN || form == Form.UNKNOWN || metal == Metal.UNKNOWN ) {
+        if(name.equals("") || producer == Producer.UNKNOWN || form == Form.UNKNOWN || metal == home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal.UNKNOWN ) {
             System.out.println("FATAL ERROR: "+name +" "+ producer+" "+metal+" "+form+" "+grams+ " "+link.getLink());
             return;
         }
@@ -186,7 +187,7 @@ public class MetalScraper extends Scraper {
      * Scraps prices by metal from all dealers
      * @param metal Enum
      */
-    public void pricesByMetal(Metal metal){
+    public void pricesByMetal(home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal metal){
         System.out.println("MetalScraper pricesByMetal");
 
         scrapGivenProducts(

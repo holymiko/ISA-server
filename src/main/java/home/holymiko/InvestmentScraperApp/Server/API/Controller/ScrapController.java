@@ -1,6 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapRefusedException;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.EnumKnown.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.BessergoldScraper;
@@ -21,27 +22,12 @@ import java.util.Locale;
 @RestController
 @RequestMapping("/api/v2/scrap")
 public class ScrapController {
-    private static final long MINUTES_DELAY = 15;
-    private static final long YEAR_DELAY = 1000L;
-
-    private LocalDateTime lastAllProducts = LocalDateTime.now().minusYears(YEAR_DELAY);
-    private LocalDateTime lastGold = LocalDateTime.now().minusYears(YEAR_DELAY);
-    private LocalDateTime lastSilver = LocalDateTime.now().minusYears(YEAR_DELAY);
-    private LocalDateTime lastPlatinum = LocalDateTime.now().minusYears(YEAR_DELAY);
-    private LocalDateTime lastPalladium = LocalDateTime.now().minusYears(YEAR_DELAY);
-
-    private LocalDateTime lastAllLinks = LocalDateTime.now().minusYears(YEAR_DELAY);
-    private LocalDateTime lastGoldLinks = LocalDateTime.now().minusYears(YEAR_DELAY);
-    private LocalDateTime lastSilverLinks = LocalDateTime.now().minusYears(YEAR_DELAY);
-    private LocalDateTime lastPlatinumLinks = LocalDateTime.now().minusYears(YEAR_DELAY);
-    private LocalDateTime lastPalladiumLinks = LocalDateTime.now().minusYears(YEAR_DELAY);
-
-    private boolean isRunning = false;
 
     private final BessergoldScraper bessergoldScraper;
     private final ZlatakyScraper zlatakyScraper;
     private final SerenityScraper serenityScraper;
     private final CNBScraper cnbScraper;
+    private final ScrapHistory scrapHistory;
 
     // TODO Endpoint for cnbScraper
     // TODO Endpoint for scrap stock by ticker
@@ -51,11 +37,13 @@ public class ScrapController {
     private final List<MetalScraper> scrapMetals = new ArrayList<>();
 
     @Autowired
-    public ScrapController(BessergoldScraper bessergoldScraper, ZlatakyScraper zlatakyScraper, SerenityScraper serenityScraper, CNBScraper cnbScraper) {
+    public ScrapController(BessergoldScraper bessergoldScraper, ZlatakyScraper zlatakyScraper, SerenityScraper serenityScraper, CNBScraper cnbScraper, ScrapHistory scrapHistory) {
         this.bessergoldScraper = bessergoldScraper;
         this.zlatakyScraper = zlatakyScraper;
         this.serenityScraper = serenityScraper;
         this.cnbScraper = cnbScraper;
+        this.scrapHistory = scrapHistory;
+
         this.scrapMetals.add(bessergoldScraper);
         this.scrapMetals.add(zlatakyScraper);
     }
@@ -71,21 +59,21 @@ public class ScrapController {
     @RequestMapping({"/products", "/products/"})
     public void allProducts() {
         isRunningCheck();
-        dateTimeCheck(lastAllProducts);
+        ScrapHistory.frequencyHandlingAll(false);
 
-        isRunning = true;
+        ScrapHistory.setIsRunning(true);
 
         scrapAllProductsOrPrices();
 
-        isRunning = false;
+        ScrapHistory.setIsRunning(false);
     }
 
     @RequestMapping({"/dealer/{dealer}", "/dealer/{dealer}/"})
     public void scrapProductsByDealer(@PathVariable String dealer) {
         isRunningCheck();
-        dateTimeCheck(lastAllProducts);
+        ScrapHistory.frequencyHandlingAll(false);
 
-        isRunning = true;
+        ScrapHistory.setIsRunning(true);
 
         System.out.println("Trying to scrap "+dealer+" products");
 
@@ -93,73 +81,73 @@ public class ScrapController {
             case "bessergold" -> this.bessergoldScraper.productByDealer();
             case "zlataky" -> this.zlatakyScraper.productByDealer();
             default -> {
-                isRunning = false;
+                ScrapHistory.setIsRunning(false);
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
         }
 
-        isRunning = false;
+        ScrapHistory.setIsRunning(false);
     }
 
     @RequestMapping({"/metal/{metal}", "/metal/{metal}/"})
     public void byMetal(@PathVariable String metal) {
         isRunningCheck();
-        dateTimeCheck(lastAllProducts);
+        ScrapHistory.frequencyHandlingAll(false);
 
-        isRunning = true;
+        ScrapHistory.setIsRunning(true);
 
         System.out.println("Trying to scrap "+metal+" prices");
 
         switch (metal.toLowerCase(Locale.ROOT)) {
             case "GoldScraper" -> {
-                dateTimeCheck(lastGold);
+                scrapHistory.frequencyHandling(Metal.GOLD);
 
                 // Scraps prices from all dealers
                 this.scrapMetals.forEach(
-                        scrapMetal -> scrapMetal.pricesByMetal(Metal.GOLD)
+                        scrapMetal -> scrapMetal.pricesByMetal(home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal.GOLD)
                 );
-                lastGold = LocalDateTime.now();
+                scrapHistory.timeUpdate(Metal.GOLD);
             }
             case "silver" -> {
-                dateTimeCheck(lastSilver);
+                scrapHistory.frequencyHandling(Metal.SILVER);
 
                 // Scraps prices from all dealers
                 this.scrapMetals.forEach(
-                        scrapMetal -> scrapMetal.pricesByMetal(Metal.SILVER)
+                        scrapMetal -> scrapMetal.pricesByMetal(home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal.SILVER)
                 );
-                lastSilver = LocalDateTime.now();
+                scrapHistory.timeUpdate(Metal.SILVER);
             }
             case "platinum" -> {
-                dateTimeCheck(lastPlatinum);
+                scrapHistory.frequencyHandling(Metal.PLATINUM);
 
                 // Scraps prices from all dealers
                 this.scrapMetals.forEach(
-                        scrapMetal -> scrapMetal.pricesByMetal(Metal.PLATINUM)
+                        scrapMetal -> scrapMetal.pricesByMetal(home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal.PLATINUM)
                 );
-                lastPlatinum = LocalDateTime.now();
+                scrapHistory.timeUpdate(Metal.PLATINUM);
             }
             case "palladium" -> {
-                dateTimeCheck(lastPalladium);
+                scrapHistory.frequencyHandling(Metal.PALLADIUM);
 
                 // Scraps prices from all dealers
                 this.scrapMetals.forEach(
-                        scrapMetal -> scrapMetal.pricesByMetal(Metal.PALLADIUM)
+                        scrapMetal -> scrapMetal.pricesByMetal(home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal.PALLADIUM)
                 );
-                lastPalladium = LocalDateTime.now();
+                scrapHistory.timeUpdate(Metal.PALLADIUM);
             }
             default -> {
-                isRunning = false;
+                ScrapHistory.setIsRunning(false);
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
         }
-        isRunning = false;
+        ScrapHistory.setIsRunning(false);
     }
 
     @RequestMapping({"/portfolio/{id}", "/portfolio/{id}/"})
     public void byPortfolio(@PathVariable long id) {
         isRunningCheck();
 
-        isRunning = true;
+        ScrapHistory.setIsRunning(true);
 
         try {
             // Scraps products from all dealers
@@ -167,10 +155,10 @@ public class ScrapController {
                     scrapMetal -> scrapMetal.productByPortfolio(id)
             );
         } catch (ResponseStatusException e){
-            isRunning = false;
+            ScrapHistory.setIsRunning(false);
             throw e;
         }
-        isRunning = false;
+        ScrapHistory.setIsRunning(false);
         throw new ResponseStatusException(HttpStatus.OK, "MetalScraper done");
     }
 
@@ -178,7 +166,7 @@ public class ScrapController {
     public void byProductIds(@RequestBody List<Long> productIds) {
         isRunningCheck();
 
-        isRunning = true;
+        ScrapHistory.setIsRunning(true);
 
         try {
             // Scraps from all dealers
@@ -186,10 +174,10 @@ public class ScrapController {
                     scrapMetal -> scrapMetal.pricesByProducts(productIds)
             );
         } catch (ResponseStatusException e){
-            isRunning = false;
+            ScrapHistory.setIsRunning(false);
             throw e;
         }
-        isRunning = false;
+        ScrapHistory.setIsRunning(false);
         throw new ResponseStatusException(HttpStatus.OK, "MetalScraper done");
     }
 
@@ -203,48 +191,49 @@ public class ScrapController {
     @RequestMapping({"/links", "/links/"})
     public void allLinks() {
         isRunningCheck();
-        dateTimeCheck(lastAllLinks);
+        ScrapHistory.frequencyHandlingAll(true);
 
-        isRunning = true;
+        ScrapHistory.setIsRunning(true);
 
         scrapAllLinks();
 
-        isRunning = false;
+        ScrapHistory.setIsRunning(false);
     }
 
     @RequestMapping({"/links/{string}", "/links/{string}/"})
     public void linksBy(@PathVariable String string) {
         isRunningCheck();
-        dateTimeCheck(lastAllLinks);
+        ScrapHistory.frequencyHandlingAll(true);
 
-        isRunning = true;
+        ScrapHistory.setIsRunning(true);
 
         System.out.println("Trying to scrap "+string+" links");
 
+        // TODO Optimize
         switch (string.toLowerCase(Locale.ROOT)) {
             // GOLD
             case "gold" -> {
-                dateTimeCheck(lastGoldLinks);
+                scrapHistory.frequencyHandling(Metal.GOLD);
                 scrapAllDealers(Metal.GOLD);
-                lastGoldLinks = LocalDateTime.now();
+                scrapHistory.timeUpdateLink(Metal.GOLD);
             }
             // SILVER
             case "silver" -> {
-                dateTimeCheck(lastSilverLinks);
+                scrapHistory.frequencyHandling(Metal.SILVER);
                 scrapAllDealers(Metal.SILVER);
-                lastSilverLinks = LocalDateTime.now();
+                scrapHistory.timeUpdateLink(Metal.SILVER);
             }
             // PLATINUM
             case "platinum" -> {
-                dateTimeCheck(lastPlatinumLinks);
+                scrapHistory.frequencyHandling(Metal.PLATINUM);
                 scrapAllDealers(Metal.PLATINUM);
-                lastPlatinumLinks = LocalDateTime.now();
+                scrapHistory.timeUpdateLink(Metal.PLATINUM);
             }
             // PALLADIUM
             case "palladium" -> {
-                dateTimeCheck(lastPalladiumLinks);
+                scrapHistory.frequencyHandling(Metal.PALLADIUM);
                 scrapAllDealers(Metal.PALLADIUM);
-                lastPalladiumLinks = LocalDateTime.now();
+                scrapHistory.timeUpdateLink(Metal.PALLADIUM);
             }
             // BESSERGOLD
             case "bessergold" -> this.bessergoldScraper.productByDealer();
@@ -252,25 +241,18 @@ public class ScrapController {
             case "zlataky" -> this.zlatakyScraper.productByDealer();
 
             default -> {
-                isRunning = false;
+                ScrapHistory.setIsRunning(false);
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
         }
-        isRunning = false;
+        ScrapHistory.setIsRunning(false);
     }
 
 
     //////// PRIVATE
 
-    private void dateTimeCheck(LocalDateTime localDateTime) throws ResponseStatusException{
-        if ( LocalDateTime.now().minusMinutes(MINUTES_DELAY).isBefore(localDateTime) ) {
-            isRunning = false;
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Updated less then " + MINUTES_DELAY + " minutes ago");
-        }
-    }
-
     private void isRunningCheck() throws ResponseStatusException {
-        if( isRunning ) {
+        if( ScrapHistory.isRunning() ) {
             System.out.println("ScrapController - TOO MANY REQUESTS");
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Another MetalScraper is running right now");
         }
@@ -284,7 +266,7 @@ public class ScrapController {
                 MetalScraper::productByDealer
         );
 
-        lastAllProducts = LocalDateTime.now();
+        ScrapHistory.frequencyHandlingAll(false);
     }
 
     private void scrapAllLinks() {
@@ -295,7 +277,7 @@ public class ScrapController {
                 MetalScraper::allLinksScrap
         );
 
-        lastAllLinks = LocalDateTime.now();
+        ScrapHistory.frequencyHandlingAll(true);
     }
 
     /**
