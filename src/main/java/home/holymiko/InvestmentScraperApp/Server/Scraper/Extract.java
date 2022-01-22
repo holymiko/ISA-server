@@ -22,7 +22,7 @@ public class Extract {
      * @param text including producer's name
      * @return Enum class Producer
      */
-    public static Producer producerExtract(String text) {
+    public static Producer producerExtract(String text) throws IllegalArgumentException{
         text = text.toLowerCase();
 
         if (text.contains("perth") || text.contains("rok") || text.contains("kangaroo")
@@ -77,7 +77,7 @@ public class Extract {
             return Producer.CHINA_MINT;
         }
 
-        return Producer.UNKNOWN;
+        throw new IllegalArgumentException("Invalid Enum argument");
     }
 
     /**
@@ -85,7 +85,7 @@ public class Extract {
      * @param text including name of form
      * @return Enum class Form
      */
-    public static Form formExtract(String text) {
+    public static Form formExtract(String text) throws IllegalArgumentException {
         text = text.toLowerCase();
         if(text.contains("combibar") || text.contains("multidisc") || text.contains("multigram")) {
             return Form.COMBIBAR;
@@ -105,7 +105,8 @@ public class Extract {
         if(text.contains("bar") || text.contains("slitek")) {
             return Form.BAR;
         }
-        return Form.UNKNOWN;
+
+        throw new IllegalArgumentException("Invalid Enum argument");
     }
 
     /**
@@ -230,14 +231,14 @@ public class Extract {
         return numberExtract(text);
     }
 
-    public static GrahamGrade gradeExtractor(final HtmlElement element) {
-        switch (element.asText().toLowerCase(Locale.ROOT)) {
-            case "enterprising" -> { return GrahamGrade.ENTERPRISING; }
-            case "defensive" -> { return GrahamGrade.DEFENSIVE; }
-            case "ungraded" -> { return GrahamGrade.UNGRADED; }
-            case "ncav" -> { return GrahamGrade.NCAV; }
-            default -> { return GrahamGrade.UNKNOWN; }
-        }
+    public static GrahamGrade gradeExtractor(final HtmlElement element) throws IllegalArgumentException {
+        return switch (element.asText().toLowerCase(Locale.ROOT)) {
+            case "enterprising" -> GrahamGrade.ENTERPRISING;
+            case "defensive" -> GrahamGrade.DEFENSIVE;
+            case "ungraded" -> GrahamGrade.UNGRADED;
+            case "ncav" -> GrahamGrade.NCAV;
+            default -> throw new IllegalArgumentException("Invalid Enum argument");
+        };
     }
 
     /**
@@ -245,18 +246,13 @@ public class Extract {
      * @param name of Product
      * @return metal of product
      */
-    public static Metal metalExtractor(String name) {
-        name = name.toLowerCase(Locale.ROOT);
-        if (name.contains("zlat")) {
-            return Metal.GOLD;
-        } else if (name.contains("stříbr")) {
-            return Metal.SILVER;
-        } else if (name.contains("platin")) {
-            return Metal.PLATINUM;
-        } else if (name.contains("pallad")) {
-            return Metal.PALLADIUM;
-        } else {
-            return Metal.UNKNOWN;
-        }
+    public static Metal metalExtractor(String name) throws IllegalArgumentException {
+        return switch (name.toLowerCase(Locale.ROOT)) {
+            case "zlat" -> Metal.GOLD;
+            case "stříbr" -> Metal.SILVER;
+            case "platin" -> Metal.PLATINUM;
+            case "pallad" -> Metal.PALLADIUM;
+            default -> throw new IllegalArgumentException("Invalid Enum argument");
+        };
     }
 }

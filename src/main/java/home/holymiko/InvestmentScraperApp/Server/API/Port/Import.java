@@ -1,7 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Port;
 
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Ticker;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 
 import java.io.File;
@@ -62,7 +62,7 @@ public class Import {
                 String[] data = myReader.nextLine().split("\\|");
                 if( data.length >= 6 && !data[b].equals("Y") ) {            // No ETFs
                     if( tickerService.optionalFindById(data[a]).isEmpty() ) {
-                        tickerService.save(new Ticker(data[a], TickerState.UNKNOWN));
+                        tickerService.save(new Ticker(data[a], TickerState.NEW));
                         System.out.println("Saved new - "+data[a]);
                     } else {
                         System.out.println("Already known - "+data[a]);
@@ -96,7 +96,7 @@ public class Import {
                     continue;
                 }
                 if( tickerService.optionalFindById(data[a]).isEmpty() ) {
-                    tickerService.save(new Ticker(data[a], TickerState.UNKNOWN));
+                    tickerService.save(new Ticker(data[a], TickerState.NEW));
                     System.out.println("Saved new - "+data[a]);
                     i++;
                 } else {
@@ -131,7 +131,7 @@ public class Import {
                     continue;
                 }
                 if( tickerService.optionalFindById(data).isEmpty() ) {
-                    tickerService.save(new Ticker(data, TickerState.UNKNOWN));
+                    tickerService.save(new Ticker(data, TickerState.NEW));
                     System.out.println("Saved new - "+data);
                 } else {
                     System.out.println("Already known - "+data);

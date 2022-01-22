@@ -1,7 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapRefusedException;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.EnumKnown.Enum.Metal;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

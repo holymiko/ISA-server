@@ -3,8 +3,9 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.sources;
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import home.holymiko.InvestmentScraperApp.Server.API.Port.Export;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.*;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.GrahamGrade;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Scraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.StockService;
@@ -48,7 +49,7 @@ public class SerenityScraper extends Scraper {
                 tickerService.findByTickerState(TickerState.GOOD).size(),
                 tickerService.findByTickerState(TickerState.BAD).size(),
                 tickerService.findByTickerState(TickerState.NOTFOUND).size(),
-                tickerService.findByTickerState(TickerState.UNKNOWN).size()
+                tickerService.findByTickerState(TickerState.NEW).size()
         );
 
         Set<Ticker> tickers = this.tickerService.findByTickerState(tickerState);

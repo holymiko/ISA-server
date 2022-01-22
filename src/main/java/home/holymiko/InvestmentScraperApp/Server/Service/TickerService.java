@@ -51,7 +51,7 @@ public class TickerService {
         Optional<Ticker> optionalTicker = this.tickerRepository.findById(name);
 
         if( optionalTicker.isEmpty() ) {
-            this.tickerRepository.save( new Ticker(name, TickerState.UNKNOWN) );
+            this.tickerRepository.save( new Ticker(name, TickerState.NEW) );
             System.out.println("Ticker - New saved");
             return true;
         }
@@ -80,7 +80,7 @@ public class TickerService {
             System.out.println("Delete fail, 404");
             return;
         }
-        if( ticker.getTickerState() != TickerState.UNKNOWN ) {
+        if( ticker.getTickerState() != TickerState.NEW ) {
             System.out.println("Delete not allowed, wrong state");
             return;
         }
@@ -92,7 +92,7 @@ public class TickerService {
                 findByTickerState(TickerState.BAD).size(),
                 findByTickerState(TickerState.GOOD).size(),
                 findByTickerState(TickerState.NOTFOUND).size(),
-                findByTickerState(TickerState.UNKNOWN).size()
+                findByTickerState(TickerState.NEW).size()
         );
     }
 }

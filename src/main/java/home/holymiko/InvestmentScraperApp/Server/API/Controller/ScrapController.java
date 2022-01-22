@@ -1,6 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.EnumKnown.Enum.Metal;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.BessergoldScraper;
@@ -103,7 +103,7 @@ public class ScrapController {
 
                 // Scraps prices from all dealers
                 this.scrapMetals.forEach(
-                        scrapMetal -> scrapMetal.pricesByMetal(home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal.GOLD)
+                        scrapMetal -> scrapMetal.pricesByMetal(Metal.GOLD)
                 );
                 scrapHistory.timeUpdate(Metal.GOLD);
             }
@@ -112,7 +112,7 @@ public class ScrapController {
 
                 // Scraps prices from all dealers
                 this.scrapMetals.forEach(
-                        scrapMetal -> scrapMetal.pricesByMetal(home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal.SILVER)
+                        scrapMetal -> scrapMetal.pricesByMetal(Metal.SILVER)
                 );
                 scrapHistory.timeUpdate(Metal.SILVER);
             }
@@ -121,7 +121,7 @@ public class ScrapController {
 
                 // Scraps prices from all dealers
                 this.scrapMetals.forEach(
-                        scrapMetal -> scrapMetal.pricesByMetal(home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal.PLATINUM)
+                        scrapMetal -> scrapMetal.pricesByMetal(Metal.PLATINUM)
                 );
                 scrapHistory.timeUpdate(Metal.PLATINUM);
             }
@@ -130,7 +130,7 @@ public class ScrapController {
 
                 // Scraps prices from all dealers
                 this.scrapMetals.forEach(
-                        scrapMetal -> scrapMetal.pricesByMetal(home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal.PALLADIUM)
+                        scrapMetal -> scrapMetal.pricesByMetal(Metal.PALLADIUM)
                 );
                 scrapHistory.timeUpdate(Metal.PALLADIUM);
             }

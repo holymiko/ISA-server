@@ -34,7 +34,7 @@ public class Export {
                     case GOOD -> goodWriter.write(x);
                     case BAD -> badWriter.write(x);
                     case NOTFOUND -> notFoundWriter.write(x);
-                    case UNKNOWN -> unknownWriter.write(x);
+                    case NEW -> unknownWriter.write(x);
                 }
             }
             goodWriter.close();
