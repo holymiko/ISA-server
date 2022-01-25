@@ -61,15 +61,10 @@ public class Import {
             while (myReader.hasNextLine()) {
                 String[] data = myReader.nextLine().split("\\|");
                 if( data.length >= 6 && !data[b].equals("Y") ) {            // No ETFs
-                    if( tickerService.optionalFindById(data[a]).isEmpty() ) {
-                        tickerService.save(new Ticker(data[a], TickerState.NEW));
-                        System.out.println("Saved new - "+data[a]);
-                    } else {
-                        System.out.println("Already known - "+data[a]);
-                    }
+                    tickerService.save(data[a]);
                     i++;
                 } else {
-                    System.out.println("Kicked");
+                    System.out.println("Ticker -> Kicked");
                 }
             }
             System.out.println("Total: "+i);
@@ -95,12 +90,9 @@ public class Import {
                     k++;
                     continue;
                 }
-                if( tickerService.optionalFindById(data[a]).isEmpty() ) {
-                    tickerService.save(new Ticker(data[a], TickerState.NEW));
-                    System.out.println("Saved new - "+data[a]);
+                if( tickerService.save(data[a]) ) {
                     i++;
                 } else {
-                    System.out.println("Already known - "+data[a]);
                     j++;
                 }
             }
@@ -130,12 +122,7 @@ public class Import {
                 if(data.equals("\n")){
                     continue;
                 }
-                if( tickerService.optionalFindById(data).isEmpty() ) {
-                    tickerService.save(new Ticker(data, TickerState.NEW));
-                    System.out.println("Saved new - "+data);
-                } else {
-                    System.out.println("Already known - "+data);
-                }
+                tickerService.save(data);
                 i++;
             }
             System.out.println("Total: "+i);

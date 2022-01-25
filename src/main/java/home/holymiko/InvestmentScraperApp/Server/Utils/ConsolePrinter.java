@@ -22,6 +22,14 @@ public class ConsolePrinter {
         System.out.println();
     }
 
+    /**
+     * Prints short info about stock
+     * Consists only info of given parameters
+     * @param header
+     * @param ratingScore
+     * @param intrinsicValue
+     * @param currency
+     */
     public static void printScrapStockShort(final String header, final Double ratingScore, final Double intrinsicValue, final String currency) {
         System.out.println(header);
         System.out.println("  Rating Score = "+ratingScore);

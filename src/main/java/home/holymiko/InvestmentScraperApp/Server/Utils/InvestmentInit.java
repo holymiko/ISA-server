@@ -34,6 +34,9 @@ public class InvestmentInit {
         this.portfolioService = portfolioService;
     }
 
+    /**
+     * Initializes DB with dummy data iff they are not already present
+     */
     public void saveInitPortfolios() {
         if(this.portfolioService.findByOwner("Carlos").isEmpty()) {
             Portfolio portfolio = new Portfolio("Carlos", this.saveCarlosMetalInvestments(), new ArrayList<>());
@@ -74,7 +77,7 @@ public class InvestmentInit {
         return  result;
     }
 
-    public List<InvestmentMetal> saveCarlosMetalInvestments() {
+    private List<InvestmentMetal> saveCarlosMetalInvestments() {
 
         //////// GOLD ////////
         //////// GOLD BAR
@@ -236,7 +239,7 @@ public class InvestmentInit {
         return investmentMetalList;
     }
 
-    public List<InvestmentMetal> saveSanchezMetalInvestments() {
+    private List<InvestmentMetal> saveSanchezMetalInvestments() {
         InvestmentMetal silverBar2 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500, 2021).get(), Dealer.BESSERGOLD, 7375.80, LocalDate.of(2018, 9, 10));
         InvestmentMetal silverBar3 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500, 2021).get(), Dealer.BESSERGOLD, 7375.80, LocalDate.of(2018, 9, 10));
         InvestmentMetal silverBar1 = new InvestmentMetal(this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer.BESSERGOLD, Producer.ARGOR_HERAEUS, Metal.SILVER, Form.BAR, 500, 2021).get(), Dealer.BESSERGOLD, 7752.67, LocalDate.of(2018, 10, 17));
@@ -256,7 +259,7 @@ public class InvestmentInit {
         return investmentMetalList;
     }
 
-    public List<InvestmentMetal> saveEduardoMetalInvestments() {
+    private List<InvestmentMetal> saveEduardoMetalInvestments() {
         Product silverWienerCoin = getWienerCoin(2021);
 
         List<InvestmentMetal> silverMapleCoin1 = duplicateInvestmentMetals(
@@ -303,7 +306,7 @@ public class InvestmentInit {
         return investmentMetalList;
     }
 
-    public List<InvestmentStock> saveSomeStockInvestments() {
+    private List<InvestmentStock> saveSomeStockInvestments() {
         Stock stock = this.stockRepository.findByTicker_Ticker("RINO").get();
         Stock stock1 = this.stockRepository.findByTicker_Ticker("NC").get();
         Stock stock2 = this.stockRepository.findByTicker_Ticker("CMC").get();

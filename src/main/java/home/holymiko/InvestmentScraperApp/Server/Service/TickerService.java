@@ -45,21 +45,28 @@ public class TickerService {
 
     ////// SAVE, UPDATE, DELETE
 
+    /**
+     * Saves new record of Ticker, with TickerState.NEW and UPPERCASE of param tickerName.
+     * Avoids duplicities of tickerName in DB.
+     * @param tickerName - Name of the ticker to be saved. Case insensitive
+     * @return
+     */
     @Transactional
-    public boolean save(String name) {
-        name = name.toUpperCase();
-        Optional<Ticker> optionalTicker = this.tickerRepository.findById(name);
+    public boolean save(String tickerName) {
+        tickerName = tickerName.toUpperCase();
+        Optional<Ticker> optionalTicker = this.tickerRepository.findById(tickerName);
 
         if( optionalTicker.isEmpty() ) {
-            this.tickerRepository.save( new Ticker(name, TickerState.NEW) );
-            System.out.println("Ticker - New saved");
+            this.tickerRepository.save( new Ticker(tickerName, TickerState.NEW) );
+            System.out.println("Ticker -> New saved "+tickerName);
             return true;
         }
-        System.out.println("Ticker - Already known");
+        System.out.println("Ticker -> Already known "+tickerName);
         return false;
     }
 
     @Transactional
+    @Deprecated
     public boolean save(Ticker ticker) {
         if( this.tickerRepository.findById(ticker.getTicker()).isPresent() ) {
             return false;
@@ -76,6 +83,7 @@ public class TickerService {
 
     @Transactional
     public void delete(Ticker ticker) {
+        // TODO Throw exceptions
         if( this.tickerRepository.findById(ticker.getTicker()).isEmpty() ) {
             System.out.println("Delete fail, 404");
             return;
@@ -89,8 +97,8 @@ public class TickerService {
 
     public void printTickerStatus() {
         ConsolePrinter.printTickerStatus(
-                findByTickerState(TickerState.BAD).size(),
                 findByTickerState(TickerState.GOOD).size(),
+                findByTickerState(TickerState.BAD).size(),
                 findByTickerState(TickerState.NOTFOUND).size(),
                 findByTickerState(TickerState.NEW).size()
         );
