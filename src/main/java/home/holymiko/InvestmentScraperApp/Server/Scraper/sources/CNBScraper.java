@@ -26,6 +26,7 @@ public class CNBScraper extends Scraper {
     }
 
     public void scrapExchangeRate() throws ResourceNotFoundException {
+        System.out.println(">> Scrap exchange rates");
         TextPage textPage = loadTextPage(SEARCH_URL);
 
         String[] rows = textPage.getContent().trim().split("\n");

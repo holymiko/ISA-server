@@ -37,12 +37,7 @@ public class SerenityScraper extends Scraper {
 
     public void tickersScrap(TickerState tickerState) {
         System.out.println("Trying to scrap " + tickerState + " tickers");
-        ConsolePrinter.printTickerStatus(
-                tickerService.findByTickerState(TickerState.GOOD).size(),
-                tickerService.findByTickerState(TickerState.BAD).size(),
-                tickerService.findByTickerState(TickerState.NOTFOUND).size(),
-                tickerService.findByTickerState(TickerState.NEW).size()
-        );
+        tickerService.printTickerStatus();
 
         Set<Ticker> tickers = this.tickerService.findByTickerState(tickerState);
 

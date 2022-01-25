@@ -2,12 +2,14 @@ package home.holymiko.InvestmentScraperApp.Server.Service;
 
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.ExchangeRate;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.ExchangeRateRepository;
+import home.holymiko.InvestmentScraperApp.Server.Utils.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Date;
+import java.util.Arrays;
 
 
 @Service
@@ -29,6 +31,15 @@ public class ExchangeRateService {
     @Transactional
     public void delete(String code, Date date) {
         exchangeRateRepository.deleteByCodeAndDate(code, date);
+    }
+
+    public void printExchangeRates() {
+        ConsolePrinter.printExchangeRates(
+                Arrays.asList(
+                        exchangeRateRepository.findFirstByCodeOrderByDateDesc("EUR"),
+                        exchangeRateRepository.findFirstByCodeOrderByDateDesc("USD")
+                )
+        );
     }
 
 }
