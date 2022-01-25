@@ -23,8 +23,8 @@ public class ConsolePrinter {
     }
 
     /**
-     * Prints short info about stock
-     * Consists only info of given parameters
+     * Prints short info about stock.
+     * Consists only info of given parameters.
      * @param header
      * @param ratingScore
      * @param intrinsicValue
@@ -58,7 +58,7 @@ public class ConsolePrinter {
     /**
      * Prints exchange rates.
      * Output includes date of record, iff it's NOT up to date
-     * @param exchangeRateList
+     * @param exchangeRateList to be printed
      */
     public static void printExchangeRates(final List<ExchangeRate> exchangeRateList) {
         Date today = new Date(new java.util.Date().getTime());

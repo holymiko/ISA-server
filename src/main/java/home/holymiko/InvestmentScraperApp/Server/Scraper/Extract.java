@@ -1,10 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import home.holymiko.InvestmentScraperApp.Server.API.Controller.ScrapHistory;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Year;
 import java.util.Locale;
