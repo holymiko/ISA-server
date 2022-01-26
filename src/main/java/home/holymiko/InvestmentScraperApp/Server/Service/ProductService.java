@@ -1,5 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
+import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.advanced.ProductDTO_LatestPrices;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
@@ -78,7 +79,7 @@ public class ProductService {
     }
 
     public Optional<Product> findByLink(String link) {
-        return this.productRepository.findByLinks_Link(link);
+        return this.productRepository.findByLinks_Url(link);
     }
 
     public List<Product> findProductByProducerAndMetalAndFormAndGramsAndYear(Producer producer, Metal metal, Form form, double grams, int year) {
@@ -122,7 +123,29 @@ public class ProductService {
 
     @Transactional
     public void save(Product product) {
+        if(product == null) {
+            throw new NullPointerException();
+        }
         this.productRepository.save(product);
     }
 
+    /**
+     * Price is added to Product. LatestPrice is updated.
+     * @param product Product where the Price gonna be added
+     * @param price Price already saved in DB, which should be added to Product
+     * @throws NullPointerException For null value in one of the parameters
+     */
+    @Transactional
+    public void updatePrice(@NotNull Product product, @NotNull Price price) throws NullPointerException {
+        final List<Price> priceList;
+
+        if(product == null || price == null) {
+            throw new NullPointerException();
+        }
+        priceList = product.getPrices();
+        priceList.add(price);
+        product.setLatestPrice(price);
+        product.setPrices(priceList);
+        this.productRepository.save(product);
+    }
 }

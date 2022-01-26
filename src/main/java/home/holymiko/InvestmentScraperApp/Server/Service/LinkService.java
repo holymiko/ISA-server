@@ -1,9 +1,11 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
+import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.LinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +25,7 @@ public class LinkService {
     }
 
     public List<Link> findByLink(String link) {
-        return linkRepository.findByLink(link);
+        return linkRepository.findByUrl(link);
     }
 
 //    public List<Link> findByMetal(Metal metal) {
@@ -44,6 +46,25 @@ public class LinkService {
 
     public void save(Link link) {
         linkRepository.save(link);
+    }
+
+    /**
+     * Saves Link to DB
+     * Prevents duplicities of URL. Every Link has to have unique URL.
+     * @param link to be saved
+     * @throws DataIntegrityViolationException link.url already present in DB || link.url has duplicities in DB
+     * @throws NullPointerException if parameter link == null
+     */
+    public void save2(@NotNull Link link) throws DataIntegrityViolationException, NullPointerException {
+        if(link == null) {
+            throw new NullPointerException("Link cannot be null");
+        }
+
+        switch ( linkRepository.findByUrl(link.getUrl()).size() ) {
+            case 0 -> linkRepository.save(link);
+            case 1 -> throw new DataIntegrityViolationException("Link already in DB");
+            default -> throw new DataIntegrityViolationException("WARNING - Duplicates in DB table LINK");
+        }
     }
 
 }

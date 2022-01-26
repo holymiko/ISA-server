@@ -9,6 +9,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,6 +41,18 @@ public class Product {
     private List<Price> prices;
 
     public Product() {
+    }
+
+    public Product(String name, Producer producer, Form form, Metal metal, double grams, int year, List<Link> links) {
+        this.name = name;
+        this.producer = producer;
+        this.form = form;
+        this.metal = metal;
+        this.grams = grams;
+        this.year = year;
+        this.links = links;
+        this.latestPrices = new ArrayList<>();
+        this.prices = new ArrayList<>();
     }
 
     public Product(String name, Producer producer, Form form, Metal metal, double grams, int year, List<Link> links, List<Price> latestPrices, List<Price> prices) {
@@ -77,7 +90,7 @@ public class Product {
     public List<String> getLinksAsString() {
         return links
                 .stream()
-                .map(Link::getLink)
+                .map(Link::getUrl)
                 .collect(Collectors.toList());
     }
 

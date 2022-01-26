@@ -10,6 +10,7 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.Bes
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.SerenityScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.ZlatakyScraper;
+import home.holymiko.InvestmentScraperApp.Server.Utils.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -104,7 +105,12 @@ public class ScrapController {
         // Scraps prices from all dealers
         System.out.println("Trying to scrap "+string+" prices");
         this.scrapMetals.values().forEach(
-                scrapMetal -> scrapMetal.pricesByMetal(metal)
+                scrapMetal -> {
+                    System.out.println("MetalScraper pricesByMetal");
+                    scrapMetal.pricesByMetal(metal);
+                    System.out.println(metal+" prices scraped");
+                    ConsolePrinter.printTimeStamp();
+                }
         );
         scrapHistory.timeUpdate(metal);
         ScrapHistory.stopRunning();
@@ -134,7 +140,12 @@ public class ScrapController {
         try {
             // Scraps from all dealers
             this.scrapMetals.values().forEach(
-                    scrapMetal -> scrapMetal.pricesByProducts(productIds)
+                    scrapMetal -> {
+                        System.out.println("MetalScraper pricesByProducts");
+                        scrapMetal.scrapProductByIdList(productIds);
+                        System.out.println(">> Prices scraped");
+                        ConsolePrinter.printTimeStamp();
+                    }
             );
         } catch (ResponseStatusException e){
             ScrapHistory.stopRunning();
@@ -154,7 +165,6 @@ public class ScrapController {
     @RequestMapping({"/links", "/links/"})
     public void allLinks() {
         ScrapHistory.frequencyHandlingAll(true);
-
         ScrapHistory.startRunning();
 
         System.out.println("Scraper ALL links");
@@ -163,9 +173,9 @@ public class ScrapController {
         this.scrapMetals.values().forEach(
                 MetalScraper::allLinksScrap
         );
+        ConsolePrinter.printTimeStamp();
 
         ScrapHistory.timeUpdate(true);
-
         ScrapHistory.stopRunning();
     }
 

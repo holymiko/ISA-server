@@ -17,17 +17,16 @@ public class Link {
     private Long Id;
     private Dealer dealer;
     @NotNull
-    private String link;
-    // TODO Rename to URL
+    private String url;
     @ManyToOne
     private Product product;
 
     public Link() {
     }
 
-    public Link(Dealer dealer, String link) {
+    public Link(Dealer dealer, String url) {
         this.dealer = dealer;
-        this.link = link;
+        this.url = url;
     }
 
     public void setDealer(Dealer dealer) {
@@ -38,7 +37,7 @@ public class Link {
         this.product = product;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

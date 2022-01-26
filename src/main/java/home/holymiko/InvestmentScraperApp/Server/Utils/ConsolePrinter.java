@@ -5,6 +5,7 @@ import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Excha
 
 import java.sql.Date;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class ConsolePrinter {
@@ -85,7 +86,13 @@ public class ConsolePrinter {
         System.out.println();
     }
 
-    public static Integer getPercentage(final double tickerStateCount, final double sum) {
+    public static void printTimeStamp() {
+        System.out.print(">> ");
+        System.out.print(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new java.util.Date()));
+        System.out.print(" <<");
+    }
+
+    private static Integer getPercentage(final double tickerStateCount, final double sum) {
         final DecimalFormat df = new DecimalFormat("###,###");
         return Math.round(
                 Long.parseLong(

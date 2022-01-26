@@ -11,6 +11,8 @@ import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
+import home.holymiko.InvestmentScraperApp.Server.Utils.ConsolePrinter;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -64,7 +66,7 @@ public class MetalScraper extends Scraper {
      */
     public void allProducts() {
         productsOrPricesScrap( linkService.findAll() );
-        System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
+        ConsolePrinter.printTimeStamp();
         System.out.println("All products scraped");
     }
 
@@ -98,7 +100,7 @@ public class MetalScraper extends Scraper {
 
     /////// PRIVATE
 
-    private void productScrap(Link link) {
+    private void productScrap(Link link) throws DataIntegrityViolationException {
         String name = "";
         final int year;
         final double grams;
@@ -107,14 +109,14 @@ public class MetalScraper extends Scraper {
         final Producer producer;
         final List<Product> products;
 
-        loadPage(link.getLink());
+        loadPage(link.getUrl());
 
-        // Send request for name of the Product. Prepares name for extraction (Extract methods)
+        // Sends request for name of the Product. Prepares name for extraction (Extract methods)
         try {
             name = ((HtmlElement) page.getFirstByXPath(xPathProductName)).asText();
             name = name.toLowerCase(Locale.ROOT);
             if(name.equals("") ) {
-                System.out.println("FATAL ERROR: Empty name - "+link.getLink());
+                System.out.println("FATAL ERROR: Empty name - "+link.getUrl());
                 return;
             }
         } catch (Exception e) {
@@ -129,7 +131,7 @@ public class MetalScraper extends Scraper {
             metal = Extract.metalExtractor(name);
             producer = Extract.producerExtract(name);
         } catch (IllegalArgumentException e) {
-            System.out.println("FATAL ERROR: "+name +" "+link.getLink()+" - failed on Form, Metal or Producer");
+            System.out.println("FATAL ERROR: "+name +" "+link.getUrl()+" - failed on Form, Metal or Producer");
             return;
         }
 
@@ -137,9 +139,7 @@ public class MetalScraper extends Scraper {
 
         // New product saved
         if(products.isEmpty() || isNameSpecial(name)) {
-            List<Link> links = new ArrayList<>();
-            links.add(link);
-            Product product = new Product(name, producer, form, metal, grams, year, links, new ArrayList<>(), new ArrayList<>());
+            final Product product = new Product(name, producer, form, metal, grams, year, Collections.singletonList(link));
             productService.save(product);
             link.setProduct(product);
             linkService.save(link);
@@ -150,18 +150,18 @@ public class MetalScraper extends Scraper {
 
         // Price from another dealer added to product
         if (products.size() == 1) {
-            products.get(0).getLinks().add(link);
-            link.setProduct(products.get(0));
+            final Product product = products.get(0);
+            product.getLinks().add(link);
+            link.setProduct(product);
             linkService.save(link);
             priceScrap(link);
             return;
         }
 
-        // TODO Throw exception
-        System.out.println("\n???????????????????");
-        System.out.println(name + " " +producer+" "+metal+" "+form+" "+grams+" "+link.getLink());
-        System.out.println("???????????????????\n");
-
+        throw new DataIntegrityViolationException(
+                "ERROR: Multiple Products for following params present in DB\n" +
+                name + " " +producer+" "+metal+" "+form+" "+grams+" "+link.getUrl()
+        );
     }
 
     /**
@@ -169,10 +169,14 @@ public class MetalScraper extends Scraper {
      * @param link of Product
      */
     private void productOrPriceScrap(final Link link) {
-        Optional<Product> optionalProduct = this.productService.findByLink(link.getLink());
+        Optional<Product> optionalProduct = this.productService.findByLink(link.getUrl());
 
         if (optionalProduct.isEmpty()) {
-            productScrap(link);
+            try {
+                productScrap(link);
+            } catch (DataIntegrityViolationException e) {
+                System.out.println( e.getMessage() );
+            }
             return;
         }
         priceScrap(link);
@@ -202,26 +206,14 @@ public class MetalScraper extends Scraper {
      * Scraps prices by metal from all dealers
      * @param metal Enum
      */
-    public void pricesByMetal(Metal metal){
-        System.out.println("MetalScraper pricesByMetal");
-
-        scrapGivenProducts(
+    public void pricesByMetal(Metal metal) {
+        scrapProductByIdList(
                 productService.findByMetal(metal).stream()
                         .map(
                                 ProductDTO::getId
                         )
                         .collect(Collectors.toList())
         );
-
-        System.out.println(metal+" prices scraped");
-        System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
-    }
-
-    public void pricesByProducts(List<Long> productIds){
-        System.out.println("MetalScraper pricesByProducts");
-        scrapGivenProducts(productIds);
-        System.out.println(">> Prices scraped");
-        System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
     }
 
     /////// PROTECTED
@@ -231,37 +223,41 @@ public class MetalScraper extends Scraper {
      * @param link Link from which the price gonna be scrapped
      */
     protected void priceScrap(final Link link) {
-        loadPage(link.getLink());
-
         double buyPrice = 0.0;
         double redemptionPrice = 0.0;
+        final Price price;
+
+        loadPage(link.getUrl());
+
         try {
-            buyPrice = Convert.currencyToNumberConvert(((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText());
+            buyPrice = Convert.currencyToNumberConvert(
+                    ((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText()
+            );
         } catch (Exception e) {
             System.out.println("WARNING - Kupni cena = 0");
         }
         try {
-            redemptionPrice = Convert.currencyToNumberConvert(redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice)));
+            redemptionPrice = Convert.currencyToNumberConvert(
+                    redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice))
+            );
         } catch (Exception e) {
             System.out.println("WARNING - Vykupni cena = 0");
         }
 
-        addPriceToProduct(
-                link.getProduct(),
-                new Price(LocalDateTime.now(), buyPrice, redemptionPrice, link.getDealer())
-        );
-        System.out.println("> New price saved - " + link.getLink());
+        price = new Price(LocalDateTime.now(), buyPrice, redemptionPrice, link.getDealer());
+        this.priceService.save(price);
+        this.productService.updatePrice(link.getProduct(), price);
+
+        System.out.println("> New price saved - " + link.getUrl());
     }
 
-    private void scrapGivenProducts(final List<Long> productIds) {
+    public void scrapProductByIdList(final List<Long> productIds) {
         for (long productId : productIds) {
             long startTime = System.nanoTime();
 
             // Scraps new price for this.dealer product link
             linkService.findByDealerAndProductId(dealer, productId)
-                    .ifPresent(
-                            this::priceScrap
-            );
+                    .ifPresent(this::priceScrap);
 
             // Sleep time is dynamic, according to time took by scrap procedure
             dynamicSleepAndStatusPrint(ETHICAL_DELAY, startTime, PRINT_INTERVAL, productIds.size());
@@ -294,7 +290,9 @@ public class MetalScraper extends Scraper {
      * @param searchUrl URL of page, where the search will be done
      */
     protected void scrapLinks(String searchUrl) {
-        loadPage(searchUrl);
+        if( !loadPage(searchUrl) ) {
+            return;
+        }
 
         List<HtmlElement> elements = page.getByXPath(xPathProductList);
 
@@ -346,22 +344,16 @@ public class MetalScraper extends Scraper {
     }
 
     protected void linkFilterWrapper(final Link link) {
-        if ( !linkFilter( link.getLink() ) ) {
+        if ( !linkFilter( link.getUrl() ) ) {
             return;
         }
-        List<Link> linkList = linkService.findByLink(link.getLink());
 
-        if (linkList.isEmpty()) {
-            linkService.save(link);
+        try {
+            linkService.save2(link);
             System.out.println("Link saved");
-            return;
+        } catch (Exception e) {
+            System.out.println( e.getMessage() );
         }
-        if (linkList.size() == 1) {
-            System.out.println("Link already in DB");
-            return;
-        }
-        System.out.println("WARNING - Duplicates in DB table LINK");
-        // TODO Throw error for link duplicities
     }
 
     protected String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
@@ -369,20 +361,6 @@ public class MetalScraper extends Scraper {
     }
 
     /////// PRIVATE
-
-    /**
-     * Price is added to Product. LatestPrice is updated.
-     * @param product Product where the Price gonna be added
-     * @param price Price to be added to Product
-     */
-    private void addPriceToProduct(Product product, Price price) {
-        List<Price> priceList = product.getPrices();
-        this.priceService.save(price);
-        priceList.add(price);
-        product.setLatestPrice(price);
-        product.setPrices(priceList);
-        this.productService.save(product);
-    }
 
     private static boolean isNameSpecial(String name) {
         name = name.toLowerCase(Locale.ROOT);

@@ -32,13 +32,15 @@ public class Runner {
     }
 
     private void run() {
-        try {
-            cnbScraper.scrapExchangeRate();
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            cnbScraper.scrapExchangeRate();
+//        } catch (ResourceNotFoundException e) {
+//            e.printStackTrace();
+//        }
         tickerService.printTickerStatus();
         exchangeRateService.printExchangeRates();
+//        scrapController.allLinks();
+        scrapController.allProducts();
 //        scrapController.scrapEverything();
 //        scrapController.serenity();
 //        investmentInit.saveInitPortfolios();

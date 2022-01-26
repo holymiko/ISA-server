@@ -41,12 +41,12 @@ public class SilverumScraper extends MetalScraper {
                 portfolioService,
                 productService,
                 new ArrayList<>(
-                        Arrays.asList(
+                        Collections.singletonList(
                                 SEARCH_URL_GOLD
                         )
                 ),
                 new ArrayList<>(
-                        Arrays.asList(
+                        Collections.singletonList(
                                 SEARCH_URL_SILVER
                         )
                 ),
