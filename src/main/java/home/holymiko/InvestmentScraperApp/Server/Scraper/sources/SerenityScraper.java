@@ -6,7 +6,7 @@ import home.holymiko.InvestmentScraperApp.Server.API.Port.Export;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.GrahamGrade;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.Extract;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Scraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.StockService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
@@ -88,7 +88,7 @@ public class SerenityScraper extends Scraper {
 
         for(int i = 2; i <= 11; i++) {
             ratings.add(
-                    Extract.numberExtractSerenity(
+                    Convert.numberConvertSerenity(
                             ((HtmlElement) page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div["+i+"]/div[2]/div"))
                                     .asText()
                     )
@@ -97,11 +97,11 @@ public class SerenityScraper extends Scraper {
         for(int i = 2; i <= 8; i++) {
             HtmlElement htmlElement = page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div["+i+"]/div[2]/div");
             if(i == 5) {
-                grade = Extract.gradeConvert(htmlElement);
+                grade = Convert.gradeConvert(htmlElement.asText());
                 continue;
             }
             results.add(
-                    Extract.numberExtractSerenity(
+                    Convert.numberConvertSerenity(
                             htmlElement.asText()
                     )
             );

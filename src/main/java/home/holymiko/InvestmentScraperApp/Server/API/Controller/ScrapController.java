@@ -4,7 +4,7 @@ import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapRefusedExce
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.Extract;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.BessergoldScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
@@ -81,7 +81,7 @@ public class ScrapController {
 
         try {
             // Try convert string to Dealer
-            dealerType = Extract.dealerConvert(dealer);
+            dealerType = Convert.dealerConvert(dealer);
         } catch (IllegalArgumentException ignored) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -178,7 +178,7 @@ public class ScrapController {
 
         // 1. Try convert string to Dealer
         try {
-            Dealer dealer = Extract.dealerConvert(string);
+            Dealer dealer = Convert.dealerConvert(string);
             scrapHistory.frequencyHandling(dealer);
             ScrapHistory.startRunning();
             scrapMetals.get(dealer).allLinksScrap();
@@ -206,7 +206,7 @@ public class ScrapController {
         // Extract the metal
         Metal metal;
         try{
-            metal = Extract.metalConvert(string);
+            metal = Convert.metalConvert(string);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }

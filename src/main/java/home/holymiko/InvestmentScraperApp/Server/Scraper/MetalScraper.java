@@ -8,6 +8,8 @@ import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Producer;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -97,39 +99,44 @@ public class MetalScraper extends Scraper {
     /////// PRIVATE
 
     private void productScrap(Link link) {
-        loadPage(link.getLink());
-
         String name = "";
+        final int year;
+        final double grams;
         final Form form;
         final Metal metal;
         final Producer producer;
+        final List<Product> products;
+
+        loadPage(link.getLink());
+
+        // Send request for name of the Product. Prepares name for extraction (Extract methods)
         try {
             name = ((HtmlElement) page.getFirstByXPath(xPathProductName)).asText();
+            name = name.toLowerCase(Locale.ROOT);
+            if(name.equals("") ) {
+                System.out.println("FATAL ERROR: Empty name - "+link.getLink());
+                return;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        final String nameLowerCase = name.toLowerCase(Locale.ROOT);
-        final int year = Extract.yearExtract(nameLowerCase);
-        final double grams = Extract.weightExtract(nameLowerCase);
+
+        // Extraction of parameters for saving new Product/Price to DB
+        year = Extract.yearExtract(name);
+        grams = Extract.weightExtract(name);
         try {
-            form = Extract.formExtract(nameLowerCase);
-            metal = Extract.metalExtractor(nameLowerCase);
-            producer = Extract.producerExtract(nameLowerCase);
+            form = Extract.formExtract(name);
+            metal = Extract.metalExtractor(name);
+            producer = Extract.producerExtract(name);
         } catch (IllegalArgumentException e) {
             System.out.println("FATAL ERROR: "+name +" "+link.getLink()+" - failed on Form, Metal or Producer");
             return;
         }
 
-        final List<Product> products = productService.findProductByProducerAndMetalAndFormAndGramsAndYear(producer, metal, form, grams, year);
-
-        if(name.equals("") ) {
-            System.out.println("FATAL ERROR: Empty name - "+link.getLink());
-            return;
-        }
-
+        products = productService.findProductByProducerAndMetalAndFormAndGramsAndYear(producer, metal, form, grams, year);
 
         // New product saved
-        if(products.isEmpty() || specialName(nameLowerCase)) {
+        if(products.isEmpty() || isNameSpecial(name)) {
             List<Link> links = new ArrayList<>();
             links.add(link);
             Product product = new Product(name, producer, form, metal, grams, year, links, new ArrayList<>(), new ArrayList<>());
@@ -150,6 +157,7 @@ public class MetalScraper extends Scraper {
             return;
         }
 
+        // TODO Throw exception
         System.out.println("\n???????????????????");
         System.out.println(name + " " +producer+" "+metal+" "+form+" "+grams+" "+link.getLink());
         System.out.println("???????????????????\n");
@@ -228,12 +236,12 @@ public class MetalScraper extends Scraper {
         double buyPrice = 0.0;
         double redemptionPrice = 0.0;
         try {
-            buyPrice = Extract.numberExtract(((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText());
+            buyPrice = Convert.currencyToNumberConvert(((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText());
         } catch (Exception e) {
             System.out.println("WARNING - Kupni cena = 0");
         }
         try {
-            redemptionPrice = Extract.numberExtract(redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice)));
+            redemptionPrice = Convert.currencyToNumberConvert(redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice)));
         } catch (Exception e) {
             System.out.println("WARNING - Vykupni cena = 0");
         }
@@ -353,6 +361,7 @@ public class MetalScraper extends Scraper {
             return;
         }
         System.out.println("WARNING - Duplicates in DB table LINK");
+        // TODO Throw error for link duplicities
     }
 
     protected String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
@@ -375,7 +384,7 @@ public class MetalScraper extends Scraper {
         this.productService.save(product);
     }
 
-    private static boolean specialName(String name) {
+    private static boolean isNameSpecial(String name) {
         name = name.toLowerCase(Locale.ROOT);
         return name.contains("lunární") || name.contains("výročí") || name.contains("rush") || name.contains("horečka");
         // TODO Add attribute type to Product

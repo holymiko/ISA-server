@@ -61,7 +61,9 @@ public class ConsolePrinter {
      * @param exchangeRateList to be printed
      */
     public static void printExchangeRates(final List<ExchangeRate> exchangeRateList) {
+        // Get current date
         Date today = new Date(new java.util.Date().getTime());
+
         if(exchangeRateList == null || exchangeRateList.isEmpty()){
             return;
         }

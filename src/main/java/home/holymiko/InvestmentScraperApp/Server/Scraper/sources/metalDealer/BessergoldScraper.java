@@ -65,9 +65,15 @@ public class BessergoldScraper extends MetalScraper {
 
     /////// PRICE
 
+    /**
+     * Takes following pattern:
+     * - Aktuální výkupní cena (bez DPH): xxxx,xx Kč
+     * @param redemptionPriceHtml
+     * @return
+     */
     @Override
     protected String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
-        return redemptionPriceHtml.asText().split(":")[1];          // Aktuální výkupní cena (bez DPH): xxxx,xx Kč
+        return redemptionPriceHtml.asText().split(":")[1];
     }
 
 
@@ -76,11 +82,11 @@ public class BessergoldScraper extends MetalScraper {
     @Override
     protected void scrapLink(HtmlElement htmlItem, String searchUrl) {
         HtmlAnchor itemAnchor = htmlItem.getFirstByXPath(".//strong[@class='product name product-item-name']/a");
-        if(itemAnchor != null) {
-            Link link = new Link(Dealer.BESSERGOLD, itemAnchor.getHrefAttribute());
-            linkFilterWrapper(link);
+        if(itemAnchor == null) {
+            System.out.println("Error: "+htmlItem.asText());
             return;
         }
-        System.out.println("Error: "+htmlItem.asText());
+        Link link = new Link(Dealer.BESSERGOLD, itemAnchor.getHrefAttribute());
+        linkFilterWrapper(link);
     }
 }

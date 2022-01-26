@@ -18,6 +18,7 @@ public class Link {
     private Dealer dealer;
     @NotNull
     private String link;
+    // TODO Rename to URL
     @ManyToOne
     private Product product;
 

@@ -1,6 +1,5 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper;
+package home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling;
 
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.*;
 
 import java.time.Year;
@@ -107,19 +106,6 @@ public class Extract {
     }
 
     /**
-     * Converts text to
-     * @param nameOfDealer including name of form
-     * @return Enum class Form
-     */
-    public static Dealer dealerConvert(String nameOfDealer) throws IllegalArgumentException {
-        return switch (nameOfDealer.toLowerCase(Locale.ROOT)) {
-            case "bessergold" -> Dealer.BESSERGOLD;
-            case "zlataky" -> Dealer.ZLATAKY;
-            default -> throw new IllegalArgumentException("Invalid Enum argument");
-        };
-    }
-
-    /**
      * Extracts weight from various patterns
      * @param text including number with unit
      * @return Grams
@@ -209,63 +195,13 @@ public class Extract {
     }
 
     public static int yearExtract(String name) {
+        name = name.toLowerCase();
         Pattern pattern = Pattern.compile("20[12]\\d");
         Matcher matcher = pattern.matcher(name);
         if (matcher.find()) {
             return Integer.parseInt(matcher.group());
         }
         return Year.now().getValue();
-    }
-
-    /**
-     * Extracts number from text format.
-     * @param text text including only number and currency
-     * @return price from text
-     */
-    public static Double numberExtract(String text) {
-        text = text.replace("\u00a0", "");         // &nbsp;
-        text = text.replace(" ", "");
-        text = text.replace(",", ".");             // -> Double
-        text = text.replace("Kč", "");
-        text = text.replace("%", "");
-        return Double.parseDouble(text);
-    }
-
-    /**
-     * Applies specifications of class
-     * @param text text including only number and currency
-     * @return price from text
-     */
-    public static Double numberExtractSerenity(String text) {
-        text = text.replace(",", "");             // -> Double
-        return numberExtract(text);
-    }
-
-    public static GrahamGrade gradeConvert(final HtmlElement element) throws IllegalArgumentException {
-        return switch (element.asText().toLowerCase(Locale.ROOT)) {
-            case "enterprising" -> GrahamGrade.ENTERPRISING;
-            case "defensive" -> GrahamGrade.DEFENSIVE;
-            case "ungraded" -> GrahamGrade.UNGRADED;
-            case "ncav" -> GrahamGrade.NCAV;
-            default -> throw new IllegalArgumentException("Invalid Enum argument");
-        };
-    }
-
-    /**
-     * Converts String to Metal.
-     * Used case switch
-     * @param nameOfMetal - CaseInsensitive
-     * @return Enum
-     * @throws IllegalArgumentException - No Enum was found
-     */
-    public static Metal metalConvert(String nameOfMetal) throws IllegalArgumentException {
-        return switch (nameOfMetal.toLowerCase(Locale.ROOT)) {
-            case "zlato", "gold" -> Metal.GOLD;
-            case "stříbro", "silver" -> Metal.SILVER;
-            case "platina", "platinum" -> Metal.PLATINUM;
-            case "palladium" -> Metal.PALLADIUM;
-            default -> throw new IllegalArgumentException("Invalid Enum argument");
-        };
     }
 
     /**.
