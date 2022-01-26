@@ -148,7 +148,9 @@ public class MetalScraper extends Scraper {
             return;
         }
 
+        // Product mapped by 2. Link
         // Price from another dealer added to product
+        // TODO Number in condition should somehow correspond with number of active dealers
         if (products.size() == 1) {
             final Product product = products.get(0);
             product.getLinks().add(link);
