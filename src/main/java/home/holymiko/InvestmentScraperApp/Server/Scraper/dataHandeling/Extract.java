@@ -73,7 +73,7 @@ public class Extract {
             return Producer.CHINA_MINT;
         }
 
-        throw new IllegalArgumentException("Invalid Enum argument");
+        throw new IllegalArgumentException("Invalid argument for Producer enum");
     }
 
     /**
@@ -102,7 +102,7 @@ public class Extract {
             return Form.BAR;
         }
 
-        throw new IllegalArgumentException("Invalid Enum argument");
+        throw new IllegalArgumentException("Invalid argument for Form enum");
     }
 
     /**
@@ -220,7 +220,7 @@ public class Extract {
         } else if (textContainingNameOfMetal.contains("pallad")) {
             return Metal.PALLADIUM;
         } else {
-            throw new IllegalArgumentException("Invalid Enum argument");
+            throw new IllegalArgumentException("Invalid argument for Metal enum");
         }
     }
 }

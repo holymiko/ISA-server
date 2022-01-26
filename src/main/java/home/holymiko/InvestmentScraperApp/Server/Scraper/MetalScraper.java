@@ -131,7 +131,7 @@ public class MetalScraper extends Scraper {
             metal = Extract.metalExtractor(name);
             producer = Extract.producerExtract(name);
         } catch (IllegalArgumentException e) {
-            System.out.println("FATAL ERROR: "+name +" "+link.getUrl()+" - failed on Form, Metal or Producer");
+            System.out.println("FATAL ERROR: "+name +" "+link.getUrl()+" - "+e.getMessage());
             return;
         }
 
