@@ -1,24 +1,20 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer;
 
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Link;
-import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
-import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
-import home.holymiko.InvestmentScraperApp.Server.Service.PortfolioService;
-import home.holymiko.InvestmentScraperApp.Server.Service.PriceService;
-import home.holymiko.InvestmentScraperApp.Server.Service.ProductService;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.ScraperInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 
 @Deprecated
-@Component
-public class SilverumScraper extends MetalScraper {
+public class SilverumScraper implements ScraperInterface {
     private static final String SEARCH_URL_GOLD = "https://www.bessergold.cz/investicni-zlato.html?product_list_limit=all";
     private static final String SEARCH_URL_SILVER = "https://www.bessergold.cz/investicni-stribro.html?product_list_limit=all";
     private static final String SEARCH_URL_PLATINUM = "https://www.bessergold.cz/investicni-platina.html?product_list_limit=all";
@@ -29,65 +25,54 @@ public class SilverumScraper extends MetalScraper {
     private static final String X_PATH_BUY_PRICE = ".//span[@class='price']";
     private static final String X_PATH_REDEMPTION_PRICE = ".//div[@class='vykupni-cena']";
 
-    @Autowired
-    public SilverumScraper(LinkService linkService,
-                           PriceService priceService,
-                           ProductService productService,
-                           PortfolioService portfolioService,
-                           LinkMapper linkMapper) {
-        super(
-                Dealer.SILVERUM,
-                linkService,
-                priceService,
-                portfolioService,
-                productService,
-                linkMapper,
-                new ArrayList<>(
-                        Collections.singletonList(
-                                SEARCH_URL_GOLD
-                        )
-                ),
-                new ArrayList<>(
-                        Collections.singletonList(
-                                SEARCH_URL_SILVER
-                        )
-                ),
-                new ArrayList<>(
-                        Collections.singletonList(
-                                SEARCH_URL_PLATINUM
-                        )
-                ),
-                new ArrayList<>(
-                        Collections.singletonList(
-                                SEARCH_URL_PALLADIUM
-                        )
-                ),
-                X_PATH_PRODUCT_LIST,
-                X_PATH_PRODUCT_NAME,
-                X_PATH_BUY_PRICE,
-                X_PATH_REDEMPTION_PRICE
-        );
-    }
+    public SilverumScraper(){}
 
+    @Override
+    public List<Link> scrapAllLinks(WebClient webClient) {
+        List<Link> elements = new ArrayList<>();
+        elements.addAll(scrapLinks(webClient, SEARCH_URL_GOLD));
+        elements.addAll(scrapLinks(webClient, SEARCH_URL_SILVER));
+        elements.addAll(scrapLinks(webClient, SEARCH_URL_PLATINUM));
+        elements.addAll(scrapLinks(webClient, SEARCH_URL_PALLADIUM));
+        return elements;
+    }
 
     /////// PRICE
 
     @Override
-    protected String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
+    public String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
         return redemptionPriceHtml.asText().split(":")[1];          // Aktuální výkupní cena (bez DPH): xxxx,xx Kč
     }
 
+    @Override
+    public List<HtmlElement> scrapProductList(HtmlPage page) {
+        return page.getByXPath(X_PATH_PRODUCT_LIST);
+    }
+
+    @Override
+    public String scrapProductName(HtmlPage page) {
+        return ((HtmlElement) page.getFirstByXPath(X_PATH_PRODUCT_NAME)).asText();
+    }
+
+    @Override
+    public double scrapBuyPrice(HtmlPage page) {
+        return scrapBuyPrice(page, X_PATH_BUY_PRICE);
+    }
+
+    @Override
+    public double scrapRedemptionPrice(HtmlPage page) {
+        return scrapRedemptionTime(page, X_PATH_REDEMPTION_PRICE);
+    }
 
     /////// LINK
 
     @Override
-    protected void scrapLink(HtmlElement htmlItem, String searchUrl) {
-        HtmlAnchor itemAnchor = htmlItem.getFirstByXPath(".//strong[@class='product name product-item-name']/a");
+    public Link scrapLink(HtmlElement elementProduct) {
+        HtmlAnchor itemAnchor = elementProduct.getFirstByXPath(".//strong[@class='product name product-item-name']/a");
         if(itemAnchor != null) {
-            Link link = new Link(Dealer.BESSERGOLD_CZ, itemAnchor.getHrefAttribute());
-            linkFilterWrapper(link);
-            return;
+            return new Link(Dealer.BESSERGOLD_CZ, itemAnchor.getHrefAttribute());
         }
-        System.out.println("Error: "+htmlItem.asText());
+        System.out.println("Error: "+ elementProduct.asText());
+        return null;
     }
 }

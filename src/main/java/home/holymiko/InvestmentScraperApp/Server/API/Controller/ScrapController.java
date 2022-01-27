@@ -4,12 +4,10 @@ import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapRefusedExce
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.BessergoldScraper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.SerenityScraper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.ZlatakyScraper;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +21,7 @@ import java.util.*;
 @RequestMapping("/api/v2/scrap")
 public class ScrapController {
 
+    private final MetalScraper scrapMetal;
     private final SerenityScraper serenityScraper;
     private final CNBScraper cnbScraper;
     private final ScrapHistory scrapHistory;
@@ -31,17 +30,13 @@ public class ScrapController {
     // TODO Endpoint for scrap stock by ticker
     // TODO method byPortfolio should include stock scraping
 
-    // Used for Polymorphic calling
-    private final Map<Dealer, MetalScraper> scrapMetals = new HashMap<>();
 
     @Autowired
-    public ScrapController(BessergoldScraper bessergoldScraper, ZlatakyScraper zlatakyScraper, SerenityScraper serenityScraper, CNBScraper cnbScraper, ScrapHistory scrapHistory) {
+    public ScrapController(MetalScraper scrapMetal, SerenityScraper serenityScraper, CNBScraper cnbScraper, ScrapHistory scrapHistory) {
+        this.scrapMetal = scrapMetal;
         this.serenityScraper = serenityScraper;
         this.cnbScraper = cnbScraper;
         this.scrapHistory = scrapHistory;
-
-        this.scrapMetals.put(Dealer.BESSERGOLD_CZ, bessergoldScraper);
-        this.scrapMetals.put(Dealer.ZLATAKY, zlatakyScraper);
     }
 
     @RequestMapping({"/all", "/all/"})
@@ -61,10 +56,7 @@ public class ScrapController {
 
         System.out.println("Scraper ALL products");
 
-        // Scraps from all dealers
-        this.scrapMetals.values().forEach(
-                MetalScraper::productByDealer
-        );
+        this.scrapMetal.allProducts();
 
         ScrapHistory.timeUpdate(false);
 
@@ -88,7 +80,8 @@ public class ScrapController {
         }
 
         ScrapHistory.startRunning();
-        scrapMetals.get(dealerType).productByDealer();
+
+        scrapMetal.scrapByParam(dealerType, null, null, null);
         scrapHistory.timeUpdate(dealerType);
         ScrapHistory.stopRunning();
     }
@@ -104,14 +97,11 @@ public class ScrapController {
 
         // Scraps prices from all dealers
         System.out.println("Trying to scrap "+string+" prices");
-        this.scrapMetals.values().forEach(
-                scrapMetal -> {
-                    System.out.println("MetalScraper pricesByMetal");
-                    scrapMetal.pricesByMetal(metal);
-                    System.out.println(metal+" prices scraped");
-                    ConsolePrinter.printTimeStamp();
-                }
-        );
+        System.out.println("MetalScraper pricesByMetal");
+        scrapMetal.scrapByParam(null, metal, null, null);
+        System.out.println(metal+" prices scraped");
+        ConsolePrinter.printTimeStamp();
+
         scrapHistory.timeUpdate(metal);
         ScrapHistory.stopRunning();
     }
@@ -119,16 +109,16 @@ public class ScrapController {
     @RequestMapping({"/portfolio/{id}", "/portfolio/{id}/"})
     public void byPortfolio(@PathVariable long id) {
         ScrapHistory.startRunning();
-
-        try {
-            // Scraps products from all dealers
-            this.scrapMetals.values().forEach(
-                    scrapMetal -> scrapMetal.productByPortfolio(id)
-            );
-        } catch (ResponseStatusException e){
-            ScrapHistory.stopRunning();
-            throw e;
-        }
+//      TODO
+//        try {
+//            // Scraps products from all dealers
+//            this.scrapMetals.values().forEach(
+//                    scrapMetal -> scrapMetal.productByPortfolio(id)
+//            );
+//        } catch (ResponseStatusException e){
+//            ScrapHistory.stopRunning();
+//            throw e;
+//        }
         ScrapHistory.stopRunning();
         throw new ResponseStatusException(HttpStatus.OK, "MetalScraper done");
     }
@@ -136,21 +126,21 @@ public class ScrapController {
     @RequestMapping({"/productsIds", "/productsIds/"})              // Wasn't tested
     public void byProductIds(@RequestBody List<Long> productIds) {
         ScrapHistory.startRunning();
-
-        try {
-            // Scraps from all dealers
-            this.scrapMetals.values().forEach(
-                    scrapMetal -> {
-                        System.out.println("MetalScraper pricesByProducts");
-                        scrapMetal.scrapProductByIdList(productIds);
-                        System.out.println(">> Prices scraped");
-                        ConsolePrinter.printTimeStamp();
-                    }
-            );
-        } catch (ResponseStatusException e){
-            ScrapHistory.stopRunning();
-            throw e;
-        }
+//      TODO
+//        try {
+//            // Scraps from all dealers
+//            this.scrapMetals.values().forEach(
+//                    scrapMetal -> {
+//                        System.out.println("MetalScraper pricesByProducts");
+//                        scrapMetal.scrapProductByIdList(productIds);
+//                        System.out.println(">> Prices scraped");
+//                        ConsolePrinter.printTimeStamp();
+//                    }
+//            );
+//        } catch (ResponseStatusException e){
+//            ScrapHistory.stopRunning();
+//            throw e;
+//        }
         ScrapHistory.stopRunning();
         throw new ResponseStatusException(HttpStatus.OK, "MetalScraper done");
     }
@@ -170,9 +160,7 @@ public class ScrapController {
         System.out.println("Scraper ALL links");
 
         // Scraps from all dealers
-        this.scrapMetals.values().forEach(
-                MetalScraper::allLinksScrap
-        );
+        this.scrapMetal.allLinksScrap();
         ConsolePrinter.printTimeStamp();
 
         ScrapHistory.timeUpdate(true);
@@ -191,7 +179,8 @@ public class ScrapController {
             Dealer dealer = Convert.dealerConvert(string);
             scrapHistory.frequencyHandling(dealer);
             ScrapHistory.startRunning();
-            scrapMetals.get(dealer).allLinksScrap();
+            // TODO
+            scrapMetal.allLinksScrap();
             scrapHistory.timeUpdate(dealer);
             ScrapHistory.stopRunning();
             return;
@@ -203,9 +192,10 @@ public class ScrapController {
         ScrapHistory.startRunning();
 
         // Metal scraping. Links from all dealers by metal
-        this.scrapMetals.values().forEach(
-                metalScraper -> metalScraper.linkScrap(metal)
-        );
+        // TODO
+//        this.scrapMetals.values().forEach(
+//                metalScraper -> metalScraper.linkScrap(metal)
+//        );
         scrapHistory.timeUpdateLink(metal);
         ScrapHistory.stopRunning();
     }

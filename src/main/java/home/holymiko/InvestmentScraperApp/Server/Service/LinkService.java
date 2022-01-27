@@ -5,6 +5,8 @@ import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Produ
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.LinkRepository;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Form;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -30,25 +32,17 @@ public class LinkService {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public List<Link> findByLink(String link) {
-        return linkRepository.findByUrl(link);
-    }
-
-//    public List<Link> findByMetal(Metal metal) {
-//        return linkRepository.findByMetal(metal);
-//    }
-
-    public List<Link> findByDealer(Dealer dealer) {
-        return linkRepository.findByDealer(dealer);
+    public List<Link> findByParams(Dealer dealer, Metal metal, Form form, String url) {
+        return linkRepository.findByParams(dealer, metal, form, url);
     }
 
     public Optional<Link> findByDealerAndProductId(Dealer dealer, long product) {
         return linkRepository.findByDealerAndProduct_Id(dealer, product);
     }
 
-//    public List<Link> findByProducer(Producer producer) {
-//        return linkRepository.findByProducer(producer);
-//    }
+    public List<Link> findByProductId(long product) {
+        return linkRepository.findByProduct_Id(product);
+    }
 
     public Link updateProduct(@NotNull Long linkId, Product product) throws NullPointerException {
         final Link link;
@@ -73,14 +67,13 @@ public class LinkService {
      */
     public void save(@NotNull Link link) throws DataIntegrityViolationException, NullPointerException {
         if(link == null) {
-            throw new NullPointerException("Link cannot be null");
+            throw new NullPointerException("Save - Link cannot be null");
         }
 
-        switch ( linkRepository.findByUrl(link.getUrl()).size() ) {
-            case 0 -> linkRepository.save(link);
-            case 1 -> throw new DataIntegrityViolationException("Link already in DB");
-            default -> throw new DataIntegrityViolationException("WARNING - Duplicates in DB table LINK");
+        if ( linkRepository.findByUrl(link.getUrl()).isPresent() ) {
+            throw new DataIntegrityViolationException("Link already in DB");
         }
+        linkRepository.save(link);
     }
 
 }
