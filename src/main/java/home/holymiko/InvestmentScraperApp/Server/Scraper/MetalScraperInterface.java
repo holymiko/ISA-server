@@ -33,15 +33,6 @@ public interface MetalScraperInterface {
     Link scrapLink(HtmlElement elementProduct);
 
     /**
-     * Sets class variable page.
-     * @param link URL of the page
-     * @return True if page was found and loaded successfully.
-     */
-    default HtmlPage loadPage(WebClient client, final String link) throws IOException {
-        return client.getPage(link);                // Product page
-    }
-
-    /**
      * Finds list of elements, based on class variable xPathProductList
      * For each calls scrapLink abstract method.
      * @param searchUrlList URL of page, where the search will be done
@@ -50,7 +41,7 @@ public interface MetalScraperInterface {
     default List<Link> scrapLinks(WebClient client, String searchUrlList) {
         HtmlPage page;
         try {
-            page = loadPage(client, searchUrlList);
+            page = client.getPage(searchUrlList);
         } catch (IOException e) {
             return null;
         }
