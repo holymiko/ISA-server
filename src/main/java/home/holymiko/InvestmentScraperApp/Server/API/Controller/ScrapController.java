@@ -10,7 +10,7 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.Bes
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.SerenityScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer.ZlatakyScraper;
-import home.holymiko.InvestmentScraperApp.Server.Utils.ConsolePrinter;
+import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

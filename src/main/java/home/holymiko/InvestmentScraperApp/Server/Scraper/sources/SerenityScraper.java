@@ -2,7 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.sources;
 
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import home.holymiko.InvestmentScraperApp.Server.API.Port.Export;
+import home.holymiko.InvestmentScraperApp.Server.API.TxtPort.Export;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.GrahamGrade;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
@@ -10,7 +10,7 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Scraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.StockService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
-import home.holymiko.InvestmentScraperApp.Server.Utils.ConsolePrinter;
+import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

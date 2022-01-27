@@ -1,4 +1,4 @@
-package home.holymiko.InvestmentScraperApp.Server.Utils;
+package home.holymiko.InvestmentScraperApp.Server.API;
 
 
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.ExchangeRate;

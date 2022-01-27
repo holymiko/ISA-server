@@ -13,7 +13,7 @@ import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
-import home.holymiko.InvestmentScraperApp.Server.Utils.ConsolePrinter;
+import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

@@ -82,6 +82,9 @@ Entita **Produkt** obsahuje nový atribut **year** pro přesnější určení.
 <br />
 
 
+### Note: Sna69m se pou69vat DTO na příč komunikací aby se šetřili datový přenos a posílat minimum reguestu na databázi
+
+
 ## ToDo
 - [ ] Final and Static
 - [ ] Documentation
