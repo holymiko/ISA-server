@@ -2,11 +2,14 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer;
 
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
-import home.holymiko.InvestmentScraperApp.Server.Service.*;
+import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
+import home.holymiko.InvestmentScraperApp.Server.Service.PortfolioService;
+import home.holymiko.InvestmentScraperApp.Server.Service.PriceService;
+import home.holymiko.InvestmentScraperApp.Server.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +17,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 @Component
-public class BessergoldScraper extends MetalScraper {
-    private static final String SEARCH_URL_GOLD = "https://www.bessergold.cz/investicni-zlato.html?product_list_limit=all";
-    private static final String SEARCH_URL_SILVER = "https://www.bessergold.cz/investicni-stribro.html?product_list_limit=all";
-    private static final String SEARCH_URL_PLATINUM = "https://www.bessergold.cz/investicni-platina.html?product_list_limit=all";
-    private static final String SEARCH_URL_PALLADIUM = "https://www.bessergold.cz/investicni-palladium.html?product_list_limit=all";
+public class BessergoldDeScraper extends MetalScraper {
+    private static final String SEARCH_URL_GOLD = "https://www.bessergold.de/de/gold.html?product_list_limit=all";
+    private static final String SEARCH_URL_SILVER = "https://www.bessergold.de/de/silber.html?product_list_limit=all";
+    private static final String SEARCH_URL_PLATINUM = "https://www.bessergold.de/de/platin.html?product_list_limit=all";
+    private static final String SEARCH_URL_PALLADIUM = "https://www.bessergold.de/de/palladium.html?product_list_limit=all";
 
     private static final String X_PATH_PRODUCT_LIST = "//li[@class='item product product-item']";
     private static final String X_PATH_PRODUCT_NAME = ".//span[@class='base']";
@@ -26,13 +29,13 @@ public class BessergoldScraper extends MetalScraper {
     private static final String X_PATH_REDEMPTION_PRICE = ".//div[@class='vykupni-cena']";
 
     @Autowired
-    public BessergoldScraper(LinkService linkService,
-                             PriceService priceService,
-                             ProductService productService,
-                             PortfolioService portfolioService,
-                             LinkMapper linkMapper) {
+    public BessergoldDeScraper(LinkService linkService,
+                               PriceService priceService,
+                               ProductService productService,
+                               PortfolioService portfolioService,
+                               LinkMapper linkMapper) {
         super(
-                Dealer.BESSERGOLD_CZ,
+                Dealer.BESSERGOLD_DE,
                 linkService,
                 priceService,
                 portfolioService,

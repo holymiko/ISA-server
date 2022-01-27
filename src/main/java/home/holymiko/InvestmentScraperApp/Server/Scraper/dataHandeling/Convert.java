@@ -13,7 +13,7 @@ public class Convert {
      */
     public static Dealer dealerConvert(String nameOfDealer) throws IllegalArgumentException {
         return switch (nameOfDealer.toLowerCase(Locale.ROOT)) {
-            case "bessergold" -> Dealer.BESSERGOLD;
+            case "bessergold" -> Dealer.BESSERGOLD_CZ;
             case "zlataky" -> Dealer.ZLATAKY;
             default -> throw new IllegalArgumentException("Invalid Enum argument");
         };

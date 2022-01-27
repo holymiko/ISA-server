@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 @Deprecated
@@ -85,7 +84,7 @@ public class SilverumScraper extends MetalScraper {
     protected void scrapLink(HtmlElement htmlItem, String searchUrl) {
         HtmlAnchor itemAnchor = htmlItem.getFirstByXPath(".//strong[@class='product name product-item-name']/a");
         if(itemAnchor != null) {
-            Link link = new Link(Dealer.BESSERGOLD, itemAnchor.getHrefAttribute());
+            Link link = new Link(Dealer.BESSERGOLD_CZ, itemAnchor.getHrefAttribute());
             linkFilterWrapper(link);
             return;
         }

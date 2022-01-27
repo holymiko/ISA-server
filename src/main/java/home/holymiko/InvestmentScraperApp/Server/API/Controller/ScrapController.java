@@ -40,7 +40,7 @@ public class ScrapController {
         this.cnbScraper = cnbScraper;
         this.scrapHistory = scrapHistory;
 
-        this.scrapMetals.put(Dealer.BESSERGOLD, bessergoldScraper);
+        this.scrapMetals.put(Dealer.BESSERGOLD_CZ, bessergoldScraper);
         this.scrapMetals.put(Dealer.ZLATAKY, zlatakyScraper);
     }
 

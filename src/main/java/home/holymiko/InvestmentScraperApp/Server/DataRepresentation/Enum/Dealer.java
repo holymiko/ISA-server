@@ -1,5 +1,5 @@
 package home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum;
 
 public enum Dealer {
-    BESSERGOLD, ZLATAKY, SILVERUM
+    BESSERGOLD_CZ, BESSERGOLD_DE, ZLATAKY, SILVERUM
 }
