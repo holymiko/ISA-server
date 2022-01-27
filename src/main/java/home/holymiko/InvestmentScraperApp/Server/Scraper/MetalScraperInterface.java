@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public interface ScraperInterface {
+public interface MetalScraperInterface {
 
     List<Link> scrapAllLinks(WebClient client);
 
@@ -20,6 +20,17 @@ public interface ScraperInterface {
     String scrapProductName(HtmlPage page);
 
     List<HtmlElement> scrapProductList(HtmlPage page);
+
+    double scrapBuyPrice(HtmlPage page);
+
+    double scrapRedemptionPrice(HtmlPage page);
+
+    /**
+     *
+     * @param elementProduct - HtmlElement of page listing products
+     * @return
+     */
+    Link scrapLink(HtmlElement elementProduct);
 
     /**
      * Sets class variable page.
@@ -49,17 +60,6 @@ public interface ScraperInterface {
                         this::scrapLink
                 ).collect(Collectors.toList());
     }
-
-    /**
-     *
-     * @param elementProduct - HtmlElement of page listing products
-     * @return
-     */
-    Link scrapLink(HtmlElement elementProduct);
-
-    double scrapBuyPrice(HtmlPage page);
-
-    double scrapRedemptionPrice(HtmlPage page);
 
     default double scrapBuyPrice(HtmlPage page, String xPathBuyPrice) {
         try {

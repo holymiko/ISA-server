@@ -1,4 +1,4 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metalDealer;
+package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
@@ -6,14 +6,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Link;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.ScraperInterface;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraperInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZlatakyScraper implements ScraperInterface {
+public class ZlatakyMetalScraper implements MetalScraperInterface {
 
     private static final String BASE_URL = "https://zlataky.cz";
     private static final String SEARCH_URL_GOLD_COIN = "https://zlataky.cz/investicni-zlate-mince?ext=0&filter_weight=on&sort=3a&filter_in_stock=1&page=all";
@@ -31,7 +29,7 @@ public class ZlatakyScraper implements ScraperInterface {
     private static final String X_PATH_BUY_PRICE = ".//*[@id=\"product_price\"]";
     private static final String X_PATH_REDEMPTION_PRICE = ".//*[@id=\"product_price_purchase\"]";
 
-    public ZlatakyScraper() {}
+    public ZlatakyMetalScraper() {}
 
     @Override
     public List<Link> scrapAllLinks(WebClient webClient) {

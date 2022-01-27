@@ -39,7 +39,7 @@ public class Runner {
 //        }
         tickerService.printTickerStatus();
         exchangeRateService.printExchangeRates();
-//        scrapController.allLinks();
+        scrapController.allLinks();
         scrapController.allProducts();
 //        scrapController.scrapEverything();
 //        scrapController.serenity();

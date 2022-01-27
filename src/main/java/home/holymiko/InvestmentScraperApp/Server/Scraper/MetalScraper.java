@@ -9,6 +9,8 @@ import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Produce
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Extract;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.BessergoldMetalScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.ZlatakyMetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,21 +24,20 @@ import java.util.stream.Collectors;
 
 @Component
 public class MetalScraper extends Scraper {
-    protected final LinkService linkService;
-    protected final PriceService priceService;
-    protected final PortfolioService portfolioService;
-    protected final ProductService productService;
-    protected final LinkMapper linkMapper;
+    private final LinkService linkService;
+    private final PriceService priceService;
+    private final PortfolioService portfolioService;
+    private final ProductService productService;
+    private final LinkMapper linkMapper;
 
     // Used for Polymorphic calling
-    protected final Map< Dealer, ScraperInterface> searchInter = new HashMap<>();
+    private final Map< Dealer, MetalScraperInterface> searchInter = new HashMap<>();
 
     private static final long ETHICAL_DELAY = 700;
     private static final int PRINT_INTERVAL = 10;
 
     @Autowired
     public MetalScraper(
-            Dealer dealer,
             LinkService linkService,
             PriceService priceService,
             PortfolioService portfolioService,
@@ -44,17 +45,16 @@ public class MetalScraper extends Scraper {
             LinkMapper linkMapper
     ) {
         super();
-        this.dealer = dealer;
         this.linkService = linkService;
         this.priceService = priceService;
         this.portfolioService = portfolioService;
         this.productService = productService;
         this.linkMapper = linkMapper;
 
-//        searchInter.put(Dealer.BESSERGOLD_CZ, new BessergoldScraper());
-//        searchInter.put(Dealer.BESSERGOLD_DE, new BessergoldDeScraper());
-//        searchInter.put(Dealer.SILVERUM, new SilverumScraper());
-//        searchInter.put(Dealer.ZLATAKY, new ZlatakyScraper());
+        searchInter.put(Dealer.BESSERGOLD_CZ, new BessergoldMetalScraper());
+//        searchInter.put(Dealer.BESSERGOLD_DE, new BessergoldDeMetalScraper());
+//        searchInter.put(Dealer.SILVERUM, new SilverumMetalScraper());
+        searchInter.put(Dealer.ZLATAKY, new ZlatakyMetalScraper());
     }
 
     ////////////// PRODUCT
@@ -79,7 +79,6 @@ public class MetalScraper extends Scraper {
         if (optionalPortfolio.isEmpty()) {
             throw new IllegalArgumentException("No portfolio with such ID");
         }
-//        optionalPortfolio.get().getInvestmentsMetal()
 
         // Get Links for scraping
         // Set prevents one Product to be scrapped more times
@@ -87,8 +86,10 @@ public class MetalScraper extends Scraper {
                 .stream()
                 .map(
                         investment -> linkService.findByProductId( investment.getProductDTO().getId())
+                ).flatMap(
+                        List::stream
                 ).map(
-                        optionalLink -> linkMapper.toDTO(optionalLink)
+                        linkMapper::toDTO
                 ).collect(
                         Collectors.toSet()
                 );
@@ -201,32 +202,13 @@ public class MetalScraper extends Scraper {
 
 
     ////////////// PRICE
-    /////// PUBLIC
-
-    /**
-     * Scraps prices by metal from all dealers
-     * @param metal Enum
-     */
-    public void pricesByParam(Dealer dealer, Metal metal, Form form, String url) {
-        List<Link> links = linkService.findByParams(dealer, metal, form, url);
-        for (Link link : links) {
-
-            // Scraps new price for this.dealer product link
-            priceScrap(linkMapper.toDTO(link));
-
-
-        }
-        printerCounter = 0;
-
-    }
-
-    /////// PROTECTED
+    /////// PRIVATE
 
     /**
      * Scraps new price for already known product
      * @param link Link from which the price gonna be scrapped
      */
-    protected void priceScrap(final LinkDTO link) {
+    private void priceScrap(final LinkDTO link) {
         long startTime = System.nanoTime();
         double buyPrice;
         double redemptionPrice;
@@ -249,14 +231,11 @@ public class MetalScraper extends Scraper {
 
     public void scrapProductByIdList(final List<Long> productIds) {
         for (long productId : productIds) {
-            long startTime = System.nanoTime();
-
             // Scraps new price for this.dealer product link
-            linkService.findByDealerAndProductId(dealer, productId)
-                    .ifPresent( link -> priceScrap(linkMapper.toDTO(link)) );
-
-            // Sleep time is dynamic, according to time took by scrap procedure
-            dynamicSleepAndStatusPrint(ETHICAL_DELAY, startTime, PRINT_INTERVAL, productIds.size());
+            linkService.findByProductId(productId)
+                    .forEach(
+                            link -> priceScrap(linkMapper.toDTO(link))
+                    );
         }
         printerCounter = 0;
     }
@@ -277,14 +256,13 @@ public class MetalScraper extends Scraper {
 
 
     ////////////// FILTER
-    /////// PROTECTED
 
     /**
      * Filtration based on text of the link
      * @param link Link about to be filtered
      * @return False for link being filtered
      */
-    protected static boolean linkFilter(String link) {
+    private static boolean linkFilter(String link) {
         if (link.contains("etuje")) {
             System.out.println("Link vyřazen: etuje - " + link);
             return false;
@@ -307,7 +285,7 @@ public class MetalScraper extends Scraper {
         return false;
     }
 
-    protected void linkFilterWrapper(final Link link) {
+    private void linkFilterWrapper(final Link link) {
         if ( link == null || !linkFilter( link.getUrl() ) ) {
             return;
         }
