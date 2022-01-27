@@ -43,29 +43,18 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, Producer producer, Form form, Metal metal, double grams, int year, List<Link> links) {
+    public Product(String name, Producer producer, Form form, Metal metal, double grams, int year) {
         this.name = name;
         this.producer = producer;
         this.form = form;
         this.metal = metal;
         this.grams = grams;
         this.year = year;
-        this.links = links;
+        this.links = new ArrayList<>();
         this.latestPrices = new ArrayList<>();
         this.prices = new ArrayList<>();
     }
 
-    public Product(String name, Producer producer, Form form, Metal metal, double grams, int year, List<Link> links, List<Price> latestPrices, List<Price> prices) {
-        this.name = name;
-        this.producer = producer;
-        this.form = form;
-        this.metal = metal;
-        this.grams = grams;
-        this.year = year;
-        this.links = links;
-        this.latestPrices = latestPrices;
-        this.prices = prices;
-    }
 
     public Price getLatestPriceByDealer(Dealer dealer) {
         return this.latestPrices.stream()

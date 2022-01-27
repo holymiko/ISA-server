@@ -4,6 +4,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Link;
+import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
 import home.holymiko.InvestmentScraperApp.Server.Service.PortfolioService;
@@ -33,13 +34,15 @@ public class SilverumScraper extends MetalScraper {
     public SilverumScraper(LinkService linkService,
                            PriceService priceService,
                            ProductService productService,
-                           PortfolioService portfolioService) {
+                           PortfolioService portfolioService,
+                           LinkMapper linkMapper) {
         super(
                 Dealer.SILVERUM,
                 linkService,
                 priceService,
                 portfolioService,
                 productService,
+                linkMapper,
                 new ArrayList<>(
                         Collections.singletonList(
                                 SEARCH_URL_GOLD

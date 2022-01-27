@@ -4,6 +4,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
+import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +29,15 @@ public class BessergoldScraper extends MetalScraper {
     public BessergoldScraper(LinkService linkService,
                              PriceService priceService,
                              ProductService productService,
-                             PortfolioService portfolioService) {
+                             PortfolioService portfolioService,
+                             LinkMapper linkMapper) {
         super(
                 Dealer.BESSERGOLD,
                 linkService,
                 priceService,
                 portfolioService,
                 productService,
+                linkMapper,
                 new ArrayList<>(
                         Collections.singletonList(
                                 SEARCH_URL_GOLD

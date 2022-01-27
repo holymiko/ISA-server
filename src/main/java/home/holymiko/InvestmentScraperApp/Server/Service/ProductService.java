@@ -86,43 +86,10 @@ public class ProductService {
         return this.productRepository.findProductByProducerAndMetalAndFormAndGramsAndYear(producer, metal, form, grams, year);
     }
 
-//    public Optional<Product> findById(Long id) {
-//        return this.productRepository.findById(id);
-//    }
-
-//    public Optional<Product> findByLink(Link link) {
-//        return this.productRepository.findByLinks(link);
-//    }
-
-//    public List<Product> findAll() {
-//        return this.productRepository.findAll();
-//    }
-
-//    public List<Product> findProducts(List<Long> investmentIds) {
-//        List<Product> investments = new ArrayList<>();
-//        for (Long id : investmentIds) {
-//            Optional<Product> optionalProduct = this.productRepository.findById(id);
-//            if(optionalProduct.isPresent()){
-//                investments.add(optionalProduct.get());
-//            } else {
-//                System.out.println("Product by ID does exist");
-//            }
-//        }
-//        return investments;
-//    }
-
-//    public List<Price> findProductPrices(Long id) {
-//        Optional<Product> product = this.productRepository.findById(id);
-//        if (product.isPresent()) {
-//            return product.get().getPrices();
-//        }
-//        return new ArrayList<>();
-//    }
-
     /////////// SAVE
 
     @Transactional
-    public void save(Product product) {
+    public void save(@NotNull Product product) throws NullPointerException {
         if(product == null) {
             throw new NullPointerException();
         }
@@ -131,21 +98,63 @@ public class ProductService {
 
     /**
      * Price is added to Product. LatestPrice is updated.
-     * @param product Product where the Price gonna be added
+     * @param productId Product where the Price gonna be added
      * @param price Price already saved in DB, which should be added to Product
      * @throws NullPointerException For null value in one of the parameters
      */
     @Transactional
-    public void updatePrice(@NotNull Product product, @NotNull Price price) throws NullPointerException {
+    public void updatePrice(@NotNull Long productId, @NotNull Price price) throws NullPointerException, IllegalArgumentException {
+        final Product product;
         final List<Price> priceList;
 
-        if(product == null || price == null) {
-            throw new NullPointerException();
+        if(productId == null) {
+            throw new NullPointerException("ProductId cannot be null");
         }
+        if(price == null) {
+            throw new NullPointerException("Price cannot be null");
+        }
+
+        product = productRepository.findById(productId)
+                .orElseThrow(IllegalArgumentException::new);
+
         priceList = product.getPrices();
         priceList.add(price);
         product.setLatestPrice(price);
         product.setPrices(priceList);
         this.productRepository.save(product);
     }
+
+
+
+/*
+    public Optional<Product> findByLink(Link link) {
+        return this.productRepository.findByLinks(link);
+    }
+
+    public List<Product> findAll() {
+        return this.productRepository.findAll();
+    }
+
+    public List<Product> findProducts(List<Long> investmentIds) {
+        List<Product> investments = new ArrayList<>();
+        for (Long id : investmentIds) {
+            Optional<Product> optionalProduct = this.productRepository.findById(id);
+            if(optionalProduct.isPresent()){
+                investments.add(optionalProduct.get());
+            } else {
+                System.out.println("Product by ID does exist");
+            }
+        }
+        return investments;
+    }
+
+    public List<Price> findProductPrices(Long id) {
+        Optional<Product> product = this.productRepository.findById(id);
+        if (product.isPresent()) {
+            return product.get().getPrices();
+        }
+        return new ArrayList<>();
+    }
+
+ */
 }

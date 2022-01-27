@@ -23,12 +23,5 @@ public abstract class InvestmentStockMapper {
     @Mapping(target = "stockDTO", expression = PRODUCT_DTO_ALL_PRICES)
     public abstract InvestmentStockDTO_StockDTO toDTO_StockDTO(InvestmentStock entity);
 
-    public List<InvestmentStockDTO_StockDTO> toDTO_StockDTOs(List<InvestmentStock> entities) {
-        return entities.stream()
-                .map(
-                        this::toDTO_StockDTO
-                )
-                .collect(Collectors.toList());
-    }
-
+    public abstract List<InvestmentStockDTO_StockDTO> toDTO_StockDTO(List<InvestmentStock> entities);
 }

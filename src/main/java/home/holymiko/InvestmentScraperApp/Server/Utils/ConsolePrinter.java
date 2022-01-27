@@ -89,7 +89,7 @@ public class ConsolePrinter {
     public static void printTimeStamp() {
         System.out.print(">> ");
         System.out.print(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new java.util.Date()));
-        System.out.print(" <<");
+        System.out.println(" <<");
     }
 
     private static Integer getPercentage(final double tickerStateCount, final double sum) {

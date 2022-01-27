@@ -15,7 +15,7 @@ public abstract class PortfolioMapper {
 
     private static final String VALUE = "java( portfolio.getPortfolioValue() )";
     private static final String INVESTMENT_COUNT = "java( portfolio.getInvestmentMetals().size() + portfolio.getInvestmentStocks().size() )";
-    private static final String INVESTMENT_STOCK_DTO = "java( investmentStockMapper.toDTO_StockDTOs(portfolio.getInvestmentStocks()) )";
+    private static final String INVESTMENT_STOCK_DTO = "java( investmentStockMapper.toDTO_StockDTO(portfolio.getInvestmentStocks()) )";
     private static final String INVESTMENT_METAL_DTO_ALL_PRICES = "java( investmentMetalMapper.toDTO_AllPrices(portfolio.getInvestmentMetals()) )";
     private static final String INVESTMENT_METAL_DTO_LATEST_PRICES = "java( investmentMetalMapper.toDTO_LatestPrices(portfolio.getInvestmentMetals()) )";
     private static final String INVESTMENT_METAL_DTO_ONE_LATEST_PRICE = "java( investmentMetalMapper.toDTO_OneLatestPrice(portfolio.getInvestmentMetals()) )";

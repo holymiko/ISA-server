@@ -2,12 +2,14 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.advanced.PortfolioDTO_ProductDTO;
+import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.simple.ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Producer;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
+import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
@@ -16,7 +18,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,6 +28,7 @@ public class MetalScraper extends Scraper {
     protected final PriceService priceService;
     protected final PortfolioService portfolioService;
     protected final ProductService productService;
+    protected final LinkMapper linkMapper;
 
     // Used for Polymorphic calling
     protected final Map< Metal, List<String>> searchUrlMap = new HashMap<>();
@@ -39,13 +41,23 @@ public class MetalScraper extends Scraper {
     private final String xPathBuyPrice;
     private final String xPathRedemptionPrice;
 
-    public MetalScraper(Dealer dealer, LinkService linkService, PriceService priceService, PortfolioService portfolioService, ProductService productService, List<String> searchUrlGold, List<String> searchUrlSilver, List<String> searchUrlPlatinum, List<String> searchUrlPalladium, String xPathProductList, String xPathProductName, String xPathBuyPrice, String xPathRedemptionPrice) {
+    public MetalScraper(
+            Dealer dealer,
+            LinkService linkService,
+            PriceService priceService,
+            PortfolioService portfolioService,
+            ProductService productService,
+            LinkMapper linkMapper,
+            List<String> searchUrlGold, List<String> searchUrlSilver, List<String> searchUrlPlatinum, List<String> searchUrlPalladium,
+            String xPathProductList, String xPathProductName, String xPathBuyPrice, String xPathRedemptionPrice
+    ) {
         super();
         this.dealer = dealer;
         this.linkService = linkService;
         this.priceService = priceService;
         this.portfolioService = portfolioService;
         this.productService = productService;
+        this.linkMapper = linkMapper;
         this.xPathProductList = xPathProductList;
         this.xPathProductName = xPathProductName;
         this.xPathBuyPrice = xPathBuyPrice;
@@ -65,13 +77,13 @@ public class MetalScraper extends Scraper {
      * Scraps products based on Links from DB
      */
     public void allProducts() {
-        productsOrPricesScrap( linkService.findAll() );
+        productsOrPricesScrap( linkMapper.toDTO(linkService.findAll()) );
         ConsolePrinter.printTimeStamp();
         System.out.println("All products scraped");
     }
 
     public void productByDealer() {
-        productsOrPricesScrap( linkService.findByDealer(dealer) );
+        productsOrPricesScrap( linkMapper.toDTO(linkService.findByDealer(dealer)) );
     }
 
     public void productByPortfolio(long portfolioId) throws ResponseStatusException {
@@ -82,25 +94,25 @@ public class MetalScraper extends Scraper {
         }
 
         // Set prevents one Product to be scrapped more times
-        Set<Link> linkSet = optionalPortfolio.get().getInvestmentsMetal()
+        Set<LinkDTO> linkSet = optionalPortfolio.get().getInvestmentsMetal()
                 .stream()
                 .map(
                         investment -> linkService.findByDealerAndProductId(dealer, investment.getProductDTO().getId())
                 ).filter(
                         Optional::isPresent
                 ).map(
-                        Optional::get
+                        optionalLink -> linkMapper.toDTO(optionalLink.get())
                 ).collect(
                         Collectors.toSet()
                 );
 
         productsOrPricesScrap( new ArrayList<>(linkSet) );
-        System.out.println(">> " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()) + " <<");
+        ConsolePrinter.printTimeStamp();
     }
 
     /////// PRIVATE
 
-    private void productScrap(Link link) throws DataIntegrityViolationException {
+    private void productScrap(LinkDTO link) {
         String name = "";
         final int year;
         final double grams;
@@ -139,10 +151,11 @@ public class MetalScraper extends Scraper {
 
         // New product saved
         if(products.isEmpty() || isNameSpecial(name)) {
-            final Product product = new Product(name, producer, form, metal, grams, year, Collections.singletonList(link));
+            final Product product = new Product(name, producer, form, metal, grams, year);
             productService.save(product);
-            link.setProduct(product);
-            linkService.save(link);
+            link = linkMapper.toDTO(
+                    linkService.updateProduct(link.getId(), product)
+            );
             priceScrap(link);
             System.out.println(">> Product saved");
             return;
@@ -153,9 +166,9 @@ public class MetalScraper extends Scraper {
         // TODO Number in condition should somehow correspond with number of active dealers
         if (products.size() == 1) {
             final Product product = products.get(0);
-            product.getLinks().add(link);
-            link.setProduct(product);
-            linkService.save(link);
+            link = linkMapper.toDTO(
+                    linkService.updateProduct(link.getId(), product)
+            );
             priceScrap(link);
             return;
         }
@@ -170,7 +183,7 @@ public class MetalScraper extends Scraper {
      * Switch: Save new product / Update price of existing product
      * @param link of Product
      */
-    private void productOrPriceScrap(final Link link) {
+    private void productOrPriceScrap(final LinkDTO link) {
         Optional<Product> optionalProduct = this.productService.findByLink(link.getUrl());
 
         if (optionalProduct.isEmpty()) {
@@ -189,8 +202,8 @@ public class MetalScraper extends Scraper {
      * Prints to console.
      * @param links Optional links of Products
      */
-    private void productsOrPricesScrap(final List<Link> links) {
-        for (Link link : links) {
+    private void productsOrPricesScrap(final List<LinkDTO> links) {
+        for (LinkDTO link : links) {
             long startTime = System.nanoTime();
             productOrPriceScrap(link);
             // Sleep time is dynamic, according to time took by scrap procedure
@@ -224,7 +237,7 @@ public class MetalScraper extends Scraper {
      * Scraps new price for already known product
      * @param link Link from which the price gonna be scrapped
      */
-    protected void priceScrap(final Link link) {
+    protected void priceScrap(final LinkDTO link) {
         double buyPrice = 0.0;
         double redemptionPrice = 0.0;
         final Price price;
@@ -248,7 +261,7 @@ public class MetalScraper extends Scraper {
 
         price = new Price(LocalDateTime.now(), buyPrice, redemptionPrice, link.getDealer());
         this.priceService.save(price);
-        this.productService.updatePrice(link.getProduct(), price);
+        this.productService.updatePrice(link.getProductId(), price);
 
         System.out.println("> New price saved - " + link.getUrl());
     }
@@ -259,7 +272,7 @@ public class MetalScraper extends Scraper {
 
             // Scraps new price for this.dealer product link
             linkService.findByDealerAndProductId(dealer, productId)
-                    .ifPresent(this::priceScrap);
+                    .ifPresent( link -> priceScrap(linkMapper.toDTO(link)) );
 
             // Sleep time is dynamic, according to time took by scrap procedure
             dynamicSleepAndStatusPrint(ETHICAL_DELAY, startTime, PRINT_INTERVAL, productIds.size());
@@ -351,7 +364,7 @@ public class MetalScraper extends Scraper {
         }
 
         try {
-            linkService.save2(link);
+            linkService.save(link);
             System.out.println("Link saved");
         } catch (Exception e) {
             System.out.println( e.getMessage() );
