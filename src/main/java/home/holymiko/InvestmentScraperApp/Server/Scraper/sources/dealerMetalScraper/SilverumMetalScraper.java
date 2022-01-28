@@ -6,7 +6,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Link;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraperInterface;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,5 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper;
 
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
@@ -10,6 +12,7 @@ import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.BessergoldMetalScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.MetalScraperInterface;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.ZlatakyMetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
@@ -110,7 +113,7 @@ public class MetalScraper extends Scraper {
         final Producer producer;
         final List<Product> products;
 
-        loadPage(link.getUrl());
+        HtmlPage page = loadPage(link.getUrl());
 
         // Sends request for name of the Product. Prepares name for extraction (Extract methods)
         try {
@@ -193,6 +196,7 @@ public class MetalScraper extends Scraper {
      * @param links Optional links of Products
      */
     private void generalScrap(final List<LinkDTO> links) {
+        int counter = 0;
         for (LinkDTO link : links) {
             long startTime = System.nanoTime();
 
@@ -200,11 +204,9 @@ public class MetalScraper extends Scraper {
             generalScrap(link);
 
             // Sleep time is dynamic, according to time took by scrap procedure
-            printerCounter++;
-            ConsolePrinter.statusPrint(PRINT_INTERVAL, links.size(), printerCounter);
+            ConsolePrinter.statusPrint(PRINT_INTERVAL, links.size(), counter++);
             DynamicSleep.dynamicSleep(ETHICAL_DELAY, startTime);
         }
-        printerCounter = 0;
     }
 
 
@@ -221,7 +223,7 @@ public class MetalScraper extends Scraper {
         double redemptionPrice;
         final Price price;
 
-        loadPage(link.getUrl());
+        HtmlPage page = loadPage(link.getUrl());
 
         buyPrice = searchInter.get(link.getDealer()).scrapBuyPrice(page);
         redemptionPrice = searchInter.get(link.getDealer()).scrapRedemptionPrice(page);
@@ -244,7 +246,6 @@ public class MetalScraper extends Scraper {
                             link -> priceScrap(linkMapper.toDTO(link))
                     );
         }
-        printerCounter = 0;
     }
 
 

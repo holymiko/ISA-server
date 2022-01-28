@@ -2,7 +2,9 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.sources;
 
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.API.TxtPort.Export;
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.GrahamGrade;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
@@ -37,43 +39,51 @@ public class SerenityScraper extends Scraper {
     //////////// PUBLIC
 
     public void tickersScrap(TickerState tickerState) {
+        int counter = 0;
+        Set<Ticker> tickers = this.tickerService.findByTickerState(tickerState);
+
         System.out.println("Trying to scrap " + tickerState + " tickers");
         tickerService.printTickerStatus();
-
-        Set<Ticker> tickers = this.tickerService.findByTickerState(tickerState);
 
         // Currency filter
         // TODO THis was not working for empty stock DB
 //        tickers = filterTickersByCurrencies(tickers, new HashSet<>(Arrays.asList("USD", "EUR", "GBP", "CHF", "HKD")));
 
         for (Ticker ticker : tickers) {
+            HtmlPage page;
             long startTime = System.nanoTime();
 
-            if( !loadPage(BASE_URL + ticker.getTicker().toLowerCase(Locale.ROOT) )) {
+            // Page Not Found
+            try {
+                page = loadPage(BASE_URL + ticker.getTicker().toLowerCase(Locale.ROOT) );
+            } catch (ResourceNotFoundException e) {
                 // TODO If I lose Internet connection, Tickers in DB are false rewritten ?!
                 this.tickerService.update(ticker, TickerState.NOTFOUND);
                 System.out.println(">" + ticker.getTicker() + "<");
-            } else {
-                HtmlElement htmlElement = page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div[12]/div/div/h3/span");
-                double ratingScore = Double.parseDouble( htmlElement.asText().replace("Rating Score = ", ""));
-
-                if (ratingScore >= MIN_RATING_SCORE) {
-                    this.tickerService.update(ticker, TickerState.GOOD);
-                    try {
-                        // TODO Clean this throwing
-                        stockScrap(ticker, ratingScore);
-                    }catch (Exception ignored){}
-                } else {
-                    this.stockService.deleteByTicker(ticker);
-                    this.tickerService.update(ticker, TickerState.BAD);
-                    System.out.println(">" + ticker.getTicker() + "< Bad");
-                }
+                counter++;
+                ConsolePrinter.statusPrint(50, tickers.size(), counter);
+                DynamicSleep.dynamicSleep(ETHICAL_DELAY, startTime);
+                continue;
             }
-            printerCounter++;
-            ConsolePrinter.statusPrint(50, tickers.size(), printerCounter);
+
+            HtmlElement htmlElement = page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div[12]/div/div/h3/span");
+            double ratingScore = Double.parseDouble( htmlElement.asText().replace("Rating Score = ", ""));
+
+            if (ratingScore >= MIN_RATING_SCORE) {
+                this.tickerService.update(ticker, TickerState.GOOD);
+                try {
+                    // TODO Clean this throwing
+                    stockScrap(ticker, ratingScore);
+                } catch (Exception ignored){}
+            } else {
+                this.stockService.deleteByTicker(ticker);
+                this.tickerService.update(ticker, TickerState.BAD);
+                System.out.println(">" + ticker.getTicker() + "< Bad");
+            }
+            counter++;
+            ConsolePrinter.statusPrint(50, tickers.size(), counter);
             DynamicSleep.dynamicSleep(ETHICAL_DELAY, startTime);
         }
-        printerCounter = 0;
         tickerService.printTickerStatus();
         Export.exportTickers(tickerService.findAll());
         Export.exportStocks(stockService.findAll());

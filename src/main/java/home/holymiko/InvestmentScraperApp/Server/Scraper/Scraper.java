@@ -5,10 +5,9 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 
-public class Scraper {
+public class Scraper implements ScrapInterface {
     protected HtmlPage page;
     protected final WebClient client;
-    protected static int printerCounter = 0;
 
     public Scraper() {
         client = new WebClient();
@@ -22,18 +21,8 @@ public class Scraper {
      * @param link URL of the page
      * @return True if page was found and loaded successfully.
      */
-    protected boolean loadPage(final String link){
-        // TODO instead of boolean, throw ResourceNotFoundException
-        // TODO Test cases: No connection, 404 page, etc.
-        page = null;
-        try {
-            page = client.getPage(link);                // Product page
-        } catch (Exception e)  {
-//            e.printStackTrace();
-            return false;
-        }
-//        assert page != null;
-        return page.getWebResponse().getStatusCode() != 404;
+    protected HtmlPage loadPage(final String link) throws ResourceNotFoundException {
+        return loadPage(client, link);
     }
 
     protected TextPage loadTextPage(final String link) {
