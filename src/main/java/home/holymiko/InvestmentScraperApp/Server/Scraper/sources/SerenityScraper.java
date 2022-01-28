@@ -1,7 +1,5 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper.sources;
 
-import com.gargoylesoftware.htmlunit.html.DomText;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.API.TxtPort.Export;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
@@ -21,7 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class SerenityScraper extends Client {
+public class SerenityScraper extends Client implements SerenityScraperInterface {
     private static final double MIN_RATING_SCORE = 6.5;
     private static final long ETHICAL_DELAY = 1000;
     private static final String BASE_URL = "https://www.serenitystocks.com/stock/";
@@ -66,8 +64,9 @@ public class SerenityScraper extends Client {
                 continue;
             }
 
-            HtmlElement htmlElement = page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div[12]/div/div/h3/span");
-            double ratingScore = Double.parseDouble( htmlElement.asText().replace("Rating Score = ", ""));
+            double ratingScore = Double.parseDouble(
+                    scrapRatingScore(page).replace("Rating Score = ", "")
+            );
 
             if (ratingScore >= MIN_RATING_SCORE) {
                 this.tickerService.update(ticker, TickerState.GOOD);
@@ -96,31 +95,29 @@ public class SerenityScraper extends Client {
         List<Double> results = new ArrayList<>();          // Graham Results
         GrahamGrade grade = null;
 
-        String header = ((HtmlElement) page.getFirstByXPath("/html/body/div[2]/div/section/h1")).asText();
-        String currency = ((DomText) page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div[9]/div/div/text()")).asText();
+        String header = scrapHeader(page);
+        String currency = scrapCurrency(page);
 
         for(int i = 2; i <= 11; i++) {
             ratings.add(
                     Convert.numberConvertSerenity(
-                            ((HtmlElement) page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div["+i+"]/div[2]/div"))
-                                    .asText()
+                            getRatingOrResult(page, i)
                     )
             );
         }
         for(int i = 2; i <= 8; i++) {
-            HtmlElement htmlElement = page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div["+i+"]/div[2]/div");
+            String htmlElement = getRatingOrResult(page, i);
             if(i == 5) {
-                grade = Convert.gradeConvert(htmlElement.asText());
+                grade = Convert.gradeConvert(htmlElement);
                 continue;
             }
             results.add(
                     Convert.numberConvertSerenity(
-                            htmlElement.asText()
+                            htmlElement
                     )
             );
         }
 
-//        printScrapStock(header, ratingScore, ratings, results, currency);
         ConsolePrinter.printScrapStockShort(header, ratingScore, results.get(5), currency);
 
         Stock stock = new Stock(
