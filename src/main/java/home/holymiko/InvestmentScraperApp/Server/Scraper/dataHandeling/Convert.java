@@ -25,12 +25,38 @@ public class Convert {
      * @return price from text
      */
     public static Double currencyToNumberConvert(String text) {
+        text = text.toLowerCase();
         text = text.replace("\u00a0", "");         // &nbsp;
         text = text.replace(" ", "");
         text = text.replace(",", ".");             // -> Double
-        text = text.replace("Kč", "");
+        text = text.replace("kč", "");
+        text = text.replace("€", "");
+        text = text.replace("$", "");
         text = text.replace("%", "");
         return Double.parseDouble(text);
+    }
+
+    /**
+     *
+     * @param text from which number gonna be extracted
+     * @param exchangeRate use exchangeRateService
+     * @param currencySignature will try to match on text param
+     * @return
+     * @throws NullPointerException
+     */
+    public static Double currencyConvert(String text, Double exchangeRate, String currencySignature) throws NullPointerException {
+        // Get number
+        Double number = currencyToNumberConvert(text);
+        if(text == null || currencySignature == null || exchangeRate == null) {
+            throw new NullPointerException("Null pointer in currencyConvert");
+        }
+        text = text.toLowerCase();
+        currencySignature = currencySignature.toLowerCase();
+        // Try to find given currency and perform conversion
+        if(text.contains(currencySignature)) {
+            return number * exchangeRate;
+        }
+        return number;
     }
 
     /**
@@ -55,7 +81,7 @@ public class Convert {
 
     /**
      * Converts String to Metal Enum class.
-     * Used case switch
+     * Works for Czech, English and German language
      * @param nameOfMetal - precise name of the metal in Czech or English. Input is CaseInsensitive
      * @return Enum
      * @throws IllegalArgumentException - No Enum was found
@@ -63,8 +89,8 @@ public class Convert {
     public static Metal metalConvert(String nameOfMetal) throws IllegalArgumentException {
         return switch (nameOfMetal.toLowerCase(Locale.ROOT)) {
             case "zlato", "gold" -> Metal.GOLD;
-            case "stříbro", "silver" -> Metal.SILVER;
-            case "platina", "platinum" -> Metal.PLATINUM;
+            case "stříbro", "silver", "silber" -> Metal.SILVER;
+            case "platina", "platinum", "platin" -> Metal.PLATINUM;
             case "palladium" -> Metal.PALLADIUM;
             default -> throw new IllegalArgumentException("Invalid Enum argument");
         };

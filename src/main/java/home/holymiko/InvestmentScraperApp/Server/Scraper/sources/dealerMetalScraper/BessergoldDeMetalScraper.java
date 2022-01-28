@@ -6,13 +6,14 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.MetalScraperInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Deprecated
 public class BessergoldDeMetalScraper implements MetalScraperInterface {
+
     private static final String SEARCH_URL_GOLD = "https://www.bessergold.de/de/gold.html?product_list_limit=all";
     private static final String SEARCH_URL_SILVER = "https://www.bessergold.de/de/silber.html?product_list_limit=all";
     private static final String SEARCH_URL_PLATINUM = "https://www.bessergold.de/de/platin.html?product_list_limit=all";
@@ -20,13 +21,18 @@ public class BessergoldDeMetalScraper implements MetalScraperInterface {
 
     private static final String X_PATH_PRODUCT_LIST = "//li[@class='item product product-item']";
     private static final String X_PATH_PRODUCT_NAME = ".//span[@class='base']";
+
+    //    private static final String X_PATH_BUY_PRICE = ".//span[@class='price-wrapper price-including-tax']/span";
     private static final String X_PATH_BUY_PRICE = ".//span[@class='price']";
     private static final String X_PATH_REDEMPTION_PRICE = ".//div[@class='vykupni-cena']";
 
-    public BessergoldDeMetalScraper() {}
+    private final double euroExchangeRate;
 
+    public BessergoldDeMetalScraper(double euroExchangeRate) {
+        this.euroExchangeRate = euroExchangeRate;
+    }
 
-    /////// PRICE
+/////// PRICE
 
     @Override
     public List<Link> scrapAllLinks(WebClient webClient) {
@@ -76,11 +82,19 @@ public class BessergoldDeMetalScraper implements MetalScraperInterface {
 
     @Override
     public double scrapBuyPrice(HtmlPage page) {
-        return scrapBuyPrice(page, X_PATH_BUY_PRICE);
+        return Convert.currencyConvert(
+                scrapBuyPrice(page, X_PATH_BUY_PRICE).replace(".", ""),
+                euroExchangeRate,
+                "€"
+        );
     }
 
     @Override
     public double scrapRedemptionPrice(HtmlPage page) {
-        return scrapRedemptionPrice(page, X_PATH_REDEMPTION_PRICE);
+        return Convert.currencyConvert(
+                scrapRedemptionPrice(page, X_PATH_REDEMPTION_PRICE).replace(".", ""),
+                euroExchangeRate,
+                "€"
+        );
     }
 }

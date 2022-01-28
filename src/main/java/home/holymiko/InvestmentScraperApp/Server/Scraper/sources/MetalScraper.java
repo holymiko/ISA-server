@@ -11,6 +11,7 @@ import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Extract;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.BessergoldDeMetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.BessergoldMetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.ZlatakyMetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
@@ -44,7 +45,8 @@ public class MetalScraper extends Client {
             PriceService priceService,
             PortfolioService portfolioService,
             ProductService productService,
-            LinkMapper linkMapper
+            LinkMapper linkMapper,
+            ExchangeRateService exchangeRateService
     ) {
         super();
         this.linkService = linkService;
@@ -53,10 +55,15 @@ public class MetalScraper extends Client {
         this.productService = productService;
         this.linkMapper = linkMapper;
 
-        searchInter.put(Dealer.BESSERGOLD_CZ, new BessergoldMetalScraper());
-//        searchInter.put(Dealer.BESSERGOLD_DE, new BessergoldDeMetalScraper());
+//        searchInter.put(Dealer.BESSERGOLD_CZ, new BessergoldMetalScraper());
+        searchInter.put(
+                Dealer.BESSERGOLD_DE,
+                new BessergoldDeMetalScraper(
+                        exchangeRateService.findFirstByCodeOrderByDateDesc("EUR").getExchangeRate()
+                )
+        );
 //        searchInter.put(Dealer.SILVERUM, new SilverumMetalScraper());
-        searchInter.put(Dealer.ZLATAKY, new ZlatakyMetalScraper());
+//        searchInter.put(Dealer.ZLATAKY, new ZlatakyMetalScraper());
     }
 
     ////////////// PRODUCT
@@ -255,53 +262,16 @@ public class MetalScraper extends Client {
         searchInter.values().forEach(
                 scraperInterface -> scraperInterface.scrapAllLinks(client)
                         .forEach(
-                                this::linkFilterWrapper
+                                link -> {
+                                        try {
+                                            linkService.save(link);
+                                            System.out.println("Link saved");
+                                        } catch (Exception e) {
+                                            System.out.println(e.getMessage());
+                                        }
+                                }
                         )
         );
-    }
-
-
-    ////////////// FILTER
-
-    /**
-     * Filtration based on text of the link
-     * @param link Link about to be filtered
-     * @return False for link being filtered
-     */
-    private static boolean linkFilter(String link) {
-        if (link.contains("etuje")) {
-            System.out.println("Link vyřazen: etuje - " + link);
-            return false;
-        }
-        if (link.contains("obalka")) {
-            System.out.println("Link vyřazen: obalka - " + link);
-            return false;
-        }
-        if (link.contains("kapsle")) {
-            System.out.println("Link vyřazen: kapsle - " + link);
-            return false;
-        }
-        if (link.contains("slit") || link.contains("minc") || link.contains("lunarni-serie-rok") || link.contains("tolar")) {
-            return true;
-        }
-        if (link.contains("goldbarren") || link.contains("krugerrand") || link.contains("sliek")) {
-            return true;
-        }
-        System.out.println("Link vyřazen: " + link);
-        return false;
-    }
-
-    private void linkFilterWrapper(final Link link) {
-        if ( link == null || !linkFilter( link.getUrl() ) ) {
-            return;
-        }
-
-        try {
-            linkService.save(link);
-            System.out.println("Link saved");
-        } catch (Exception e) {
-            System.out.println( e.getMessage() );
-        }
     }
 
     /////// PRIVATE

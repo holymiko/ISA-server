@@ -65,15 +65,43 @@ public class LinkService {
      * @throws DataIntegrityViolationException link.url already present in DB || link.url has duplicities in DB
      * @throws NullPointerException if parameter link == null
      */
-    public void save(@NotNull Link link) throws DataIntegrityViolationException, NullPointerException {
+    public void save(@NotNull Link link) throws DataIntegrityViolationException, IllegalArgumentException, NullPointerException {
         if(link == null) {
             throw new NullPointerException("Save - Link cannot be null");
         }
+
+        linkFilter( link.getUrl() );
 
         if ( linkRepository.findByUrl(link.getUrl()).isPresent() ) {
             throw new DataIntegrityViolationException("Link already in DB");
         }
         linkRepository.save(link);
+    }
+
+    /**
+     * Filtration based on text of the link
+     * @param link Link about to be filtered
+     * @return False for link being filtered
+     */
+    private static void linkFilter(String link) throws IllegalArgumentException {
+        if (link.contains("etuje") || link.contains("etui")) {
+            throw new IllegalArgumentException("Link vyřazen: etuje - " + link);
+        }
+        if (link.contains("obalka")) {
+            throw new IllegalArgumentException("Link vyřazen: obalka - " + link);
+        }
+        if (link.contains("kapsle")) {
+            throw new IllegalArgumentException("Link vyřazen: kapsle - " + link);
+        }
+        // TODO Test this
+//        if (link.contains("slit") || link.contains("minc") || link.contains("lunarni-serie-rok") || link.contains("tolar")) {
+//            return true;
+//        }
+//        if (link.contains("goldbarren") || link.contains("krugerrand") || link.contains("sliek")) {
+//            return true;
+//        }
+//        System.out.println("Link vyřazen: " + link);
+//        return false;
     }
 
 }

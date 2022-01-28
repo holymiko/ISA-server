@@ -83,6 +83,9 @@ public class Extract {
      */
     public static Form formExtract(String text) throws IllegalArgumentException {
         text = text.toLowerCase();
+        if(text.contains("münzbarren")) {
+            return Form.MÜNZBARREN;
+        }
         if(text.contains("combibar") || text.contains("multidisc") || text.contains("multigram")) {
             return Form.COMBIBAR;
         }
@@ -92,7 +95,7 @@ public class Extract {
         if(text.contains("paket") || text.contains("odběr 100 ks a více")) {
             return Form.PACKET;
         }
-        if(text.contains("mince") || text.contains("coin") || text.contains("tolar")) {
+        if(text.contains("mince") || text.contains("coin") || text.contains("münze") || text.contains("tolar")) {
             return Form.COIN;
         }
         if(text.contains("kinebar")) {
@@ -206,18 +209,19 @@ public class Extract {
 
     /**.
      * Uses String.contains
-     * @param textContainingNameOfMetal of Product. Any type of text containing name of Metal. CaseInsensitive
+     * Works for Czech, English and German language
+     * @param text containing name of Metal. CaseInsensitive
      * @return metal of product
      */
-    public static Metal metalExtractor(String textContainingNameOfMetal) {
-        textContainingNameOfMetal = textContainingNameOfMetal.toLowerCase(Locale.ROOT);
-        if (textContainingNameOfMetal.contains("zlat")) {
+    public static Metal metalExtractor(String text) {
+        text = text.toLowerCase(Locale.ROOT);
+        if (text.contains("zlat") || text.contains("gold")) {
             return Metal.GOLD;
-        } else if (textContainingNameOfMetal.contains("stříbr")) {
+        } else if (text.contains("stříbr") || text.contains("silver") || text.contains("silber")) {
             return Metal.SILVER;
-        } else if (textContainingNameOfMetal.contains("platin")) {
+        } else if (text.contains("platin")) {
             return Metal.PLATINUM;
-        } else if (textContainingNameOfMetal.contains("pallad")) {
+        } else if (text.contains("pallad")) {
             return Metal.PALLADIUM;
         } else {
             throw new IllegalArgumentException("Invalid argument for Metal enum");

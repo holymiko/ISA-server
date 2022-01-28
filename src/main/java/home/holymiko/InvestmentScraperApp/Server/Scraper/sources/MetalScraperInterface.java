@@ -46,25 +46,21 @@ public interface MetalScraperInterface extends ClientInterface {
                 ).collect(Collectors.toList());
     }
 
-    default double scrapBuyPrice(HtmlPage page, String xPathBuyPrice) {
+    default String scrapBuyPrice(HtmlPage page, String xPathBuyPrice) {
         try {
-            return Convert.currencyToNumberConvert(
-                    ((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText()
-            );
+            return ((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText();
         } catch (Exception e) {
             System.out.println("WARNING - Kupni cena = 0");
         }
-        return 0.0;
+        return "0.0";
     }
 
-    default double scrapRedemptionPrice(HtmlPage page, String xPathRedemptionPrice) {
+    default String scrapRedemptionPrice(HtmlPage page, String xPathRedemptionPrice) {
         try {
-            return Convert.currencyToNumberConvert(
-                    redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice))
-            );
+            return redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice));
         } catch (Exception e) {
             System.out.println("WARNING - Vykupni cena = 0");
         }
-        return 0.0;
+        return "0.0";
     }
 }

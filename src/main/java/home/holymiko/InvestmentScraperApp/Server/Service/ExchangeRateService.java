@@ -28,6 +28,10 @@ public class ExchangeRateService {
         return exchangeRateRepository.save(exchangeRate);
     }
 
+    public ExchangeRate findFirstByCodeOrderByDateDesc(String currencySignature) {
+        return exchangeRateRepository.findFirstByCodeOrderByDateDesc(currencySignature);
+    }
+
     @Transactional
     public void delete(String code, Date date) {
         exchangeRateRepository.deleteByCodeAndDate(code, date);
@@ -36,8 +40,8 @@ public class ExchangeRateService {
     public void printExchangeRates() {
         ConsolePrinter.printExchangeRates(
                 Arrays.asList(
-                        exchangeRateRepository.findFirstByCodeOrderByDateDesc("EUR"),
-                        exchangeRateRepository.findFirstByCodeOrderByDateDesc("USD")
+                        this.findFirstByCodeOrderByDateDesc("EUR"),
+                        this.findFirstByCodeOrderByDateDesc("USD")
                 )
         );
     }

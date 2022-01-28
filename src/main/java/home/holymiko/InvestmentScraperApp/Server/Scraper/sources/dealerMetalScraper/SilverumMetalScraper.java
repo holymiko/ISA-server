@@ -6,6 +6,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Link;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.MetalScraperInterface;
 
 import java.util.ArrayList;
@@ -54,12 +55,16 @@ public class SilverumMetalScraper implements MetalScraperInterface {
 
     @Override
     public double scrapBuyPrice(HtmlPage page) {
-        return scrapBuyPrice(page, X_PATH_BUY_PRICE);
+        return Convert.currencyToNumberConvert(
+                scrapBuyPrice(page, X_PATH_BUY_PRICE)
+        );
     }
 
     @Override
     public double scrapRedemptionPrice(HtmlPage page) {
-        return scrapRedemptionPrice(page, X_PATH_REDEMPTION_PRICE);
+        return Convert.currencyToNumberConvert(
+                scrapRedemptionPrice(page, X_PATH_REDEMPTION_PRICE)
+        );
     }
 
     /////// LINK
