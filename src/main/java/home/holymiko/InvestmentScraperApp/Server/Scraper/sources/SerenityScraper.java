@@ -8,8 +8,8 @@ import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFound
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.GrahamGrade;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.Scraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.StockService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class SerenityScraper extends Scraper {
+public class SerenityScraper extends Client {
     private static final double MIN_RATING_SCORE = 6.5;
     private static final long ETHICAL_DELAY = 1000;
     private static final String BASE_URL = "https://www.serenitystocks.com/stock/";
@@ -73,7 +73,7 @@ public class SerenityScraper extends Scraper {
                 this.tickerService.update(ticker, TickerState.GOOD);
                 try {
                     // TODO Clean this throwing
-                    stockScrap(ticker, ratingScore);
+                    stockScrap(page, ticker, ratingScore);
                 } catch (Exception ignored){}
             } else {
                 this.stockService.deleteByTicker(ticker);
@@ -91,7 +91,7 @@ public class SerenityScraper extends Scraper {
 
     //////////// PRIVATE
 
-    private void stockScrap(final Ticker ticker, final Double ratingScore) {
+    private void stockScrap(final HtmlPage page, final Ticker ticker, final Double ratingScore) {
         List<Double> ratings = new ArrayList<>();          // Graham Ratings
         List<Double> results = new ArrayList<>();          // Graham Results
         GrahamGrade grade = null;

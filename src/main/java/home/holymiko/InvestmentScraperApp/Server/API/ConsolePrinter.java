@@ -49,7 +49,7 @@ public class ConsolePrinter {
         final double totalTickers = sum + newTickerCount;
 
         System.out.println();
-        System.out.println("Serenity Scraper");
+        System.out.println("Serenity Client");
         System.out.println("-----------------------------------------------------------------");
         System.out.format("Good:     %12d  %3d%s%n", Math.round(good), getPercentage(good, sum), "%");
         System.out.format("Bad:      %12d  %3d%s%n", Math.round(bad), getPercentage(bad, sum), "%");

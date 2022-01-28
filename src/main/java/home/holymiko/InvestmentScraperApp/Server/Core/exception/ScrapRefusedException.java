@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @SuppressWarnings("serial")
-@ResponseStatus(value = HttpStatus.IM_USED, reason = "Scraper is in use")
+@ResponseStatus(value = HttpStatus.IM_USED, reason = "Client is in use")
 public class ScrapRefusedException extends RuntimeException {
     public ScrapRefusedException() {
     }

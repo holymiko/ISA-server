@@ -1,4 +1,4 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper;
+package home.holymiko.InvestmentScraperApp.Server.Scraper;
 
 
 import com.gargoylesoftware.htmlunit.WebClient;

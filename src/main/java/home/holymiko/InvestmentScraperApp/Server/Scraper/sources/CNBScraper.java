@@ -3,7 +3,7 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.sources;
 import com.gargoylesoftware.htmlunit.TextPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.ExchangeRate;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.Scraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
 import home.holymiko.InvestmentScraperApp.Server.Service.ExchangeRateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import java.sql.Date;
 Class scraping data from Czech National Bank
  */
 @Component
-public class CNBScraper extends Scraper {
+public class CNBScraper extends Client {
 
     private static final String SEARCH_URL = "https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/denni_kurz.txt";
 

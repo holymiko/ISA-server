@@ -1,6 +1,5 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper;
 
-import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.simple.LinkDTO;
@@ -12,7 +11,6 @@ import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.BessergoldMetalScraper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.MetalScraperInterface;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.ZlatakyMetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
@@ -27,7 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class MetalScraper extends Scraper {
+public class MetalScraper extends Client {
     private final LinkService linkService;
     private final PriceService priceService;
     private final PortfolioService portfolioService;

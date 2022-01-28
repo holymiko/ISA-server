@@ -54,7 +54,7 @@ public class ScrapController {
 
         ScrapHistory.startRunning();
 
-        System.out.println("Scraper ALL products");
+        System.out.println("Client ALL products");
 
         this.scrapMetal.allProducts();
 
@@ -157,7 +157,7 @@ public class ScrapController {
         ScrapHistory.frequencyHandlingAll(true);
         ScrapHistory.startRunning();
 
-        System.out.println("Scraper ALL links");
+        System.out.println("Client ALL links");
 
         // Scraps from all dealers
         this.scrapMetal.allLinksScrap();

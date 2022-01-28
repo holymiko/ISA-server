@@ -5,11 +5,11 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 
-public class Scraper implements ScrapInterface {
-    protected HtmlPage page;
+public class Client implements ClientInterface {
+
     protected final WebClient client;
 
-    public Scraper() {
+    public Client() {
         client = new WebClient();
         client.getOptions().setJavaScriptEnabled(false);
         client.getOptions().setCssEnabled(false);

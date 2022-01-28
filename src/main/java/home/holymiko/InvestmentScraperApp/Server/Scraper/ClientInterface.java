@@ -5,7 +5,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 
-public interface ScrapInterface {
+public interface ClientInterface {
 
     /**
      * Sets class variable page.
