@@ -9,6 +9,11 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class ConsolePrinter {
+    public static void statusPrint(final int interval, final int size, final int printerCounter) {
+        if ((printerCounter % interval) == 0) {
+            System.out.println(printerCounter + "/" + size + "\n");
+        }
+    }
 
     public static void printScrapStock(final String header, final Double ratingScore, final List<Double> ratings, final List<Double> results, final String currency) {
         System.out.println(header);

@@ -17,38 +17,6 @@ public class Scraper {
         client.getOptions().setPrintContentOnFailingStatusCode(false);
     }
 
-    private void sleep(final long delay) {
-        try {
-            Thread.sleep(delay);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    protected void dynamicSleepAndStatusPrint(final long ethical_delay, final long startTime, final int interval, final int size) {
-        statusPrint(interval, size);
-        dynamicSleep(ethical_delay, startTime);
-    }
-
-    /**
-     * Sleep time is dynamic, according to time took by scrap procedure
-     * @param ethical_delay Constant
-     * @param startTime Time of scrap procedure start
-     */
-    protected void dynamicSleep(final long ethical_delay, final long startTime){
-        long delay = ethical_delay - (System.nanoTime()/1_000_000 - startTime/1_000_000);
-        if(delay > 0){
-            sleep(delay);
-        }
-    }
-
-    protected static void statusPrint(final int interval, final int size) {
-        printerCounter++;
-        if ((printerCounter % interval) == 0) {
-            System.out.println(printerCounter + "/" + size + "\n");
-        }
-    }
-
     /**
      * Sets class variable page.
      * @param link URL of the page
