@@ -7,8 +7,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 public interface SerenityScraperInterface {
 
     default String getRatingOrResult(HtmlPage page, int i) {
-        return ((HtmlElement) page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div["+i+"]/div[2]/div"))
-                .asText();
+        return ((HtmlElement) page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div["+i+"]/div[2]/div")).asText();
     }
 
     default String scrapHeader(HtmlPage page) {

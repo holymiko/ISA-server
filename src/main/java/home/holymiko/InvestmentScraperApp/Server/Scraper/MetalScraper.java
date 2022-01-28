@@ -14,7 +14,6 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScra
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.ZlatakyMetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
-import home.holymiko.InvestmentScraperApp.Server.Utils.DynamicSleep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
@@ -203,7 +202,7 @@ public class MetalScraper extends Client {
 
             // Sleep time is dynamic, according to time took by scrap procedure
             ConsolePrinter.statusPrint(PRINT_INTERVAL, links.size(), counter++);
-            DynamicSleep.dynamicSleep(ETHICAL_DELAY, startTime);
+            dynamicSleep(ETHICAL_DELAY, startTime);
         }
     }
 
@@ -233,7 +232,7 @@ public class MetalScraper extends Client {
         System.out.println("> New price saved - " + link.getUrl());
 
         // Sleep time is dynamic, according to time took by scrap procedure
-        DynamicSleep.dynamicSleep(ETHICAL_DELAY, startTime);
+        dynamicSleep(ETHICAL_DELAY, startTime);
     }
 
     public void scrapProductByIdList(final List<Long> productIds) {

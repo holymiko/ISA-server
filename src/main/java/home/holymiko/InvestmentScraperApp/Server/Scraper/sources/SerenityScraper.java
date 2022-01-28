@@ -11,7 +11,6 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Service.StockService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
-import home.holymiko.InvestmentScraperApp.Server.Utils.DynamicSleep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -60,7 +59,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
                 System.out.println(">" + ticker.getTicker() + "<");
                 counter++;
                 ConsolePrinter.statusPrint(50, tickers.size(), counter);
-                DynamicSleep.dynamicSleep(ETHICAL_DELAY, startTime);
+                dynamicSleep(ETHICAL_DELAY, startTime);
                 continue;
             }
 
@@ -81,7 +80,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
             }
             counter++;
             ConsolePrinter.statusPrint(50, tickers.size(), counter);
-            DynamicSleep.dynamicSleep(ETHICAL_DELAY, startTime);
+            dynamicSleep(ETHICAL_DELAY, startTime);
         }
         tickerService.printTickerStatus();
         Export.exportTickers(tickerService.findAll());
