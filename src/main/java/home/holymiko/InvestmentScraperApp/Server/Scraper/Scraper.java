@@ -12,10 +12,6 @@ public class Scraper {
 
     public Scraper() {
         client = new WebClient();
-        setClient();
-    }
-
-    private void setClient() {
         client.getOptions().setJavaScriptEnabled(false);
         client.getOptions().setCssEnabled(false);
         client.getOptions().setPrintContentOnFailingStatusCode(false);
@@ -40,10 +36,7 @@ public class Scraper {
      * @param startTime Time of scrap procedure start
      */
     protected void dynamicSleep(final long ethical_delay, final long startTime){
-
-        // Sleep time is dynamic, according to time took by scrap procedure
         long delay = ethical_delay - (System.nanoTime()/1_000_000 - startTime/1_000_000);
-//        System.out.println("Delay "+delay);
         if(delay > 0){
             sleep(delay);
         }
