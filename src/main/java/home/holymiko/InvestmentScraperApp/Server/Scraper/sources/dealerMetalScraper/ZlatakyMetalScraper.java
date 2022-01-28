@@ -34,12 +34,12 @@ public class ZlatakyMetalScraper implements MetalScraperInterface {
     @Override
     public List<Link> scrapAllLinks(WebClient webClient) {
         List<Link> elements = new ArrayList<>();
-        elements.addAll(scrapLinks(webClient, SEARCH_URL_GOLD_BAR));
-        elements.addAll(scrapLinks(webClient, SEARCH_URL_GOLD_COIN));
-        elements.addAll(scrapLinks(webClient, SEARCH_URL_SILVER_BAR));
-        elements.addAll(scrapLinks(webClient, SEARCH_URL_SILVER_COIN));
-        elements.addAll(scrapLinks(webClient, SEARCH_URL_PLATINUM));
-        elements.addAll(scrapLinks(webClient, SEARCH_URL_PALLADIUM));
+        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_GOLD_BAR)));
+        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_GOLD_COIN)));
+        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_SILVER_BAR)));
+        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_SILVER_COIN)));
+        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_PLATINUM)));
+        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_PALLADIUM)));
         return elements;
 
     }
@@ -72,7 +72,7 @@ public class ZlatakyMetalScraper implements MetalScraperInterface {
 
     @Override
     public double scrapRedemptionPrice(HtmlPage page) {
-        return scrapRedemptionTime(page, X_PATH_REDEMPTION_PRICE);
+        return scrapRedemptionPrice(page, X_PATH_REDEMPTION_PRICE);
     }
 
     /////// LINK

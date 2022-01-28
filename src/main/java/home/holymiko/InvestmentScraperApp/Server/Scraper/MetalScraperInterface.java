@@ -4,6 +4,7 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 
@@ -11,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public interface MetalScraperInterface {
+public interface MetalScraperInterface extends ClientInterface {
 
     List<Link> scrapAllLinks(WebClient client);
 
@@ -35,16 +36,10 @@ public interface MetalScraperInterface {
     /**
      * Finds list of elements, based on class variable xPathProductList
      * For each calls scrapLink abstract method.
-     * @param searchUrlList URL of page, where the search will be done
+     * @param page
      * @return
      */
-    default List<Link> scrapLinks(WebClient client, String searchUrlList) {
-        HtmlPage page;
-        try {
-            page = client.getPage(searchUrlList);
-        } catch (IOException e) {
-            return null;
-        }
+    default List<Link> scrapLinks(HtmlPage page) {
         // Scraps new link for each element
         return scrapProductList(page).stream()
                 .map(
@@ -63,7 +58,7 @@ public interface MetalScraperInterface {
         return 0.0;
     }
 
-    default double scrapRedemptionTime(HtmlPage page, String xPathRedemptionPrice) {
+    default double scrapRedemptionPrice(HtmlPage page, String xPathRedemptionPrice) {
         try {
             return Convert.currencyToNumberConvert(
                     redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice))

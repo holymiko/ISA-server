@@ -73,7 +73,7 @@ public class SerenityScraper extends Client {
                 this.tickerService.update(ticker, TickerState.GOOD);
                 try {
                     // TODO Clean this throwing
-                    stockScrap(page, ticker, ratingScore);
+                    scrapStock(page, ticker, ratingScore);
                 } catch (Exception ignored){}
             } else {
                 this.stockService.deleteByTicker(ticker);
@@ -91,7 +91,7 @@ public class SerenityScraper extends Client {
 
     //////////// PRIVATE
 
-    private void stockScrap(final HtmlPage page, final Ticker ticker, final Double ratingScore) {
+    private void scrapStock(final HtmlPage page, final Ticker ticker, final Double ratingScore) {
         List<Double> ratings = new ArrayList<>();          // Graham Ratings
         List<Double> results = new ArrayList<>();          // Graham Results
         GrahamGrade grade = null;

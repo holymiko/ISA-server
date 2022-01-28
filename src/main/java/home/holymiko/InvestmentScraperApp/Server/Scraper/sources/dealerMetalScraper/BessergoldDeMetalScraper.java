@@ -30,10 +30,10 @@ public class BessergoldDeMetalScraper implements MetalScraperInterface {
     @Override
     public List<Link> scrapAllLinks(WebClient webClient) {
         List<Link> elements = new ArrayList<>();
-        elements.addAll(scrapLinks(webClient, SEARCH_URL_GOLD));
-        elements.addAll(scrapLinks(webClient, SEARCH_URL_SILVER));
-        elements.addAll(scrapLinks(webClient, SEARCH_URL_PLATINUM));
-        elements.addAll(scrapLinks(webClient, SEARCH_URL_PALLADIUM));
+        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_GOLD)));
+        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_SILVER)));
+        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_PLATINUM)));
+        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_PALLADIUM)));
         return elements;
     }
 
@@ -66,6 +66,7 @@ public class BessergoldDeMetalScraper implements MetalScraperInterface {
     public Link scrapLink(HtmlElement elementProduct) {
         HtmlAnchor itemAnchor = elementProduct.getFirstByXPath(".//strong[@class='product name product-item-name']/a");
         if(itemAnchor == null) {
+            // TODO Throw
             System.out.println("Error: "+ elementProduct.asText());
             return null;
         }
@@ -79,6 +80,6 @@ public class BessergoldDeMetalScraper implements MetalScraperInterface {
 
     @Override
     public double scrapRedemptionPrice(HtmlPage page) {
-        return scrapRedemptionTime(page, X_PATH_REDEMPTION_PRICE);
+        return scrapRedemptionPrice(page, X_PATH_REDEMPTION_PRICE);
     }
 }
