@@ -11,6 +11,7 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.MetalScraperInt
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class BessergoldDeMetalScraper implements MetalScraperInterface {
     private static final String SEARCH_URL_GOLD = "https://www.bessergold.de/de/gold.html?product_list_limit=all";
     private static final String SEARCH_URL_SILVER = "https://www.bessergold.de/de/silber.html?product_list_limit=all";
