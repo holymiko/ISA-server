@@ -25,12 +25,8 @@ public class Scraper implements ScrapInterface {
         return loadPage(client, link);
     }
 
-    protected TextPage loadTextPage(final String link) {
-        try {
-            return client.getPage(link);
-        } catch (Exception e)  {
-            throw new ResourceNotFoundException("Page not found - "+link);
-        }
+    protected TextPage loadTextPage(final String link) throws ResourceNotFoundException {
+        return loadTextPage(client, link);
     }
 
 }
