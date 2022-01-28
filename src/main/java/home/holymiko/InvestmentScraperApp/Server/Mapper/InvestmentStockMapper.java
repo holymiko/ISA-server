@@ -1,14 +1,13 @@
 package home.holymiko.InvestmentScraperApp.Server.Mapper;
 
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.advanced.InvestmentStockDTO_StockDTO;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.simple.InvestmentStockDTO;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.InvestmentStock;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.InvestmentStockDTO_StockDTO;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.simple.InvestmentStockDTO;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.InvestmentStock;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class InvestmentStockMapper {

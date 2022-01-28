@@ -1,6 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling;
 
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.*;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.*;
 
 import java.time.Year;
 import java.util.Locale;

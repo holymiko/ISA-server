@@ -1,9 +1,9 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapRefusedException;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.TickerState;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Metal;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;

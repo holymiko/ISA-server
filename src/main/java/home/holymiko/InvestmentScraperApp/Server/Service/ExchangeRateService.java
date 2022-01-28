@@ -1,6 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.ExchangeRate;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.ExchangeRate;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.ExchangeRateRepository;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;

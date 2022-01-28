@@ -4,12 +4,10 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.sources;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.Link;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.ClientInterface;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 

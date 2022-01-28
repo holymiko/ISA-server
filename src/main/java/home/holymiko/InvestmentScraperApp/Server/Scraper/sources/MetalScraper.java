@@ -1,13 +1,13 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper.sources;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.advanced.PortfolioDTO_ProductDTO;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.DTO.simple.LinkDTO;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Dealer;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Form;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Metal;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Enum.Producer;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.*;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.PortfolioDTO_ProductDTO;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.simple.LinkDTO;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Form;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Metal;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Producer;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Extract;

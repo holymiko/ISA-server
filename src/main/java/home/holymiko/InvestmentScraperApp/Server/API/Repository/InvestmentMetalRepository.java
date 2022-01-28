@@ -1,7 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Repository;
 
 
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.InvestmentMetal;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.InvestmentMetal;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

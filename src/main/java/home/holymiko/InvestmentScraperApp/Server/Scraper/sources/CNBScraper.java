@@ -2,7 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.sources;
 
 import com.gargoylesoftware.htmlunit.TextPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
-import home.holymiko.InvestmentScraperApp.Server.DataRepresentation.Entity.ExchangeRate;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.ExchangeRate;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
 import home.holymiko.InvestmentScraperApp.Server.Service.ExchangeRateService;
 import org.springframework.beans.factory.annotation.Autowired;
