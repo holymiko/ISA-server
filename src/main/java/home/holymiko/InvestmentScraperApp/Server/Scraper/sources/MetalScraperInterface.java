@@ -2,9 +2,11 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.sources;
 
 
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Link;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.ClientInterface;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 
@@ -21,16 +23,20 @@ public interface MetalScraperInterface extends ClientInterface {
 
     List<HtmlElement> scrapProductList(HtmlPage page);
 
-    double scrapBuyPrice(HtmlPage page);
+    double scrapBuyPrice(HtmlPage productDetailPage);
 
     double scrapRedemptionPrice(HtmlPage page);
 
-    /**
-     *
-     * @param elementProduct - HtmlElement of page listing products
-     * @return
-     */
     Link scrapLink(HtmlElement elementProduct);
+
+    default Link scrapLink(HtmlElement elementProduct, String xPathToLink, Dealer dealer, String baseUrl) {
+        HtmlAnchor itemAnchor = elementProduct.getFirstByXPath(xPathToLink);
+        if(itemAnchor == null) {
+            System.out.println("Error: "+ elementProduct.asText());
+            return null;
+        }
+        return new Link(dealer, baseUrl + itemAnchor.getHrefAttribute());
+    }
 
     /**
      * Finds list of elements, based on class variable xPathProductList

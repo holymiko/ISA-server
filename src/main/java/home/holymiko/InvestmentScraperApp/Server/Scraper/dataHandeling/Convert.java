@@ -24,7 +24,7 @@ public class Convert {
      * @param text text including only number and currency
      * @return price from text
      */
-    public static Double currencyToNumberConvert(String text) {
+    public static Double currencyToNumberConvert(String text) throws NumberFormatException{
         text = text.toLowerCase();
         text = text.replace("\u00a0", "");         // &nbsp;
         text = text.replace(" ", "");

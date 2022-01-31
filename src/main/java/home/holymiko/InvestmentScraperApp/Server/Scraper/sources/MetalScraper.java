@@ -1,6 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper.sources;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
@@ -13,6 +14,7 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.BessergoldDeMetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.BessergoldMetalScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.SilverumMetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.ZlatakyMetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
@@ -56,13 +58,14 @@ public class MetalScraper extends Client {
         this.linkMapper = linkMapper;
 
 //        searchInter.put(Dealer.BESSERGOLD_CZ, new BessergoldMetalScraper());
-        searchInter.put(
-                Dealer.BESSERGOLD_DE,
-                new BessergoldDeMetalScraper(
-                        exchangeRateService.findFirstByCodeOrderByDateDesc("EUR").getExchangeRate()
-                )
-        );
-//        searchInter.put(Dealer.SILVERUM, new SilverumMetalScraper());
+//        searchInter.put(
+//                Dealer.BESSERGOLD_DE,
+//                new BessergoldDeMetalScraper(
+//                        // Insert currency exchange rate for conversion to CZK
+//                        exchangeRateService.findFirstByCodeOrderByDateDesc("EUR").getExchangeRate()
+//                )
+//        );
+        searchInter.put(Dealer.SILVERUM, new SilverumMetalScraper());
 //        searchInter.put(Dealer.ZLATAKY, new ZlatakyMetalScraper());
     }
 
@@ -110,6 +113,7 @@ public class MetalScraper extends Client {
     /////// PRIVATE
 
     private void productScrap(LinkDTO link) {
+        HtmlPage page;
         String name = "";
         final int year;
         final double grams;
@@ -118,7 +122,11 @@ public class MetalScraper extends Client {
         final Producer producer;
         final List<Product> products;
 
-        HtmlPage page = loadPage(link.getUrl());
+        try {
+            page = loadPage(link.getUrl());
+        } catch (ResourceNotFoundException e) {
+            return;
+        }
 
         // Sends request for name of the Product. Prepares name for extraction (Extract methods)
         try {
@@ -224,14 +232,18 @@ public class MetalScraper extends Client {
      */
     private void priceScrap(final LinkDTO link) {
         long startTime = System.nanoTime();
-        double buyPrice;
-        double redemptionPrice;
+        Double buyPrice = null;
+        Double redemptionPrice = null;
         final Price price;
 
-        HtmlPage page = loadPage(link.getUrl());
+        HtmlPage productDetailPage = loadPage(link.getUrl());
 
-        buyPrice = searchInter.get(link.getDealer()).scrapBuyPrice(page);
-        redemptionPrice = searchInter.get(link.getDealer()).scrapRedemptionPrice(page);
+        try {
+            buyPrice = searchInter.get(link.getDealer()).scrapBuyPrice(productDetailPage);
+        } catch (NumberFormatException e) {
+            System.out.println(e.getMessage());
+        }
+        redemptionPrice = searchInter.get(link.getDealer()).scrapRedemptionPrice(productDetailPage);
 
         price = new Price(LocalDateTime.now(), buyPrice, redemptionPrice, link.getDealer());
         this.priceService.save(price);

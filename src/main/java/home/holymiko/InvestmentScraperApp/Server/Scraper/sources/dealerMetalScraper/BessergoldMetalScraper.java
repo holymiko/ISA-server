@@ -59,9 +59,9 @@ public class BessergoldMetalScraper implements MetalScraperInterface {
     }
 
     @Override
-    public double scrapBuyPrice(HtmlPage page) {
+    public double scrapBuyPrice(HtmlPage productDetailPage) {
         return Convert.currencyToNumberConvert(
-                scrapBuyPrice(page, X_PATH_BUY_PRICE)
+                scrapBuyPrice(productDetailPage, X_PATH_BUY_PRICE)
         );
     }
 
@@ -77,11 +77,11 @@ public class BessergoldMetalScraper implements MetalScraperInterface {
 
     @Override
     public Link scrapLink(HtmlElement elementProduct) {
-        HtmlAnchor itemAnchor = elementProduct.getFirstByXPath(".//strong[@class='product name product-item-name']/a");
-        if(itemAnchor == null) {
-            System.out.println("Error: "+ elementProduct.asText());
-            return null;
-        }
-        return new Link(Dealer.BESSERGOLD_CZ, itemAnchor.getHrefAttribute());
+        return scrapLink(
+                elementProduct,
+                ".//strong[@class='product name product-item-name']/a",
+                Dealer.BESSERGOLD_CZ,
+                ""
+        );
     }
 }

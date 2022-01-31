@@ -71,19 +71,18 @@ public class BessergoldDeMetalScraper implements MetalScraperInterface {
 
     @Override
     public Link scrapLink(HtmlElement elementProduct) {
-        HtmlAnchor itemAnchor = elementProduct.getFirstByXPath(".//strong[@class='product name product-item-name']/a");
-        if(itemAnchor == null) {
-            // TODO Throw
-            System.out.println("Error: "+ elementProduct.asText());
-            return null;
-        }
-        return new Link(Dealer.BESSERGOLD_DE, itemAnchor.getHrefAttribute());
+        return scrapLink(
+                elementProduct,
+                ".//strong[@class='product name product-item-name']/a",
+                Dealer.BESSERGOLD_DE,
+                ""
+        );
     }
 
     @Override
-    public double scrapBuyPrice(HtmlPage page) {
+    public double scrapBuyPrice(HtmlPage productDetailPage) {
         return Convert.currencyConvert(
-                scrapBuyPrice(page, X_PATH_BUY_PRICE).replace(".", ""),
+                scrapBuyPrice(productDetailPage, X_PATH_BUY_PRICE).replace(".", ""),
                 euroExchangeRate,
                 "€"
         );

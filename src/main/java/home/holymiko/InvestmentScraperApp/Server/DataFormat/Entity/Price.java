@@ -12,14 +12,14 @@ public class Price {
 
     @Id
     private LocalDateTime dateTime;
-    private double price;
-    private double redemption;
+    private Double price;
+    private Double redemption;
     private Dealer dealer;
 
     public Price() {
     }
 
-    public Price(LocalDateTime dateTime, double price, double redemption, Dealer dealer) {
+    public Price(LocalDateTime dateTime, Double price, Double redemption, Dealer dealer) {
         this.dateTime = dateTime;
         this.price = price;
         this.redemption = redemption;

@@ -63,9 +63,9 @@ public class ZlatakyMetalScraper implements MetalScraperInterface {
         return page.getByXPath(X_PATH_PRODUCT_LIST);
     }
     @Override
-    public double scrapBuyPrice(HtmlPage page) {
+    public double scrapBuyPrice(HtmlPage productDetailPage) {
         return Convert.currencyToNumberConvert(
-                scrapBuyPrice(page, X_PATH_BUY_PRICE)
+                scrapBuyPrice(productDetailPage, X_PATH_BUY_PRICE)
         );
     }
     @Override
@@ -84,12 +84,7 @@ public class ZlatakyMetalScraper implements MetalScraperInterface {
 
     @Override
     public Link scrapLink(HtmlElement elementProduct) {
-        HtmlAnchor itemAnchor = elementProduct.getFirstByXPath(".//div/h3/a");
-        if(itemAnchor != null) {
-            return new Link(Dealer.ZLATAKY, BASE_URL + itemAnchor.getHrefAttribute());
-        }
-        System.out.println("Error: "+ elementProduct.asText());
-        return null;
+        return scrapLink(elementProduct, ".//div/h3/a", Dealer.ZLATAKY, BASE_URL);
     }
 
 }
