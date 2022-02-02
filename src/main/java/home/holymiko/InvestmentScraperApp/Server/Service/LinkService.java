@@ -44,12 +44,23 @@ public class LinkService {
         return linkRepository.findByProduct_Id(product);
     }
 
-    public Link updateProduct(@NotNull Long linkId, Product product) throws NullPointerException {
+    /**
+     * Link's product is set. Link is saved
+     * Product links are extended, but product is not saved here.
+     * @param linkId
+     * @param product
+     * @return
+     * @throws NullPointerException
+     */
+    public Link updateProduct(Long linkId, @NotNull Product product) throws NullPointerException {
         final Link link;
         final Optional<Link> optionalLink = linkRepository.findById(linkId);
 
         if(optionalLink.isEmpty()) {
-            throw new NullPointerException("Link cannot be null");
+            throw new NullPointerException("Link with given ID doesnt exist");
+        }
+        if(product == null) {
+            throw new NullPointerException("Product cannot be null");
         }
         link = optionalLink.get();
 

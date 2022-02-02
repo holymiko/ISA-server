@@ -66,17 +66,7 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-
     /////////// FIND
-
-    public List<ProductDTO_LatestPrices> findByMetal(Metal metal) {
-        return this.productRepository.findProductsByMetal(metal)
-                .stream()
-                .map(
-                        productMapper::toProductDTO_LatestPrices
-                )
-                .collect(Collectors.toList());
-    }
 
     public Optional<Product> findByLink(String link) {
         return this.productRepository.findByLinks_Url(link);
@@ -98,6 +88,7 @@ public class ProductService {
 
     /**
      * Price is added to Product. LatestPrice is updated.
+     * Product is saved.
      * @param productId Product where the Price gonna be added
      * @param price Price already saved in DB, which should be added to Product
      * @throws NullPointerException For null value in one of the parameters

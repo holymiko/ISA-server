@@ -57,16 +57,16 @@ public class MetalScraper extends Client {
         this.productService = productService;
         this.linkMapper = linkMapper;
 
-//        searchInter.put(Dealer.BESSERGOLD_CZ, new BessergoldMetalScraper());
-//        searchInter.put(
-//                Dealer.BESSERGOLD_DE,
-//                new BessergoldDeMetalScraper(
-//                        // Insert currency exchange rate for conversion to CZK
-//                        exchangeRateService.findFirstByCodeOrderByDateDesc("EUR").getExchangeRate()
-//                )
-//        );
+        searchInter.put(Dealer.BESSERGOLD_CZ, new BessergoldMetalScraper());
+        searchInter.put(
+                Dealer.BESSERGOLD_DE,
+                new BessergoldDeMetalScraper(
+                        // Insert currency exchange rate for conversion to CZK
+                        exchangeRateService.findFirstByCodeOrderByDateDesc("EUR").getExchangeRate()
+                )
+        );
         searchInter.put(Dealer.SILVERUM, new SilverumMetalScraper());
-//        searchInter.put(Dealer.ZLATAKY, new ZlatakyMetalScraper());
+        searchInter.put(Dealer.ZLATAKY, new ZlatakyMetalScraper());
     }
 
     ////////////// PRODUCT

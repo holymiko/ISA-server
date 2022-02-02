@@ -34,18 +34,6 @@ public class ProductController {
         return productService.findByIdAsDTOAllPrices(id);
     }
 
-    @GetMapping({ "/metal/{metal}", "/metal/{metal}/"})
-    public List<ProductDTO_LatestPrices> byMetal(@PathVariable String metal) {
-        System.out.println("Get products byMetal "+metal);
-        return switch (metal) {
-            case "gold" -> this.productService.findByMetal(Metal.GOLD);
-            case "silver" -> this.productService.findByMetal(Metal.SILVER);
-            case "platinum" -> this.productService.findByMetal(Metal.PLATINUM);
-            case "palladium" -> this.productService.findByMetal(Metal.PALLADIUM);
-            default -> throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        };
-    }
-
     /////// GET DTO
 
     @ResourceNotFound
