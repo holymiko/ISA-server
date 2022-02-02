@@ -171,6 +171,14 @@ public class MetalScraper extends Client {
         // TODO Number in condition should somehow correspond with number of active dealers
         if (products.size() == 1) {
             final Product product = products.get(0);
+
+//            // TODO Test the method
+//            // There should be only one link per dealer
+//            products = productService.findByParams(link.getDealer(), producer, metal, form, grams, year);
+//            if(products != 0) {
+//                throw new DataIntegrityViolationException("");
+//            }
+
             link = linkMapper.toDTO(
                     linkService.updateProduct(link.getId(), product)
             );

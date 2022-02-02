@@ -4,6 +4,7 @@ import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.ProductDTO_LatestPrices;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.*;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Producer;
@@ -68,12 +69,22 @@ public class ProductService {
 
     /////////// FIND
 
-    public Optional<Product> findByLink(String link) {
-        return this.productRepository.findByLinks_Url(link);
+    public Optional<Product> findByLink(String url) {
+        return this.productRepository.findByLinks_Url(url);
     }
 
+    @Deprecated
+    public List<Product> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year) {
+        return this.productRepository.findByParams(dealer, producer, metal, form, grams, year);
+    }
+
+    // TODO Test method find by param and replace following two methods
     public List<Product> findProductByProducerAndMetalAndFormAndGramsAndYear(Producer producer, Metal metal, Form form, double grams, int year) {
         return this.productRepository.findProductByProducerAndMetalAndFormAndGramsAndYear(producer, metal, form, grams, year);
+    }
+
+    public Optional<Product> findProductByProducerAndMetalAndFormAndGramsAndYear(Dealer dealer, Producer producer, Metal metal, Form form, double grams, int year) {
+        return this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(dealer, producer, metal, form, grams, year);
     }
 
     /////////// SAVE
