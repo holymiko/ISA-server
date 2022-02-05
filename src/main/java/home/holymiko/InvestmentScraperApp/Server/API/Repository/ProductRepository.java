@@ -24,9 +24,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Optional<Product> findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer dealer, Producer producer, Metal metal, Form form, double grams, int year);
 
-    List<Product> findProductByProducerAndMetalAndFormAndGramsAndYear(Producer producer, Metal metal, Form form, double grams, int year);
-
-    // TODO Test this
     @Query("select m from Product m where " +
             "(:dealer is null or m.id IN (SELECT l.product.id FROM Link l WHERE l.dealer = :dealer )) " +
             "and " +
@@ -48,9 +45,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("grams") Double grams,
             @Param("year") Integer year
     );
-
-//    List<Product> findProductsByMetalAndLatestPrice_PriceIsLessThanOrderByGrams(Metal metal, double maxPrice);
-
-//    List<Product> findProductsByMetalAndLatestPrice_PriceIsLessThanOrderByLatestPrice_Price(Metal metal, double maxPrice);
 
 }

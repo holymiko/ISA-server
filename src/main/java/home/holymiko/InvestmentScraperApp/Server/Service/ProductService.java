@@ -73,18 +73,8 @@ public class ProductService {
         return this.productRepository.findByLinks_Url(url);
     }
 
-    @Deprecated
     public List<Product> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year) {
         return this.productRepository.findByParams(dealer, producer, metal, form, grams, year);
-    }
-
-    // TODO Test method find by param and replace following two methods
-    public List<Product> findProductByProducerAndMetalAndFormAndGramsAndYear(Producer producer, Metal metal, Form form, double grams, int year) {
-        return this.productRepository.findProductByProducerAndMetalAndFormAndGramsAndYear(producer, metal, form, grams, year);
-    }
-
-    public Optional<Product> findProductByProducerAndMetalAndFormAndGramsAndYear(Dealer dealer, Producer producer, Metal metal, Form form, double grams, int year) {
-        return this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(dealer, producer, metal, form, grams, year);
     }
 
     /////////// SAVE

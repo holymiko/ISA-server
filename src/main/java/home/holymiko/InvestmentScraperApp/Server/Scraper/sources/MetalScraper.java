@@ -152,7 +152,7 @@ public class MetalScraper extends Client {
             return;
         }
 
-        products = productService.findProductByProducerAndMetalAndFormAndGramsAndYear(producer, metal, form, grams, year);
+        products = productService.findByParams(null, producer, metal, form, grams, year);
 
         // New product saved
         if(products.isEmpty() || isNameSpecial(name)) {
