@@ -4,10 +4,10 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.simple.LinkDTO;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.simple.ProductDTO2;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Metal;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Producer;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
@@ -115,11 +115,7 @@ public class MetalScraper extends Client {
     private void productScrap(LinkDTO link) {
         HtmlPage page;
         String name = "";
-        final int year;
-        final double grams;
-        final Form form;
-        final Metal metal;
-        final Producer producer;
+        final ProductDTO2 p;
         final List<Product> products;
 
         try {
@@ -131,8 +127,7 @@ public class MetalScraper extends Client {
         // Sends request for name of the Product. Prepares name for extraction (Extract methods)
         try {
             name = searchInter.get(link.getDealer()).scrapProductName(page);
-            name = name.toLowerCase(Locale.ROOT);
-            if(name.equals("") ) {
+            if(name == null || name.equals("") ) {
                 System.out.println("FATAL ERROR: Empty name - "+link.getUrl());
                 return;
             }
@@ -141,22 +136,20 @@ public class MetalScraper extends Client {
         }
 
         // Extraction of parameters for saving new Product/Price to DB
-        year = Extract.yearExtract(name);
-        grams = Extract.weightExtract(name);
         try {
-            form = Extract.formExtract(name);
-            metal = Extract.metalExtractor(name);
-            producer = Extract.producerExtract(name);
+            p = Extract.productAggregateExtract(name);
         } catch (IllegalArgumentException e) {
             System.out.println("FATAL ERROR: "+name +" "+link.getUrl()+" - "+e.getMessage());
             return;
         }
 
-        products = productService.findByParams(null, producer, metal, form, grams, year);
+        // Number of product for given extracted params should be within 0-1
+        // Products from different Dealers with same params are supposed to be merged into one
+        products = productService.findByParams(null, p.getProducer(), p.getMetal(), p.getForm(), p.getGrams(), p.getYear());
 
-        // New product saved
+        // New product save
         if(products.isEmpty() || isNameSpecial(name)) {
-            final Product product = new Product(name, producer, form, metal, grams, year);
+            final Product product = new Product(name, p.getProducer(), p.getForm(), p.getMetal(), p.getGrams(), p.getYear());
             productService.save(product);
             link = linkMapper.toDTO(
                     linkService.updateProduct(link.getId(), product)
@@ -175,8 +168,8 @@ public class MetalScraper extends Client {
 //            // TODO Test the method
 //            // There should be only one link per dealer
 //            products = productService.findByParams(link.getDealer(), producer, metal, form, grams, year);
-//            if(products != 0) {
-//                throw new DataIntegrityViolationException("");
+//            if(products.size() != 0) {
+//                throw new DataIntegrityViolationException("ProductScrap - Only one link per dealer related to single product allowed");
 //            }
 
             link = linkMapper.toDTO(
@@ -188,7 +181,7 @@ public class MetalScraper extends Client {
 
         throw new DataIntegrityViolationException(
                 "ERROR: Multiple Products for following params present in DB\n" +
-                name + " " +producer+" "+metal+" "+form+" "+grams+" "+link.getUrl()
+                name + " " +p.getProducer()+" "+p.getMetal()+" "+p.getForm()+" "+p.getGrams()+" "+link.getUrl()
         );
     }
 
@@ -246,6 +239,7 @@ public class MetalScraper extends Client {
 
         HtmlPage productDetailPage = loadPage(link.getUrl());
 
+        // TODO Double think about buy/redemption price data types + What to do if both are zero?
         try {
             buyPrice = searchInter.get(link.getDealer()).scrapBuyPrice(productDetailPage);
         } catch (NumberFormatException e) {

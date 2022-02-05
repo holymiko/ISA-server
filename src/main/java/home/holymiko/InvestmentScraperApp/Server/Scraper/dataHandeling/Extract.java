@@ -1,5 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling;
 
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.simple.ProductDTO2;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.*;
 
 import java.time.Year;
@@ -15,12 +16,10 @@ public class Extract {
 
     /**
      * Extracts Producer from text
-     * @param text including producer's name
+     * @param text including producer's name. LowerCase only
      * @return Enum class Producer
      */
-    public static Producer producerExtract(String text) throws IllegalArgumentException{
-        text = text.toLowerCase();
-
+    private static Producer producerExtract(String text) throws IllegalArgumentException{
         if (text.contains("perth") || text.contains("rok") || text.contains("kangaroo")
         || text.contains("kookaburra") || text.contains("koala") || text.contains("austrálie")
         || text.contains("austral") || text.contains(" emu ") || text.contains("drak a ")
@@ -78,11 +77,10 @@ public class Extract {
 
     /**
      * Extracts Form from text
-     * @param text including name of form
+     * @param text including name of form. LowerCase only
      * @return Enum class Form
      */
-    public static Form formExtract(String text) throws IllegalArgumentException {
-        text = text.toLowerCase();
+    private static Form formExtract(String text) throws IllegalArgumentException {
         if(text.contains("münzbarren")) {
             return Form.MÜNZBARREN;
         }
@@ -110,12 +108,11 @@ public class Extract {
 
     /**
      * Extracts weight from various patterns
-     * @param text including number with unit
+     * @param text including number with unit. LowerCase only
      * @return Grams
      */
-    public static double weightExtract(String text) {
+    private static double weightExtract(String text) {
 //        text = text.replace("\u00a0", "");         // &nbsp;
-        text = text.toLowerCase(Locale.ROOT);
 
         Pattern pattern = Pattern.compile("\\d+x\\d+g");
         Matcher matcher = pattern.matcher(text);
@@ -197,8 +194,7 @@ public class Extract {
         return -1;
     }
 
-    public static int yearExtract(String name) {
-        name = name.toLowerCase();
+    private static int yearExtract(String name) {
         Pattern pattern = Pattern.compile("20[12]\\d");
         Matcher matcher = pattern.matcher(name);
         if (matcher.find()) {
@@ -210,11 +206,10 @@ public class Extract {
     /**.
      * Uses String.contains
      * Works for Czech, English and German language
-     * @param text containing name of Metal. CaseInsensitive
+     * @param text containing name of Metal. LowerCase only
      * @return metal of product
      */
-    public static Metal metalExtractor(String text) {
-        text = text.toLowerCase(Locale.ROOT);
+    private static Metal metalExtractor(String text) {
         if (text.contains("zlat") || text.contains("gold")) {
             return Metal.GOLD;
         } else if (text.contains("stříbr") || text.contains("silver") || text.contains("silber")) {
@@ -226,5 +221,25 @@ public class Extract {
         } else {
             throw new IllegalArgumentException("Invalid argument for Metal enum");
         }
+    }
+
+    /**
+     *
+     * @param name CaseInsensitive
+     * @return Object includes all extracted params
+     * @throws IllegalArgumentException for failure of any param extraction
+     */
+    public static ProductDTO2 productAggregateExtract(String name) throws IllegalArgumentException {
+        String nameLow = name.toLowerCase(Locale.ROOT);
+
+        // Extraction of parameters for saving new Product/Price to DB
+        return new ProductDTO2(
+                    name,
+                    Extract.metalExtractor(nameLow),
+                    Extract.formExtract(nameLow),
+                    Extract.producerExtract(nameLow),
+                    Extract.weightExtract(nameLow),
+                    Extract.yearExtract(nameLow)
+        );
     }
 }
