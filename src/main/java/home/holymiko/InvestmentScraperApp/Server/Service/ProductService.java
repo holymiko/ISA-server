@@ -73,8 +73,12 @@ public class ProductService {
         return this.productRepository.findByLinks_Url(url);
     }
 
-    public List<Product> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year) {
-        return this.productRepository.findByParams(dealer, producer, metal, form, grams, year);
+    public List<Product> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean isSpecial) {
+        return this.productRepository.findByParams(dealer, producer, metal, form, grams, year, isSpecial);
+    }
+
+    public List<Product> findByParams(Dealer dealer, Product product) {
+        return this.productRepository.findByParams(dealer, product.getProducer(), product.getMetal(), product.getForm(), product.getGrams(), product.getYear(), product.isSpecial());
     }
 
     /////////// SAVE

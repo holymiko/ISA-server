@@ -35,7 +35,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "and " +
             "(:grams is null or m.grams = :grams) " +
             "and " +
-            "(:year is null or m.year = :year) "
+            "(:year is null or m.year = :year) " +
+            "and " +
+            "(:isSpecial is null or m.isSpecial = :isSpecial) "
     )
     List<Product> findByParams(
             @Param("dealer") Dealer dealer,
@@ -43,7 +45,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("metal") Metal metal,
             @Param("form") Form form,
             @Param("grams") Double grams,
-            @Param("year") Integer year
+            @Param("year") Integer year,
+            @Param("isSpecial") Boolean isSpecial
     );
 
 }

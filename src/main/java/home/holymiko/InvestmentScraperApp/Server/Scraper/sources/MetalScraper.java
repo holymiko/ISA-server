@@ -2,9 +2,9 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.sources;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapFailedException;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.simple.LinkDTO;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.simple.ProductDTO2;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Metal;
@@ -112,68 +112,66 @@ public class MetalScraper extends Client {
 
     /////// PRIVATE
 
-    private void productScrap(LinkDTO link) {
-        HtmlPage page;
+    private void productScrap(LinkDTO link) throws ResourceNotFoundException, ScrapFailedException, DataIntegrityViolationException{
         String name = "";
-        final ProductDTO2 p;
-        final List<Product> products;
+        final HtmlPage page;
+        final Product productExtracted;
 
-        try {
-            page = loadPage(link.getUrl());
-        } catch (ResourceNotFoundException e) {
-            return;
-        }
+        // Throws ResourceNotFoundException
+        page = loadPage(link.getUrl());
 
-        // Sends request for name of the Product. Prepares name for extraction (Extract methods)
+        // Sends request for name of the Product.
         try {
             name = searchInter.get(link.getDealer()).scrapProductName(page);
-            if(name == null || name.equals("") ) {
-                System.out.println("FATAL ERROR: Empty name - "+link.getUrl());
-                return;
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        if(name == null || name.equals("") ) {
+            throw new ScrapFailedException("Invalid name - "+link.getUrl());
+        }
+
         // Extraction of parameters for saving new Product/Price to DB
         try {
-            p = Extract.productAggregateExtract(name);
+            productExtracted = Extract.productAggregateExtract(name);
         } catch (IllegalArgumentException e) {
-            System.out.println("FATAL ERROR: "+name +" "+link.getUrl()+" - "+e.getMessage());
+            throw new ScrapFailedException("Extraction ERROR: "+name +" "+link.getUrl()+" - "+e.getMessage());
+        }
+
+        productSaveSwitch(link, productExtracted);
+    }
+
+    private void productSaveSwitch(LinkDTO link, Product productExtracted) {
+        final List<Product> nonSpecialProducts;
+
+        // Special products are saved separately
+        if(productExtracted.isSpecial()) {
+            newProduct(link, productExtracted);
             return;
         }
 
         // Number of product for given extracted params should be within 0-1
         // Products from different Dealers with same params are supposed to be merged into one
-        products = productService.findByParams(null, p.getProducer(), p.getMetal(), p.getForm(), p.getGrams(), p.getYear());
+        nonSpecialProducts = productService.findByParams(null, productExtracted);
 
         // New product save
-        if(products.isEmpty() || isNameSpecial(name)) {
-            final Product product = new Product(name, p.getProducer(), p.getForm(), p.getMetal(), p.getGrams(), p.getYear());
-            productService.save(product);
-            link = linkMapper.toDTO(
-                    linkService.updateProduct(link.getId(), product)
-            );
-            priceScrap(link);
-            System.out.println(">> Product saved");
+        if(nonSpecialProducts.isEmpty()) {
+            newProduct(link, productExtracted);
             return;
         }
 
-        // Product mapped by 2. Link
-        // Price from another dealer added to product
-        // TODO Number in condition should somehow correspond with number of active dealers
-        if (products.size() == 1) {
-            final Product product = products.get(0);
+        // Product merging
+        // Price & Link from another dealer will be added to product
+        if (nonSpecialProducts.size() == 1) {
+            final Product productFound = nonSpecialProducts.get(0);
 
-//            // TODO Test the method
-//            // There should be only one link per dealer
-//            products = productService.findByParams(link.getDealer(), producer, metal, form, grams, year);
-//            if(products.size() != 0) {
-//                throw new DataIntegrityViolationException("ProductScrap - Only one link per dealer related to single product allowed");
-//            }
+            // There should be only one link per dealer
+            if(productService.findByParams(link.getDealer(), productFound).size() != 0) {
+                throw new DataIntegrityViolationException("ProductScrap - Only one Link per Dealer related to single Product allowed");
+            }
 
             link = linkMapper.toDTO(
-                    linkService.updateProduct(link.getId(), product)
+                    linkService.updateProduct(link.getId(), productFound)
             );
             priceScrap(link);
             return;
@@ -181,8 +179,17 @@ public class MetalScraper extends Client {
 
         throw new DataIntegrityViolationException(
                 "ERROR: Multiple Products for following params present in DB\n" +
-                name + " " +p.getProducer()+" "+p.getMetal()+" "+p.getForm()+" "+p.getGrams()+" "+link.getUrl()
+                productExtracted.getName() + " " +productExtracted.getProducer()+" "+productExtracted.getMetal()+" "+productExtracted.getForm()+" "+productExtracted.getGrams()+" "+link.getUrl()
         );
+    }
+
+    private void newProduct(LinkDTO link, Product productExtracted) {
+        productService.save(productExtracted);
+        link = linkMapper.toDTO(
+                linkService.updateProduct(link.getId(), productExtracted)
+        );
+        priceScrap(link);
+        System.out.println(">> Product saved");
     }
 
     /**
@@ -196,7 +203,7 @@ public class MetalScraper extends Client {
         if (optionalProduct.isEmpty()) {
             try {
                 productScrap(link);
-            } catch (DataIntegrityViolationException e) {
+            } catch (Exception e) {
                 System.out.println( e.getMessage() );
             }
             return;
@@ -286,14 +293,6 @@ public class MetalScraper extends Client {
                                 }
                         )
         );
-    }
-
-    /////// PRIVATE
-
-    private static boolean isNameSpecial(String name) {
-        name = name.toLowerCase(Locale.ROOT);
-        return name.contains("lunární") || name.contains("výročí") || name.contains("rush") || name.contains("horečka");
-        // TODO Add attribute type to Product
     }
 
 }

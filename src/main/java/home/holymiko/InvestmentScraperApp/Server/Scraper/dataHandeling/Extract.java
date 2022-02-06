@@ -1,6 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling;
 
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.simple.ProductDTO2;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Product;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.*;
 
 import java.time.Year;
@@ -209,7 +209,7 @@ public class Extract {
      * @param text containing name of Metal. LowerCase only
      * @return metal of product
      */
-    private static Metal metalExtractor(String text) {
+    private static Metal metalExtract(String text) {
         if (text.contains("zlat") || text.contains("gold")) {
             return Metal.GOLD;
         } else if (text.contains("stříbr") || text.contains("silver") || text.contains("silber")) {
@@ -224,22 +224,30 @@ public class Extract {
     }
 
     /**
+     * @param name LowerCase only
+     * @return
+     */
+    private static boolean isNameSpecial(String name) {
+        return name.contains("lunární") || name.contains("výročí") || name.contains("rush") || name.contains("horečka");
+    }
+    /**
      *
      * @param name CaseInsensitive
      * @return Object includes all extracted params
      * @throws IllegalArgumentException for failure of any param extraction
      */
-    public static ProductDTO2 productAggregateExtract(String name) throws IllegalArgumentException {
+    public static Product productAggregateExtract(String name) throws IllegalArgumentException {
         String nameLow = name.toLowerCase(Locale.ROOT);
 
         // Extraction of parameters for saving new Product/Price to DB
-        return new ProductDTO2(
+        return new Product(
                     name,
-                    Extract.metalExtractor(nameLow),
-                    Extract.formExtract(nameLow),
-                    Extract.producerExtract(nameLow),
-                    Extract.weightExtract(nameLow),
-                    Extract.yearExtract(nameLow)
+                    producerExtract(nameLow),
+                    formExtract(nameLow),
+                    metalExtract(nameLow),
+                    weightExtract(nameLow),
+                    yearExtract(nameLow),
+                    isNameSpecial(nameLow)
         );
     }
 }

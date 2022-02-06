@@ -27,6 +27,7 @@ public class Product {
     private Metal metal;
     private double grams;
     private int year;
+    private boolean isSpecial;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
@@ -43,13 +44,14 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, Producer producer, Form form, Metal metal, double grams, int year) {
+    public Product(String name, Producer producer, Form form, Metal metal, double grams, int year, boolean isSpecial) {
         this.name = name;
         this.producer = producer;
         this.form = form;
         this.metal = metal;
         this.grams = grams;
         this.year = year;
+        this.isSpecial = isSpecial;
         this.links = new ArrayList<>();
         this.latestPrices = new ArrayList<>();
         this.prices = new ArrayList<>();
