@@ -16,4 +16,14 @@ public class LinkDTO {
         this.url = url;
         this.productId = productId;
     }
+
+    @Override
+    public String toString() {
+        return "LinkDTO{" +
+                "Id=" + Id +
+                ", dealer=" + dealer +
+                ", url='" + url + '\'' +
+                ", productId=" + productId +
+                '}';
+    }
 }

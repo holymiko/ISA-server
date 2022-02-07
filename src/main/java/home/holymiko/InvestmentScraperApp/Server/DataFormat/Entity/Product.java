@@ -118,8 +118,18 @@ public class Product {
 
     @Override
     public String toString() {
-        return name +
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", producer=" + producer +
+                ", form=" + form +
+                ", metal=" + metal +
                 ", grams=" + grams +
-                ", prices=" + prices;
+                ", year=" + year +
+                ", isSpecial=" + isSpecial +
+                ", links=" + links +
+//                ", latestPrices=" + latestPrices +
+//                ", prices=" + prices +
+                '}';
     }
 }

@@ -40,4 +40,14 @@ public class Link {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    @Override
+    public String toString() {
+        return "Link{" +
+                "Id=" + Id +
+                ", dealer=" + dealer +
+                ", url='" + url + '\'' +
+//                ", product=" + product +
+                '}';
+    }
 }
