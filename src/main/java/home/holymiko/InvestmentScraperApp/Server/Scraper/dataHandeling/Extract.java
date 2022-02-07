@@ -1,6 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling;
 
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Product;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.create.ProductCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.*;
 
 import java.time.Year;
@@ -71,6 +71,13 @@ public class Extract {
         else if (text.contains("panda")) {
             return Producer.CHINA_MINT;
         }
+        else if (text.contains("obři doby ledové")) {
+            return Producer.LEIPZIGER_EDELMETALLVERARBEITUNG_GMBH;
+        }
+        else if (text.contains("umicore")) {
+            return Producer.UMICORE;
+        }
+
 
         throw new IllegalArgumentException("Invalid argument for Producer enum");
     }
@@ -82,7 +89,7 @@ public class Extract {
      */
     private static Form formExtract(String text) throws IllegalArgumentException {
         if(text.contains("münzbarren")) {
-            return Form.MÜNZBARREN;
+            return Form.MUNZBARREN;
         }
         if(text.contains("combibar") || text.contains("multidisc") || text.contains("multigram")) {
             return Form.COMBIBAR;
@@ -114,12 +121,22 @@ public class Extract {
     private static double weightExtract(String text) {
 //        text = text.replace("\u00a0", "");         // &nbsp;
 
+        // TODO Test this: text.replace(" ", "");
+
         Pattern pattern = Pattern.compile("\\d+x\\d+g");
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
             String s = matcher.group();
             s = s.replace("g", "");
             return Integer.parseInt(s.split("x")[0]) * Integer.parseInt(s.split("x")[1]);
+        }
+
+        pattern = Pattern.compile("\\d+ x \\d+ g");
+        matcher = pattern.matcher(text);
+        if (matcher.find()) {
+            String s = matcher.group();
+            s = s.replace(" g", "");
+            return Integer.parseInt(s.split(" x ")[0]) * Integer.parseInt(s.split(" x ")[1]);
         }
 
         pattern = Pattern.compile("\\d+ x \\d+g");
@@ -228,7 +245,24 @@ public class Extract {
      * @return
      */
     private static boolean isNameSpecial(String name) {
-        return name.contains("lunární") || name.contains("výročí") || name.contains("rush") || name.contains("horečka");
+        return isNameSpecialCZ(name) || isNameSpecialEN(name);
+    }
+
+    /**
+     * @param name LowerCase only
+     * @return
+     */
+    private static boolean isNameSpecialCZ(String name) {
+        return name.contains("lunární") || name.contains("výročí") || name.contains("horečka") ||
+                name.contains("obři doby ledové") || name.contains("rok");
+    }
+
+    /**
+     * @param name LowerCase only
+     * @return
+     */
+    private static boolean isNameSpecialEN(String name) {
+        return name.contains("rush");
     }
     /**
      *
@@ -236,11 +270,11 @@ public class Extract {
      * @return Object includes all extracted params
      * @throws IllegalArgumentException for failure of any param extraction
      */
-    public static Product productAggregateExtract(String name) throws IllegalArgumentException {
+    public static ProductCreateDTO productAggregateExtract(String name) throws IllegalArgumentException {
         String nameLow = name.toLowerCase(Locale.ROOT);
 
         // Extraction of parameters for saving new Product/Price to DB
-        return new Product(
+        return new ProductCreateDTO(
                     name,
                     producerExtract(nameLow),
                     formExtract(nameLow),

@@ -3,6 +3,7 @@ package home.holymiko.InvestmentScraperApp.Server.Service;
 import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.ProductDTO_LatestPrices;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.create.ProductCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Form;
@@ -77,7 +78,7 @@ public class ProductService {
         return this.productRepository.findByParams(dealer, producer, metal, form, grams, year, isSpecial);
     }
 
-    public List<Product> findByParams(Dealer dealer, Product product) {
+    public List<Product> findByParams(Dealer dealer, ProductCreateDTO product) {
         return this.productRepository.findByParams(dealer, product.getProducer(), product.getMetal(), product.getForm(), product.getGrams(), product.getYear(), product.isSpecial());
     }
 

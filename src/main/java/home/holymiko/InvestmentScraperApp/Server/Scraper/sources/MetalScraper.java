@@ -5,6 +5,7 @@ import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFound
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapFailedException;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.simple.LinkDTO;
+import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.create.ProductCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Metal;
@@ -76,7 +77,15 @@ public class MetalScraper extends Client {
      * Scraps products based on Links from DB
      */
     public void allProducts() {
-        generalScrap( linkMapper.toDTO(linkService.findAll()) );
+        List<LinkDTO> linkDTOList = linkMapper.toDTO(linkService.findAll());
+//        linkDTOList = linkDTOList.stream().filter(
+//                linkDTO -> linkDTO.getProductId() == null
+//        ).collect(Collectors.toList());
+//        for (LinkDTO link:linkDTOList) {
+//            productScrap(link);
+////            System.out.println(link.toString());
+//        }
+        generalScrap( linkDTOList );
         ConsolePrinter.printTimeStamp();
         System.out.println("All products scraped");
     }
@@ -115,12 +124,16 @@ public class MetalScraper extends Client {
     private void productScrap(LinkDTO link) throws ResourceNotFoundException, ScrapFailedException, DataIntegrityViolationException{
         String name = "";
         final HtmlPage page;
-        final Product productExtracted;
+        final ProductCreateDTO productExtracted;
+
+        if(link.getProductId() != null) {
+            throw new ScrapFailedException("ProductScrap - Product already scraped");
+        }
 
         // Throws ResourceNotFoundException
         page = loadPage(link.getUrl());
 
-        // Sends request for name of the Product.
+        // Scraps name of the Product
         try {
             name = searchInter.get(link.getDealer()).scrapProductName(page);
         } catch (Exception e) {
@@ -131,7 +144,7 @@ public class MetalScraper extends Client {
             throw new ScrapFailedException("Invalid name - "+link.getUrl());
         }
 
-        // Extraction of parameters for saving new Product/Price to DB
+        // Extraction of parameters for saving new Product to DB
         try {
             productExtracted = Extract.productAggregateExtract(name);
         } catch (IllegalArgumentException e) {
@@ -141,7 +154,7 @@ public class MetalScraper extends Client {
         productSaveSwitch(link, productExtracted);
     }
 
-    private void productSaveSwitch(LinkDTO link, Product productExtracted) {
+    private void productSaveSwitch(LinkDTO link, ProductCreateDTO productExtracted) {
         final List<Product> nonSpecialProducts;
 
         // Special products are saved separately
@@ -163,11 +176,16 @@ public class MetalScraper extends Client {
         // Product merging
         // Price & Link from another dealer will be added to product
         if (nonSpecialProducts.size() == 1) {
+            final Dealer linkDealer = link.getDealer();
             final Product productFound = nonSpecialProducts.get(0);
 
-            // There should be only one link per dealer
-            if(productService.findByParams(link.getDealer(), productFound).size() != 0) {
-                throw new DataIntegrityViolationException("ProductScrap - Only one Link per Dealer related to single Product allowed");
+            // Max one Link per Dealer
+            if(productFound.getLinks().stream().anyMatch(link1 -> link1.getDealer() == linkDealer)) {
+                throw new DataIntegrityViolationException(
+                        "ProductScrap - Only one Link per Dealer related to single Product allowed \n" +
+                        "   Link:      " + link + "\n" +
+                        "   Found:     " + productFound.toString() + "\n"
+                );
             }
 
             link = linkMapper.toDTO(
@@ -178,15 +196,23 @@ public class MetalScraper extends Client {
         }
 
         throw new DataIntegrityViolationException(
-                "ERROR: Multiple Products for following params present in DB\n" +
-                productExtracted.getName() + " " +productExtracted.getProducer()+" "+productExtracted.getMetal()+" "+productExtracted.getForm()+" "+productExtracted.getGrams()+" "+link.getUrl()
+                "ERROR: Multiple Products for following params present in DB\n" + productExtracted.toString()
         );
     }
 
-    private void newProduct(LinkDTO link, Product productExtracted) {
-        productService.save(productExtracted);
+    private void newProduct(LinkDTO link, ProductCreateDTO productExtracted) {
+        final Product productToSave = new Product(
+                productExtracted.getName(),
+                productExtracted.getProducer(),
+                productExtracted.getForm(),
+                productExtracted.getMetal(),
+                productExtracted.getGrams(),
+                productExtracted.getYear(),
+                productExtracted.isSpecial()
+        );
+        productService.save(productToSave);
         link = linkMapper.toDTO(
-                linkService.updateProduct(link.getId(), productExtracted)
+                linkService.updateProduct(link.getId(), productToSave)
         );
         priceScrap(link);
         System.out.println(">> Product saved");
@@ -198,17 +224,17 @@ public class MetalScraper extends Client {
      * @param link of Product
      */
     private void generalScrap(final LinkDTO link) {
-        Optional<Product> optionalProduct = this.productService.findByLink(link.getUrl());
-
-        if (optionalProduct.isEmpty()) {
-            try {
-                productScrap(link);
-            } catch (Exception e) {
-                System.out.println( e.getMessage() );
-            }
+        // Product is already assigned to Link -> update Price
+        if (link.getProductId() != null) {
+            priceScrap(link);
             return;
         }
-        priceScrap(link);
+
+        try {
+            productScrap(link);
+        } catch (Exception e) {
+            System.out.println( e.getMessage() );
+        }
     }
 
     /**
