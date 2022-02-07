@@ -31,6 +31,9 @@ public class Runner {
         run();
     }
 
+    // TODO Silverum redemption prices
+    // TODO Faster scraping directly from ProductList + Redemption list
+
     private void run() {
 //        try {
 //            cnbScraper.scrapExchangeRate();
@@ -39,8 +42,8 @@ public class Runner {
 //        }
         tickerService.printTickerStatus();
         exchangeRateService.printExchangeRates();
-//        scrapController.allLinks();
-//        scrapController.allProducts();
+        scrapController.allLinks();
+        scrapController.allProducts();
 //        scrapController.scrapEverything();
 //        scrapController.serenity();
 //        investmentInit.saveInitPortfolios();

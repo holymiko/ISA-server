@@ -14,7 +14,7 @@ public class Extract {
     private static final double OUNCE = 28.349523125;
     private static final double TOLAR = 28.07;
 
-    private static Producer producerExtractBasic(String text) throws IllegalArgumentException{
+    private static Producer producerExtractBasic(String text) throws IllegalArgumentException {
         if (text.contains("perth") ) {
             return Producer.PERTH_MINT;
         }
@@ -68,9 +68,6 @@ public class Extract {
         || text.contains("next generation") || text.contains("black flag") || text.contains("orel klínoocasý") ) {
             return Producer.PERTH_MINT;
         }
-        else if (text.contains("münze")) {
-            return Producer.MUNZE_OSTERREICH;
-        }
         else if (text.contains("rand") || text.contains("krugerrand")) {
             return Producer.SOUTH_AFRICAN_MINT;
         }
@@ -102,6 +99,9 @@ public class Extract {
         }
         else if (text.contains("obři doby ledové")) {
             return Producer.LEIPZIGER_EDELMETALLVERARBEITUNG_GMBH;
+        }
+        else if (text.contains("münze")) {
+            return Producer.MUNZE_OSTERREICH;
         }
 
 
@@ -144,7 +144,7 @@ public class Extract {
      * @param text including number with unit. LowerCase only
      * @return Grams
      */
-    private static double weightExtract(String text) {
+    private static double weightExtract(String text) throws IllegalArgumentException {
 //        text = text.replace("\u00a0", "");         // &nbsp;
         text = text.replace(" ", "");
 
@@ -209,7 +209,7 @@ public class Extract {
             return TOLAR;
         }
 
-        return -1;
+        throw new IllegalArgumentException("Invalid argument for weight extraction");
     }
 
     private static int yearExtract(String name) {
@@ -227,7 +227,7 @@ public class Extract {
      * @param text containing name of Metal. LowerCase only
      * @return metal of product
      */
-    private static Metal metalExtract(String text) {
+    private static Metal metalExtract(String text) throws IllegalArgumentException {
         if (text.contains("zlat") || text.contains("gold")) {
             return Metal.GOLD;
         } else if (text.contains("stříbr") || text.contains("silver") || text.contains("silber")) {
@@ -243,27 +243,32 @@ public class Extract {
 
     /**
      * @param name LowerCase only
-     * @return
      */
     private static boolean isNameSpecial(String name) {
-        return isNameSpecialCZ(name) || isNameSpecialEN(name);
+        return isNameSpecialCZ(name) || isNameSpecialEN(name) || isNameSpecialDE(name);
     }
 
     /**
      * @param name LowerCase only
-     * @return
      */
     private static boolean isNameSpecialCZ(String name) {
         return name.contains("lunární") || name.contains("výročí") || name.contains("horečka") ||
-                name.contains("obři doby ledové") || name.contains("rok");
+                name.contains("obři doby ledové") || name.contains("rok") || name.contains("draci") ||
+                name.contains("drak") || name.contains("buffalo") || name.contains("legendy");
     }
 
     /**
      * @param name LowerCase only
-     * @return
      */
     private static boolean isNameSpecialEN(String name) {
-        return name.contains("rush");
+        return name.contains("rush") || name.contains("the queen´s beasts");
+    }
+
+    /**
+     * @param name LowerCase only
+     */
+    private static boolean isNameSpecialDE(String name) {
+        return name.contains("lunar") || name.contains("serie");
     }
     /**
      *
