@@ -14,16 +14,8 @@ public class Extract {
     private static final double OUNCE = 28.349523125;
     private static final double TOLAR = 28.07;
 
-    /**
-     * Extracts Producer from text
-     * @param text including producer's name. LowerCase only
-     * @return Enum class Producer
-     */
-    private static Producer producerExtract(String text) throws IllegalArgumentException{
-        if (text.contains("perth") || text.contains("rok") || text.contains("kangaroo")
-        || text.contains("kookaburra") || text.contains("koala") || text.contains("austrálie")
-        || text.contains("austral") || text.contains(" emu ") || text.contains("drak a ")
-        || text.contains("next generation") || text.contains("black flag") || text.contains("orel klínoocasý") ) {
+    private static Producer producerExtractBasic(String text) throws IllegalArgumentException{
+        if (text.contains("perth") ) {
             return Producer.PERTH_MINT;
         }
         else if(text.contains("argor")) {
@@ -32,11 +24,8 @@ public class Extract {
         else if (text.contains("heraeus")) {
             return Producer.HERAEUS;
         }
-        else if (text.contains("münze") || text.contains("wiener philharmoniker")) {
+        else if (text.contains("münze osterreich") || text.contains("wiener philharmoniker")) {
             return Producer.MUNZE_OSTERREICH;
-        }
-        else if (text.contains("rand") || text.contains("krugerrand")) {
-            return Producer.SOUTH_AFRICAN_MINT;
         }
         else if (text.contains("pamp")) {
             return Producer.PAMP;
@@ -44,19 +33,59 @@ public class Extract {
         else if (text.contains("valcambi")) {
             return Producer.VALCAMBI;
         }
-        else if (text.contains("royal canadian mint") || text.contains("maple leaf")
-        || text.contains("moose") || text.contains("golden eagle") || text.contains("kanada")
+        else if (text.contains("royal canadian mint") || text.contains("maple leaf")){
+            return Producer.ROYAL_CANADIAN_MINT;
+        }
+        else if (text.contains("the royal mint") || text.contains("britannia")) {
+            return Producer.ROYAL_MINT_UK;
+        }
+        else if (text.contains("usa") || text.contains("american eagle")) {
+            return Producer.UNITED_STATES_MINT;
+        }
+        else if (text.contains("mexico") || text.contains("mexiko")) {
+            return Producer.MEXICO_MINT;
+        }
+        else if (text.contains("umicore")) {
+            return Producer.UMICORE;
+        }
+
+        throw new IllegalArgumentException("Invalid argument for Producer enum");
+    }
+
+    /**
+     * Extracts Producer from text
+     * @param text including producer's name. LowerCase only
+     * @return Enum class Producer
+     */
+    private static Producer producerExtract(String text) throws IllegalArgumentException {
+        try {
+            return producerExtractBasic(text);
+        } catch (Exception ignored){}
+
+        if (text.contains("rok") || text.contains("kangaroo")
+        || text.contains("kookaburra") || text.contains("koala") || text.contains("austrálie")
+        || text.contains("austral") || text.contains(" emu ") || text.contains("drak a ")
+        || text.contains("next generation") || text.contains("black flag") || text.contains("orel klínoocasý") ) {
+            return Producer.PERTH_MINT;
+        }
+        else if (text.contains("münze")) {
+            return Producer.MUNZE_OSTERREICH;
+        }
+        else if (text.contains("rand") || text.contains("krugerrand")) {
+            return Producer.SOUTH_AFRICAN_MINT;
+        }
+        else if (text.contains("moose") || text.contains("golden eagle") || text.contains("kanada")
         || text.contains("roaring grizzly") || text.contains("growling cougar") || text.contains("howling wolf")
         || text.contains("zlatá horečka na klondiku") || text.contains(" elk ")){
             return Producer.ROYAL_CANADIAN_MINT;
         }
-        else if (text.contains("britannia") || text.contains("sovereign elizabeth")
+        else if (text.contains("sovereign elizabeth")
         || text.contains("the queen´s beasts") || text.contains("the royal mint")
         || text.contains("royal arms") || text.contains("dva draci")
         || text.contains("mýty a legendy") || text.contains("valiant")) {
             return Producer.ROYAL_MINT_UK;
         }
-        else if (text.contains("libertad") || text.contains("mexico") || text.contains("mexiko")) {
+        else if (text.contains("libertad")) {
             return Producer.MEXICO_MINT;
         }
         else if (text.contains("slon") || text.contains("leopard somálsko")) {
@@ -65,7 +94,7 @@ public class Extract {
         else if (text.contains("noble isle of man") ) {
             return Producer.POBJOY_MINT;
         }
-        else if (text.contains("usa") || text.contains("american") || text.contains("american eagle")) {
+        else if (text.contains("american")) {
             return Producer.UNITED_STATES_MINT;
         }
         else if (text.contains("panda")) {
@@ -73,9 +102,6 @@ public class Extract {
         }
         else if (text.contains("obři doby ledové")) {
             return Producer.LEIPZIGER_EDELMETALLVERARBEITUNG_GMBH;
-        }
-        else if (text.contains("umicore")) {
-            return Producer.UMICORE;
         }
 
 
@@ -120,8 +146,7 @@ public class Extract {
      */
     private static double weightExtract(String text) {
 //        text = text.replace("\u00a0", "");         // &nbsp;
-
-        // TODO Test this: text.replace(" ", "");
+        text = text.replace(" ", "");
 
         Pattern pattern = Pattern.compile("\\d+x\\d+g");
         Matcher matcher = pattern.matcher(text);
@@ -129,22 +154,6 @@ public class Extract {
             String s = matcher.group();
             s = s.replace("g", "");
             return Integer.parseInt(s.split("x")[0]) * Integer.parseInt(s.split("x")[1]);
-        }
-
-        pattern = Pattern.compile("\\d+ x \\d+ g");
-        matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            String s = matcher.group();
-            s = s.replace(" g", "");
-            return Integer.parseInt(s.split(" x ")[0]) * Integer.parseInt(s.split(" x ")[1]);
-        }
-
-        pattern = Pattern.compile("\\d+ x \\d+g");
-        matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            String s = matcher.group();
-            s = s.replace("g", "");
-            return Integer.parseInt(s.split(" x ")[0]) * Integer.parseInt(s.split(" x ")[1]);
         }
 
         pattern = Pattern.compile("\\d+\\.\\d+g");
@@ -172,35 +181,27 @@ public class Extract {
             return Double.parseDouble(s);
         }
 
-        pattern = Pattern.compile("\\d+ g");
+        pattern = Pattern.compile("\\d+\\/\\d+oz");
         matcher = pattern.matcher(text);
         if (matcher.find()) {
             String s = matcher.group();
-            s = s.replace(" g", "");
-            return Double.parseDouble(s);
-        }
-
-        pattern = Pattern.compile("\\d+\\/\\d+ oz");
-        matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            String s = matcher.group();
-            s = s.replace(" oz", "");
+            s = s.replace("oz", "");
             return Double.parseDouble(s.split("/")[0]) / Double.parseDouble(s.split("/")[1]) * TROY_OUNCE;
         }
 
-        pattern = Pattern.compile("\\d+ oz");
+        pattern = Pattern.compile("\\d+oz");
         matcher = pattern.matcher(text);
         if (matcher.find()) {
             String s = matcher.group();
-            s = s.replace(" oz", "");
+            s = s.replace("oz", "");
             return Double.parseDouble(s) * TROY_OUNCE;
         }
 
-        pattern = Pattern.compile("\\d+ kg");
+        pattern = Pattern.compile("\\d+kg");
         matcher = pattern.matcher(text);
         if (matcher.find()) {
             String s = matcher.group();
-            s = s.replace(" kg", "");
+            s = s.replace("kg", "");
             return Double.parseDouble(s) * 1000;
         }
 
@@ -235,9 +236,9 @@ public class Extract {
             return Metal.PLATINUM;
         } else if (text.contains("pallad")) {
             return Metal.PALLADIUM;
-        } else {
-            throw new IllegalArgumentException("Invalid argument for Metal enum");
         }
+        
+        throw new IllegalArgumentException("Invalid argument for Metal enum");
     }
 
     /**
