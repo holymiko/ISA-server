@@ -135,6 +135,9 @@ public class Extract {
         if(text.contains("bar") || text.contains("slitek")) {
             return Form.BAR;
         }
+        if(text.contains("multicard")) {
+            return Form.MULTICARD;
+        }
 
         throw new IllegalArgumentException("Invalid argument for Form enum");
     }
@@ -254,7 +257,8 @@ public class Extract {
     private static boolean isNameSpecialCZ(String name) {
         return name.contains("lunární") || name.contains("výročí") || name.contains("horečka") ||
                 name.contains("obři doby ledové") || name.contains("rok") || name.contains("draci") ||
-                name.contains("drak") || name.contains("buffalo") || name.contains("legendy");
+                name.contains("drak") || name.contains("buffalo") || name.contains("legendy") ||
+                name.contains("koala");
     }
 
     /**
