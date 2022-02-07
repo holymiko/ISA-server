@@ -25,6 +25,7 @@ public class Product {
     private Producer producer;
     private Form form;
     private Metal metal;
+    // TODO Convert to Double + make Extract.weightExtract throw
     private double grams;
     private int year;
     private boolean isSpecial;
