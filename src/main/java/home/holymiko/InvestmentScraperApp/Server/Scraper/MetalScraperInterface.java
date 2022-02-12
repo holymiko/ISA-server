@@ -1,7 +1,5 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper.sources;
+package home.holymiko.InvestmentScraperApp.Server.Scraper;
 
-
-import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;

@@ -1,4 +1,4 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper.sources;
+package home.holymiko.InvestmentScraperApp.Server.Scraper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
@@ -11,7 +11,6 @@ import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.BessergoldDeMetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.BessergoldMetalScraper;
@@ -252,7 +251,7 @@ public class MetalScraper extends Client {
 
             // Sleep time is dynamic, according to time took by scrap procedure
             ConsolePrinter.statusPrint(PRINT_INTERVAL, links.size(), counter++);
-            dynamicSleep(ETHICAL_DELAY, startTime);
+            Client.dynamicSleep(ETHICAL_DELAY, startTime);
         }
     }
 
@@ -287,7 +286,7 @@ public class MetalScraper extends Client {
         System.out.println("> New price saved - " + link.getUrl());
 
         // Sleep time is dynamic, according to time took by scrap procedure
-        dynamicSleep(ETHICAL_DELAY, startTime);
+        Client.dynamicSleep(ETHICAL_DELAY, startTime);
     }
 
     public void scrapProductByIdList(final List<Long> productIds) {

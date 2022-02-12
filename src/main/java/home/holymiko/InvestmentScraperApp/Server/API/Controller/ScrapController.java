@@ -4,7 +4,7 @@ import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapRefusedExce
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.TickerState;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.MetalScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.SerenityScraper;

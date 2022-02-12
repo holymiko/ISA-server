@@ -6,7 +6,7 @@ import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.MetalScraperInterface;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraperInterface;
 
 import java.util.ArrayList;
 import java.util.List;
