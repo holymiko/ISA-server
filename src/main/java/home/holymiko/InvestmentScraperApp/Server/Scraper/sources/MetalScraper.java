@@ -307,7 +307,7 @@ public class MetalScraper extends Client {
     public void allLinksScrap() {
         // Polymorphic call
         searchInter.values().forEach(
-                scraperInterface -> scraperInterface.scrapAllLinks(client)
+                scraperInterface -> scraperInterface.scrapAllLinks()
                         .forEach(
                                 link -> {
                                         try {

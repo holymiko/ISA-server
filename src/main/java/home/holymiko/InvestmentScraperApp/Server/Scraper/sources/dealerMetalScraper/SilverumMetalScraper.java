@@ -1,11 +1,10 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Link;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.MetalScraperInterface;
 
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Deprecated
-public class SilverumMetalScraper implements MetalScraperInterface {
+public class SilverumMetalScraper extends Client implements MetalScraperInterface {
     private static final String BASE = "https://www.silverum.cz/";
     private static final String SEARCH_URL_GOLD_COIN = "https://www.silverum.cz/investicni-mince.html";
     private static final String SEARCH_URL_GOLD_BAR = "https://www.silverum.cz/investicni-slitky.html";
@@ -34,16 +33,17 @@ public class SilverumMetalScraper implements MetalScraperInterface {
     private static final String X_PATH_REDEMPTION_PRICE = "";
 
     public SilverumMetalScraper() {
+        super();
     }
 
 /////// PRICE
 
     @Override
-    public List<Link> scrapAllLinks(WebClient webClient) {
+    public List<Link> scrapAllLinks() {
         List<Link> elements = new ArrayList<>();
-        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_GOLD_COIN)));
-        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_GOLD_BAR)));
-        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_GOLD_BRICK)));
+        elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD_COIN)));
+        elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD_BAR)));
+        elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD_BRICK)));
 
 
 //        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_SILVER)));

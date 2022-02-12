@@ -5,7 +5,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 
-public class Client implements ClientInterface {
+public class Client {
 
     protected final WebClient client;
 
@@ -38,11 +38,25 @@ public class Client implements ClientInterface {
      * @return True if page was found and loaded successfully.
      */
     protected HtmlPage loadPage(final String link) throws ResourceNotFoundException {
-        return loadPage(client, link);
+        // TODO Test cases: No connection, 404 page, etc.
+        HtmlPage page;
+        try {
+            page = client.getPage(link);                // Product page
+        } catch (Exception e)  {
+            throw new ResourceNotFoundException("loadPage exception");
+        }
+        if(page.getWebResponse().getStatusCode() == 404) {
+            throw new ResourceNotFoundException("loadPage exception - 404");
+        }
+        return page;
     }
 
     protected TextPage loadTextPage(final String link) throws ResourceNotFoundException {
-        return loadTextPage(client, link);
+        try {
+            return client.getPage(link);
+        } catch (Exception e)  {
+            throw new ResourceNotFoundException("Page not found - "+link);
+        }
     }
 
 }

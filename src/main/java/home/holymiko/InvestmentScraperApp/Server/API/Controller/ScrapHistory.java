@@ -103,15 +103,11 @@ public class ScrapHistory {
 
     ////// TIME_UPDATE
 
-    public static void timeUpdate() {
-        lastAllLinks = LocalDateTime.now();
-        lastAllProducts = LocalDateTime.now();
-    }
-
-    public static void timeUpdate(boolean links) {
+    public static void timeUpdate(boolean links, boolean products) {
         if (links) {
             lastAllLinks = LocalDateTime.now();
-        } else {
+        }
+        if (products) {
             lastAllProducts = LocalDateTime.now();
         }
     }

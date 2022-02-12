@@ -1,18 +1,17 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.MetalScraperInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BessergoldDeMetalScraper implements MetalScraperInterface {
+public class BessergoldDeMetalScraper extends Client implements MetalScraperInterface {
 
     private static final String SEARCH_URL_GOLD = "https://www.bessergold.de/de/gold.html?product_list_limit=all";
     private static final String SEARCH_URL_SILVER = "https://www.bessergold.de/de/silber.html?product_list_limit=all";
@@ -29,18 +28,19 @@ public class BessergoldDeMetalScraper implements MetalScraperInterface {
     private final double euroExchangeRate;
 
     public BessergoldDeMetalScraper(double euroExchangeRate) {
+        super();
         this.euroExchangeRate = euroExchangeRate;
     }
 
 /////// PRICE
 
     @Override
-    public List<Link> scrapAllLinks(WebClient webClient) {
+    public List<Link> scrapAllLinks() {
         List<Link> elements = new ArrayList<>();
-        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_GOLD)));
-        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_SILVER)));
-        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_PLATINUM)));
-        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_PALLADIUM)));
+        elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD)));
+        elements.addAll(scrapLinks(loadPage(SEARCH_URL_SILVER)));
+        elements.addAll(scrapLinks(loadPage(SEARCH_URL_PLATINUM)));
+        elements.addAll(scrapLinks(loadPage(SEARCH_URL_PALLADIUM)));
         return elements;
     }
 

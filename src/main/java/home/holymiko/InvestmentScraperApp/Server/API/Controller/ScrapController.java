@@ -58,7 +58,7 @@ public class ScrapController {
 
         this.scrapMetal.allProducts();
 
-        ScrapHistory.timeUpdate(false);
+        ScrapHistory.timeUpdate(false, true);
 
         ScrapHistory.stopRunning();
     }
@@ -163,7 +163,7 @@ public class ScrapController {
         this.scrapMetal.allLinksScrap();
         ConsolePrinter.printTimeStamp();
 
-        ScrapHistory.timeUpdate(true);
+        ScrapHistory.timeUpdate(true, false);
         ScrapHistory.stopRunning();
     }
 
