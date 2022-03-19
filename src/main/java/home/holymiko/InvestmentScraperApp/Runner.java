@@ -7,6 +7,8 @@ import home.holymiko.InvestmentScraperApp.Server.Service.ExchangeRateService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 import home.holymiko.InvestmentScraperApp.Server.Utils.InvestmentInit;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,22 +30,24 @@ public class Runner {
         this.tickerService = tickerService;
         this.exchangeRateService = exchangeRateService;
         this.cnbScraper = cnbScraper;
-        run();
     }
 
     // TODO Silverum redemption prices
     // TODO Faster scraping directly from ProductList + Redemption list
+    // TODO Logging
 
-    private void run() {
-//        try {
-//            cnbScraper.scrapExchangeRate();
-//        } catch (ResourceNotFoundException e) {
-//            e.printStackTrace();
-//        }
+    @EventListener(ApplicationReadyEvent.class)
+    public void run() {
+        System.out.println("App has started up");
+        try {
+            cnbScraper.scrapExchangeRate();
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
         tickerService.printTickerStatus();
         exchangeRateService.printExchangeRates();
-        scrapController.allLinks();
-        scrapController.allProducts();
+//        scrapController.allLinks();
+//        scrapController.allProducts();
 //        scrapController.scrapEverything();
 //        scrapController.serenity();
 //        investmentInit.saveInitPortfolios();
