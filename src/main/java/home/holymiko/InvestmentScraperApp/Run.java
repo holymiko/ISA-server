@@ -11,11 +11,14 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Class used to call methods during the building process
  */
 @Component
-public class Runner {
+public class Run {
 
     private final ScrapController scrapController;
     private final InvestmentInit investmentInit;
@@ -24,7 +27,7 @@ public class Runner {
     private final CNBScraper cnbScraper;
 
     @Autowired
-    public Runner(ScrapController scrapController, InvestmentInit investmentInit, TickerService tickerService, ExchangeRateService exchangeRateService, CNBScraper cnbScraper) {
+    public Run(ScrapController scrapController, InvestmentInit investmentInit, TickerService tickerService, ExchangeRateService exchangeRateService, CNBScraper cnbScraper) {
         this.scrapController = scrapController;
         this.investmentInit = investmentInit;
         this.tickerService = tickerService;
@@ -37,8 +40,15 @@ public class Runner {
     // TODO Logging
 
     @EventListener(ApplicationReadyEvent.class)
-    public void run() {
+    public void run() throws IOException {
         System.out.println("App has started up");
+        String npm = isWindows() ? "npm.cmd" : "npm";
+
+        // Run FrontEnd NodeJS Application
+        Process process = new ProcessBuilder(npm, "start")
+                .directory( new File("../InvestmentScraperApp_client"))
+                .start();
+
         try {
             cnbScraper.scrapExchangeRate();
         } catch (ResourceNotFoundException e) {
@@ -51,5 +61,9 @@ public class Runner {
 //        scrapController.scrapEverything();
 //        scrapController.serenity();
 //        investmentInit.saveInitPortfolios();
+    }
+
+    static boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase().contains("win");
     }
 }
