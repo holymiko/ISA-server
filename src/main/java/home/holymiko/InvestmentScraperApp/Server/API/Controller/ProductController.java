@@ -1,9 +1,9 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Core.annotation.ResourceNotFound;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.ProductDTO_AllPrices;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.ProductDTO_LatestPrices;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Metal;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_AllPrices;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_LatestPrices;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

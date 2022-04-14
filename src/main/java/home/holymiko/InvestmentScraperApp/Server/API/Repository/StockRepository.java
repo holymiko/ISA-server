@@ -1,8 +1,8 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Repository;
 
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.GrahamGrade;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Stock;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Ticker;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.GrahamGrade;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Stock;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Ticker;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Price;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Price;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PriceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

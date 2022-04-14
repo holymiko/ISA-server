@@ -1,12 +1,12 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
 import com.sun.istack.NotNull;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Product;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Link;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Product;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.LinkRepository;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Form;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Metal;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;

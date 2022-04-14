@@ -1,12 +1,12 @@
 package home.holymiko.InvestmentScraperApp.Server.Mapper;
 
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.ProductDTO_AllPrices;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.ProductDTO_LatestPrices;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.ProductDTO_LatestPrices_OneLatestPrice;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.ProductDTO_OneLatestPrice;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.simple.PriceDTO;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.simple.ProductDTO;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Product;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_AllPrices;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_LatestPrices;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_LatestPrices_OneLatestPrice;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_OneLatestPrice;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.PriceDTO;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.ProductDTO;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Product;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 

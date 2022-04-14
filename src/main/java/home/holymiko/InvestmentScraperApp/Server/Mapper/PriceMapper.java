@@ -1,7 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.Mapper;
 
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.simple.PriceDTO;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Price;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.PriceDTO;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Price;
 import org.mapstruct.Mapper;
 
 import java.util.List;

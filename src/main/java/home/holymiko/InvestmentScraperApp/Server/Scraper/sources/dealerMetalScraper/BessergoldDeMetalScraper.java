@@ -2,8 +2,8 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScr
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Link;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraperInterface;

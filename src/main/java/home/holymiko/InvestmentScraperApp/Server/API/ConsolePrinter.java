@@ -1,7 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.API;
 
 
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.ExchangeRate;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.ExchangeRate;
 
 import java.sql.Date;
 import java.text.DecimalFormat;

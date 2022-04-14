@@ -1,9 +1,9 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Core.annotation.ResourceNotFound;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.PortfolioDTO_ProductDTO;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.create.PortfolioCreateDTO;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.simple.PortfolioDTO;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PortfolioDTO_ProductDTO;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.PortfolioCreateDTO;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.PortfolioDTO;
 import home.holymiko.InvestmentScraperApp.Server.Service.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

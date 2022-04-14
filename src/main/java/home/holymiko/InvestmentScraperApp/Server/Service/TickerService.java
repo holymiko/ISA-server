@@ -1,7 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.TickerState;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Ticker;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Ticker;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.TickerRepository;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;

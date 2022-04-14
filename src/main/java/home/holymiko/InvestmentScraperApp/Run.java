@@ -45,9 +45,9 @@ public class Run {
         String npm = isWindows() ? "npm.cmd" : "npm";
 
         // Run FrontEnd NodeJS Application
-        Process process = new ProcessBuilder(npm, "start")
-                .directory( new File("../InvestmentScraperApp_client"))
-                .start();
+//        Process process = new ProcessBuilder(npm, "start")
+//                .directory( new File("../InvestmentScraperApp_client"))
+//                .start();
 
         try {
             cnbScraper.scrapExchangeRate();
@@ -56,11 +56,11 @@ public class Run {
         }
         tickerService.printTickerStatus();
         exchangeRateService.printExchangeRates();
-//        scrapController.allLinks();
-//        scrapController.allProducts();
+        scrapController.allLinks();
+        scrapController.allProducts();
 //        scrapController.scrapEverything();
 //        scrapController.serenity();
-//        investmentInit.saveInitPortfolios();
+        investmentInit.saveInitPortfolios();
     }
 
     static boolean isWindows() {

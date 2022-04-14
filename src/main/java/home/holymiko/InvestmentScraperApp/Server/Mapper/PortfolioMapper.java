@@ -1,9 +1,9 @@
 package home.holymiko.InvestmentScraperApp.Server.Mapper;
 
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.PortfolioDTO_InvestmentCount;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.advanced.PortfolioDTO_ProductDTO;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.simple.PortfolioDTO;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Portfolio;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PortfolioDTO_InvestmentCount;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PortfolioDTO_ProductDTO;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.PortfolioDTO;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Portfolio;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

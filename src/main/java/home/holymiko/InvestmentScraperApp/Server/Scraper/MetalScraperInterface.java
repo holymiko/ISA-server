@@ -3,8 +3,8 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.Link;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.Dealer;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 
 import java.util.List;
 import java.util.stream.Collectors;

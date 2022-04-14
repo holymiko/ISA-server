@@ -1,10 +1,10 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.InvestmentStockRepository;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.InvestmentMetal;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.InvestmentMetal;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.InvestmentMetalRepository;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.ProductRepository;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.InvestmentStock;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.InvestmentStock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

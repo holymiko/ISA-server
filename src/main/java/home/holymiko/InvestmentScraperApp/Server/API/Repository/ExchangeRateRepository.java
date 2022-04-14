@@ -1,6 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Repository;
 
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Entity.ExchangeRate;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.ExchangeRate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

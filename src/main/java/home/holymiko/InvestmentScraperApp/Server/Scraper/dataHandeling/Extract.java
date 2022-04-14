@@ -1,7 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling;
 
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.DTO.create.ProductCreateDTO;
-import home.holymiko.InvestmentScraperApp.Server.DataFormat.Enum.*;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDTO;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.*;
 
 import java.time.Year;
 import java.util.Locale;
