@@ -36,11 +36,11 @@ public class Product {
 
     @OneToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
-    private List<Price> latestPrices;
+    private List<PricePair> latestPricePairs;
 
     @OneToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
-    private List<Price> prices;
+    private List<PricePair> pricePairs;
 
     public Product() {
     }
@@ -54,26 +54,26 @@ public class Product {
         this.year = year;
         this.isSpecial = isSpecial;
         this.links = new ArrayList<>();
-        this.latestPrices = new ArrayList<>();
-        this.prices = new ArrayList<>();
+        this.latestPricePairs = new ArrayList<>();
+        this.pricePairs = new ArrayList<>();
     }
 
 
-    public Price getLatestPriceByDealer(Dealer dealer) {
-        return this.latestPrices.stream()
+    public PricePair getLatestPriceByDealer(Dealer dealer) {
+        return this.latestPricePairs.stream()
                 .filter(
                         price -> price.getDealer() == dealer
                 ).collect(Collectors.toList()).get(0);
     }
 
-    public Price getPriceByBestRedemption() {
-        if(latestPrices == null || latestPrices.isEmpty()) {
+    public PricePair getPriceByBestRedemption() {
+        if(latestPricePairs == null || latestPricePairs.isEmpty()) {
             return null;
         }
-        Price max = latestPrices.get(0);
-        for (Price price : latestPrices) {
-            if(price.getRedemption() > max.getRedemption()) {
-                max = price;
+        PricePair max = latestPricePairs.get(0);
+        for (PricePair pricePair : latestPricePairs) {
+            if(pricePair.getRedemption().getAmount() > max.getRedemption().getAmount()) {
+                max = pricePair;
             }
         }
         return max;
@@ -86,19 +86,19 @@ public class Product {
                 .collect(Collectors.toList());
     }
 
-    public void setLatestPrices(List<Price> latestPrices) {
-        this.latestPrices = latestPrices;
+    public void setLatestPricePairs(List<PricePair> latestPricePairs) {
+        this.latestPricePairs = latestPricePairs;
     }
 
-    public void setLatestPrice(Price latestPrice) {
-        if(this.latestPrices == null) {
-            this.latestPrices = Collections.singletonList(latestPrice);
+    public void setLatestPrice(PricePair latestPricePair) {
+        if(this.latestPricePairs == null) {
+            this.latestPricePairs = Collections.singletonList(latestPricePair);
             return;
         }
-        this.latestPrices = this.latestPrices.stream()
-                .filter(price -> price.getDealer() != latestPrice.getDealer())      // Filter Dealer to prevent duplicate
+        this.latestPricePairs = this.latestPricePairs.stream()
+                .filter(price -> price.getDealer() != latestPricePair.getDealer())      // Filter Dealer to prevent duplicate
                 .collect(Collectors.toList());
-        this.latestPrices.add(latestPrice);
+        this.latestPricePairs.add(latestPricePair);
     }
 
     public void setName(String name) {
@@ -109,8 +109,8 @@ public class Product {
         this.links = link;
     }
 
-    public void setPrices(List<Price> prices) {
-        this.prices = prices;
+    public void setPricePairs(List<PricePair> pricePairs) {
+        this.pricePairs = pricePairs;
     }
 
     public void setGrams(double grams) {
@@ -129,8 +129,8 @@ public class Product {
                 ", year=" + year +
                 ", isSpecial=" + isSpecial +
                 ",\n links=" + links +
-//                ", latestPrices=" + latestPrices +
-//                ", prices=" + prices +
+//                ", latestPricePairs=" + latestPricePairs +
+//                ", pricePairs=" + pricePairs +
                 '}';
     }
 }

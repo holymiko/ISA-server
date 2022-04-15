@@ -8,6 +8,7 @@ import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 import home.holymiko.InvestmentScraperApp.Server.Utils.InvestmentInit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +40,7 @@ public class Run {
     // TODO Faster scraping directly from ProductList + Redemption list
     // TODO Logging
 
-    @EventListener(ApplicationReadyEvent.class)
+    @EventListener(ApplicationStartedEvent.class)
     public void run() throws IOException {
         System.out.println("App has started up");
         String npm = isWindows() ? "npm.cmd" : "npm";
@@ -49,19 +50,21 @@ public class Run {
 //                .directory( new File("../InvestmentScraperApp_client"))
 //                .start();
 
-        try {
-            cnbScraper.scrapExchangeRate();
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        tickerService.printTickerStatus();
+
         exchangeRateService.printExchangeRates();
-        scrapController.allLinks();
+//        tickerService.printTickerStatus();
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void scrap() throws IOException {
+//        scrapController.allLinks();
         scrapController.allProducts();
 //        scrapController.scrapEverything();
 //        scrapController.serenity();
-        investmentInit.saveInitPortfolios();
+//        investmentInit.saveInitPortfolios();
     }
+
+
 
     static boolean isWindows() {
         return System.getProperty("os.name").toLowerCase().contains("win");

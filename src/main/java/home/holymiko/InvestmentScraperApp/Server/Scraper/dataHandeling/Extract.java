@@ -283,7 +283,7 @@ public class Extract {
     public static ProductCreateDTO productAggregateExtract(String name) throws IllegalArgumentException {
         String nameLow = name.toLowerCase(Locale.ROOT);
 
-        // Extraction of parameters for saving new Product/Price to DB
+        // Extraction of parameters for saving new Product/PricePair to DB
         return new ProductCreateDTO(
                     name,
                     producerExtract(nameLow),

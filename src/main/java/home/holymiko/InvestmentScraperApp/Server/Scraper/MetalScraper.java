@@ -19,10 +19,13 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScra
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,9 +37,10 @@ public class MetalScraper extends Client {
     private final PortfolioService portfolioService;
     private final ProductService productService;
     private final LinkMapper linkMapper;
+    private final ExchangeRateService exchangeRateService;
 
     // Used for Polymorphic calling
-    private final Map< Dealer, MetalScraperInterface> searchInter = new HashMap<>();
+    private final Map< Dealer, MetalScraperInterface> dealerInterfaces = new HashMap<>();
 
     private static final long ETHICAL_DELAY = 700;
     private static final int PRINT_INTERVAL = 10;
@@ -56,17 +60,23 @@ public class MetalScraper extends Client {
         this.portfolioService = portfolioService;
         this.productService = productService;
         this.linkMapper = linkMapper;
+        this.exchangeRateService = exchangeRateService;
 
-        searchInter.put(Dealer.BESSERGOLD_CZ, new BessergoldMetalScraper());
-        searchInter.put(
+        dealerInterfaces.put(Dealer.BESSERGOLD_CZ, new BessergoldMetalScraper());
+        dealerInterfaces.put(Dealer.SILVERUM, new SilverumMetalScraper());
+        dealerInterfaces.put(Dealer.ZLATAKY, new ZlatakyMetalScraper());
+    }
+
+    @EventListener(ApplicationStartedEvent.class)
+    public void initializeForeignDealerInter() throws IOException {
+        System.out.println(">> Metal scraper - Initialize foreign dealer interfaces");
+        dealerInterfaces.put(
                 Dealer.BESSERGOLD_DE,
                 new BessergoldDeMetalScraper(
                         // Insert currency exchange rate for conversion to CZK
                         exchangeRateService.findFirstByCodeOrderByDateDesc("EUR").getExchangeRate()
                 )
         );
-        searchInter.put(Dealer.SILVERUM, new SilverumMetalScraper());
-        searchInter.put(Dealer.ZLATAKY, new ZlatakyMetalScraper());
     }
 
     ////////////// PRODUCT
@@ -134,7 +144,7 @@ public class MetalScraper extends Client {
 
         // Scraps name of the Product
         try {
-            name = searchInter.get(link.getDealer()).scrapProductName(page);
+            name = dealerInterfaces.get(link.getDealer()).scrapProductName(page);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -173,7 +183,7 @@ public class MetalScraper extends Client {
         }
 
         // Product merging
-        // Price & Link from another dealer will be added to product
+        // PricePair & Link from another dealer will be added to product
         if (nonSpecialProducts.size() == 1) {
             final Dealer linkDealer = link.getDealer();
             final Product productFound = nonSpecialProducts.get(0);
@@ -223,7 +233,7 @@ public class MetalScraper extends Client {
      * @param link of Product
      */
     private void generalScrap(final LinkDTO link) {
-        // Product is already assigned to Link -> update Price
+        // Product is already assigned to Link -> update PricePair
         if (link.getProductId() != null) {
             priceScrap(link);
             return;
@@ -265,25 +275,31 @@ public class MetalScraper extends Client {
      */
     private void priceScrap(final LinkDTO link) {
         long startTime = System.nanoTime();
-        Double buyPrice = null;
+        Double sellingPrice = null;
         Double redemptionPrice = null;
-        final Price price;
+        final PricePair pricePair;
+        final PricePair pricePair2;
 
         HtmlPage productDetailPage = loadPage(link.getUrl());
 
-        // TODO Double think about buy/redemption price data types + What to do if both are zero?
+        // TODO Double think about sellingPrice/redemption pricePair data types + What to do if both are zero?
         try {
-            buyPrice = searchInter.get(link.getDealer()).scrapBuyPrice(productDetailPage);
+            sellingPrice = dealerInterfaces.get(link.getDealer()).scrapBuyPrice(productDetailPage);
         } catch (NumberFormatException e) {
             System.out.println(e.getMessage());
         }
-        redemptionPrice = searchInter.get(link.getDealer()).scrapRedemptionPrice(productDetailPage);
+        redemptionPrice = dealerInterfaces.get(link.getDealer()).scrapRedemptionPrice(productDetailPage);
 
-        price = new Price(LocalDateTime.now(), buyPrice, redemptionPrice, link.getDealer());
-        this.priceService.save(price);
-        this.productService.updatePrice(link.getProductId(), price);
+        pricePair = new PricePair(
+                link.getDealer(),
+                priceService.save(new Price(LocalDateTime.now(), sellingPrice, true)),
+                priceService.save(new Price(LocalDateTime.now(), redemptionPrice, false)));
 
-        System.out.println("> New price saved - " + link.getUrl());
+        // Save PricePair
+        this.priceService.save(pricePair);
+        this.productService.updatePrice(link.getProductId(), pricePair);
+
+        System.out.println("> New pricePair saved - " + link.getUrl());
 
         // Sleep time is dynamic, according to time took by scrap procedure
         Client.dynamicSleep(ETHICAL_DELAY, startTime);
@@ -305,7 +321,7 @@ public class MetalScraper extends Client {
 
     public void allLinksScrap() {
         // Polymorphic call
-        searchInter.values().forEach(
+        dealerInterfaces.values().forEach(
                 scraperInterface -> scraperInterface.scrapAllLinks()
                         .forEach(
                                 link -> {

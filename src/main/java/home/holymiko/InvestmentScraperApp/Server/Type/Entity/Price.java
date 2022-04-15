@@ -3,7 +3,9 @@ package home.holymiko.InvestmentScraperApp.Server.Type.Entity;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import lombok.Getter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,23 +13,23 @@ import java.time.LocalDateTime;
 public class Price {
 
     @Id
+    @GeneratedValue
+    private long id;
     private LocalDateTime dateTime;
-    private Double price;
-    private Double redemption;
-    private Dealer dealer;
+    private Double amount;
+    private boolean isSellingPrice;
 
     public Price() {
     }
 
-    public Price(LocalDateTime dateTime, Double price, Double redemption, Dealer dealer) {
+    public Price(LocalDateTime dateTime, Double amount, boolean isSellingPrice) {
         this.dateTime = dateTime;
-        this.price = price;
-        this.redemption = redemption;
-        this.dealer = dealer;
+        this.amount = amount;
+        this.isSellingPrice = isSellingPrice;
     }
 
     @Override
     public String toString() {
-        return Double.toString(price);
+        return Double.toString(amount);
     }
 }

@@ -34,7 +34,7 @@ public class InvestmentMetal {
     }
 
     public double getYield() {
-        return product.getPriceByBestRedemption().getRedemption() / getBeginPrice();
+        return product.getPriceByBestRedemption().getRedemption().getAmount()/ getBeginPrice();
     }
 
 

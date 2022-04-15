@@ -17,7 +17,7 @@ Informace pro `stock` jsou získány z www.serenitystocks.com/stock/ +`ticker`
 Databáze uchovává seznam tickerů (zkratek užívaných na burze) a jejich stav. 
 Jejich zdrojem jsou soubory v adresáři `txt/`
 
-Drahé kovy jsou reprezentovány entitou `product` s relací na `link` a `price` 
+Drahé kovy jsou reprezentovány entitou `product` s relací na `link` a `pricePair` 
 Na základě link adresy je zjištěna cena, váha, výrobce atd.
 
 ### Zdroje dat:
@@ -68,7 +68,7 @@ Byl položen základ vlastních annotací a výjimek.
 
 ### Změny v databázi
 Stejné produkty od různých dealerů jsou automaticky spojovány do jednoho.
-**Produkt** tak nyní může obsahovat více **links** a **latestPrices**.
+**Produkt** tak nyní může obsahovat více **links** a **latestPricePairs**.
 
 Z entity **Price** jsou odstraněny atributy **split** (spread) a **pricePerGram**. 
 Je možné je vypočítat a tak se nyní vyskytují pouze v **PriceDTO**.  
@@ -92,8 +92,8 @@ Entita **Produkt** obsahuje nový atribut **year** pro přesnější určení.
 - [ ] Class documentation
 - [ ] Add Silverum.cz
 - [ ] Lambda.orElseThrow discussion
-- [ ] Scrap prices from product list for Bessergold & Silverum.
-- [ ] Scrap redemption prices from https://www.bessergold.cz/vykup.html
+- [ ] Scrap pricePairs from product list for Bessergold & Silverum.
+- [ ] Scrap redemption pricePairs from https://www.bessergold.cz/vykup.html
 - [ ] Stock investments
 - [ ] Gold to silver ratio
 

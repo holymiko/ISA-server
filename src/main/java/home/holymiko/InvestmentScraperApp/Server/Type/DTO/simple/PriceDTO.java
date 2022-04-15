@@ -8,15 +8,17 @@ import java.time.LocalDateTime;
 @Getter
 public class PriceDTO {
 
-    private final LocalDateTime dateTime;
+    private final LocalDateTime priceDateTime;
+    private final LocalDateTime redemptionDateTime;
     private final double price;
     private final double redemption;
     private final Dealer dealer;
     private final double spread;
     private final double pricePerGram;
 
-    public PriceDTO(LocalDateTime dateTime, double price, double redemption, Dealer dealer, double grams) {
-        this.dateTime = dateTime;
+    public PriceDTO(LocalDateTime priceDateTime, LocalDateTime redemptionDateTime, double price, double redemption, Dealer dealer, double grams) {
+        this.priceDateTime = priceDateTime;
+        this.redemptionDateTime = redemptionDateTime;
         this.price = price;
         this.redemption = redemption;
         this.dealer = dealer;

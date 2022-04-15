@@ -55,7 +55,7 @@ public class ProductService {
                 .stream()
                 .filter(product ->
                     product.getGrams() >= 0 //&&
-//                    product.getLatestPrices().getPrice() >= 0     TODO
+//                    product.getLatestPricePairs().getPrice() >= 0     TODO
                 )
                 .map(productMapper::toProductDTO_LatestPrices)
                 .collect(Collectors.toList());
@@ -93,31 +93,31 @@ public class ProductService {
     }
 
     /**
-     * Price is added to Product. LatestPrice is updated.
+     * PricePair is added to Product. LatestPrice is updated.
      * Product is saved.
-     * @param productId Product where the Price gonna be added
-     * @param price Price already saved in DB, which should be added to Product
+     * @param productId Product where the PricePair gonna be added
+     * @param pricePair PricePair already saved in DB, which should be added to Product
      * @throws NullPointerException For null value in one of the parameters
      */
     @Transactional
-    public void updatePrice(@NotNull Long productId, @NotNull Price price) throws NullPointerException, IllegalArgumentException {
+    public void updatePrice(@NotNull Long productId, @NotNull PricePair pricePair) throws NullPointerException, IllegalArgumentException {
         final Product product;
-        final List<Price> priceList;
+        final List<PricePair> pricePairList;
 
         if(productId == null) {
             throw new NullPointerException("ProductId cannot be null");
         }
-        if(price == null) {
-            throw new NullPointerException("Price cannot be null");
+        if(pricePair == null) {
+            throw new NullPointerException("PricePair cannot be null");
         }
 
         product = productRepository.findById(productId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        priceList = product.getPrices();
-        priceList.add(price);
-        product.setLatestPrice(price);
-        product.setPrices(priceList);
+        pricePairList = product.getPricePairs();
+        pricePairList.add(pricePair);
+        product.setLatestPrice(pricePair);
+        product.setPricePairs(pricePairList);
         this.productRepository.save(product);
     }
 
@@ -145,10 +145,10 @@ public class ProductService {
         return investments;
     }
 
-    public List<Price> findProductPrices(Long id) {
+    public List<PricePair> findProductPrices(Long id) {
         Optional<Product> product = this.productRepository.findById(id);
         if (product.isPresent()) {
-            return product.get().getPrices();
+            return product.get().getPricePairs();
         }
         return new ArrayList<>();
     }

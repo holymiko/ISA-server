@@ -15,7 +15,7 @@ public abstract class ProductMapper {
 
     private static final String LINKS_AS_STRINGS = "java( product.getLinksAsString() )";
     private static final String LATEST_PRICE_DTO = "java( priceMapper.toPriceDTO(product.getPriceByBestRedemption(), product.getGrams()) )";
-    private static final String LATEST_PRICES_DTOS = "java( priceMapper.toPriceDTOs(product.getLatestPrices(), product.getGrams()) )";
+    private static final String LATEST_PRICES_DTOS = "java( priceMapper.toPriceDTOs(product.getLatestPricePairs(), product.getGrams()) )";
 
     @Autowired
     protected PriceMapper priceMapper;
@@ -42,7 +42,7 @@ public abstract class ProductMapper {
 
     @Mappings({
             @Mapping(target = "links", expression = LINKS_AS_STRINGS),
-            @Mapping(target = "prices", expression = "java( priceMapper.toPriceDTOs(product.getPrices(), product.getGrams()) )"),
+            @Mapping(target = "prices", expression = "java( priceMapper.toPriceDTOs(product.getPricePairs(), product.getGrams()) )"),
             @Mapping(target = "latestPrices", expression = LATEST_PRICES_DTOS)
     })
     public abstract ProductDTO_AllPrices toProductDTO_AllPrices(Product product);
