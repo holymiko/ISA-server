@@ -176,14 +176,14 @@ public class MetalScraper extends Client {
         // Products from different Dealers with same params are supposed to be merged into one
         nonSpecialProducts = productService.findByParams(null, productExtracted);
 
-        // New product save
+        // New product saved
         if(nonSpecialProducts.isEmpty()) {
             newProduct(link, productExtracted);
             return;
         }
 
         // Product merging
-        // PricePair & Link from another dealer will be added to product
+        // PricePair & Link from another dealer will be added to existing Product
         if (nonSpecialProducts.size() == 1) {
             final Dealer linkDealer = link.getDealer();
             final Product productFound = nonSpecialProducts.get(0);
