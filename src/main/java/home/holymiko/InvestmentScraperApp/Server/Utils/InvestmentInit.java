@@ -82,19 +82,19 @@ public class InvestmentInit {
         //////// GOLD ////////
         //////// GOLD BAR
 
-//        InvestmentMetal goldenBar0 = new InvestmentMetal(
-//                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
-//                        Dealer.BESSERGOLD_CZ,
-//                        Producer.MUNZE_OSTERREICH,
-//                        Metal.GOLD,
-//                        Form.KINEBAR,
-//                        10,
-//                        2021
-//                ).get(),
-//                Dealer.BESSERGOLD_CZ,
-//                14569.00,
-//                LocalDate.of(2021, 5, 18)
-//        );
+        InvestmentMetal goldenBar0 = new InvestmentMetal(
+                this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
+                        Dealer.BESSERGOLD_CZ,
+                        Producer.MUNZE_OSTERREICH,
+                        Metal.GOLD,
+                        Form.KINEBAR,
+                        10,
+                        2021
+                ).get(),
+                Dealer.BESSERGOLD_CZ,
+                14569.00,
+                LocalDate.of(2021, 5, 18)
+        );
 
         InvestmentMetal goldenBar1 = new InvestmentMetal(
                 this.productRepository.findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(
@@ -220,7 +220,7 @@ public class InvestmentInit {
         );
 
         List<InvestmentMetal> investmentMetalList = new ArrayList<>() {{
-//            add(goldenBar0);
+            add(goldenBar0);
             add(goldenBar1);
             add(goldenBar2);
             add(silverBar1);

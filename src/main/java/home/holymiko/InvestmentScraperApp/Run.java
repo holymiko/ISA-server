@@ -43,13 +43,12 @@ public class Run {
     @EventListener(ApplicationStartedEvent.class)
     public void run() throws IOException {
         System.out.println("App has started up");
-        String npm = isWindows() ? "npm.cmd" : "npm";
 
         // Run FrontEnd NodeJS Application
+//        String npm = isWindows() ? "npm.cmd" : "npm";
 //        Process process = new ProcessBuilder(npm, "start")
 //                .directory( new File("../InvestmentScraperApp_client"))
 //                .start();
-
 
         exchangeRateService.printExchangeRates();
 //        tickerService.printTickerStatus();
@@ -58,7 +57,7 @@ public class Run {
     @EventListener(ApplicationReadyEvent.class)
     public void scrap() throws IOException {
 //        scrapController.allLinks();
-        scrapController.allProducts();
+//        scrapController.allProducts();
 //        scrapController.scrapEverything();
 //        scrapController.serenity();
 //        investmentInit.saveInitPortfolios();
