@@ -45,8 +45,7 @@ public class Run {
         System.out.println("App has started up");
 
         // Run FrontEnd NodeJS Application
-//        String npm = isWindows() ? "npm.cmd" : "npm";
-//        Process process = new ProcessBuilder(npm, "start")
+//        Process process = new ProcessBuilder(isWindows() ? "npm.cmd" : "npm", "start")
 //                .directory( new File("../InvestmentScraperApp_client"))
 //                .start();
 

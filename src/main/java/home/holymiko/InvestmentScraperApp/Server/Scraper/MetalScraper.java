@@ -3,6 +3,7 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapFailedException;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDTO;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class MetalScraper extends Client {
+    private final CNBScraper cnbScraper;
     private final LinkService linkService;
     private final PriceService priceService;
     private final PortfolioService portfolioService;
@@ -47,6 +49,7 @@ public class MetalScraper extends Client {
 
     @Autowired
     public MetalScraper(
+            CNBScraper cnbScraper,
             LinkService linkService,
             PriceService priceService,
             PortfolioService portfolioService,
@@ -55,21 +58,26 @@ public class MetalScraper extends Client {
             ExchangeRateService exchangeRateService
     ) {
         super();
+        this.cnbScraper = cnbScraper;
         this.linkService = linkService;
         this.priceService = priceService;
         this.portfolioService = portfolioService;
         this.productService = productService;
         this.linkMapper = linkMapper;
         this.exchangeRateService = exchangeRateService;
-
-        dealerInterfaces.put(Dealer.BESSERGOLD_CZ, new BessergoldMetalScraper());
-        dealerInterfaces.put(Dealer.SILVERUM, new SilverumMetalScraper());
-        dealerInterfaces.put(Dealer.ZLATAKY, new ZlatakyMetalScraper());
     }
 
     @EventListener(ApplicationStartedEvent.class)
-    public void initializeForeignDealerInter() throws IOException {
-        System.out.println(">> Metal scraper - Initialize foreign dealer interfaces");
+    public void initializeDealerInter() throws IOException {
+        System.out.println(">> Metal scraper - Initialize dealer interfaces");
+        dealerInterfaces.put(Dealer.BESSERGOLD_CZ, new BessergoldMetalScraper());
+        dealerInterfaces.put(Dealer.SILVERUM, new SilverumMetalScraper());
+        dealerInterfaces.put(Dealer.ZLATAKY, new ZlatakyMetalScraper());
+        try {
+            cnbScraper.scrapExchangeRate();
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
         dealerInterfaces.put(
                 Dealer.BESSERGOLD_DE,
                 new BessergoldDeMetalScraper(
