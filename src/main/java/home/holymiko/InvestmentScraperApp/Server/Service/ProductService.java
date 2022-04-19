@@ -33,6 +33,10 @@ public class ProductService {
 
     /////////// FIND AS DTO
 
+    public Optional<Product> findById(Long id) {
+        return productRepository.findById(id);
+    }
+
     public Optional<ProductDTO_LatestPrices> findByIdAsDTO(Long id) {
         Optional<Product> optionalProductDTO = this.productRepository.findById(id);
         return optionalProductDTO.map(
@@ -100,7 +104,7 @@ public class ProductService {
      * @throws NullPointerException For null value in one of the parameters
      */
     @Transactional
-    public void updatePrice(@NotNull Long productId, @NotNull PricePair pricePair) throws NullPointerException, IllegalArgumentException {
+    public void updatePrices(@NotNull Long productId, @NotNull PricePair pricePair) throws NullPointerException, IllegalArgumentException {
         final Product product;
         final List<PricePair> pricePairList;
 

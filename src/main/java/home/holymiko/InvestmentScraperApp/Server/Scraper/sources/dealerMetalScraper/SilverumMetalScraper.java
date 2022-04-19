@@ -2,6 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScr
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
@@ -41,9 +42,21 @@ public class SilverumMetalScraper extends Client implements MetalScraperInterfac
     @Override
     public List<Link> scrapAllLinks() {
         List<Link> elements = new ArrayList<>();
-        elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD_COIN)));
-        elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD_BAR)));
-        elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD_BRICK)));
+        try {
+            elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD_COIN)));
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD_BAR)));
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD_BRICK)));
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
 
 
 //        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_SILVER)));

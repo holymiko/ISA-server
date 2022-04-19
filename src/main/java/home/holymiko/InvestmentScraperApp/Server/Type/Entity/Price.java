@@ -1,6 +1,5 @@
 package home.holymiko.InvestmentScraperApp.Server.Type.Entity;
 
-import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import lombok.Getter;
 
 import javax.persistence.Entity;
@@ -17,15 +16,15 @@ public class Price {
     private long id;
     private LocalDateTime dateTime;
     private Double amount;
-    private boolean isSellingPrice;
+    private boolean isRedemption;
 
     public Price() {
     }
 
-    public Price(LocalDateTime dateTime, Double amount, boolean isSellingPrice) {
+    public Price(LocalDateTime dateTime, Double amount, boolean isRedemption) {
         this.dateTime = dateTime;
         this.amount = amount;
-        this.isSellingPrice = isSellingPrice;
+        this.isRedemption = isRedemption;
     }
 
     @Override

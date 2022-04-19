@@ -1,11 +1,15 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Repository;
 
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.PricePair;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Repository
-public interface PricePairRepository extends JpaRepository<PricePair, LocalDateTime> {
+public interface PricePairRepository extends JpaRepository<PricePair, Long> {
+
+    Optional<PricePair> findByProduct_NameAndDealer(String productName, Dealer dealer);
 }

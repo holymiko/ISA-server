@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -107,8 +108,17 @@ public class MetalScraper extends Client {
         System.out.println("All products scraped");
     }
 
-    public void scrapByParam(Dealer dealer, Metal metal, Form form, String url) {
-        generalScrap( linkMapper.toDTO(linkService.findByParams(dealer, metal, form, url)) );
+    public void scrapByParam(Boolean isRedemption, Dealer dealer, Metal metal, Form form, String url) {
+        List<LinkDTO> links = linkMapper.toDTO(linkService.findByParams(dealer, metal, form, url));
+
+        // TODO Scrap Links without Products
+
+        // TODO Double check condition
+        if(isRedemption != null && dealer != null && metal != null) {
+            redemptionScrap(metal, dealer);
+        } else {
+            generalScrap(links);
+        }
     }
 
     public void productByPortfolio(long portfolioId) throws ResponseStatusException {
@@ -300,17 +310,39 @@ public class MetalScraper extends Client {
 
         pricePair = new PricePair(
                 link.getDealer(),
-                priceService.save(new Price(LocalDateTime.now(), sellingPrice, true)),
-                priceService.save(new Price(LocalDateTime.now(), redemptionPrice, false)));
+                priceService.save(new Price(LocalDateTime.now(), sellingPrice, false)),
+                priceService.save(new Price(LocalDateTime.now(), redemptionPrice, true)),
+                productService.findById(link.getProductId()).get());
 
         // Save PricePair
         this.priceService.save(pricePair);
-        this.productService.updatePrice(link.getProductId(), pricePair);
+        this.productService.updatePrices(link.getProductId(), pricePair);
 
         System.out.println("> New pricePair saved - " + link.getUrl());
 
         // Sleep time is dynamic, according to time took by scrap procedure
         Client.dynamicSleep(ETHICAL_DELAY, startTime);
+    }
+
+    // TODO Test this
+    private void redemptionScrap(final Metal metal, final Dealer dealer) {
+        System.out.println(">>> Redemption Scrap");
+        if( dealerInterfaces.get(dealer) instanceof ScrapRedemptionFromListInterface ) {
+            System.out.println(">>>>> Scraping Redemption List available");
+            List<Pair<String, Double>> nameRedemptionMap = ((ScrapRedemptionFromListInterface) dealerInterfaces.get(dealer)).scrapRedemptionFromList();
+
+            nameRedemptionMap.stream().forEach(
+                x -> {
+                    try {
+                        priceService.updatePricePair(x.getFirst(), dealer, x.getSecond(), true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            );
+        }
+
+        System.out.println("Redemption "+dealer+" "+metal+" update");
     }
 
     public void scrapProductByIdList(final List<Long> productIds) {

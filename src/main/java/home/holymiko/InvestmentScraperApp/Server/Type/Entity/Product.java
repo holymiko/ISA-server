@@ -34,11 +34,11 @@ public class Product {
     @Fetch(FetchMode.SELECT)
     private List<Link> links;      // + Dealer
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private List<PricePair> latestPricePairs;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private List<PricePair> pricePairs;
 

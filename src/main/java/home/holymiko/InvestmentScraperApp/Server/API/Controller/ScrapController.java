@@ -74,72 +74,19 @@ public class ScrapController {
         Form form
     ) {
         scrapHistory.frequencyHandling(metal);
+        scrapHistory.frequencyHandling(dealer);
         // TODO Lock guard
         ScrapHistory.isRunning();
         System.out.println("By param scrap products");
-
         System.out.println("isRedemption: "+isRedemption);
-
-//        Dealer dealer2;
-//        Metal metal2 = extractAndCheckFrequency(metal);
-
-//        try {
-//            // Try convert string to Dealer
-//            dealer2 = Convert.dealerConvert(dealer);
-//        } catch (IllegalArgumentException ignored) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-//        }
 
         // TODO Lock guard
         ScrapHistory.startRunning();
 
-        scrapMetal.scrapByParam(dealer, metal, form, null);
+        scrapMetal.scrapByParam(isRedemption, dealer, metal, form, null);
 
         // TODO Unlock
         scrapHistory.timeUpdate(dealer);
-        ScrapHistory.stopRunning();
-    }
-
-    @RequestMapping({"/dealer/{dealer}", "/dealer/{dealer}/"})
-    public void scrapProductsByDealer(@PathVariable String dealer) {
-        ScrapHistory.frequencyHandlingAll(false);
-        ScrapHistory.isRunning();
-
-        Dealer dealerType;
-
-        System.out.println("Trying to scrap "+dealer+" products");
-
-        try {
-            // Try convert string to Dealer
-            dealerType = Convert.dealerConvert(dealer);
-        } catch (IllegalArgumentException ignored) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        ScrapHistory.startRunning();
-
-        scrapMetal.scrapByParam(dealerType, null, null, null);
-        scrapHistory.timeUpdate(dealerType);
-        ScrapHistory.stopRunning();
-    }
-
-    @RequestMapping({"/metal/{metal}", "/metal/{metal}/"})
-    public void scrapProductsByMetal(@PathVariable String metal) {
-        ScrapHistory.frequencyHandlingAll(false);
-        ScrapHistory.isRunning();
-
-        Metal metal2 = extractAndCheckFrequency(metal);
-
-        ScrapHistory.startRunning();
-
-        // Scraps prices from all dealers
-        System.out.println("Trying to scrap "+metal+" prices");
-        System.out.println("MetalScraper pricesByMetal");
-        scrapMetal.scrapByParam(null, metal2, null, null);
-        System.out.println(metal2+" prices scraped");
-        ConsolePrinter.printTimeStamp();
-
-        scrapHistory.timeUpdate(metal2);
         ScrapHistory.stopRunning();
     }
 

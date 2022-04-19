@@ -2,16 +2,19 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScr
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.ScrapRedemptionFromListInterface;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraperInterface;
+import org.springframework.data.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BessergoldMetalScraper extends Client implements MetalScraperInterface {
+public class BessergoldMetalScraper extends Client implements MetalScraperInterface, ScrapRedemptionFromListInterface {
     private static final String SEARCH_URL_GOLD = "https://www.bessergold.cz/investicni-zlato.html?product_list_limit=all";
     private static final String SEARCH_URL_SILVER = "https://www.bessergold.cz/investicni-stribro.html?product_list_limit=all";
     private static final String SEARCH_URL_PLATINUM = "https://www.bessergold.cz/investicni-platina.html?product_list_limit=all";
@@ -29,10 +32,26 @@ public class BessergoldMetalScraper extends Client implements MetalScraperInterf
     @Override
     public List<Link> scrapAllLinks() {
         List<Link> elements = new ArrayList<>();
-        elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD)));
-        elements.addAll(scrapLinks(loadPage(SEARCH_URL_SILVER)));
-        elements.addAll(scrapLinks(loadPage(SEARCH_URL_PLATINUM)));
-        elements.addAll(scrapLinks(loadPage(SEARCH_URL_PALLADIUM)));
+        try {
+            elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD)));
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            elements.addAll(scrapLinks(loadPage(SEARCH_URL_SILVER)));
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            elements.addAll(scrapLinks(loadPage(SEARCH_URL_PLATINUM)));
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            elements.addAll(scrapLinks(loadPage(SEARCH_URL_PALLADIUM)));
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
         return elements;
     }
 
@@ -84,5 +103,11 @@ public class BessergoldMetalScraper extends Client implements MetalScraperInterf
                 Dealer.BESSERGOLD_CZ,
                 ""
         );
+    }
+
+    @Override
+    public List<Pair<String, Double>> scrapRedemptionFromList() {
+        // TODO Implement scrapRedemptionFromList
+        return new ArrayList<>();
     }
 }
