@@ -10,4 +10,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v2/link")
 public class LinkController {
 
+    // TODO getCount
 }

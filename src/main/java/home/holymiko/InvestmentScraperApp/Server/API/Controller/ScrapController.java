@@ -2,6 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapRefusedException;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
@@ -51,7 +52,6 @@ public class ScrapController {
     @RequestMapping({"/products", "/products/"})
     public void allProducts() {
         ScrapHistory.frequencyHandlingAll(false);
-
         ScrapHistory.startRunning();
 
         System.out.println("Client ALL products");
@@ -59,7 +59,44 @@ public class ScrapController {
         this.scrapMetal.allProducts();
 
         ScrapHistory.timeUpdate(false, true);
+        ScrapHistory.stopRunning();
+    }
 
+    @RequestMapping(method = RequestMethod.GET, value ="/param", headers = "Accept=application/json;charset=UTF-8")
+    public void scrapProductsByParam(
+        @RequestParam(required = false)
+        Boolean isRedemption,
+        @RequestParam(required = false)
+        Dealer dealer,
+        @RequestParam(required = false)
+        Metal metal,
+        @RequestParam(required = false)
+        Form form
+    ) {
+        scrapHistory.frequencyHandling(metal);
+        // TODO Lock guard
+        ScrapHistory.isRunning();
+        System.out.println("By param scrap products");
+
+        System.out.println("isRedemption: "+isRedemption);
+
+//        Dealer dealer2;
+//        Metal metal2 = extractAndCheckFrequency(metal);
+
+//        try {
+//            // Try convert string to Dealer
+//            dealer2 = Convert.dealerConvert(dealer);
+//        } catch (IllegalArgumentException ignored) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//        }
+
+        // TODO Lock guard
+        ScrapHistory.startRunning();
+
+        scrapMetal.scrapByParam(dealer, metal, form, null);
+
+        // TODO Unlock
+        scrapHistory.timeUpdate(dealer);
         ScrapHistory.stopRunning();
     }
 
@@ -87,27 +124,27 @@ public class ScrapController {
     }
 
     @RequestMapping({"/metal/{metal}", "/metal/{metal}/"})
-    public void byMetal(@PathVariable String string) {
+    public void scrapProductsByMetal(@PathVariable String metal) {
         ScrapHistory.frequencyHandlingAll(false);
         ScrapHistory.isRunning();
 
-        Metal metal = extractAndCheckFrequency(string);
+        Metal metal2 = extractAndCheckFrequency(metal);
 
         ScrapHistory.startRunning();
 
         // Scraps prices from all dealers
-        System.out.println("Trying to scrap "+string+" prices");
+        System.out.println("Trying to scrap "+metal+" prices");
         System.out.println("MetalScraper pricesByMetal");
-        scrapMetal.scrapByParam(null, metal, null, null);
-        System.out.println(metal+" prices scraped");
+        scrapMetal.scrapByParam(null, metal2, null, null);
+        System.out.println(metal2+" prices scraped");
         ConsolePrinter.printTimeStamp();
 
-        scrapHistory.timeUpdate(metal);
+        scrapHistory.timeUpdate(metal2);
         ScrapHistory.stopRunning();
     }
 
     @RequestMapping({"/portfolio/{id}", "/portfolio/{id}/"})
-    public void byPortfolio(@PathVariable long id) {
+    public void scrapProductsByPortfolio(@PathVariable long id) {
         ScrapHistory.startRunning();
 //      TODO
 //        try {

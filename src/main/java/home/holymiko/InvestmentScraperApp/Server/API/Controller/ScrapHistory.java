@@ -1,9 +1,11 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
+import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapRefusedException;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -88,13 +90,19 @@ public class ScrapHistory {
         }
     }
 
-    public void frequencyHandling(Metal metal) throws ScrapRefusedException {
+    public void frequencyHandling(@NotNull Metal metal) throws ScrapRefusedException {
+        if(metal == null) {
+            return;
+        }
         if ( LocalDateTime.now().minusMinutes(MINUTES_DELAY).isBefore(scrapHistory.get(metal)) ) {
             throw new ScrapRefusedException( "Updated less then " + MINUTES_DELAY + " minutes ago");
         }
     }
 
-    public void frequencyHandling(Dealer dealer) throws ScrapRefusedException {
+    public void frequencyHandling(@NotNull Dealer dealer) throws ScrapRefusedException {
+        if(dealer == null) {
+            return;
+        }
         if ( LocalDateTime.now().minusMinutes(MINUTES_DELAY).isBefore(scrapDealerHistory.get(dealer)) ) {
             throw new ScrapRefusedException( "Updated less then " + MINUTES_DELAY + " minutes ago");
         }

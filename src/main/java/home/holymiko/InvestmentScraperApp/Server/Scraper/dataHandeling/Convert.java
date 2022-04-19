@@ -12,11 +12,13 @@ public class Convert {
      * @return Enum class Form
      */
     public static Dealer dealerConvert(String nameOfDealer) throws IllegalArgumentException {
-        return switch (nameOfDealer.toLowerCase(Locale.ROOT)) {
-            case "bessergold" -> Dealer.BESSERGOLD_CZ;
-            case "zlataky" -> Dealer.ZLATAKY;
-            default -> throw new IllegalArgumentException("Invalid Enum argument");
-        };
+        return nameOfDealer == null
+                ? null
+                : switch (nameOfDealer.toLowerCase(Locale.ROOT)) {
+                    case "bessergold" -> Dealer.BESSERGOLD_CZ;
+                    case "zlataky" -> Dealer.ZLATAKY;
+                    default -> throw new IllegalArgumentException("Invalid Enum argument");
+                };
     }
 
     /**
