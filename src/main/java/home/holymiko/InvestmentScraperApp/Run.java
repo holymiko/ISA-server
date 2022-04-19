@@ -21,6 +21,7 @@ import java.io.IOException;
 @Component
 public class Run {
 
+    Process process;
     private final ScrapController scrapController;
     private final InvestmentInit investmentInit;
     private final TickerService tickerService;
@@ -45,9 +46,9 @@ public class Run {
         System.out.println("App has started up");
 
         // Run FrontEnd NodeJS Application
-//        Process process = new ProcessBuilder(isWindows() ? "npm.cmd" : "npm", "start")
-//                .directory( new File("../InvestmentScraperApp_client"))
-//                .start();
+        process = new ProcessBuilder(isWindows() ? "npm.cmd" : "npm", "start")
+                .directory( new File("../InvestmentScraperApp_client"))
+                .start();
 
         exchangeRateService.printExchangeRates();
 //        tickerService.printTickerStatus();
