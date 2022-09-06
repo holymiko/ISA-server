@@ -1,5 +1,10 @@
 # Scrap App server
 
+## To Run
+cd src/main/docker
+docker build .
+docker compose up
+
 ## Úvod
 Smyslem algoritmu je zprostředkovat informace o investičních produktech. 
 

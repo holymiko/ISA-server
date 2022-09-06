@@ -13,4 +13,4 @@ services:
       - postgres_data:/var/lib/postgrsql/data
 volumes:
   postgres_data:
-    external: true
+    external: false
