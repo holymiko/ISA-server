@@ -90,6 +90,7 @@ public class ScrapController {
         ScrapHistory.stopRunning();
     }
 
+    @Deprecated
     @RequestMapping({"/portfolio/{id}", "/portfolio/{id}/"})
     public void scrapProductsByPortfolio(@PathVariable long id) {
         ScrapHistory.startRunning();
@@ -107,6 +108,7 @@ public class ScrapController {
         throw new ResponseStatusException(HttpStatus.OK, "MetalScraper done");
     }
 
+    @Deprecated
     @RequestMapping({"/productsIds", "/productsIds/"})              // Wasn't tested
     public void byProductIds(@RequestBody List<Long> productIds) {
         ScrapHistory.startRunning();
@@ -151,6 +153,7 @@ public class ScrapController {
         ScrapHistory.stopRunning();
     }
 
+    @Deprecated
     @RequestMapping({"/links/{string}", "/links/{string}/"})
     public void linksBy(@PathVariable String string) {
         ScrapHistory.frequencyHandlingAll(true);

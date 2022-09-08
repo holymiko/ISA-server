@@ -21,12 +21,7 @@ public class Convert {
                 };
     }
 
-    /**
-     * Extracts number from text format.
-     * @param text text including only number and currency
-     * @return price from text
-     */
-    public static Double currencyToNumberConvert(String text) throws NumberFormatException{
+    public static String currencyClean(String text) throws NumberFormatException{
         text = text.toLowerCase();
         text = text.replace("\u00a0", "");         // &nbsp;
         text = text.replace(" ", "");
@@ -35,7 +30,16 @@ public class Convert {
         text = text.replace("€", "");
         text = text.replace("$", "");
         text = text.replace("%", "");
-        return Double.parseDouble(text);
+        return text;
+    }
+
+    /**
+     * Extracts number from text format.
+     * @param text text including only number and currency
+     * @return price from text
+     */
+    public static Double currencyToNumberConvert(String text) throws NumberFormatException{
+        return Double.parseDouble(currencyClean(text));
     }
 
     /**

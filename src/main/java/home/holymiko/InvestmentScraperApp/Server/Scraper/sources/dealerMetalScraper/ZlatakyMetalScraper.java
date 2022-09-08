@@ -11,24 +11,24 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraperInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ZlatakyMetalScraper extends Client implements MetalScraperInterface {
 
     private static final String BASE_URL = "https://zlataky.cz";
-    private static final String SEARCH_URL_GOLD_COIN = "https://zlataky.cz/investicni-zlate-mince?ext=0&filter_weight=on&sort=3a&filter_in_stock=1&page=all";
-    private static final String SEARCH_URL_GOLD_BAR = "https://zlataky.cz/investicni-zlate-slitky?ext=0&filter_weight=on&sort=3a&filter_in_stock=1&page=all";
+    private static final String SEARCH_URL_GOLD_COIN = "https://zlataky.cz/investicni-zlate-mince?page=1&page_all=1";
+    private static final String SEARCH_URL_GOLD_BAR = "https://zlataky.cz/investicni-zlate-slitky?page=1&page_all=1";
+    private static final String SEARCH_URL_SILVER_COIN = "https://zlataky.cz/investicni-stribrne-mince?page=1&page_all=1";
+    private static final String SEARCH_URL_SILVER_BAR = "https://zlataky.cz/investicni-stribrne-slitky?page=1&page_all=1";
+    private static final String SEARCH_URL_PLATINUM = "https://zlataky.cz/ostatni-investicni-kovy";
 
-    private static final String SEARCH_URL_SILVER_COIN = "https://zlataky.cz/investicni-stribrne-mince?ext=0&filter_weight=on&sort=3a&filter_in_stock=1&page=all";
-    private static final String SEARCH_URL_SILVER_BAR = "https://zlataky.cz/investicni-stribrne-slitky?ext=0&filter_weight=on&sort=3a&filter_in_stock=1&page=all";
+    private static final String X_PATH_PRODUCT_LIST = ".//*[@id=\"kategorie-obsah\"]/div[3]/child::*";
+    private static final String X_PATH_PRODUCT_LIST_PRODUCT_LINK = ".//div/div[4]/a";
+    private static final String X_PATH_PRODUCT_NAME = "//*[@id=\"snippet--page\"]/div[2]/div[1]/div[2]/h1";
+    private static final String X_PATH_BUY_PRICE = "//*[@id=\"hlavni_cena\"]";
+    private static final String X_PATH_REDEMPTION_PRICE = ".//*[@id=\"snippet--page\"]/div[2]/div[1]/div[2]/div[5]/div[1]/span[2]/strong";
 
-    private static final String SEARCH_URL_PLATINUM = "https://zlataky.cz/ostatni-investicni-kovy?ext=0&filter_subcat_value=1&filter_weight=on&filter_id=on&sort=3a&filter_in_stock=1";
-    private static final String SEARCH_URL_PALLADIUM = "https://zlataky.cz/ostatni-investicni-kovy?ext=0&filter_subcat_value=2&filter_weight=on&filter_id=on&sort=3a&filter_in_stock=1";
-    private static final String SEARCH_URL_RHODIUM = "https://zlataky.cz/ostatni-investicni-kovy?ext=0&filter_subcat_value=3&filter_weight=on&filter_id=on&sort=1a&filter_in_stock=1";
 
-    private static final String X_PATH_PRODUCT_LIST = "//*[@id=\"productListing\"]/div";
-    private static final String X_PATH_PRODUCT_NAME = ".//*[@id=\"productName\"]";
-    private static final String X_PATH_BUY_PRICE = ".//*[@id=\"product_price\"]";
-    private static final String X_PATH_REDEMPTION_PRICE = ".//*[@id=\"product_price_purchase\"]";
 
     public ZlatakyMetalScraper() {
         super();
@@ -62,25 +62,18 @@ public class ZlatakyMetalScraper extends Client implements MetalScraperInterface
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
-        try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_PALLADIUM)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
         return elements;
     }
 
     /////// PRICE
 
     /**
-     * Takes following pattern:
-     * - Výkupní cena (osvobozeno od DPH): xxxx,xx Kč
      * @param redemptionPriceHtml
      * @return
      */
     @Override
     public String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
-        return redemptionPriceHtml.asText().split(":")[1];
+        return redemptionPriceHtml.asText();
     }
 
     @Override
@@ -89,9 +82,13 @@ public class ZlatakyMetalScraper extends Client implements MetalScraperInterface
     }
     @Override
     public double scrapBuyPrice(HtmlPage productDetailPage) {
-        return Convert.currencyToNumberConvert(
-                scrapBuyPrice(productDetailPage, X_PATH_BUY_PRICE)
-        );
+        String x = Convert.currencyClean(scrapBuyPrice(productDetailPage, X_PATH_BUY_PRICE));
+
+        if(Pattern.compile("původnícena:").matcher(x).find()) {
+            x = x.split("původnícena:\\d+")[1];
+        }
+
+        return Double.parseDouble(x);
     }
     @Override
     public String scrapProductName(HtmlPage page) {
@@ -101,7 +98,7 @@ public class ZlatakyMetalScraper extends Client implements MetalScraperInterface
     @Override
     public double scrapRedemptionPrice(HtmlPage page) {
         return Convert.currencyToNumberConvert(
-                scrapRedemptionPrice(page, X_PATH_REDEMPTION_PRICE)
+            scrapRedemptionPrice(page, X_PATH_REDEMPTION_PRICE)
         );
     }
 
@@ -109,7 +106,7 @@ public class ZlatakyMetalScraper extends Client implements MetalScraperInterface
 
     @Override
     public Link scrapLink(HtmlElement elementProduct) {
-        return scrapLink(elementProduct, ".//div/h3/a", Dealer.ZLATAKY, BASE_URL);
+        return scrapLink(elementProduct, X_PATH_PRODUCT_LIST_PRODUCT_LINK, Dealer.ZLATAKY, BASE_URL);
     }
 
 }
