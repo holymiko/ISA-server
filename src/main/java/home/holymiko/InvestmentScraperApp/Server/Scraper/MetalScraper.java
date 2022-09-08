@@ -298,8 +298,14 @@ public class MetalScraper extends Client {
         final PricePair pricePair;
         final PricePair pricePair2;
 
-        HtmlPage productDetailPage = loadPage(link.getUrl());
+        HtmlPage productDetailPage;
 
+        try {
+            productDetailPage = loadPage(link.getUrl());
+        } catch (ResourceNotFoundException e) {
+            // TODO Handle this & Log this
+            return;
+        }
         // TODO Double think about sellingPrice/redemption pricePair data types + What to do if both are zero?
         try {
             sellingPrice = dealerInterfaces.get(link.getDealer()).scrapBuyPrice(productDetailPage);
@@ -312,7 +318,8 @@ public class MetalScraper extends Client {
                 link.getDealer(),
                 priceService.save(new Price(LocalDateTime.now(), sellingPrice, false)),
                 priceService.save(new Price(LocalDateTime.now(), redemptionPrice, true)),
-                productService.findById(link.getProductId()).get());
+                productService.findById(link.getProductId()).get()
+        );
 
         // Save PricePair
         this.priceService.save(pricePair);

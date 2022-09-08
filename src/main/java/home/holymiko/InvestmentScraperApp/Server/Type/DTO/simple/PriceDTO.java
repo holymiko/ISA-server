@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 public class PriceDTO {
 
+    private final long id;
     private final LocalDateTime priceDateTime;
     private final LocalDateTime redemptionDateTime;
     private final double price;
@@ -16,7 +17,8 @@ public class PriceDTO {
     private final double spread;
     private final double pricePerGram;
 
-    public PriceDTO(LocalDateTime priceDateTime, LocalDateTime redemptionDateTime, double price, double redemption, Dealer dealer, double grams) {
+    public PriceDTO(long id, LocalDateTime priceDateTime, LocalDateTime redemptionDateTime, double price, double redemption, Dealer dealer, double grams) {
+        this.id = id;
         this.priceDateTime = priceDateTime;
         this.redemptionDateTime = redemptionDateTime;
         this.price = price;

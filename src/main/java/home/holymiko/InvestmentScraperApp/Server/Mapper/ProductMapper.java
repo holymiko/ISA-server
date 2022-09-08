@@ -22,7 +22,10 @@ public abstract class ProductMapper {
 
     public abstract ProductDTO toProductDTO(Product entity);
 
-    @Mapping(target = "latestPrice", source = "priceDTO")
+    @Mappings({
+            @Mapping(target = "latestPrice", source = "priceDTO"),
+            @Mapping(target = "id", source = "product.id"),
+    })
     public abstract ProductDTO_OneLatestPrice toProductDTO_OneLatestPrice(Product product, PriceDTO priceDTO);
 
     @Mapping(target = "latestPrice", expression = LATEST_PRICE_DTO)
