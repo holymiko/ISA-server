@@ -1,34 +1,43 @@
-# Scrap App server
+# Investment Scrap App server
 
-## To Run
-cd src/main/docker
-docker build .
-docker compose up
+## How to run?
+>### Database
+>* cd src/main/docker<br>
+>* docker build .<br>
+>* docker compose up
+>### Back-end application
+>Run <b>main method in InvestmentScraperApp.java</b><br>
+>After application start, following actions, like initial data scraping,<br>
+> can be handled by <b>EventListeners in Run.java</b>
+>### Front-end application
+>Enter client directory
+>* yarn install<br>
+>* yarn start<br>
 
 ## Úvod
-Smyslem algoritmu je zprostředkovat informace o investičních produktech. 
-
-Program vyhodnocuje nabídku drahých kovů na českém trhu. 
-
-Zároveň získává informace ze stránky, která vyhodnocuje akcie na základě strategie popsané v knize <b> Inteligentní Investor</b> od Benjamina Grahama
+> Smyslem algoritmu je zprostředkovat informace o investičních produktech. <br>
+Program vyhodnocuje nabídku drahých kovů na českém trhu. <br>
+Zároveň získává informace ze stránky, která vyhodnocuje akcie na základě 
+strategie popsané v knize <b> Inteligentní Investor</b> od Benjamina Grahama
 
 
 ## Získání dat
-Získání dat zajišťují třídy `scrap`
+> Získání dat zajišťují třídy `scrap`
 Program se pomocí `htmlunit` klienta spojí s webovou stránkou a na základě `XPath` získá z dokumentu relevantní data. 
 Ty jsou následné použity k vytvoření entit `stock` či `product` a uloženy do databáze.
 
-Informace pro `stock` jsou získány z www.serenitystocks.com/stock/ +`ticker`
+> Informace pro `stock` jsou získány z www.serenitystocks.com/stock/ +`ticker`
 Databáze uchovává seznam tickerů (zkratek užívaných na burze) a jejich stav. 
 Jejich zdrojem jsou soubory v adresáři `txt/`
 
-Drahé kovy jsou reprezentovány entitou `product` s relací na `link` a `pricePair` 
+>Drahé kovy jsou reprezentovány entitou `product` s relací na `link` a `pricePair` 
 Na základě link adresy je zjištěna cena, váha, výrobce atd.
 
-### Zdroje dat:
-https://www.serenitystocks.com/  
-https://www.bessergold.cz/  
-https://zlataky.cz/
+### Zdroje dat
+https://www.serenitystocks.com<br>
+https://www.bessergold.cz<br>
+https://zlataky.cz<br>
+https://silverum.cz<br>
 
 
 
@@ -87,27 +96,14 @@ Entita **Produkt** obsahuje nový atribut **year** pro přesnější určení.
 <br />
 
 
-### Note: Sna69m se pou69vat DTO na příč komunikací aby se šetřili datový přenos a posílat minimum reguestu na databázi
+### Note: Snažím se používat DTO na příč komunikací aby se šetřili datový přenos a posílat minimum reguestu na databázi
 
-
-## ToDo
-- [ ] Final and Static
-- [ ] Documentation
-- [ ] Postman tests
-- [ ] Class documentation
-- [ ] Add Silverum.cz
-- [ ] Lambda.orElseThrow discussion
-- [ ] Scrap pricePairs from product list for Bessergold & Silverum.
-- [ ] Scrap redemption pricePairs from https://www.bessergold.cz/vykup.html
-- [ ] Stock investments
-- [ ] Gold to silver ratio
 
 <br/>
 <br/>
 <br/>
 
-### Relevantní články:
-
+### Relevantní články
 https://www.serenitystocks.com/article/how-build-complete-benjamin-graham-portfolio  
 https://en.wikipedia.org/wiki/Benjamin_Graham  
 https://en.wikipedia.org/wiki/The_Intelligent_Investor  
