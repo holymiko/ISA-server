@@ -12,6 +12,11 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraperInterface;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class is deprecated, because buyOut (redemption) scraping is missing.
+ * Only golden products are scraped. Silver products are not activated.
+ * Apart from that, class works correctly a can be used
+ */
 @Deprecated
 public class SilverumMetalScraper extends Client implements MetalScraperInterface {
     private static final String BASE = "https://www.silverum.cz/";

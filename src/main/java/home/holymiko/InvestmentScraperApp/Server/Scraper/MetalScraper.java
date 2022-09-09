@@ -27,7 +27,6 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -68,8 +67,11 @@ public class MetalScraper extends Client {
         this.exchangeRateService = exchangeRateService;
     }
 
+    /**
+     * Dealer
+     */
     @EventListener(ApplicationStartedEvent.class)
-    public void initializeDealerInter() throws IOException {
+    public void initializeDealerInterfaces() {
         System.out.println(">> Metal scraper - Initialize dealer interfaces");
         dealerInterfaces.put(Dealer.BESSERGOLD_CZ, new BessergoldMetalScraper());
         dealerInterfaces.put(Dealer.SILVERUM, new SilverumMetalScraper());
@@ -92,18 +94,15 @@ public class MetalScraper extends Client {
     /////// PUBLIC
 
     /**
-     * Scraps products based on Links from DB
+     * Calls main scraping method (generalScrap) for all links in DB
      */
     public void allProducts() {
-        List<LinkDTO> linkDTOList = linkMapper.toDTO(linkService.findAll());
-//        linkDTOList = linkDTOList.stream().filter(
-//                linkDTO -> linkDTO.getProductId() == null
-//        ).collect(Collectors.toList());
-//        for (LinkDTO link:linkDTOList) {
-//            productScrap(link);
-////            System.out.println(link.toString());
-//        }
-        generalScrap( linkDTOList );
+        generalScrapAndSleep(
+                linkMapper.toDTO(
+                        linkService.findAll()
+                )
+        );
+        // TODO Logging
         ConsolePrinter.printTimeStamp();
         System.out.println("All products scraped");
     }
@@ -117,7 +116,7 @@ public class MetalScraper extends Client {
         if(isRedemption != null && dealer != null && metal != null) {
             redemptionScrap(metal, dealer);
         } else {
-            generalScrap(links);
+            generalScrapAndSleep(links);
         }
     }
 
@@ -142,7 +141,7 @@ public class MetalScraper extends Client {
                         Collectors.toSet()
                 );
 
-        generalScrap( new ArrayList<>(linkSet) );
+        generalScrapAndSleep( new ArrayList<>(linkSet) );
         ConsolePrinter.printTimeStamp();
     }
 
@@ -269,7 +268,7 @@ public class MetalScraper extends Client {
      * Prints to console.
      * @param links Optional links of Products
      */
-    private void generalScrap(final List<LinkDTO> links) {
+    private void generalScrapAndSleep(final List<LinkDTO> links) {
         int counter = 0;
         for (LinkDTO link : links) {
             long startTime = System.nanoTime();
@@ -277,8 +276,9 @@ public class MetalScraper extends Client {
             // Main method for scraping a document
             generalScrap(link);
 
-            // Sleep time is dynamic, according to time took by scrap procedure
+            // TODO Logging
             ConsolePrinter.statusPrint(PRINT_INTERVAL, links.size(), counter++);
+            // Sleep time is dynamic, according to time took by scrap procedure
             Client.dynamicSleep(ETHICAL_DELAY, startTime);
         }
     }
@@ -288,6 +288,7 @@ public class MetalScraper extends Client {
     /////// PRIVATE
 
     /**
+     * Main Price scraping method
      * Scraps new price for already known product
      * @param link Link from which the price gonna be scrapped
      */
@@ -297,7 +298,6 @@ public class MetalScraper extends Client {
         Double redemptionPrice = null;
         final PricePair pricePair;
         final PricePair pricePair2;
-
         HtmlPage productDetailPage;
 
         try {
@@ -306,8 +306,10 @@ public class MetalScraper extends Client {
             // TODO Handle this & Log this
             return;
         }
+
         // TODO Double think about sellingPrice/redemption pricePair data types + What to do if both are zero?
         try {
+            // Choose MetalScraperInterface & scrap buy price
             sellingPrice = dealerInterfaces.get(link.getDealer()).scrapBuyPrice(productDetailPage);
         } catch (NumberFormatException e) {
             System.out.println(e.getMessage());
@@ -332,13 +334,14 @@ public class MetalScraper extends Client {
     }
 
     // TODO Test this
+    @Deprecated
     private void redemptionScrap(final Metal metal, final Dealer dealer) {
         System.out.println(">>> Redemption Scrap");
         if( dealerInterfaces.get(dealer) instanceof ScrapRedemptionFromListInterface ) {
             System.out.println(">>>>> Scraping Redemption List available");
             List<Pair<String, Double>> nameRedemptionMap = ((ScrapRedemptionFromListInterface) dealerInterfaces.get(dealer)).scrapRedemptionFromList();
 
-            nameRedemptionMap.stream().forEach(
+            nameRedemptionMap.forEach(
                 x -> {
                     try {
                         priceService.updatePricePair(x.getFirst(), dealer, x.getSecond(), true);
@@ -347,6 +350,9 @@ public class MetalScraper extends Client {
                     }
                 }
             );
+        } else {
+            System.out.println(">>>>> Scraping Redemption List is NOT available");
+            // TODO Throw and catch in upper layer
         }
 
         System.out.println("Redemption "+dealer+" "+metal+" update");

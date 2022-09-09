@@ -4,6 +4,7 @@
 - [ ] <b>Latest price updating. Deleting doesn't work</b>
 - [ ] <b>Write bachelors documentation</b>
 - [ ] Add <b>Silverum.cz buyout</b> (redemption) scraping
+- [ ] Add Silverum silver products
 - [ ] <b>Scrap pricePairs from product list page and buyout page</b>
   for Bessergold & Silverum. Visiting all product detail pages won't be necessary. 
   Instead, product name and price will be taken from product list page. Buyout 
