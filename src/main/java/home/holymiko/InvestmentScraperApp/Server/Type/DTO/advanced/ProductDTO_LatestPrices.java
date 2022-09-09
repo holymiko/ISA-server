@@ -14,7 +14,7 @@ import java.util.List;
 public class ProductDTO_LatestPrices extends ProductDTO {
 
     private List<String> links;
-    private final List<PriceDTO> latestPrices;
+    private List<PriceDTO> latestPrices;
 
     public ProductDTO_LatestPrices(long id, String name, Metal metal, Form form, double grams, List<String> links, List<PriceDTO> latestPrices) {
         super(id, name, metal, form, grams);

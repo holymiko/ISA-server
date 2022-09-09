@@ -9,7 +9,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
+/**
+ * Class broken to pieces. Needs refactor and repair. Unreliable
+ */
+@Deprecated
 @Mapper(componentModel = "spring")
 public abstract class PortfolioMapper {
 
@@ -18,8 +21,6 @@ public abstract class PortfolioMapper {
     private static final String INVESTMENT_STOCK_DTO = "java( investmentStockMapper.toDTO_StockDTO(portfolio.getInvestmentStocks()) )";
     private static final String INVESTMENT_METAL_DTO_ALL_PRICES = "java( investmentMetalMapper.toDTO_AllPrices(portfolio.getInvestmentMetals()) )";
     private static final String INVESTMENT_METAL_DTO_LATEST_PRICES = "java( investmentMetalMapper.toDTO_LatestPrices(portfolio.getInvestmentMetals()) )";
-    private static final String INVESTMENT_METAL_DTO_ONE_LATEST_PRICE = "java( investmentMetalMapper.toDTO_OneLatestPrice(portfolio.getInvestmentMetals()) )";
-    private static final String INVESTMENT_METAL_DTO_LATEST_PRICES_ONE_LATEST_PRICE = "java( investmentMetalMapper.toDTO_LatestPrices_OneLatestPrice(portfolio.getInvestmentMetals()) )";
 
 
     @Autowired
@@ -29,43 +30,24 @@ public abstract class PortfolioMapper {
     protected InvestmentStockMapper investmentStockMapper;
 
 
-    @Mapping(target = "value", expression = VALUE)
+//    @Mapping(target = "value", expression = VALUE)
     public abstract PortfolioDTO toPortfolioDTO(Portfolio portfolio);
 
     @Mappings({
-            @Mapping(target = "value", expression = VALUE),
+//            @Mapping(target = "value", expression = VALUE),
             @Mapping(target = "investmentCount", expression = INVESTMENT_COUNT)
     })
     public abstract PortfolioDTO_InvestmentCount toPortfolioDTO_InvestmentCount(Portfolio portfolio);
 
-//    @Mappings({
-//            @Mapping(target = "value", expression = VALUE)
-//    })
-//    public abstract PortfolioDTO_ProductDTO toPortfolioDTO_ProductDTO(Portfolio portfolio, List<InvestmentMetalDTO_ProductDTO> investments);
-
     @Mappings({
-            @Mapping(target = "value", expression = VALUE),
-            @Mapping(target = "investmentsMetal", expression = INVESTMENT_METAL_DTO_ONE_LATEST_PRICE),
-            @Mapping(target = "investmentsStock", expression = INVESTMENT_STOCK_DTO)
-    })
-    public abstract PortfolioDTO_ProductDTO toDTO_OneLatestPrice(Portfolio portfolio);
-
-    @Mappings({
-            @Mapping(target = "value", expression = VALUE),
-            @Mapping(target = "investmentsMetal", expression = INVESTMENT_METAL_DTO_LATEST_PRICES_ONE_LATEST_PRICE),
-            @Mapping(target = "investmentsStock", expression = INVESTMENT_STOCK_DTO)
-    })
-    public abstract PortfolioDTO_ProductDTO toDTO_LatestPrices_OneLatestPrice(Portfolio portfolio);
-
-    @Mappings({
-            @Mapping(target = "value", expression = VALUE),
-            @Mapping(target = "investmentsMetal", expression = INVESTMENT_METAL_DTO_LATEST_PRICES),
+//            @Mapping(target = "value", expression = VALUE),
+//            @Mapping(target = "investmentsMetal", expression = INVESTMENT_METAL_DTO_LATEST_PRICES),
             @Mapping(target = "investmentsStock", expression = INVESTMENT_STOCK_DTO)
     })
     public abstract PortfolioDTO_ProductDTO toDTO_LatestPrices(Portfolio portfolio);
 
     @Mappings({
-            @Mapping(target = "value", expression = VALUE),
+//            @Mapping(target = "value", expression = VALUE),
             @Mapping(target = "investmentsMetal", expression = INVESTMENT_METAL_DTO_ALL_PRICES),
             @Mapping(target = "investmentsStock", expression = INVESTMENT_STOCK_DTO)
     })

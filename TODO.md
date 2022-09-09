@@ -1,7 +1,6 @@
 # ToDo
 
 ## A priority
-- [ ] <b>Latest price updating. Deleting doesn't work</b>
 - [ ] <b>Write bachelors documentation</b>
 - [ ] Add <b>Silverum.cz buyout</b> (redemption) scraping
 - [ ] Add Silverum silver products
@@ -16,7 +15,8 @@
 - [ ] Write documentation of methods
 - [ ] Write Postman tests for Scraper package
 - [ ] Create StockController
-- [ ] Finalize InvestmentStock in relation with Portfolio
+- [ ] Implement <b>Swagger</b>
+- [ ] Finalize InvestmentStock in relation with Portfolio. Repair related mappers
 - [ ] Scrap <b>spot prices</b> of Gold and Silver to compute <b>Gold/Silver ratio</b>
 - [ ] Make revision and finalize impl. of ScrapHistory. This has to be finalized 
   before putting scraper endpoint on-line. (Alternative solution is to deprecate 

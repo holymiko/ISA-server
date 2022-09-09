@@ -33,10 +33,6 @@ public class InvestmentMetal {
     public InvestmentMetal() {
     }
 
-    public double getYield() {
-        return product.getPriceByBestRedemption().getRedemption().getAmount()/ getBeginPrice();
-    }
-
 
     @Override
     public String toString() {

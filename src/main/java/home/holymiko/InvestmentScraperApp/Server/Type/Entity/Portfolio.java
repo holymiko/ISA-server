@@ -45,18 +45,4 @@ public class Portfolio {
                 ).reduce(0.0, Double::sum);
     }
 
-    public double getPortfolioValue() {
-        return investmentMetals.stream()
-                .map(
-                        investmentMetal ->
-                                investmentMetal.getProduct().getPriceByBestRedemption().getRedemption().getAmount()
-                ).reduce(0.0, Double::sum)
-            +
-                investmentStocks.stream()
-                .map(
-                        investmentStock
-                                -> investmentStock.getStock().getPreviousClose() * investmentStock.getAmount()
-                ).reduce(0.0, Double::sum);
-    }
-
 }

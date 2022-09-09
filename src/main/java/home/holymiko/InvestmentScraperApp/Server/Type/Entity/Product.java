@@ -1,6 +1,5 @@
 package home.holymiko.InvestmentScraperApp.Server.Type.Entity;
 
-import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Producer;
@@ -10,7 +9,6 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,11 +30,7 @@ public class Product {
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
-    private List<Link> links;      // + Dealer
-
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SELECT)
-    private List<PricePair> latestPricePairs;
+    private List<Link> links;      // includes Dealer
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
@@ -54,51 +48,15 @@ public class Product {
         this.year = year;
         this.isSpecial = isSpecial;
         this.links = new ArrayList<>();
-        this.latestPricePairs = new ArrayList<>();
         this.pricePairs = new ArrayList<>();
     }
 
-
-    public PricePair getLatestPriceByDealer(Dealer dealer) {
-        return this.latestPricePairs.stream()
-                .filter(
-                        price -> price.getDealer() == dealer
-                ).collect(Collectors.toList()).get(0);
-    }
-
-    public PricePair getPriceByBestRedemption() {
-        if(latestPricePairs == null || latestPricePairs.isEmpty()) {
-            return null;
-        }
-        PricePair max = latestPricePairs.get(0);
-        for (PricePair pricePair : latestPricePairs) {
-            if(pricePair.getRedemption().getAmount() > max.getRedemption().getAmount()) {
-                max = pricePair;
-            }
-        }
-        return max;
-    }
 
     public List<String> getLinksAsString() {
         return links
                 .stream()
                 .map(Link::getUrl)
                 .collect(Collectors.toList());
-    }
-
-    public void setLatestPricePairs(List<PricePair> latestPricePairs) {
-        this.latestPricePairs = latestPricePairs;
-    }
-
-    public void setLatestPrice(PricePair latestPricePair) {
-        if(this.latestPricePairs == null) {
-            this.latestPricePairs = Collections.singletonList(latestPricePair);
-            return;
-        }
-        this.latestPricePairs = this.latestPricePairs.stream()
-                .filter(price -> price.getDealer() != latestPricePair.getDealer())      // Filter Dealer to prevent duplicate
-                .collect(Collectors.toList());
-        this.latestPricePairs.add(latestPricePair);
     }
 
     public void setName(String name) {

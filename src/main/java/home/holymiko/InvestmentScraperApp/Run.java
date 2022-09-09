@@ -5,6 +5,8 @@ import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFound
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.ExchangeRateService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Utils.InvestmentInit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -37,9 +39,6 @@ public class Run {
         this.cnbScraper = cnbScraper;
     }
 
-    // TODO Silverum redemption prices
-    // TODO Faster scraping directly from ProductList + Redemption list
-    // TODO Logging
 
     @EventListener(ApplicationStartedEvent.class)
     public void run() throws IOException {
@@ -56,8 +55,9 @@ public class Run {
 
     @EventListener(ApplicationReadyEvent.class)
     public void scrap() throws IOException {
-        scrapController.allLinks();
-        scrapController.allProducts();
+//        scrapController.allLinks();
+//        scrapController.allProducts();
+//        scrapController.scrapProductsByParam(null, Dealer.ZLATAKY, Metal.SILVER, null);
 //        scrapController.scrapEverything();
 //        scrapController.serenity();
 //        investmentInit.saveInitPortfolios();

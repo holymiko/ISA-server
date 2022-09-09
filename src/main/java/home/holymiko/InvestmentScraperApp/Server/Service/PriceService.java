@@ -8,10 +8,13 @@ import home.holymiko.InvestmentScraperApp.Server.API.Repository.PricePairReposit
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Product;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -51,6 +54,27 @@ public class PriceService {
         this.pricePairRepository.save(pricePair);
     }
 
+    /**
+     * Method used for resolving issue of Product.latestPrices vs. Product.prices
+     * @param productId
+     * @return Latest PricePair for each Dealer
+     */
+    public List<PricePair> findLatestPricePairsByProductId(Long productId) {
+        System.out.println(">>>GANG");
+        // TODO test invalid productId
+        return pricePairRepository.findLatestPricePairsByProductId(productId);
+    }
+
+    public PricePair getPriceByBestRedemption(Long productId) {
+        List<PricePair> pricePairs = findLatestPricePairsByProductId(productId);
+        PricePair max = pricePairs.get(0);
+        for (PricePair pricePair : pricePairs) {
+            if(pricePair.getRedemption().getAmount() > max.getRedemption().getAmount()) {
+                max = pricePair;
+            }
+        }
+        return max;
+    }
 
     @Transactional
     public PricePair save(PricePair pricePair) {

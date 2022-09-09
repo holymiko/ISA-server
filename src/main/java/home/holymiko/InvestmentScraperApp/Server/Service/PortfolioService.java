@@ -57,18 +57,6 @@ public class PortfolioService {
             case 3 -> portfolioList
                         .stream()
                         .map(
-                                portfolioMapper::toDTO_OneLatestPrice
-                        )
-                        .collect(Collectors.toList());
-            case 4 -> portfolioList
-                        .stream()
-                        .map(
-                                portfolioMapper::toDTO_LatestPrices_OneLatestPrice
-                        )
-                        .collect(Collectors.toList());
-            case 5 -> portfolioList
-                        .stream()
-                        .map(
                                 portfolioMapper::toDTO_AllPrices
                         )
                         .collect(Collectors.toList());
