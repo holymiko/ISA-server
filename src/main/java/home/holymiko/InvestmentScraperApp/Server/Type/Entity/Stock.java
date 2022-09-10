@@ -18,6 +18,7 @@ public class Stock {
     @OneToOne
     private Ticker ticker;
     private GrahamGrade grahamGrade;
+    // TODO Think about converting to Currency enum
     private String currency;
 
     private Double ratingScore;

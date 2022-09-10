@@ -130,7 +130,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
     }
 
     private Set<Ticker> filterTickersByCurrencies(Set<Ticker> tickers, Set<String> currencies) {
-        return stockService.findByTickerState(tickers)
+        return stockService.findByTicker(tickers)
                 .stream()
                 .filter(
                         stock -> currencies.contains( stock.getCurrency() )

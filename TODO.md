@@ -14,7 +14,6 @@
 ## B priority
 - [ ] Write documentation of methods
 - [ ] Write Postman tests for Scraper package
-- [ ] Create StockController
 - [ ] Implement <b>Swagger</b>
 - [ ] Finalize InvestmentStock in relation with Portfolio. Repair related mappers
 - [ ] Scrap <b>spot prices</b> of Gold and Silver to compute <b>Gold/Silver ratio</b>
@@ -26,4 +25,4 @@
 - [ ] Convert methods to <b> Final and Static </b> if possible
 - [ ] Refactor (rename) Redemption to BuyOut
 - [ ] Scrap spot prices of products to compute dealer's margins
-
+- [ ] Implement Extract and Convert for special type of products, so they can be merged.  

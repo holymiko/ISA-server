@@ -5,6 +5,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Stock;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Ticker;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,11 +28,15 @@ public class StockService {
         return this.stockRepository.findById(id);
     }
 
-    public Optional<Stock> findByTickerState(Ticker ticker) {
+    public List<Stock> findAll() {
+        return this.stockRepository.findAll();
+    }
+
+    public Optional<Stock> findByTicker(Ticker ticker) {
         return this.stockRepository.findByTicker(ticker);
     }
 
-    public Set<Stock> findByTickerState(Set<Ticker> tickers) {
+    public Set<Stock> findByTicker(Set<Ticker> tickers) {
         Set<Stock> stocks = new HashSet<>();
 
         for (Ticker ticker : tickers) {
@@ -43,24 +48,17 @@ public class StockService {
         return stocks;
     }
 
-    public List<Stock> findByGrahamGrade(GrahamGrade grahamGrade) {
-        return this.stockRepository.findByGrahamGrade(grahamGrade);
-    }
-
-    public List<Stock> findByIntrinsicValue(double x) {
-        return this.stockRepository.findByIntrinsicValue(x);
-    }
-
-    public List<Stock> findAll() {
-        return this.stockRepository.findAll();
-    }
-
-    public List<Stock> findByRating(Double x) {
-        return this.stockRepository.findByRatingScore(x);
-    }
-
-    public List<Stock> findByCurrency(String x) {
-        return this.stockRepository.findByCurrency(x);
+    /**
+     * Null parameters are ignored in the query
+     * TODO Test this method
+     * @return Stocks corresponding with all given parameters
+     */
+    public List<Stock> findStocksByParams(
+            @Nullable GrahamGrade grahamGrade,
+            @Nullable Double intrinsicValue,
+            @Nullable Double ratingScore,
+            @Nullable String currency) {
+        return this.stockRepository.findByParams(grahamGrade, intrinsicValue, ratingScore, currency);
     }
 
 
