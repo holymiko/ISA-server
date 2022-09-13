@@ -2,6 +2,7 @@
 
 ## A priority
 - [ ] <b>Write bachelors documentation</b>
+- [ ] Create DTO with Best Price & Best Redemption to avoid frequent sorting on FE
 - [ ] Add <b>Silverum.cz buyout</b> (redemption) scraping
 - [ ] Add Silverum silver products
 - [ ] <b>Scrap pricePairs from product list page and buyout page</b>
