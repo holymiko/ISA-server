@@ -60,10 +60,7 @@ public class ProductService {
     public List<ProductDTO_LatestPrices> findAllAsDTO() {
         return productRepository.findAll()
                 .stream()
-                .filter(product ->
-                    product.getGrams() >= 0 //&&
-//                    product.getLatestPricePairs().getPrice() >= 0     TODO
-                )
+                .filter(product -> product.getGrams() >= 0)
                 .map(x -> productMapper.toProductDTO_LatestPrices(x, pricePairRepository))
                 .collect(Collectors.toList());
     }
@@ -92,16 +89,33 @@ public class ProductService {
     /////////// SAVE
 
     @Transactional
-    public void save(@NotNull Product product) throws NullPointerException {
+    public Product save(@NotNull ProductCreateDTO productCreateDTO) throws NullPointerException {
+        if(productCreateDTO == null) {
+            throw new NullPointerException();
+        }
+        return save(
+                new Product(
+                        productCreateDTO.getName(),
+                        productCreateDTO.getProducer(),
+                        productCreateDTO.getForm(),
+                        productCreateDTO.getMetal(),
+                        productCreateDTO.getGrams(),
+                        productCreateDTO.getYear(),
+                        productCreateDTO.isSpecial()
+                )
+        );
+    }
+
+    @Transactional
+    public Product save(@NotNull Product product) throws NullPointerException {
         if(product == null) {
             throw new NullPointerException();
         }
-        this.productRepository.save(product);
+        return this.productRepository.save(product);
     }
 
     /**
-     * PricePair is added to Product. LatestPrice is updated.
-     * Product is saved.
+     * PricePair is added to Product. Product is saved.
      * @param productId Product where the PricePair gonna be added
      * @param pricePair PricePair already saved in DB, which should be added to Product
      * @throws NullPointerException For null value in one of the parameters

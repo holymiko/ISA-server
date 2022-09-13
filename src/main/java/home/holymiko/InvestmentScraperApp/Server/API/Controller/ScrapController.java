@@ -90,47 +90,6 @@ public class ScrapController {
         ScrapHistory.stopRunning();
     }
 
-    @Deprecated
-    @RequestMapping({"/portfolio/{id}", "/portfolio/{id}/"})
-    public void scrapProductsByPortfolio(@PathVariable long id) {
-        ScrapHistory.startRunning();
-//      TODO
-//        try {
-//            // Scraps products from all dealers
-//            this.scrapMetals.values().forEach(
-//                    scrapMetal -> scrapMetal.productByPortfolio(id)
-//            );
-//        } catch (ResponseStatusException e){
-//            ScrapHistory.stopRunning();
-//            throw e;
-//        }
-        ScrapHistory.stopRunning();
-        throw new ResponseStatusException(HttpStatus.OK, "MetalScraper done");
-    }
-
-    @Deprecated
-    @RequestMapping({"/productsIds", "/productsIds/"})              // Wasn't tested
-    public void byProductIds(@RequestBody List<Long> productIds) {
-        ScrapHistory.startRunning();
-//      TODO
-//        try {
-//            // Scraps from all dealers
-//            this.scrapMetals.values().forEach(
-//                    scrapMetal -> {
-//                        System.out.println("MetalScraper pricesByProducts");
-//                        scrapMetal.scrapProductByIdList(productIds);
-//                        System.out.println(">> Prices scraped");
-//                        ConsolePrinter.printTimeStamp();
-//                    }
-//            );
-//        } catch (ResponseStatusException e){
-//            ScrapHistory.stopRunning();
-//            throw e;
-//        }
-        ScrapHistory.stopRunning();
-        throw new ResponseStatusException(HttpStatus.OK, "MetalScraper done");
-    }
-
     @RequestMapping({"/serenity", "/serenity/"})
     public void serenity() {
         this.serenityScraper.tickersScrap(TickerState.GOOD);
@@ -153,6 +112,7 @@ public class ScrapController {
         ScrapHistory.stopRunning();
     }
 
+    // TODO Rebuild this on scrap by param
     @Deprecated
     @RequestMapping({"/links/{string}", "/links/{string}/"})
     public void linksBy(@PathVariable String string) {
@@ -201,5 +161,44 @@ public class ScrapController {
         scrapHistory.frequencyHandling(metal);
         return metal;
     }
+
+//    TODO Test & Activate this endpoint
+//    @RequestMapping({"/productsIds", "/productsIds/"})
+//    public void byProductIds(@RequestBody List<Long> productIds) {
+//        ScrapHistory.startRunning();
+//        try {
+//            // Scraps from all dealers
+//            this.scrapMetals.values().forEach(
+//                    scrapMetal -> {
+//                        System.out.println("MetalScraper pricesByProducts");
+//                        scrapMetal.scrapProductByIdList(productIds);
+//                        System.out.println(">> Prices scraped");
+//                        ConsolePrinter.printTimeStamp();
+//                    }
+//            );
+//        } catch (ResponseStatusException e){
+//            ScrapHistory.stopRunning();
+//            throw e;
+//        }
+//        ScrapHistory.stopRunning();
+//        throw new ResponseStatusException(HttpStatus.OK, "MetalScraper done");
+//    }
+
+//    TODO Test & Activate this endpoint
+//    @RequestMapping({"/portfolio/{id}", "/portfolio/{id}/"})
+//    public void scrapProductsByPortfolio(@PathVariable long id) {
+//        ScrapHistory.startRunning();
+//        try {
+//            // Scraps products from all dealers
+//            this.scrapMetals.values().forEach(
+//                    scrapMetal -> scrapMetal.productByPortfolio(id)
+//            );
+//        } catch (ResponseStatusException e){
+//            ScrapHistory.stopRunning();
+//            throw e;
+//        }
+//        ScrapHistory.stopRunning();
+//        throw new ResponseStatusException(HttpStatus.OK, "MetalScraper done");
+//    }
 
 }

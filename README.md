@@ -95,8 +95,8 @@ Entita **Produkt** obsahuje nový atribut **year** pro přesnější určení.
 
 <br />
 
-
-### Note: Snažím se používat DTO na příč komunikací aby se šetřili datový přenos a posílat minimum reguestu na databázi
+### DTO
+V aplikaci jsou používány Data Transfer Objects, aby se šetřil datový přenos mezi aplikacemi a minimalizovalo množství dat, se kterými se manipuluje.
 
 
 <br/>

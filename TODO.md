@@ -12,7 +12,6 @@
 - [ ] Implement <b>logging</b> and remove all System.out.print
 
 ## B priority
-- [ ] Write documentation of methods
 - [ ] Write Postman tests for Scraper package
 - [ ] Implement <b>Swagger</b>
 - [ ] Finalize InvestmentStock in relation with Portfolio. Repair related mappers
@@ -20,6 +19,8 @@
 - [ ] Make revision and finalize impl. of ScrapHistory. This has to be finalized 
   before putting scraper endpoint on-line. (Alternative solution is to deprecate 
   endpoint and make scraping automatic based on time.)
+- [ ] Add scraper for https://www.investicni-zlato-praha.cz/
+- [ ] Add scraper for https://www.aurumbohemica.cz/
 
 ## C priority
 - [ ] Convert methods to <b> Final and Static </b> if possible

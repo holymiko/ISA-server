@@ -76,12 +76,17 @@ public class Extract {
         || text.contains("zlatá horečka na klondiku") || text.contains(" elk ")){
             return Producer.ROYAL_CANADIAN_MINT;
         }
-        else if (text.contains("sovereign elizabeth")
-        || text.contains("the queen´s beasts") || text.contains("the royal mint")
+        else if (text.contains("sovereign elizabeth") || text.contains("the royal mint")
+        || text.contains("the queen´s beasts") || text.contains("the queen's beasts")
         || text.contains("royal arms") || text.contains("dva draci")
-        || text.contains("mýty a legendy") || text.contains("valiant")) {
+        || text.contains("mýty a legendy") || text.contains("valiant")
+        || text.contains("the royal tudor beasts")  ) {
             return Producer.ROYAL_MINT_UK;
         }
+        else if (text.contains("gibraltar lady justice")) {
+            return Producer.SCOTTSDALE_MINT;
+        }
+        // From now on precision is lowered
         else if (text.contains("libertad")) {
             return Producer.MEXICO_MINT;
         }

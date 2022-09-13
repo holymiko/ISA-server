@@ -42,7 +42,7 @@ public class MetalScraper extends Client {
     private final ExchangeRateService exchangeRateService;
 
     // Used for Polymorphic calling
-    private final Map< Dealer, MetalScraperInterface> dealerInterfaces = new HashMap<>();
+    private final Map<Dealer, MetalScraperInterface> dealerInterfaces = new HashMap<>();
 
     private static final long ETHICAL_DELAY = 700;
     private static final int PRINT_INTERVAL = 10;
@@ -68,7 +68,9 @@ public class MetalScraper extends Client {
     }
 
     /**
-     * Dealer
+     * Automatically called method. Initialize instances dealer interfaces which are locally used in MetalScraper.java
+     * Instances can be initialized in constructor, because exchange rate has to be scraped and injected at first.
+     * (For foreign website scrapers)
      */
     @EventListener(ApplicationStartedEvent.class)
     public void initializeDealerInterfaces() {
@@ -76,6 +78,7 @@ public class MetalScraper extends Client {
         dealerInterfaces.put(Dealer.BESSERGOLD_CZ, new BessergoldMetalScraper());
         dealerInterfaces.put(Dealer.SILVERUM, new SilverumMetalScraper());
         dealerInterfaces.put(Dealer.ZLATAKY, new ZlatakyMetalScraper());
+//        TODO Try to move this method to Run.java
         try {
             cnbScraper.scrapExchangeRate();
         } catch (ResourceNotFoundException e) {
@@ -120,6 +123,12 @@ public class MetalScraper extends Client {
         }
     }
 
+    /**
+     * TODO Needs to be checked and tested before putting into use.
+     * @param portfolioId
+     * @throws ResponseStatusException
+     */
+    @Deprecated
     public void productByPortfolio(long portfolioId) throws ResponseStatusException {
         System.out.println("MetalScraper productsByPortfolio");
         Optional<PortfolioDTO_ProductDTO> optionalPortfolio = portfolioService.findById(portfolioId);
@@ -147,6 +156,16 @@ public class MetalScraper extends Client {
 
     /////// PRIVATE
 
+    /**
+     * 1) Loads HTML page based on link
+     * 2) Takes Product name from HTML
+     * 3) Performs Product attributes extraction from Product name
+     * 4) Calls saving method of Product
+     * @param link without any related Product saved in DB
+     * @throws ResourceNotFoundException loading page by link failed
+     * @throws ScrapFailedException Link has saved product / Extraction from HTML failed
+     * @throws DataIntegrityViolationException
+     */
     private void productScrap(LinkDTO link) throws ResourceNotFoundException, ScrapFailedException, DataIntegrityViolationException{
         String name = "";
         final HtmlPage page;
@@ -180,12 +199,24 @@ public class MetalScraper extends Client {
         productSaveSwitch(link, productExtracted);
     }
 
+    /**
+     * Method used for saving of Product. Decided how the newly scraped Product will be saved.
+     * Options:
+     *  a) Product is special
+     *  b) Product has unique attributes. No Product in DB has corresponding attributes.
+     *  c) Product doesn't have unique attributes. Product with corresponding attributes is already in DB.
+     * Solutions:
+     *  a,b) Save new Product
+     *  c) Add new Link and PricePair to already existing Product
+     * @param link
+     * @param productExtracted
+     */
     private void productSaveSwitch(LinkDTO link, ProductCreateDTO productExtracted) {
         final List<Product> nonSpecialProducts;
 
         // Special products are saved separately
         if(productExtracted.isSpecial()) {
-            newProduct(link, productExtracted);
+            saveValidNewProductAndScrapPrice(link, productExtracted);
             return;
         }
 
@@ -195,7 +226,7 @@ public class MetalScraper extends Client {
 
         // New product saved
         if(nonSpecialProducts.isEmpty()) {
-            newProduct(link, productExtracted);
+            saveValidNewProductAndScrapPrice(link, productExtracted);
             return;
         }
 
@@ -226,17 +257,12 @@ public class MetalScraper extends Client {
         );
     }
 
-    private void newProduct(LinkDTO link, ProductCreateDTO productExtracted) {
-        final Product productToSave = new Product(
-                productExtracted.getName(),
-                productExtracted.getProducer(),
-                productExtracted.getForm(),
-                productExtracted.getMetal(),
-                productExtracted.getGrams(),
-                productExtracted.getYear(),
-                productExtracted.isSpecial()
-        );
-        productService.save(productToSave);
+    /** Method meant to be used ONLY in productSaveSwitch
+     * @param link
+     * @param productExtracted
+     */
+    private void saveValidNewProductAndScrapPrice(LinkDTO link, ProductCreateDTO productExtracted) {
+        final Product productToSave = productService.save(productExtracted);
         link = linkMapper.toDTO(
                 linkService.updateProduct(link.getId(), productToSave)
         );
@@ -289,15 +315,14 @@ public class MetalScraper extends Client {
 
     /**
      * Main Price scraping method
-     * Scraps new price for already known product
-     * @param link Link from which the price gonna be scrapped
+     * Scraps new price for link with assigned product
+     * @param link Link from which the price will be scrapped
      */
     private void priceScrap(final LinkDTO link) {
         long startTime = System.nanoTime();
         Double sellingPrice = null;
         Double redemptionPrice = null;
         final PricePair pricePair;
-        final PricePair pricePair2;
         HtmlPage productDetailPage;
 
         try {
@@ -307,7 +332,6 @@ public class MetalScraper extends Client {
             return;
         }
 
-        // TODO Double think about sellingPrice/redemption pricePair data types + What to do if both are zero?
         try {
             // Choose MetalScraperInterface & scrap buy price
             sellingPrice = dealerInterfaces.get(link.getDealer()).scrapBuyPrice(productDetailPage);
@@ -333,7 +357,9 @@ public class MetalScraper extends Client {
         Client.dynamicSleep(ETHICAL_DELAY, startTime);
     }
 
-    // TODO Test this
+    /**
+     * TODO Method has to be tested
+     */
     @Deprecated
     private void redemptionScrap(final Metal metal, final Dealer dealer) {
         System.out.println(">>> Redemption Scrap");
@@ -358,6 +384,11 @@ public class MetalScraper extends Client {
         System.out.println("Redemption "+dealer+" "+metal+" update");
     }
 
+
+    /**
+     * TODO Method has to be tested
+     */
+    @Deprecated
     public void scrapProductByIdList(final List<Long> productIds) {
         for (long productId : productIds) {
             // Scraps new price for this.dealer product link
@@ -372,6 +403,9 @@ public class MetalScraper extends Client {
     ///////////////////// LINK
     /////// PUBLIC
 
+    /**
+     * Polymorphic call on all instances of dealerInterfaces a.k.a. dealerMetalScrapers
+     */
     public void allLinksScrap() {
         // Polymorphic call
         dealerInterfaces.values().forEach(

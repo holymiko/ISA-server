@@ -59,9 +59,11 @@ public class PriceService {
      * @param productId
      * @return Latest PricePair for each Dealer
      */
-    public List<PricePair> findLatestPricePairsByProductId(Long productId) {
-        System.out.println(">>>GANG");
-        // TODO test invalid productId
+    public List<PricePair> findLatestPricePairsByProductId(@NotNull Long productId) throws NullPointerException {
+        if(productId == null) {
+            throw new NullPointerException("Product ID can't be null");
+        }
+        // TODO test invalid productId & add productId Validation
         return pricePairRepository.findLatestPricePairsByProductId(productId);
     }
 
