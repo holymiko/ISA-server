@@ -15,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
-
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v2/scrap")
@@ -59,6 +57,17 @@ public class ScrapController {
         this.scrapMetal.allProducts();
 
         ScrapHistory.timeUpdate(false, true);
+        ScrapHistory.stopRunning();
+    }
+
+    @RequestMapping({"/product/{id}", "/product/{id}/"})
+    public void scrapProductById(@PathVariable long id) {
+        ScrapHistory.startRunning();
+
+        System.out.println("Client Product ID "+id);
+
+        this.scrapMetal.scrapProductById(id);
+
         ScrapHistory.stopRunning();
     }
 
@@ -112,10 +121,10 @@ public class ScrapController {
         ScrapHistory.stopRunning();
     }
 
-    // TODO Rebuild this on scrap by param
+    // TODO Rebuild this on scrap by param, viz scrapProductsByParam
     @Deprecated
     @RequestMapping({"/links/{string}", "/links/{string}/"})
-    public void linksBy(@PathVariable String string) {
+    public void scrapLinksByParam(@PathVariable String string) {
         ScrapHistory.frequencyHandlingAll(true);
         ScrapHistory.isRunning();
 

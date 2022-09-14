@@ -56,7 +56,7 @@ public class Run {
     @EventListener(ApplicationReadyEvent.class)
     public void scrap() throws IOException {
 //        scrapController.allLinks();
-        scrapController.allProducts();
+//        scrapController.allProducts();
 //        scrapController.scrapProductsByParam(null, Dealer.ZLATAKY, null, null);
 //        scrapController.scrapEverything();
 //        scrapController.serenity();

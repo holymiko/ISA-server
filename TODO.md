@@ -12,7 +12,7 @@
 - [ ] Implement <b>logging</b> and remove all System.out.print
 
 ## B priority
-- [ ] Write Postman tests for Scraper package
+- [ ] Write JUnit tests for all services (use Mockito)
 - [ ] Implement <b>Swagger</b>
 - [ ] Finalize InvestmentStock in relation with Portfolio. Repair related mappers
 - [ ] Scrap <b>spot prices</b> of Gold and Silver to compute <b>Gold/Silver ratio</b>
@@ -23,6 +23,7 @@
 - [ ] Add scraper for https://www.aurumbohemica.cz/
 
 ## C priority
+- [ ] Write Postman tests for Controllers
 - [ ] Convert methods to <b> Final and Static </b> if possible
 - [ ] Refactor (rename) Redemption to BuyOut
 - [ ] Scrap spot prices of products to compute dealer's margins

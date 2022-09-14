@@ -110,6 +110,17 @@ public class MetalScraper extends Client {
         System.out.println("All products scraped");
     }
 
+    public void scrapProductById(long id) {
+        generalScrapAndSleep(
+                linkMapper.toDTO(
+                        linkService.findByProductId(id)
+                )
+        );
+        // TODO Logging
+        ConsolePrinter.printTimeStamp();
+        System.out.println("Products with ID "+id+" scraped");
+    }
+
     public void scrapByParam(Boolean isRedemption, Dealer dealer, Metal metal, Form form, String url) {
         List<LinkDTO> links = linkMapper.toDTO(linkService.findByParams(dealer, metal, form, url));
 
