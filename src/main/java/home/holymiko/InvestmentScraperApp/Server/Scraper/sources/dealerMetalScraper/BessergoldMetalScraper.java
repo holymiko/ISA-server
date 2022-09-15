@@ -60,8 +60,6 @@ public class BessergoldMetalScraper extends Client implements MetalScraperInterf
     /**
      * Takes following pattern:
      * - Aktuální výkupní cena (bez DPH): xxxx,xx Kč
-     * @param redemptionPriceHtml
-     * @return
      */
     @Override
     public String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
@@ -75,7 +73,13 @@ public class BessergoldMetalScraper extends Client implements MetalScraperInterf
 
     @Override
     public String scrapProductName(HtmlPage page) {
-        return ((HtmlElement) page.getFirstByXPath(X_PATH_PRODUCT_NAME)).asText();
+        String name = ((HtmlElement) page.getFirstByXPath(X_PATH_PRODUCT_NAME)).asText().trim();
+        // Web mistake, verified by call to Bessergold. Product vintage is random.
+        if(name.equals("Stříbrná mince 1 oz (trojská unce) WIENER PHILHARMONIKER Rakousko 2011")
+        || name.equals("Stříbrná mince 1 oz (trojská unce) MAPLE LEAF Kanada 2011")) {
+            name = name.replace( " 2011", "");
+        }
+        return name;
     }
 
     @Override

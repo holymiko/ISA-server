@@ -11,6 +11,7 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraperInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Class is deprecated, because buyOut (redemption) scraping is missing.
@@ -63,16 +64,23 @@ public class SilverumMetalScraper extends Client implements MetalScraperInterfac
             e.printStackTrace();
         }
 
+        try {
+            elements.addAll(scrapLinks(loadPage(SEARCH_URL_SILVER_BAR)));
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            elements.addAll(scrapLinks(loadPage(SEARCH_URL_SILVER_BRICK)));
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
 
-//        elements.addAll(scrapLinks(loadPage(webClient, SEARCH_URL_SILVER)));
         return elements;
     }
 
     /**
      * Takes following pattern:
      * - Aktuální výkupní cena (bez DPH): xxxx,xx Kč
-     * @param redemptionPriceHtml
-     * @return
      */
     @Override
     public String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
@@ -100,9 +108,12 @@ public class SilverumMetalScraper extends Client implements MetalScraperInterfac
 
     @Override
     public double scrapBuyPrice(HtmlPage productDetailPage) {
-        return Convert.currencyToNumberConvert(
-                scrapBuyPrice(productDetailPage, X_PATH_BUY_PRICE)
-        );
+        String x = scrapBuyPrice(productDetailPage, X_PATH_BUY_PRICE);
+        if(Pattern.compile("\\d+,\\d+ Kč bez DPH").matcher(x).find()) {
+            x = x.split("\\d*[ ]?\\d+,\\d+ Kč bez DPH")[0];
+        }
+
+        return Convert.currencyToNumberConvert(x);
     }
 
     @Override
