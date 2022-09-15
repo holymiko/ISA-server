@@ -48,3 +48,42 @@ Content-Type: application/json
 ################################################
 
 DELETE http://localhost:8080/api/v2/portfolio/4
+###
+
+GET http://localhost:8080/api/v2/link/param?dealer=SILVERUM
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+Charset: UTF-8
+
+###
+
+GET http://localhost:8080/api/v2/scrap/links/param?dealer=SILVERUM
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+Charset: UTF-8
+
+###
+
+GET http://localhost:8080/api/v2/scrap/param
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+Charset: UTF-8
+
+###
+
+GET http://localhost:8080/api/v2/scrap/dealer?dealer=SILVERUM
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+Charset: UTF-8
+
+###
+
+GET http://localhost:8080/api/v2/scrap/products
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+Charset: UTF-8

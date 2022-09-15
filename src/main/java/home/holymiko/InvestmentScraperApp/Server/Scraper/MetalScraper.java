@@ -8,10 +8,8 @@ import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PortfolioDTO_
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
-import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
-import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.BessergoldDeMetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.BessergoldMetalScraper;
@@ -38,7 +36,6 @@ public class MetalScraper extends Client {
     private final PriceService priceService;
     private final PortfolioService portfolioService;
     private final ProductService productService;
-    private final LinkMapper linkMapper;
     private final ExchangeRateService exchangeRateService;
 
     // Used for Polymorphic calling
@@ -54,7 +51,6 @@ public class MetalScraper extends Client {
             PriceService priceService,
             PortfolioService portfolioService,
             ProductService productService,
-            LinkMapper linkMapper,
             ExchangeRateService exchangeRateService
     ) {
         super();
@@ -63,7 +59,6 @@ public class MetalScraper extends Client {
         this.priceService = priceService;
         this.portfolioService = portfolioService;
         this.productService = productService;
-        this.linkMapper = linkMapper;
         this.exchangeRateService = exchangeRateService;
     }
 
@@ -97,40 +92,22 @@ public class MetalScraper extends Client {
     /////// PUBLIC
 
     /**
-     * Calls main scraping method (generalScrap) for all links in DB
+     * Performs ethical delay.
+     * Prints to console.
+     * @param links Optional links of Products
      */
-    public void allProducts() {
-        generalScrapAndSleep(
-                linkMapper.toDTO(
-                        linkService.findAll()
-                )
-        );
-        // TODO Logging
-        ConsolePrinter.printTimeStamp();
-        System.out.println("All products scraped");
-    }
+    public void generalScrapAndSleep(final List<LinkDTO> links) {
+        int counter = 0;
+        for (LinkDTO link : links) {
+            long startTime = System.nanoTime();
 
-    public void scrapProductById(long id) {
-        generalScrapAndSleep(
-                linkMapper.toDTO(
-                        linkService.findByProductId(id)
-                )
-        );
-        // TODO Logging
-        ConsolePrinter.printTimeStamp();
-        System.out.println("Products with ID "+id+" scraped");
-    }
+            // Main method for scraping a document
+            generalScrap(link);
 
-    public void scrapByParam(Boolean isRedemption, Dealer dealer, Metal metal, Form form, String url) {
-        List<LinkDTO> links = linkMapper.toDTO(linkService.findByParams(dealer, metal, form, url));
-
-        // TODO Scrap Links without Products
-
-        // TODO Double check condition
-        if(isRedemption != null && dealer != null && metal != null) {
-            redemptionScrap(metal, dealer);
-        } else {
-            generalScrapAndSleep(links);
+            // TODO Logging
+            ConsolePrinter.statusPrint(PRINT_INTERVAL, links.size(), counter++);
+            // Sleep time is dynamic, according to time took by scrap procedure
+            Client.dynamicSleep(ETHICAL_DELAY, startTime);
         }
     }
 
@@ -152,11 +129,9 @@ public class MetalScraper extends Client {
         Set<LinkDTO> linkSet = optionalPortfolio.get().getInvestmentsMetal()
                 .stream()
                 .map(
-                        investment -> linkService.findByProductId( investment.getProductDTO().getId())
+                        investment -> linkService.findByProductId( investment.getProductDTO().getId() )
                 ).flatMap(
                         List::stream
-                ).map(
-                        linkMapper::toDTO
                 ).collect(
                         Collectors.toSet()
                 );
@@ -256,9 +231,7 @@ public class MetalScraper extends Client {
                 );
             }
 
-            link = linkMapper.toDTO(
-                    linkService.updateProduct(link.getId(), productFound)
-            );
+            link = linkService.updateProductLinks(link.getId(), productFound);
             priceScrap(link);
             return;
         }
@@ -274,9 +247,7 @@ public class MetalScraper extends Client {
      */
     private void saveValidNewProductAndScrapPrice(LinkDTO link, ProductCreateDTO productExtracted) {
         final Product productToSave = productService.save(productExtracted);
-        link = linkMapper.toDTO(
-                linkService.updateProduct(link.getId(), productToSave)
-        );
+        link = linkService.updateProductLinks(link.getId(), productToSave);
         priceScrap(link);
         System.out.println(">> Product saved");
     }
@@ -299,27 +270,6 @@ public class MetalScraper extends Client {
             System.out.println( e.getMessage() );
         }
     }
-
-    /**
-     * Performs ethical delay.
-     * Prints to console.
-     * @param links Optional links of Products
-     */
-    private void generalScrapAndSleep(final List<LinkDTO> links) {
-        int counter = 0;
-        for (LinkDTO link : links) {
-            long startTime = System.nanoTime();
-
-            // Main method for scraping a document
-            generalScrap(link);
-
-            // TODO Logging
-            ConsolePrinter.statusPrint(PRINT_INTERVAL, links.size(), counter++);
-            // Sleep time is dynamic, according to time took by scrap procedure
-            Client.dynamicSleep(ETHICAL_DELAY, startTime);
-        }
-    }
-
 
     ////////////// PRICE
     /////// PRIVATE
@@ -405,7 +355,7 @@ public class MetalScraper extends Client {
             // Scraps new price for this.dealer product link
             linkService.findByProductId(productId)
                     .forEach(
-                            link -> priceScrap(linkMapper.toDTO(link))
+                            this::priceScrap
                     );
         }
     }
@@ -432,6 +382,20 @@ public class MetalScraper extends Client {
                                 }
                         )
         );
+    }
+
+    public void linksScrap(Dealer dealer) {
+        dealerInterfaces.get(dealer).scrapAllLinks()
+                .forEach(
+                        link -> {
+                            try {
+                                linkService.save(link);
+                                System.out.println("Link saved");
+                            } catch (Exception e) {
+                                System.out.println(e.getMessage());
+                            }
+                        }
+                );
     }
 
 }

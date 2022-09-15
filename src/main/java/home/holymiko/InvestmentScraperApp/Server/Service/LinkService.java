@@ -1,6 +1,8 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
 import com.sun.istack.NotNull;
+import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Product;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
@@ -17,31 +19,48 @@ import java.util.Optional;
 @Service
 public class LinkService {
     private final LinkRepository linkRepository;
+    private final LinkMapper linkMapper;
 
     @Autowired
-    public LinkService(LinkRepository linkRepository) {
+    public LinkService(LinkRepository linkRepository, LinkMapper linkMapper) {
         this.linkRepository = linkRepository;
+        this.linkMapper = linkMapper;
     }
 
-    public List<Link> findAll() {
-        return this.linkRepository.findAll();
+    public LinkDTO findById(Long linkId) throws IllegalArgumentException {
+        return linkMapper.toDTO(
+                linkRepository.findById(linkId).orElseThrow(IllegalArgumentException::new)
+        );
     }
 
-    public Link findById(Long linkId) throws IllegalArgumentException {
-        return linkRepository.findById(linkId)
-                .orElseThrow(IllegalArgumentException::new);
+    public LinkDTO findByDealerAndProductId(Dealer dealer, long productId) {
+        return linkMapper.toDTO(
+                linkRepository.findByDealerAndProduct_Id(dealer, productId).orElseThrow(IllegalArgumentException::new)
+        );
     }
 
-    public List<Link> findByParams(Dealer dealer, Metal metal, Form form, String url) {
-        return linkRepository.findByParams(dealer, metal, form, url);
+    public List<LinkDTO> findByProductParams(Metal metal, Form form) {
+        return linkMapper.toDTO(
+                linkRepository.findByProductParams(metal, form)
+        );
     }
 
-    public Optional<Link> findByDealerAndProductId(Dealer dealer, long product) {
-        return linkRepository.findByDealerAndProduct_Id(dealer, product);
+    public List<LinkDTO> findAll() {
+        return linkMapper.toDTO(
+                this.linkRepository.findAll()
+        );
     }
 
-    public List<Link> findByProductId(long product) {
-        return linkRepository.findByProduct_Id(product);
+    public List<LinkDTO> findByDealer(Dealer dealer) {
+        return linkMapper.toDTO(
+                linkRepository.findByDealer(dealer)
+        );
+    }
+
+    public List<LinkDTO> findByProductId(long product) {
+        return linkMapper.toDTO(
+                linkRepository.findByProduct_Id(product)
+        );
     }
 
     /**
@@ -52,7 +71,7 @@ public class LinkService {
      * @return
      * @throws NullPointerException
      */
-    public Link updateProduct(Long linkId, @NotNull Product product) throws NullPointerException {
+    public LinkDTO updateProductLinks(Long linkId, @NotNull Product product) throws NullPointerException {
         final Link link;
         final Optional<Link> optionalLink = linkRepository.findById(linkId);
 
@@ -66,7 +85,9 @@ public class LinkService {
 
         product.getLinks().add(link);
         link.setProduct(product);
-        return linkRepository.save(link);
+        return linkMapper.toDTO(
+                linkRepository.save(link)
+        );
     }
 
     /**

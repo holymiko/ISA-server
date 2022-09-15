@@ -19,22 +19,16 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
 
     List<Link> findByProduct_Id(Long productId);
 
-    // TODO Check functioning - doesn't scrap links without product
     @Query("select m from Link m where " +
-            "(:dealer is null or m.dealer = :dealer) " +
+            "(:metal is null or m.product.metal = :metal) " +
             "and " +
-            "(:metal is null or (m.product is null or m.product.metal = :metal)) " +
-            "and " +
-            "(:form is null or (m.product is null or m.product.form = :form)) " +
-            "and " +
-            "(:url is null or m.url = :url) "
+            "(:form is null or m.product.form = :form) "
     )
-    List<Link> findByParams(
-            @Param("dealer") Dealer dealer,
+    List<Link> findByProductParams(
             @Param("metal") Metal metal,
-            @Param("form") Form form,
-            @Param("url") String url
+            @Param("form") Form form
     );
 
+    List<Link> findByDealer(Dealer dealer);
     Optional<Link> findByDealerAndProduct_Id(Dealer dealer, long product);
 }

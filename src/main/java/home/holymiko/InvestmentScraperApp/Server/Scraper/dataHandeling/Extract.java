@@ -48,6 +48,21 @@ public class Extract {
         else if (text.contains("umicore")) {
             return Producer.UMICORE;
         }
+        else if (text.contains("sunshine mint")) {
+            return Producer.SUNSHINE_MINT;
+        }
+        else if (text.contains("silvertowne")) {
+            return Producer.SILVER_TOWNE;
+        }
+        else if (text.contains("golden state mint")) {
+            return Producer.GOLDEN_STATE_MINT;
+        }
+        else if (text.contains("johnson matthey")) {
+            return Producer.JOHNSON_MATTHEY;
+        }
+        else if (text.contains("comex")) {
+            return Producer.COMEX;
+        }
 
         throw new IllegalArgumentException("Invalid argument for Producer enum");
     }
@@ -137,7 +152,7 @@ public class Extract {
         if(text.contains("kinebar")) {
             return Form.KINEBAR;
         }
-        if(text.contains("bar") || text.contains("slitek")) {
+        if(text.contains("bar") || text.contains("slitek") || text.contains("cihla")) {
             return Form.BAR;
         }
         if(text.contains("multicard")) {

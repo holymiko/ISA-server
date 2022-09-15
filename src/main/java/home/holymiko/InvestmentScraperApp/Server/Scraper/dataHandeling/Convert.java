@@ -6,21 +6,6 @@ import java.util.Locale;
 
 public class Convert {
 
-    /**
-     * Converts text to
-     * @param nameOfDealer including name of form
-     * @return Enum class Form
-     */
-    public static Dealer dealerConvert(String nameOfDealer) throws IllegalArgumentException {
-        return nameOfDealer == null
-                ? null
-                : switch (nameOfDealer.toLowerCase(Locale.ROOT)) {
-                    case "bessergold" -> Dealer.BESSERGOLD_CZ;
-                    case "zlataky" -> Dealer.ZLATAKY;
-                    default -> throw new IllegalArgumentException("Invalid Enum argument");
-                };
-    }
-
     public static String currencyClean(String text) throws NumberFormatException{
         text = text.toLowerCase();
         text = text.replace("\u00a0", "");         // &nbsp;
@@ -39,7 +24,9 @@ public class Convert {
      * @return price from text
      */
     public static Double currencyToNumberConvert(String text) throws NumberFormatException{
-        return Double.parseDouble(currencyClean(text));
+        return Double.parseDouble(
+                currencyClean(text)
+        );
     }
 
     /**
