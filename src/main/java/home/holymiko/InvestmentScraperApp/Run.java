@@ -1,12 +1,12 @@
 package home.holymiko.InvestmentScraperApp;
 
 import home.holymiko.InvestmentScraperApp.Server.API.Controller.ScrapController;
-import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.ExchangeRateService;
+import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
-import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Utils.InvestmentInit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -14,7 +14,6 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -29,16 +28,19 @@ public class Run {
     private final TickerService tickerService;
     private final ExchangeRateService exchangeRateService;
     private final CNBScraper cnbScraper;
+    private final LinkService linkService;
+    private final MetalScraper metalScraper;
 
     @Autowired
-    public Run(ScrapController scrapController, InvestmentInit investmentInit, TickerService tickerService, ExchangeRateService exchangeRateService, CNBScraper cnbScraper) {
+    public Run(ScrapController scrapController, InvestmentInit investmentInit, TickerService tickerService, ExchangeRateService exchangeRateService, CNBScraper cnbScraper, LinkService linkService, MetalScraper metalScraper) {
         this.scrapController = scrapController;
         this.investmentInit = investmentInit;
         this.tickerService = tickerService;
         this.exchangeRateService = exchangeRateService;
         this.cnbScraper = cnbScraper;
+        this.linkService = linkService;
+        this.metalScraper = metalScraper;
     }
-
 
     @EventListener(ApplicationStartedEvent.class)
     public void run() throws IOException {
@@ -55,12 +57,17 @@ public class Run {
 
     @EventListener(ApplicationReadyEvent.class)
     public void scrap() throws IOException {
-//        scrapController.allLinks();
-//        scrapController.allProducts();
-//        scrapController.scrapProductsByParam(null, Dealer.ZLATAKY, null, null);
-//        scrapController.scrapEverything();
+//        metalScraper.linksByDealerScrap(Dealer.SILVERUM);
+//        metalScraper.generalScrapAndSleep(
+//                linkService.findByDealer(Dealer.SILVERUM)
+//        );
+
+        cnbScraper.scrapExchangeRate();
+        scrapController.allLinks();
+        scrapController.allProducts();
+
+//        exchangeRateService.printExchangeRates();
 //        scrapController.serenity();
-//        investmentInit.saveInitPortfolios();
     }
 
 

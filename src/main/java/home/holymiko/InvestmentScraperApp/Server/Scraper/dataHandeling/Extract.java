@@ -236,8 +236,13 @@ public class Extract {
     }
 
     private static int yearExtract(String name) {
-        Pattern pattern = Pattern.compile("20[12]\\d");
+        Pattern pattern = Pattern.compile("20[012]\\d");
         Matcher matcher = pattern.matcher(name);
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group());
+        }
+        pattern = Pattern.compile("19[98765]\\d");
+        matcher = pattern.matcher(name);
         if (matcher.find()) {
             return Integer.parseInt(matcher.group());
         }
