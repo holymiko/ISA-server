@@ -384,7 +384,7 @@ public class MetalScraper extends Client {
         );
     }
 
-    public void linksScrap(Dealer dealer) {
+    public void linksByDealerScrap(Dealer dealer) {
         dealerInterfaces.get(dealer).scrapAllLinks()
                 .forEach(
                         link -> {

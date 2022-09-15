@@ -19,7 +19,6 @@ public class ScrapController {
 
     private final MetalScraper metalScraper;
     private final SerenityScraper serenityScraper;
-    private final CNBScraper cnbScraper;
     private final ScrapHistory scrapHistory;
     private final LinkService linkService;
 
@@ -28,10 +27,9 @@ public class ScrapController {
     // TODO method byPortfolio should include stock scraping
 
     @Autowired
-    public ScrapController(MetalScraper metalScraper, SerenityScraper serenityScraper, CNBScraper cnbScraper, ScrapHistory scrapHistory, LinkService linkService) {
+    public ScrapController(MetalScraper metalScraper, SerenityScraper serenityScraper, ScrapHistory scrapHistory, LinkService linkService) {
         this.metalScraper = metalScraper;
         this.serenityScraper = serenityScraper;
-        this.cnbScraper = cnbScraper;
         this.scrapHistory = scrapHistory;
         this.linkService = linkService;
     }
@@ -45,6 +43,9 @@ public class ScrapController {
 
     //////// Products
 
+    /**
+     * Scrap products for ALL Links. Including Links which doesn't have Product yet.
+     */
     @RequestMapping({"/products", "/products/"})
     public void allProducts() {
         ScrapHistory.frequencyHandlingAll(false);
@@ -102,25 +103,6 @@ public class ScrapController {
         ScrapHistory.stopRunning();
     }
 
-    /**
-     * Testing endpoint
-     */
-    @GetMapping(value ="/dealer", headers = "Accept=application/json;charset=UTF-8")
-    public void scrapProductsByDealer(@RequestParam Dealer dealer) {
-        scrapHistory.frequencyHandling(dealer);
-        // Lock guard
-        ScrapHistory.startRunning();
-
-        System.out.println("Scrap products by Dealer."+dealer);
-        metalScraper.generalScrapAndSleep(
-                linkService.findByDealer(dealer)
-        );
-
-        // Unlock guard
-        scrapHistory.timeUpdate(dealer);
-        ScrapHistory.stopRunning();
-    }
-
     @RequestMapping({"/serenity", "/serenity/"})
     public void serenity() {
         this.serenityScraper.tickersScrap(TickerState.GOOD);
@@ -142,23 +124,6 @@ public class ScrapController {
         ConsolePrinter.printTimeStamp();
 
         ScrapHistory.timeUpdate(true, false);
-        ScrapHistory.stopRunning();
-    }
-
-    /**
-     * Testing endpoint
-     */
-    @GetMapping({"/links/param", "/links/param/"})
-    public void scrapLinksByDealer(@RequestParam Dealer dealer) {
-        ScrapHistory.frequencyHandlingAll(true);
-        ScrapHistory.startRunning();
-
-        // TODO Logging
-        System.out.println("Scrap Links by Dealer."+dealer);
-        metalScraper.linksScrap(dealer);
-        ConsolePrinter.printTimeStamp();
-
-        // scrapHistory.timeUpdateLink(dealer);
         ScrapHistory.stopRunning();
     }
 

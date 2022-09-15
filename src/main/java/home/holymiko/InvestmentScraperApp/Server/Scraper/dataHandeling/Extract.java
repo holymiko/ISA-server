@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class Extract {
 
-    private static final double TROY_OUNCE = 31.1034768;
+    public static final double TROY_OUNCE = 31.1034768;
     private static final double OUNCE = 28.349523125;
     private static final double TOLAR = 28.07;
 
@@ -167,7 +167,7 @@ public class Extract {
      * @param text including number with unit. LowerCase only
      * @return Grams
      */
-    private static double weightExtract(String text) throws IllegalArgumentException {
+    public static double weightExtract(String text) throws IllegalArgumentException {
 //        text = text.replace("\u00a0", "");         // &nbsp;
         text = text.replace(" ", "");
 
@@ -250,7 +250,7 @@ public class Extract {
      * @param text containing name of Metal. LowerCase only
      * @return metal of product
      */
-    private static Metal metalExtract(String text) throws IllegalArgumentException {
+    public static Metal metalExtract(String text) throws IllegalArgumentException {
         if (text.contains("zlat") || text.contains("gold")) {
             return Metal.GOLD;
         } else if (text.contains("stříbr") || text.contains("silver") || text.contains("silber")) {

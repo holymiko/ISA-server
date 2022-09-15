@@ -3,22 +3,19 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScr
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapFailedException;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraperInterface;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-/**
- * Class is deprecated, because buyOut (redemption) scraping is missing.
- * Only golden products are scraped. Silver products are not activated.
- * Apart from that, class works correctly a can be used
- */
-@Deprecated
 public class SilverumMetalScraper extends Client implements MetalScraperInterface {
     private static final String BASE = "https://www.silverum.cz/";
     private static final String SEARCH_URL_GOLD_COIN = "https://www.silverum.cz/investicni-mince.html";
@@ -27,7 +24,8 @@ public class SilverumMetalScraper extends Client implements MetalScraperInterfac
 
     // THIS won't work from list, because of missing weight
     private static final String SEARCH_URL_SILVER_COIN_CNB = "https://www.silverum.cz/mince-cnb.html";
-
+    private static final String SEARCH_URL_SILVER_COIN_21 = "https://www.silverum.cz/numismatika-do-2021.html";
+    private static final String SEARCH_URL_SILVER_COIN_22 = "https://www.silverum.cz/numismatika-2022.html";
     private static final String SEARCH_URL_SILVER_BAR = "https://www.silverum.cz/investicni-slitky-cs.html";
     private static final String SEARCH_URL_SILVER_BRICK = "https://www.silverum.cz/investicni-cihly-cs.html";
 
@@ -39,11 +37,15 @@ public class SilverumMetalScraper extends Client implements MetalScraperInterfac
     private static final String X_PATH_BUY_PRICE_LIST = ".//div[@class='price f600']";
     private static final String X_PATH_REDEMPTION_PRICE = "";
 
+    private static final String X_PATH_BID_SPOT_GOLD = "/html/body/section[1]/div/div/div[1]/div/div/div[2]/div";
+    private static final String X_PATH_BID_SPOT_SILVER  = "/html/body/section[1]/div/div/div[2]/div/div/div[2]/div";
+    private static final String X_PATH_BID_SPOT_DOLLAR = "/html/body/section[1]/div/div/div[4]/div/div/div[2]/div";
+
     public SilverumMetalScraper() {
         super();
     }
 
-/////// PRICE
+    /////// LINK
 
     @Override
     public List<Link> scrapAllLinks() {
@@ -65,6 +67,16 @@ public class SilverumMetalScraper extends Client implements MetalScraperInterfac
         }
 
         try {
+            elements.addAll(scrapLinks(loadPage(SEARCH_URL_SILVER_COIN_21)));
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            elements.addAll(scrapLinks(loadPage(SEARCH_URL_SILVER_COIN_22)));
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
             elements.addAll(scrapLinks(loadPage(SEARCH_URL_SILVER_BAR)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
@@ -78,14 +90,13 @@ public class SilverumMetalScraper extends Client implements MetalScraperInterfac
         return elements;
     }
 
-    /**
-     * Takes following pattern:
-     * - Aktuální výkupní cena (bez DPH): xxxx,xx Kč
-     */
     @Override
-    public String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
-        return redemptionPriceHtml.asText().split(":")[1];
+    public Link scrapLink(HtmlElement elementProduct) {
+        return scrapLink(elementProduct, "./a", Dealer.SILVERUM, BASE);
     }
+
+
+    /////// PRODUCT
 
     @Override
     public List<HtmlElement> scrapProductList(HtmlPage page) {
@@ -98,13 +109,7 @@ public class SilverumMetalScraper extends Client implements MetalScraperInterfac
     }
 
 
-
-    /////// LINK
-
-    @Override
-    public Link scrapLink(HtmlElement elementProduct) {
-        return scrapLink(elementProduct, "./a", Dealer.SILVERUM, BASE);
-    }
+    /////// PRICE
 
     @Override
     public double scrapBuyPrice(HtmlPage productDetailPage) {
@@ -116,14 +121,50 @@ public class SilverumMetalScraper extends Client implements MetalScraperInterfac
         return Convert.currencyToNumberConvert(x);
     }
 
+    /**
+     * Takes following pattern:
+     * - Aktuální výkupní cena (bez DPH): xxxx,xx Kč
+     */
+    @Override
+    public String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
+        return redemptionPriceHtml.asText().split(":")[1];
+    }
+
+    /**
+     * Computed according to https://www.silverum.cz/zpetny-vykup.html
+     * TODO Call to Silverum and double-check the buyout computation is correct
+     * @param page
+     * @return
+     */
     @Override
     public double scrapRedemptionPrice(HtmlPage page) {
-        // TODO Compute redemption
-        return 0.0;
-//        return Convert.currencyConvert(
-//                scrapRedemptionPrice(page, X_PATH_REDEMPTION_PRICE).replace(".", ""),
-//                euroExchangeRate,
-//                "€"
-//        );
+        final String productName = scrapProductName(page).toLowerCase();
+        final Metal metal = Extract.metalExtract(productName);
+        final double weight = Extract.weightExtract(productName) / Extract.TROY_OUNCE;
+        final Double dollar = Convert.currencyToNumberConvert(
+                ((HtmlElement) page.getFirstByXPath(X_PATH_BID_SPOT_DOLLAR)).asText()
+        );
+        String metalDollarSpotTxt;
+        double q = 1;
+
+        if(metal == Metal.GOLD) {
+            metalDollarSpotTxt = ((HtmlElement) page.getFirstByXPath(X_PATH_BID_SPOT_GOLD)).asText();
+            if(weight > Extract.TROY_OUNCE) {
+                q = 0.97;
+            }
+        } else if(metal == Metal.SILVER) {
+            metalDollarSpotTxt = ((HtmlElement) page.getFirstByXPath(X_PATH_BID_SPOT_SILVER)).asText();
+            // American Silver Eagle is +2,5%
+            if(productName.contains("american") && productName.contains("eagle")) {
+                q = 1.025;
+            }
+            if(weight > 100 * Extract.TROY_OUNCE) {
+                q = 0.93;
+            }
+        } else {
+            throw new ScrapFailedException("ERROR: Silverum unexpected product");
+        }
+
+        return Convert.currencyToNumberConvert( metalDollarSpotTxt ) * dollar * weight * q;
     }
 }
