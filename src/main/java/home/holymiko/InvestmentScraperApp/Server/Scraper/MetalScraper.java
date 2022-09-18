@@ -3,7 +3,6 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapFailedException;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDTO;
@@ -20,6 +19,7 @@ import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class MetalScraper extends Client {
-    private final CNBScraper cnbScraper;
     private final LinkService linkService;
     private final PriceService priceService;
     private final PortfolioService portfolioService;
@@ -46,7 +45,6 @@ public class MetalScraper extends Client {
 
     @Autowired
     public MetalScraper(
-            CNBScraper cnbScraper,
             LinkService linkService,
             PriceService priceService,
             PortfolioService portfolioService,
@@ -54,7 +52,6 @@ public class MetalScraper extends Client {
             ExchangeRateService exchangeRateService
     ) {
         super();
-        this.cnbScraper = cnbScraper;
         this.linkService = linkService;
         this.priceService = priceService;
         this.portfolioService = portfolioService;
@@ -64,21 +61,16 @@ public class MetalScraper extends Client {
 
     /**
      * Automatically called method. Initialize instances dealer interfaces which are locally used in MetalScraper.java
-     * Instances can be initialized in constructor, because exchange rate has to be scraped and injected at first.
-     * (For foreign website scrapers)
+     * Instances can be initialized in constructor, because exchange rate has to be scraped and injected at first
+     * (for foreign website scrapers)
+     * Exchange rates are scraped in Run.java by EventListener with @Order(0)
      */
+    @Order(1)
     @EventListener(ApplicationStartedEvent.class)
     public void initializeDealerInterfaces() {
-        System.out.println(">> Metal scraper - Initialize dealer interfaces");
         dealerInterfaces.put(Dealer.BESSERGOLD_CZ, new BessergoldMetalScraper());
         dealerInterfaces.put(Dealer.SILVERUM, new SilverumMetalScraper());
         dealerInterfaces.put(Dealer.ZLATAKY, new ZlatakyMetalScraper());
-//        TODO Try to move this method to Run.java
-        try {
-            cnbScraper.scrapExchangeRate();
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
         dealerInterfaces.put(
                 Dealer.BESSERGOLD_DE,
                 new BessergoldDeMetalScraper(
@@ -106,6 +98,29 @@ public class MetalScraper extends Client {
 
             // TODO Logging
             ConsolePrinter.statusPrint(PRINT_INTERVAL, links.size(), counter++);
+            // Sleep time is dynamic, according to time took by scrap procedure
+            Client.dynamicSleep(ETHICAL_DELAY, startTime);
+        }
+    }
+
+    /**
+     * Scraps Price by Products. Each dealer has max one Link related to each Product.
+     * That's why Product Links can be scraped at the same time, because workload is
+     * distributed between different web servers (different Dealers)
+     * Performs ethical delay.
+     * @param linksGroupByProduct Lists of Links, grouped in List, by Product
+     */
+    public void generalInSyncScrapAndSleep(final List<List<LinkDTO>> linksGroupByProduct) {
+        int counter = 0;
+        for (List<LinkDTO> productLinks : linksGroupByProduct) {
+            long startTime = System.nanoTime();
+
+            // TODO Make multithreading here
+            // Main method for scraping a document
+            productLinks.forEach(this::generalScrap);
+
+            // TODO Logging
+            ConsolePrinter.statusPrint(PRINT_INTERVAL, linksGroupByProduct.size(), counter++);
             // Sleep time is dynamic, according to time took by scrap procedure
             Client.dynamicSleep(ETHICAL_DELAY, startTime);
         }
@@ -280,7 +295,6 @@ public class MetalScraper extends Client {
      * @param link Link from which the price will be scrapped
      */
     private void priceScrap(final LinkDTO link) {
-        long startTime = System.nanoTime();
         Double sellingPrice = null;
         Double redemptionPrice = null;
         final PricePair pricePair;
@@ -313,9 +327,6 @@ public class MetalScraper extends Client {
         this.productService.updatePrices(link.getProductId(), pricePair);
 
         System.out.println("> New pricePair saved - " + link.getUrl());
-
-        // Sleep time is dynamic, according to time took by scrap procedure
-        Client.dynamicSleep(ETHICAL_DELAY, startTime);
     }
 
     /**

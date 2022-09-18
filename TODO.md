@@ -5,6 +5,9 @@
 - [ ] Write <b>JUnit tests</b> for all services (use Mockito)
 
 ## B priority
+- [ ] Refactor (make new) method scrapAllProduct. Find links by Products and scrap all Product links at the same time.
+  Scraping from different web server, will minimize need of ethical delay and Prices from different Dealers will be,
+  time synchronized. Links without Products, has to be added and scraped after that separately.
 - [ ] <b>Scrap pricePairs from product list page and buyout page</b>
   for Bessergold & Silverum. Visiting all product detail pages won't be necessary.
   Instead, product name and price will be taken from product list page. Buyout

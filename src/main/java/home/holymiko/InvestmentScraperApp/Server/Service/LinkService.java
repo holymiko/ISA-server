@@ -1,6 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
 import com.sun.istack.NotNull;
+import home.holymiko.InvestmentScraperApp.Server.API.Repository.ProductRepository;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Product;
@@ -11,20 +12,24 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LinkService {
     private final LinkRepository linkRepository;
     private final LinkMapper linkMapper;
+    private final ProductRepository productRepository;
 
     @Autowired
-    public LinkService(LinkRepository linkRepository, LinkMapper linkMapper) {
+    public LinkService(LinkRepository linkRepository, LinkMapper linkMapper, ProductRepository productRepository) {
         this.linkRepository = linkRepository;
         this.linkMapper = linkMapper;
+        this.productRepository = productRepository;
     }
 
     public LinkDTO findById(Long linkId) throws IllegalArgumentException {
@@ -37,6 +42,18 @@ public class LinkService {
         return linkMapper.toDTO(
                 linkRepository.findByDealerAndProduct_Id(dealer, productId).orElseThrow(IllegalArgumentException::new)
         );
+    }
+
+    public List<List<LinkDTO>> findLinksGroupedByProduct() {
+        return this.productRepository.findAll().stream().map(
+                product -> linkMapper.toDTO(product.getLinks())
+        ).collect(Collectors.toList());
+    }
+
+    public List<List<LinkDTO>> findLinksGroupedByProduct(Metal metal) {
+        return this.productRepository.findProductsByMetal(metal).stream().map(
+                product -> linkMapper.toDTO(product.getLinks())
+        ).collect(Collectors.toList());
     }
 
     public List<LinkDTO> findByProductParams(Metal metal, Form form) {
@@ -57,7 +74,7 @@ public class LinkService {
         );
     }
 
-    public List<LinkDTO> findByProductId(long product) {
+    public List<LinkDTO> findByProductId(@Nullable Long product) {
         return linkMapper.toDTO(
                 linkRepository.findByProduct_Id(product)
         );
@@ -71,12 +88,12 @@ public class LinkService {
      * @return
      * @throws NullPointerException
      */
-    public LinkDTO updateProductLinks(Long linkId, @NotNull Product product) throws NullPointerException {
+    public LinkDTO updateProductLinks(@NotNull Long linkId, @NotNull Product product) throws NullPointerException, IllegalArgumentException {
         final Link link;
         final Optional<Link> optionalLink = linkRepository.findById(linkId);
 
         if(optionalLink.isEmpty()) {
-            throw new NullPointerException("Link with given ID doesnt exist");
+            throw new IllegalArgumentException("Link with given ID doesnt exist");
         }
         if(product == null) {
             throw new NullPointerException("Product cannot be null");
@@ -125,15 +142,6 @@ public class LinkService {
         if (link.contains("kapsle")) {
             throw new IllegalArgumentException("Link vyřazen: kapsle - " + link);
         }
-        // TODO Test this
-//        if (link.contains("slit") || link.contains("minc") || link.contains("lunarni-serie-rok") || link.contains("tolar")) {
-//            return true;
-//        }
-//        if (link.contains("goldbarren") || link.contains("krugerrand") || link.contains("sliek")) {
-//            return true;
-//        }
-//        System.out.println("Link vyřazen: " + link);
-//        return false;
     }
 
 }

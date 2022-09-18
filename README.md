@@ -6,8 +6,9 @@
 >* docker build .<br>
 >* docker compose up
 >### Back-end application
+>Make sure your device has access to internet.<br>
 >Run <b>main method in InvestmentScraperApp.java</b><br>
->After application start, following actions, like initial data scraping,<br>
+>Initial actions, like data scraping,
 > can be handled by <b>EventListeners in Run.java</b>
 >### Front-end application
 >Enter client directory

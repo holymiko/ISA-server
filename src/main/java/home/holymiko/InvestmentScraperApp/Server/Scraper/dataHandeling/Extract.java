@@ -152,7 +152,7 @@ public class Extract {
         if(text.contains("kinebar")) {
             return Form.KINEBAR;
         }
-        if(text.contains("bar") || text.contains("slitek") || text.contains("cihla")) {
+        if(text.contains("bar") || text.contains("slitek") || text.contains("slitky") || text.contains("cihla")) {
             return Form.BAR;
         }
         if(text.contains("multicard")) {
@@ -258,9 +258,14 @@ public class Extract {
     public static Metal metalExtract(String text) throws IllegalArgumentException {
         if (text.contains("zlat") || text.contains("gold")) {
             return Metal.GOLD;
-        } else if (text.contains("stříbr") || text.contains("silver") || text.contains("silber")) {
+        } else if (text.contains("stříbr") || text.contains("silver") || text.contains("silber") ) {
             return Metal.SILVER;
-        } else if (text.contains("platin")) {
+        }
+        // There was NO other Metal seen in this form, so far
+        else if (text.contains("münzbarren")) {
+            return Metal.SILVER;
+        }
+        else if (text.contains("platin")) {
             return Metal.PLATINUM;
         } else if (text.contains("pallad")) {
             return Metal.PALLADIUM;

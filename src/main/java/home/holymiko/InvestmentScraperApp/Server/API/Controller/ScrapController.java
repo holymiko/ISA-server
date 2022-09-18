@@ -1,12 +1,9 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
-import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
-import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.SerenityScraper;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +34,7 @@ public class ScrapController {
     @RequestMapping({"/all", "/all/"})
     public void scrapEverything() {
         allLinks();
-        allProducts();
+        allProductsInSync();
         serenity();
     }
 
@@ -45,16 +42,23 @@ public class ScrapController {
 
     /**
      * Scrap products for ALL Links. Including Links which doesn't have Product yet.
+     * Scraping of Prices is grouped by Product. Prices from different Dealers, are for each Product,
+     * scraped at the same time. Thanks to that, Prices are time synchronized.
      */
     @RequestMapping({"/products", "/products/"})
-    public void allProducts() {
+    public void allProductsInSync() {
         ScrapHistory.frequencyHandlingAll(false);
         ScrapHistory.startRunning();
 
         // TODO Logging
-        System.out.println("Client ALL products");
+        System.out.println("Scrap ALL products IN SYNC");
+        // Scrap Links by Product, in sync, grouped by Product
+        metalScraper.generalInSyncScrapAndSleep(
+                linkService.findLinksGroupedByProduct()
+        );
+        // Scrap Links without Product
         metalScraper.generalScrapAndSleep(
-                linkService.findAll()
+            linkService.findByProductId(null)
         );
         ConsolePrinter.printTimeStamp();
         System.out.println("All products scraped");
@@ -81,21 +85,18 @@ public class ScrapController {
     /**
      * Method is scraping by Links of Products.
      * New Links and other Links without corresponding Products will NOT BE SCRAPED!
+     * Scraping of Prices is grouped by Product. Prices from different Dealers, are for each Product,
+     * scraped at the same time. Thanks to that, Prices are time synchronized.
      */
     @GetMapping(value ="/param", headers = "Accept=application/json;charset=UTF-8")
-    public void scrapProductsByParam(
-        @RequestParam(required = false)
-        Metal metal,
-        @RequestParam(required = false)
-        Form form
-    ) {
+    public void scrapProductsInSyncByMetal(@RequestParam Metal metal) {
         scrapHistory.frequencyHandling(metal);
         // Lock guard
         ScrapHistory.startRunning();
 
         System.out.println("By param scrap products");
-        metalScraper.generalScrapAndSleep(
-                linkService.findByProductParams(metal, form)
+        metalScraper.generalInSyncScrapAndSleep(
+                linkService.findLinksGroupedByProduct(metal)
         );
 
         // Unlock guard
