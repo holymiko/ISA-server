@@ -31,7 +31,7 @@ public class PortfolioService {
     ////// FIND AS DTO
 
     public List<PortfolioDTO> findAllAsPortfolioDTO(int switcher) {
-        return findAllAsPortfolioDTO(findAll(), switcher);
+        return findAllAsPortfolioDTO(portfolioRepository.findAll(), switcher);
     }
 
     public List<PortfolioDTO> findAllAsPortfolioDTO(List<Portfolio> portfolioList, int switcher) {
@@ -99,10 +99,6 @@ public class PortfolioService {
                         portfolioMapper::toPortfolioDTO
                 )
                 .collect(Collectors.toList());
-    }
-
-    public List<Portfolio> findAll() {
-        return portfolioRepository.findAll();
     }
 
 

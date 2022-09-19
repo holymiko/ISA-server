@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class PriceDTO {
+public class PricePairDTO {
 
     private final long id;
     private final LocalDateTime priceDateTime;
@@ -17,7 +17,7 @@ public class PriceDTO {
     private final double spread;
     private final double pricePerGram;
 
-    public PriceDTO(long id, LocalDateTime priceDateTime, LocalDateTime redemptionDateTime, double price, double redemption, Dealer dealer, double grams) {
+    public PricePairDTO(long id, LocalDateTime priceDateTime, LocalDateTime redemptionDateTime, double price, double redemption, Dealer dealer, double grams) {
         this.id = id;
         this.priceDateTime = priceDateTime;
         this.redemptionDateTime = redemptionDateTime;

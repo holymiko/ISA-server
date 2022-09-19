@@ -12,16 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class ProductMapper {
 
     private static final String LINKS_AS_STRINGS = "java( product.getLinksAsString() )";
-    private static final String LATEST_PRICES_DTOS = "java( priceMapper.toPriceDTOs(pricePairRepository.findLatestPricePairsByProductId(product.getId()), product.getGrams()))";
+    private static final String LATEST_PRICES_DTOS = "java( pricePairMapper.toPriceDTOs(pricePairRepository.findLatestPricePairsByProductId(product.getId())) )";
 
     @Autowired
-    protected PriceMapper priceMapper;
+    protected PricePairMapper pricePairMapper;
 
     public abstract ProductDTO toProductDTO(Product entity);
 
     @Mappings({
             @Mapping(target = "links", expression = LINKS_AS_STRINGS),
-            @Mapping(target = "prices", expression = "java( priceMapper.toPriceDTOs(product.getPricePairs(), product.getGrams()) )"),
+            @Mapping(target = "prices", expression = "java( pricePairMapper.toPriceDTOs(product.getPricePairs()) )"),
             @Mapping(target = "latestPrices", expression = LATEST_PRICES_DTOS)
     })
     public abstract ProductDTO_AllPrices toProductDTO_AllPrices(Product product, @Context PricePairRepository pricePairRepository);
