@@ -1,4 +1,4 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper;
+package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal.dealerMetalClient;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -6,14 +6,13 @@ import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFound
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraperInterface;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.parser.Convert;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class ZlatakyMetalScraper extends Client implements MetalScraperInterface {
+public class ZlatakyMetalClient extends Client implements MetalClientInterface {
 
     private static final String BASE_URL = "https://zlataky.cz";
     private static final String SEARCH_URL_GOLD_COIN = "https://zlataky.cz/investicni-zlate-mince?page=1&page_all=1";
@@ -30,35 +29,39 @@ public class ZlatakyMetalScraper extends Client implements MetalScraperInterface
 
 
 
-    public ZlatakyMetalScraper() {
+    public ZlatakyMetalClient() {
         super();
     }
 
     @Override
+    public HtmlPage getPage(String link) throws ResourceNotFoundException {
+        return this.loadPage(link);
+    }
+    @Override
     public List<Link> scrapAllLinks() {
         List<Link> elements = new ArrayList<>();
         try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD_BAR)));
+            elements.addAll(scrapLinks(getPage(SEARCH_URL_GOLD_BAR)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD_COIN)));
+            elements.addAll(scrapLinks(getPage(SEARCH_URL_GOLD_COIN)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_SILVER_BAR)));
+            elements.addAll(scrapLinks(getPage(SEARCH_URL_SILVER_BAR)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_SILVER_COIN)));
+            elements.addAll(scrapLinks(getPage(SEARCH_URL_SILVER_COIN)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_PLATINUM)));
+            elements.addAll(scrapLinks(getPage(SEARCH_URL_PLATINUM)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
@@ -80,6 +83,7 @@ public class ZlatakyMetalScraper extends Client implements MetalScraperInterface
     public List<HtmlElement> scrapProductList(HtmlPage page) {
         return page.getByXPath(X_PATH_PRODUCT_LIST);
     }
+
     @Override
     public double scrapBuyPrice(HtmlPage productDetailPage) {
         String x = Convert.currencyClean(scrapBuyPrice(productDetailPage, X_PATH_BUY_PRICE));
@@ -94,7 +98,6 @@ public class ZlatakyMetalScraper extends Client implements MetalScraperInterface
     public String scrapProductName(HtmlPage page) {
         return ((HtmlElement) page.getFirstByXPath(X_PATH_PRODUCT_NAME)).asText();
     }
-
     @Override
     public double scrapRedemptionPrice(HtmlPage page) {
         return Convert.currencyToNumberConvert(
@@ -103,7 +106,6 @@ public class ZlatakyMetalScraper extends Client implements MetalScraperInterface
     }
 
     /////// LINK
-
     @Override
     public Link scrapLink(HtmlElement elementProduct) {
         return scrapLink(elementProduct, X_PATH_PRODUCT_LIST_PRODUCT_LINK, Dealer.ZLATAKY, BASE_URL);

@@ -1,19 +1,17 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper;
+package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapFailedException;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal.dealerMetalClient.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Extract;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.BessergoldDeMetalScraper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.BessergoldMetalScraper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.SilverumMetalScraper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper.ZlatakyMetalScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.parser.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class MetalScraper extends Client {
+public class MetalScraper {
     private final LinkService linkService;
     private final PriceService priceService;
     private final PortfolioService portfolioService;
@@ -38,7 +36,7 @@ public class MetalScraper extends Client {
     private final ExchangeRateService exchangeRateService;
 
     // Used for Polymorphic calling
-    private final Map<Dealer, MetalScraperInterface> dealerInterfaces = new HashMap<>();
+    private final Map<Dealer, MetalClientInterface> dealerScrapers = new HashMap<>();
 
     private static final long ETHICAL_DELAY = 700;
     private static final int PRINT_INTERVAL = 10;
@@ -68,12 +66,12 @@ public class MetalScraper extends Client {
     @Order(1)
     @EventListener(ApplicationStartedEvent.class)
     public void initializeDealerInterfaces() {
-        dealerInterfaces.put(Dealer.BESSERGOLD_CZ, new BessergoldMetalScraper());
-        dealerInterfaces.put(Dealer.SILVERUM, new SilverumMetalScraper());
-        dealerInterfaces.put(Dealer.ZLATAKY, new ZlatakyMetalScraper());
-        dealerInterfaces.put(
+        dealerScrapers.put(Dealer.BESSERGOLD_CZ, new BessergoldMetalClient());
+        dealerScrapers.put(Dealer.SILVERUM, new SilverumMetalClient());
+        dealerScrapers.put(Dealer.ZLATAKY, new ZlatakyMetalClient());
+        dealerScrapers.put(
                 Dealer.BESSERGOLD_DE,
-                new BessergoldDeMetalScraper(
+                new BessergoldDeMetalClient(
                         // Insert currency exchange rate for conversion to CZK
                         exchangeRateService.findFirstByCodeOrderByDateDesc("EUR").getExchangeRate()
                 )
@@ -171,17 +169,28 @@ public class MetalScraper extends Client {
         String name = "";
         final HtmlPage page;
         final ProductCreateDTO productExtracted;
+        final MetalClientInterface scraper = dealerScrapers.get(link.getDealer());
 
         if(link.getProductId() != null) {
             throw new ScrapFailedException("ProductScrap - Product already scraped");
         }
+        if(scraper == null) {
+            throw new ScrapFailedException("ProductScrap - Scraper for dealer "+link.getDealer()+" not found");
+        }
 
         // Throws ResourceNotFoundException
-        page = loadPage(link.getUrl());
+        page = scraper.getPage(link.getUrl());
 
         // Scraps name of the Product
         try {
-            name = dealerInterfaces.get(link.getDealer()).scrapProductName(page);
+            name = scraper.scrapProductName(page);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Scraps name of the Product
+        try {
+            name = scraper.scrapProductName(page);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -297,11 +306,15 @@ public class MetalScraper extends Client {
     private void priceScrap(final LinkDTO link) {
         Double sellingPrice = null;
         Double redemptionPrice = null;
+        final MetalClientInterface scraper = dealerScrapers.get(link.getDealer());
         final PricePair pricePair;
         HtmlPage productDetailPage;
 
+        if(scraper == null) {
+            throw new ScrapFailedException("ProductScrap - Scraper for dealer "+link.getDealer()+" not found");
+        }
         try {
-            productDetailPage = loadPage(link.getUrl());
+            productDetailPage = scraper.getPage(link.getUrl());
         } catch (ResourceNotFoundException e) {
             // TODO Handle this & Log this
             return;
@@ -309,11 +322,11 @@ public class MetalScraper extends Client {
 
         try {
             // Choose MetalScraperInterface & scrap buy price
-            sellingPrice = dealerInterfaces.get(link.getDealer()).scrapBuyPrice(productDetailPage);
+            sellingPrice = scraper.scrapBuyPrice(productDetailPage);
         } catch (NumberFormatException e) {
             System.out.println(e.getMessage());
         }
-        redemptionPrice = dealerInterfaces.get(link.getDealer()).scrapRedemptionPrice(productDetailPage);
+        redemptionPrice = scraper.scrapRedemptionPrice(productDetailPage);
 
         pricePair = new PricePair(
                 link.getDealer(),
@@ -335,9 +348,9 @@ public class MetalScraper extends Client {
     @Deprecated
     private void redemptionScrap(final Metal metal, final Dealer dealer) {
         System.out.println(">>> Redemption Scrap");
-        if( dealerInterfaces.get(dealer) instanceof ScrapRedemptionFromListInterface ) {
+        if( dealerScrapers.get(dealer) instanceof RedemptionListInterface) {
             System.out.println(">>>>> Scraping Redemption List available");
-            List<Pair<String, Double>> nameRedemptionMap = ((ScrapRedemptionFromListInterface) dealerInterfaces.get(dealer)).scrapRedemptionFromList();
+            List<Pair<String, Double>> nameRedemptionMap = ((RedemptionListInterface) dealerScrapers.get(dealer)).scrapRedemptionFromList();
 
             nameRedemptionMap.forEach(
                 x -> {
@@ -380,7 +393,7 @@ public class MetalScraper extends Client {
      */
     public void allLinksScrap() {
         // Polymorphic call
-        dealerInterfaces.values().forEach(
+        dealerScrapers.values().forEach(
                 scraperInterface -> scraperInterface.scrapAllLinks()
                         .forEach(
                                 link -> {
@@ -396,7 +409,7 @@ public class MetalScraper extends Client {
     }
 
     public void linksByDealerScrap(Dealer dealer) {
-        dealerInterfaces.get(dealer).scrapAllLinks()
+        dealerScrapers.get(dealer).scrapAllLinks()
                 .forEach(
                         link -> {
                             try {

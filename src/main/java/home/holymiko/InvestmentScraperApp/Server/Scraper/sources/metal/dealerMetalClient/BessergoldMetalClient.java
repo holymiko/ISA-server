@@ -1,20 +1,18 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper;
+package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal.dealerMetalClient;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.ScrapRedemptionFromListInterface;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraperInterface;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.parser.Convert;
 import org.springframework.data.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BessergoldMetalScraper extends Client implements MetalScraperInterface, ScrapRedemptionFromListInterface {
+public class BessergoldMetalClient extends Client implements MetalClientInterface, RedemptionListInterface {
     private static final String SEARCH_URL_GOLD = "https://www.bessergold.cz/investicni-zlato.html?product_list_limit=all";
     private static final String SEARCH_URL_SILVER = "https://www.bessergold.cz/investicni-stribro.html?product_list_limit=all";
     private static final String SEARCH_URL_PLATINUM = "https://www.bessergold.cz/investicni-platina.html?product_list_limit=all";
@@ -25,30 +23,34 @@ public class BessergoldMetalScraper extends Client implements MetalScraperInterf
     private static final String X_PATH_BUY_PRICE = ".//span[@class='price']";
     private static final String X_PATH_REDEMPTION_PRICE = ".//div[@class='vykupni-cena']";
 
-    public BessergoldMetalScraper() {
+    public BessergoldMetalClient() {
         super();
     }
 
     @Override
+    public HtmlPage getPage(String link) throws ResourceNotFoundException {
+        return this.loadPage(link);
+    }
+    @Override
     public List<Link> scrapAllLinks() {
         List<Link> elements = new ArrayList<>();
         try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD)));
+            elements.addAll(scrapLinks(getPage(SEARCH_URL_GOLD)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_SILVER)));
+            elements.addAll(scrapLinks(getPage(SEARCH_URL_SILVER)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_PLATINUM)));
+            elements.addAll(scrapLinks(getPage(SEARCH_URL_PLATINUM)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_PALLADIUM)));
+            elements.addAll(scrapLinks(getPage(SEARCH_URL_PALLADIUM)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }

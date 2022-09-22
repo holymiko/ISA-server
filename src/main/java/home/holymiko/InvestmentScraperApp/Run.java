@@ -2,7 +2,7 @@ package home.holymiko.InvestmentScraperApp;
 
 import home.holymiko.InvestmentScraperApp.Server.API.Controller.ScrapController;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.ExchangeRateService;
 import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;

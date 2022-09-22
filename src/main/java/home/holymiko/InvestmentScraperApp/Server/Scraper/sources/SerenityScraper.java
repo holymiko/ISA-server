@@ -7,7 +7,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.GrahamGrade;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.parser.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Service.StockService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;

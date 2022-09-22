@@ -1,22 +1,21 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.dealerMetalScraper;
+package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal.dealerMetalClient;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapFailedException;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Extract;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.parser.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.dataHandeling.Convert;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraperInterface;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.parser.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class SilverumMetalScraper extends Client implements MetalScraperInterface {
+public class SilverumMetalClient extends Client implements MetalClientInterface {
     private static final String BASE = "https://www.silverum.cz/";
     private static final String SEARCH_URL_GOLD_COIN = "https://www.silverum.cz/investicni-mince.html";
     private static final String SEARCH_URL_GOLD_BAR = "https://www.silverum.cz/investicni-slitky.html";
@@ -41,48 +40,52 @@ public class SilverumMetalScraper extends Client implements MetalScraperInterfac
     private static final String X_PATH_BID_SPOT_SILVER  = "/html/body/section[1]/div/div/div[2]/div/div/div[2]/div";
     private static final String X_PATH_BID_SPOT_DOLLAR = "/html/body/section[1]/div/div/div[4]/div/div/div[2]/div";
 
-    public SilverumMetalScraper() {
+    public SilverumMetalClient() {
         super();
     }
 
     /////// LINK
 
     @Override
+    public HtmlPage getPage(String link) throws ResourceNotFoundException {
+        return this.loadPage(link);
+    }
+    @Override
     public List<Link> scrapAllLinks() {
         List<Link> elements = new ArrayList<>();
         try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD_COIN)));
+            elements.addAll(scrapLinks(getPage(SEARCH_URL_GOLD_COIN)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD_BAR)));
+            elements.addAll(scrapLinks(getPage(SEARCH_URL_GOLD_BAR)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_GOLD_BRICK)));
+            elements.addAll(scrapLinks(getPage(SEARCH_URL_GOLD_BRICK)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
 
         try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_SILVER_COIN_21)));
+            elements.addAll(scrapLinks(getPage(SEARCH_URL_SILVER_COIN_21)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_SILVER_COIN_22)));
+            elements.addAll(scrapLinks(getPage(SEARCH_URL_SILVER_COIN_22)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_SILVER_BAR)));
+            elements.addAll(scrapLinks(getPage(SEARCH_URL_SILVER_BAR)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(loadPage(SEARCH_URL_SILVER_BRICK)));
+            elements.addAll(scrapLinks(getPage(SEARCH_URL_SILVER_BRICK)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }

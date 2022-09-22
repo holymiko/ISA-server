@@ -1,29 +1,49 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper;
+package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal.dealerMetalClient;
 
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public interface MetalScraperInterface {
+public interface MetalClientInterface {
 
-    List<Link> scrapAllLinks();
+    default HtmlPage getPage(final String link) throws ResourceNotFoundException {
+        throw new NotImplementedException("Method haven't been implemented yet");
+    }
 
-    String redemptionHtmlToText(HtmlElement redemptionPriceHtml);
+    default List<Link> scrapAllLinks() {
+        throw new NotImplementedException("Method haven't been implemented yet");
+    }
 
-    String scrapProductName(HtmlPage page);
+    default String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
+        throw new NotImplementedException("Method haven't been implemented yet");
+    }
 
-    List<HtmlElement> scrapProductList(HtmlPage page);
+    default String scrapProductName(HtmlPage page) {
+        throw new NotImplementedException("Method haven't been implemented yet");
+    }
 
-    double scrapBuyPrice(HtmlPage productDetailPage);
+    default List<HtmlElement> scrapProductList(HtmlPage page) {
+        throw new NotImplementedException("Method haven't been implemented yet");
+    }
 
-    double scrapRedemptionPrice(HtmlPage page);
+    default double scrapBuyPrice(HtmlPage productDetailPage) {
+        throw new NotImplementedException("Method haven't been implemented yet");
+    }
 
-    Link scrapLink(HtmlElement elementProduct);
+    default double scrapRedemptionPrice(HtmlPage page) {
+        throw new NotImplementedException("Method haven't been implemented yet");
+    }
+
+    default Link scrapLink(HtmlElement elementProduct) {
+        throw new NotImplementedException("Method haven't been implemented yet");
+    }
 
     default Link scrapLink(HtmlElement elementProduct, String xPathToLink, Dealer dealer, String baseUrl) {
         HtmlAnchor itemAnchor = elementProduct.getFirstByXPath(xPathToLink);

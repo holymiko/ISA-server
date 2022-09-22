@@ -3,7 +3,7 @@ package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.MetalScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.SerenityScraper;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
