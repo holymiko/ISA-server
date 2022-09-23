@@ -5,7 +5,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.parser.Convert;
 import org.springframework.data.util.Pair;
 

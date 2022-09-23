@@ -3,7 +3,7 @@ package home.holymiko.InvestmentScraperApp;
 import home.holymiko.InvestmentScraperApp.Server.API.Controller.ScrapController;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal.MetalScraper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.CNBClient;
 import home.holymiko.InvestmentScraperApp.Server.Service.ExchangeRateService;
 import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
@@ -28,17 +28,17 @@ public class Run {
     private final InvestmentInit investmentInit;
     private final TickerService tickerService;
     private final ExchangeRateService exchangeRateService;
-    private final CNBScraper cnbScraper;
+    private final CNBClient cnbClient;
     private final LinkService linkService;
     private final MetalScraper metalScraper;
 
     @Autowired
-    public Run(ScrapController scrapController, InvestmentInit investmentInit, TickerService tickerService, ExchangeRateService exchangeRateService, CNBScraper cnbScraper, LinkService linkService, MetalScraper metalScraper) {
+    public Run(ScrapController scrapController, InvestmentInit investmentInit, TickerService tickerService, ExchangeRateService exchangeRateService, CNBClient cnbClient, LinkService linkService, MetalScraper metalScraper) {
         this.scrapController = scrapController;
         this.investmentInit = investmentInit;
         this.tickerService = tickerService;
         this.exchangeRateService = exchangeRateService;
-        this.cnbScraper = cnbScraper;
+        this.cnbClient = cnbClient;
         this.linkService = linkService;
         this.metalScraper = metalScraper;
     }
@@ -49,7 +49,7 @@ public class Run {
         System.out.println("App has started up");
 
         try {
-            cnbScraper.scrapExchangeRate();
+            cnbClient.scrapExchangeRate();
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }

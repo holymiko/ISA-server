@@ -4,7 +4,7 @@ import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-public interface SerenityScraperInterface {
+public interface SerenityClientInterface {
 
     default String getRatingOrResult(HtmlPage page, int i) {
         return ((HtmlElement) page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div["+i+"]/div[2]/div")).asText();

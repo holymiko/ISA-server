@@ -7,7 +7,7 @@ import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapFailedExcep
 import home.holymiko.InvestmentScraperApp.Server.Scraper.parser.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.parser.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 

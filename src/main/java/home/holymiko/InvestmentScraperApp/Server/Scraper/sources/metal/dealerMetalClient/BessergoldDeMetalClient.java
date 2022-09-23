@@ -3,7 +3,7 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal.dealerMe
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.Client;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.parser.Convert;

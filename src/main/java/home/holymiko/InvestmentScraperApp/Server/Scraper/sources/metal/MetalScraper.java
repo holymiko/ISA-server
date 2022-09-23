@@ -3,7 +3,7 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapFailedException;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal.dealerMetalClient.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;

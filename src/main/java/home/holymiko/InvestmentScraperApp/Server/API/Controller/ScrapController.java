@@ -4,7 +4,7 @@ import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal.MetalScraper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.SerenityScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.SerenityClient;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class ScrapController {
 
     private final MetalScraper metalScraper;
-    private final SerenityScraper serenityScraper;
+    private final SerenityClient serenityClient;
     private final ScrapHistory scrapHistory;
     private final LinkService linkService;
 
@@ -24,9 +24,9 @@ public class ScrapController {
     // TODO method byPortfolio should include stock scraping
 
     @Autowired
-    public ScrapController(MetalScraper metalScraper, SerenityScraper serenityScraper, ScrapHistory scrapHistory, LinkService linkService) {
+    public ScrapController(MetalScraper metalScraper, SerenityClient serenityClient, ScrapHistory scrapHistory, LinkService linkService) {
         this.metalScraper = metalScraper;
-        this.serenityScraper = serenityScraper;
+        this.serenityClient = serenityClient;
         this.scrapHistory = scrapHistory;
         this.linkService = linkService;
     }
@@ -106,7 +106,7 @@ public class ScrapController {
 
     @RequestMapping({"/serenity", "/serenity/"})
     public void serenity() {
-        this.serenityScraper.tickersScrap(TickerState.GOOD);
+        this.serenityClient.tickersScrap(TickerState.GOOD);
     }
 
     //////// Links

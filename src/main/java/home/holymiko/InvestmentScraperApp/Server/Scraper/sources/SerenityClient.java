@@ -6,7 +6,6 @@ import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFound
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.GrahamGrade;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.parser.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Service.StockService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
@@ -18,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class SerenityScraper extends Client implements SerenityScraperInterface {
+public class SerenityClient extends Client implements SerenityClientInterface {
     private static final double MIN_RATING_SCORE = 6.5;
     private static final long ETHICAL_DELAY = 1000;
     private static final String BASE_URL = "https://www.serenitystocks.com/stock/";
@@ -27,7 +26,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
     private final StockService stockService;
 
     @Autowired
-    public SerenityScraper(TickerService tickerService, StockService stockService) {
+    public SerenityClient(TickerService tickerService, StockService stockService) {
         super();
         this.tickerService = tickerService;
         this.stockService = stockService;
