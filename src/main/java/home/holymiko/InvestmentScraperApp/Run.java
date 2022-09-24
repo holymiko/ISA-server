@@ -65,8 +65,8 @@ public class Run {
 
     @EventListener(ApplicationReadyEvent.class)
     public void scrap() throws IOException {
-        scrapController.allLinks();
-        scrapController.allProductsInSync();
+//        scrapController.allLinks();
+//        scrapController.allProductsInSync();
 //        metalScraper.linksByDealerScrap(Dealer.SILVERUM);
 //        metalScraper.generalScrapAndSleep(
 //                linkService.findByDealer(Dealer.SILVERUM)

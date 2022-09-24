@@ -1,74 +1,25 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal.dealerMetalClient;
 
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
-import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
-import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import org.apache.commons.lang3.NotImplementedException;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-public interface MetalClientInterface {
+public interface MetalClientInterface extends ProductListInterface, RedemptionInterface {
 
     default HtmlPage getPage(final String link) throws ResourceNotFoundException {
         throw new NotImplementedException("Method haven't been implemented yet");
     }
 
-    default List<Link> scrapAllLinks() {
+    default String scrapNameFromProductPage(HtmlPage page) {
         throw new NotImplementedException("Method haven't been implemented yet");
     }
 
-    default String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
+    default double scrapPriceFromProductPage(HtmlPage productDetailPage) {
         throw new NotImplementedException("Method haven't been implemented yet");
     }
 
-    default String scrapProductName(HtmlPage page) {
-        throw new NotImplementedException("Method haven't been implemented yet");
-    }
-
-    default List<HtmlElement> scrapProductList(HtmlPage page) {
-        throw new NotImplementedException("Method haven't been implemented yet");
-    }
-
-    default double scrapBuyPrice(HtmlPage productDetailPage) {
-        throw new NotImplementedException("Method haven't been implemented yet");
-    }
-
-    default double scrapRedemptionPrice(HtmlPage page) {
-        throw new NotImplementedException("Method haven't been implemented yet");
-    }
-
-    default Link scrapLink(HtmlElement elementProduct) {
-        throw new NotImplementedException("Method haven't been implemented yet");
-    }
-
-    default Link scrapLink(HtmlElement elementProduct, String xPathToLink, Dealer dealer, String baseUrl) {
-        HtmlAnchor itemAnchor = elementProduct.getFirstByXPath(xPathToLink);
-        if(itemAnchor == null) {
-            System.out.println("Error: "+ elementProduct.asText());
-            return null;
-        }
-        return new Link(dealer, baseUrl + itemAnchor.getHrefAttribute());
-    }
-
-    /**
-     * Finds list of elements, based on class variable xPathProductList
-     * For each calls scrapLink abstract method.
-     * @param page
-     * @return
-     */
-    default List<Link> scrapLinks(HtmlPage page) {
-        // Scraps new link for each element
-        return scrapProductList(page).stream()
-                .map(
-                        this::scrapLink
-                ).collect(Collectors.toList());
-    }
-
-    default String scrapBuyPrice(HtmlPage page, String xPathBuyPrice) {
+    default String scrapPriceFromProductPage(HtmlPage page, String xPathBuyPrice) {
         try {
             return ((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText();
         } catch (Exception e) {
@@ -77,12 +28,4 @@ public interface MetalClientInterface {
         return "0.0";
     }
 
-    default String scrapRedemptionPrice(HtmlPage page, String xPathRedemptionPrice) {
-        try {
-            return redemptionHtmlToText(page.getFirstByXPath(xPathRedemptionPrice));
-        } catch (Exception e) {
-            System.out.println("WARNING - Vykupni cena = 0");
-        }
-        return "0.0";
-    }
 }

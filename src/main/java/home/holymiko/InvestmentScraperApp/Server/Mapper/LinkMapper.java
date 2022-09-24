@@ -10,7 +10,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public abstract class LinkMapper {
 
-    @Mapping(target = "productId", source = "product.id")
     public abstract LinkDTO toDTO(Link entity);
 
     public abstract List<LinkDTO> toDTO(List<Link> entities);

@@ -93,16 +93,8 @@ public class ProductService {
         if(productCreateDTO == null) {
             throw new NullPointerException();
         }
-        return save(
-                new Product(
-                        productCreateDTO.getName(),
-                        productCreateDTO.getProducer(),
-                        productCreateDTO.getForm(),
-                        productCreateDTO.getMetal(),
-                        productCreateDTO.getGrams(),
-                        productCreateDTO.getYear(),
-                        productCreateDTO.isSpecial()
-                )
+        return this.productRepository.save(
+                new Product(productCreateDTO)
         );
     }
 

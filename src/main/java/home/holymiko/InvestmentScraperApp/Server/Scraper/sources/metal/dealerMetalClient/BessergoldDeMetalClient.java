@@ -12,7 +12,7 @@ import org.springframework.data.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BessergoldDeMetalClient extends Client implements MetalClientInterface, RedemptionListInterface {
+public class BessergoldDeMetalClient extends Client implements MetalClientInterface {
 
     private static final String SEARCH_URL_GOLD = "https://www.bessergold.de/de/gold.html?product_list_limit=all";
     private static final String SEARCH_URL_SILVER = "https://www.bessergold.de/de/silber.html?product_list_limit=all";
@@ -41,25 +41,25 @@ public class BessergoldDeMetalClient extends Client implements MetalClientInterf
     }
 
     @Override
-    public List<Link> scrapAllLinks() {
+    public List<Link> scrapAllLinksFromProductLists() {
         List<Link> elements = new ArrayList<>();
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_GOLD)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_GOLD)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_SILVER)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_PLATINUM)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_PLATINUM)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_PALLADIUM)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_PALLADIUM)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
@@ -83,7 +83,7 @@ public class BessergoldDeMetalClient extends Client implements MetalClientInterf
     }
 
     @Override
-    public String scrapProductName(HtmlPage page) {
+    public String scrapNameFromProductPage(HtmlPage page) {
         return ((HtmlElement) page.getFirstByXPath(X_PATH_PRODUCT_NAME)).asText();
     }
 
@@ -102,9 +102,9 @@ public class BessergoldDeMetalClient extends Client implements MetalClientInterf
     }
 
     @Override
-    public double scrapBuyPrice(HtmlPage productDetailPage) {
+    public double scrapPriceFromProductPage(HtmlPage productDetailPage) {
         return Convert.currencyConvert(
-                scrapBuyPrice(productDetailPage, X_PATH_BUY_PRICE).replace(".", ""),
+                scrapPriceFromProductPage(productDetailPage, X_PATH_BUY_PRICE).replace(".", ""),
                 euroExchangeRate,
                 "€"
         );

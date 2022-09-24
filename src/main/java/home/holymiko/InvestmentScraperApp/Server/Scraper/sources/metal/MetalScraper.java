@@ -183,14 +183,14 @@ public class MetalScraper {
 
         // Scraps name of the Product
         try {
-            name = scraper.scrapProductName(page);
+            name = scraper.scrapNameFromProductPage(page);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         // Scraps name of the Product
         try {
-            name = scraper.scrapProductName(page);
+            name = scraper.scrapNameFromProductPage(page);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -255,7 +255,7 @@ public class MetalScraper {
                 );
             }
 
-            link = linkService.updateProductLinks(link.getId(), productFound);
+            link = linkService.updateLinkProductId(link.getId(), productFound.getId());
             priceScrap(link);
             return;
         }
@@ -266,13 +266,13 @@ public class MetalScraper {
     }
 
     /** Method meant to be used ONLY in productSaveSwitch
-     * @param link
+     * @param linkDTO
      * @param productExtracted
      */
-    private void saveValidNewProductAndScrapPrice(LinkDTO link, ProductCreateDTO productExtracted) {
-        final Product productToSave = productService.save(productExtracted);
-        link = linkService.updateProductLinks(link.getId(), productToSave);
-        priceScrap(link);
+    private void saveValidNewProductAndScrapPrice(LinkDTO linkDTO, ProductCreateDTO productExtracted) {
+        Product p = productService.save(productExtracted);
+        linkDTO = linkService.updateLinkProductId(linkDTO.getId(), p.getId());
+        priceScrap(linkDTO);
         System.out.println(">> Product saved");
     }
 
@@ -300,21 +300,20 @@ public class MetalScraper {
 
     /**
      * Main Price scraping method
-     * Scraps new price for link with assigned product
-     * @param link Link from which the price will be scrapped
+     * Scraps new price for linkDTO with assigned product
      */
-    private void priceScrap(final LinkDTO link) {
+    private void priceScrap(final LinkDTO linkDTO) {
         Double sellingPrice = null;
         Double redemptionPrice = null;
-        final MetalClientInterface scraper = dealerScrapers.get(link.getDealer());
+        final MetalClientInterface scraper = dealerScrapers.get(linkDTO.getDealer());
         final PricePair pricePair;
         HtmlPage productDetailPage;
 
         if(scraper == null) {
-            throw new ScrapFailedException("ProductScrap - Scraper for dealer "+link.getDealer()+" not found");
+            throw new ScrapFailedException("ProductScrap - Scraper for dealer "+linkDTO.getDealer()+" not found");
         }
         try {
-            productDetailPage = scraper.getPage(link.getUrl());
+            productDetailPage = scraper.getPage(linkDTO.getUrl());
         } catch (ResourceNotFoundException e) {
             // TODO Handle this & Log this
             return;
@@ -322,24 +321,24 @@ public class MetalScraper {
 
         try {
             // Choose MetalScraperInterface & scrap buy price
-            sellingPrice = scraper.scrapBuyPrice(productDetailPage);
+            sellingPrice = scraper.scrapPriceFromProductPage(productDetailPage);
         } catch (NumberFormatException e) {
             System.out.println(e.getMessage());
         }
         redemptionPrice = scraper.scrapRedemptionPrice(productDetailPage);
 
         pricePair = new PricePair(
-                link.getDealer(),
+                linkDTO.getDealer(),
                 priceService.save(new Price(LocalDateTime.now(), sellingPrice, false)),
                 priceService.save(new Price(LocalDateTime.now(), redemptionPrice, true)),
-                productService.findById(link.getProductId()).get()
+                productService.findById(linkDTO.getProductId()).get()
         );
 
         // Save PricePair
         this.priceService.save(pricePair);
-        this.productService.updatePrices(link.getProductId(), pricePair);
+        this.productService.updatePrices(linkDTO.getProductId(), pricePair);
 
-        System.out.println("> New pricePair saved - " + link.getUrl());
+        System.out.println("> New pricePair saved - " + linkDTO.getUrl());
     }
 
     /**
@@ -348,9 +347,9 @@ public class MetalScraper {
     @Deprecated
     private void redemptionScrap(final Metal metal, final Dealer dealer) {
         System.out.println(">>> Redemption Scrap");
-        if( dealerScrapers.get(dealer) instanceof RedemptionListInterface) {
+        if( dealerScrapers.get(dealer) instanceof RedemptionInterface) {
             System.out.println(">>>>> Scraping Redemption List available");
-            List<Pair<String, Double>> nameRedemptionMap = ((RedemptionListInterface) dealerScrapers.get(dealer)).scrapRedemptionFromList();
+            List<Pair<String, Double>> nameRedemptionMap = ((RedemptionInterface) dealerScrapers.get(dealer)).scrapRedemptionFromList();
 
             nameRedemptionMap.forEach(
                 x -> {
@@ -394,7 +393,7 @@ public class MetalScraper {
     public void allLinksScrap() {
         // Polymorphic call
         dealerScrapers.values().forEach(
-                scraperInterface -> scraperInterface.scrapAllLinks()
+                scraperInterface -> scraperInterface.scrapAllLinksFromProductLists()
                         .forEach(
                                 link -> {
                                         try {
@@ -409,7 +408,7 @@ public class MetalScraper {
     }
 
     public void linksByDealerScrap(Dealer dealer) {
-        dealerScrapers.get(dealer).scrapAllLinks()
+        dealerScrapers.get(dealer).scrapAllLinksFromProductLists()
                 .forEach(
                         link -> {
                             try {

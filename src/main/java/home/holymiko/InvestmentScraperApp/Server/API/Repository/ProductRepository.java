@@ -25,7 +25,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer dealer, Producer producer, Metal metal, Form form, double grams, int year);
 
     @Query("select m from Product m where " +
-            "(:dealer is null or m.id IN (SELECT l.product.id FROM Link l WHERE l.dealer = :dealer )) " +
+            "(:dealer is null or m.id IN (SELECT l.productId FROM Link l WHERE l.dealer = :dealer )) " +
             "and " +
             "(:producer is null or m.producer = :producer) " +
             "and " +

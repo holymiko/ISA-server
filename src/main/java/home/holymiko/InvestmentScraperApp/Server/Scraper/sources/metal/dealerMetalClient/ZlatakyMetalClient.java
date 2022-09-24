@@ -38,30 +38,30 @@ public class ZlatakyMetalClient extends Client implements MetalClientInterface {
         return this.loadPage(link);
     }
     @Override
-    public List<Link> scrapAllLinks() {
+    public List<Link> scrapAllLinksFromProductLists() {
         List<Link> elements = new ArrayList<>();
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_GOLD_BAR)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_GOLD_BAR)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_GOLD_COIN)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_GOLD_COIN)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_SILVER_BAR)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER_BAR)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_SILVER_COIN)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER_COIN)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_PLATINUM)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_PLATINUM)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
@@ -85,8 +85,8 @@ public class ZlatakyMetalClient extends Client implements MetalClientInterface {
     }
 
     @Override
-    public double scrapBuyPrice(HtmlPage productDetailPage) {
-        String x = Convert.currencyClean(scrapBuyPrice(productDetailPage, X_PATH_BUY_PRICE));
+    public double scrapPriceFromProductPage(HtmlPage productDetailPage) {
+        String x = Convert.currencyClean(scrapPriceFromProductPage(productDetailPage, X_PATH_BUY_PRICE));
 
         if(Pattern.compile("původnícena:").matcher(x).find()) {
             x = x.split("původnícena:\\d+")[1];
@@ -95,7 +95,7 @@ public class ZlatakyMetalClient extends Client implements MetalClientInterface {
         return Double.parseDouble(x);
     }
     @Override
-    public String scrapProductName(HtmlPage page) {
+    public String scrapNameFromProductPage(HtmlPage page) {
         return ((HtmlElement) page.getFirstByXPath(X_PATH_PRODUCT_NAME)).asText();
     }
     @Override

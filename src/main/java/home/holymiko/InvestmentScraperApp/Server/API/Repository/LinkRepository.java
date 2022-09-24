@@ -17,12 +17,14 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
 
     Optional<Link> findByUrl(String link);
 
-    List<Link> findByProduct_Id(Long productId);
+    List<Link> findByProductId(Long productId);
 
-    @Query("select m from Link m where " +
-            "(:metal is null or m.product.metal = :metal) " +
+    @Query("select m from Link m, Product p where " +
+            "(m.productId = p.id) " +
             "and " +
-            "(:form is null or m.product.form = :form) "
+            "(:metal is null or p.metal = :metal) " +
+            "and " +
+            "(:form is null or p.form = :form) "
     )
     List<Link> findByProductParams(
             @Param("metal") Metal metal,
@@ -30,5 +32,5 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
     );
 
     List<Link> findByDealer(Dealer dealer);
-    Optional<Link> findByDealerAndProduct_Id(Dealer dealer, long product);
+    Optional<Link> findByDealerAndProductId(Dealer dealer, long product);
 }

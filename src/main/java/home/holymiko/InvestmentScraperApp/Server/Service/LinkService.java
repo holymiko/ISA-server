@@ -4,7 +4,6 @@ import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.ProductRepository;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;
-import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Product;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.LinkRepository;
@@ -40,7 +39,7 @@ public class LinkService {
 
     public LinkDTO findByDealerAndProductId(Dealer dealer, long productId) {
         return linkMapper.toDTO(
-                linkRepository.findByDealerAndProduct_Id(dealer, productId).orElseThrow(IllegalArgumentException::new)
+                linkRepository.findByDealerAndProductId(dealer, productId).orElseThrow(IllegalArgumentException::new)
         );
     }
 
@@ -76,32 +75,34 @@ public class LinkService {
 
     public List<LinkDTO> findByProductId(@Nullable Long product) {
         return linkMapper.toDTO(
-                linkRepository.findByProduct_Id(product)
+                linkRepository.findByProductId(product)
         );
     }
 
     /**
-     * Link's product is set. Link is saved
-     * Product links are extended, but product is not saved here.
+     * Link's productId is set. Link is saved
+     * Product links are extended, but productId is not saved here.
      * @param linkId
-     * @param product
+     * @param productId
      * @return
      * @throws NullPointerException
      */
-    public LinkDTO updateProductLinks(@NotNull Long linkId, @NotNull Product product) throws NullPointerException, IllegalArgumentException {
+    public LinkDTO updateLinkProductId(@NotNull Long linkId, @NotNull Long productId) throws NullPointerException, IllegalArgumentException {
+        if(productId == null) {
+            throw new NullPointerException("ProductId cannot be null");
+        }
+        if(linkId == null) {
+            throw new NullPointerException("LinkId cannot be null");
+        }
+
         final Link link;
         final Optional<Link> optionalLink = linkRepository.findById(linkId);
 
         if(optionalLink.isEmpty()) {
-            throw new IllegalArgumentException("Link with given ID doesnt exist");
-        }
-        if(product == null) {
-            throw new NullPointerException("Product cannot be null");
+            throw new IllegalArgumentException("Link for given ID doesnt exist");
         }
         link = optionalLink.get();
-
-        product.getLinks().add(link);
-        link.setProduct(product);
+        link.setProductId(productId);
         return linkMapper.toDTO(
                 linkRepository.save(link)
         );

@@ -51,41 +51,41 @@ public class SilverumMetalClient extends Client implements MetalClientInterface 
         return this.loadPage(link);
     }
     @Override
-    public List<Link> scrapAllLinks() {
+    public List<Link> scrapAllLinksFromProductLists() {
         List<Link> elements = new ArrayList<>();
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_GOLD_COIN)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_GOLD_COIN)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_GOLD_BAR)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_GOLD_BAR)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_GOLD_BRICK)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_GOLD_BRICK)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
 
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_SILVER_COIN_21)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER_COIN_21)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_SILVER_COIN_22)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER_COIN_22)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_SILVER_BAR)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER_BAR)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_SILVER_BRICK)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER_BRICK)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
@@ -107,7 +107,7 @@ public class SilverumMetalClient extends Client implements MetalClientInterface 
     }
 
     @Override
-    public String scrapProductName(HtmlPage page) {
+    public String scrapNameFromProductPage(HtmlPage page) {
         return ((HtmlElement) page.getFirstByXPath(X_PATH_PRODUCT_NAME)).asText();
     }
 
@@ -115,8 +115,8 @@ public class SilverumMetalClient extends Client implements MetalClientInterface 
     /////// PRICE
 
     @Override
-    public double scrapBuyPrice(HtmlPage productDetailPage) {
-        String x = scrapBuyPrice(productDetailPage, X_PATH_BUY_PRICE);
+    public double scrapPriceFromProductPage(HtmlPage productDetailPage) {
+        String x = scrapPriceFromProductPage(productDetailPage, X_PATH_BUY_PRICE);
         if(Pattern.compile("\\d+,\\d+ Kč bez DPH").matcher(x).find()) {
             x = x.split("\\d*[ ]?\\d+,\\d+ Kč bez DPH")[0];
         }
@@ -141,7 +141,7 @@ public class SilverumMetalClient extends Client implements MetalClientInterface 
      */
     @Override
     public double scrapRedemptionPrice(HtmlPage page) {
-        final String productName = scrapProductName(page).toLowerCase();
+        final String productName = scrapNameFromProductPage(page).toLowerCase();
         final Metal metal = Extract.metalExtract(productName);
         final double weight = Extract.weightExtract(productName) / Extract.TROY_OUNCE;
         final Double dollar = Convert.currencyToNumberConvert(

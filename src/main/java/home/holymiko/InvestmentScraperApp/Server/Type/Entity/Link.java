@@ -3,11 +3,9 @@ package home.holymiko.InvestmentScraperApp.Server.Type.Entity;
 import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import lombok.Getter;
+import org.springframework.lang.Nullable;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -18,8 +16,7 @@ public class Link {
     private Dealer dealer;
     @NotNull
     private String url;
-    @ManyToOne
-    private Product product;
+    private Long productId;
 
     public Link() {
     }
@@ -33,8 +30,8 @@ public class Link {
         this.dealer = dealer;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     public void setUrl(String url) {

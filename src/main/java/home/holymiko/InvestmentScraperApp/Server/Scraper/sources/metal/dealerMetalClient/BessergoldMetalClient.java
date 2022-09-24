@@ -12,7 +12,7 @@ import org.springframework.data.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BessergoldMetalClient extends Client implements MetalClientInterface, RedemptionListInterface {
+public class BessergoldMetalClient extends Client implements MetalClientInterface {
     private static final String SEARCH_URL_GOLD = "https://www.bessergold.cz/investicni-zlato.html?product_list_limit=all";
     private static final String SEARCH_URL_SILVER = "https://www.bessergold.cz/investicni-stribro.html?product_list_limit=all";
     private static final String SEARCH_URL_PLATINUM = "https://www.bessergold.cz/investicni-platina.html?product_list_limit=all";
@@ -32,25 +32,25 @@ public class BessergoldMetalClient extends Client implements MetalClientInterfac
         return this.loadPage(link);
     }
     @Override
-    public List<Link> scrapAllLinks() {
+    public List<Link> scrapAllLinksFromProductLists() {
         List<Link> elements = new ArrayList<>();
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_GOLD)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_GOLD)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_SILVER)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_PLATINUM)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_PLATINUM)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            elements.addAll(scrapLinks(getPage(SEARCH_URL_PALLADIUM)));
+            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_PALLADIUM)));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
@@ -74,7 +74,7 @@ public class BessergoldMetalClient extends Client implements MetalClientInterfac
     }
 
     @Override
-    public String scrapProductName(HtmlPage page) {
+    public String scrapNameFromProductPage(HtmlPage page) {
         String name = ((HtmlElement) page.getFirstByXPath(X_PATH_PRODUCT_NAME)).asText().trim();
         // Web mistake, verified by call to Bessergold. Product vintage is random.
         if(name.equals("Stříbrná mince 1 oz (trojská unce) WIENER PHILHARMONIKER Rakousko 2011")
@@ -85,9 +85,9 @@ public class BessergoldMetalClient extends Client implements MetalClientInterfac
     }
 
     @Override
-    public double scrapBuyPrice(HtmlPage productDetailPage) {
+    public double scrapPriceFromProductPage(HtmlPage productDetailPage) {
         return Convert.currencyToNumberConvert(
-                scrapBuyPrice(productDetailPage, X_PATH_BUY_PRICE)
+                scrapPriceFromProductPage(productDetailPage, X_PATH_BUY_PRICE)
         );
     }
 

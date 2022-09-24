@@ -1,5 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.Type.Entity;
 
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Producer;
@@ -28,7 +29,7 @@ public class Product {
     private int year;
     private boolean isSpecial;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "productId", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private List<Link> links;      // includes Dealer
 
@@ -47,6 +48,18 @@ public class Product {
         this.grams = grams;
         this.year = year;
         this.isSpecial = isSpecial;
+        this.links = new ArrayList<>();
+        this.pricePairs = new ArrayList<>();
+    }
+
+    public Product(ProductCreateDTO productCreateDTO) {
+        this.name = productCreateDTO.getName();
+        this.producer = productCreateDTO.getProducer();
+        this.form = productCreateDTO.getForm();
+        this.metal = productCreateDTO.getMetal();
+        this.grams = productCreateDTO.getGrams();
+        this.year = productCreateDTO.getYear();
+        this.isSpecial = productCreateDTO.isSpecial();
         this.links = new ArrayList<>();
         this.pricePairs = new ArrayList<>();
     }
