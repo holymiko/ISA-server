@@ -1,15 +1,15 @@
 
 5.10.2021
-#Degiro only
-###SWX - Zurich
+# Degiro only
+### SWX - Zurich
 Lindt (cca 250 000 Kč)
 
 Swatch Group UHRN.SW 
 
-###EPA - Paris
+### EPA - Paris
 Groupe Guillin
 
-#Degiro + XTB
+# Degiro + XTB
 
 ### LSE - London
 Bellway
