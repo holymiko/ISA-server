@@ -42,7 +42,7 @@ Jejich zdrojem jsou soubory v adresáři `txt/`
 >Drahé kovy jsou reprezentovány entitou `product` s relací na `link` a `pricePair` 
 Na základě link adresy je zjištěna cena, váha, výrobce atd.
 
-![image info](./photoDoc/ISA draw/scraper_api_5_legend.png)
+<img src="./photoDoc/ISA draw/scraper_api_5_legend.png" title="app diagram" alt="app diagram"/>
 
 ### Zdroje dat
 https://www.serenitystocks.com<br>
