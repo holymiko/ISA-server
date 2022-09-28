@@ -15,6 +15,21 @@
 >* yarn install<br>
 >* yarn start<br>
 
+
+## Tech stack 
+> ### BE
+> Java<br>
+> Springboot<br>
+> Hibernate<br>
+> Maven<br>
+> Docker<br>
+> PostgreSQL<br>
+
+> ### FE
+> ReactJS<br>
+> JavaScript/TypeScript<br>
+> Material-UI<br>
+
 ## Úvod
 > Smyslem algoritmu je zprostředkovat informace o investičních produktech. <br>
 Program vyhodnocuje nabídku drahých kovů na českém trhu. <br>
