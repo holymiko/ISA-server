@@ -15,6 +15,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -47,20 +48,23 @@ public class Run {
     @EventListener(ApplicationStartedEvent.class)
     public void run() throws IOException {
         System.out.println("App has started up");
-
         try {
             cnbScraper.scrapExchangeRate();
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
         exchangeRateService.printExchangeRates();
+    }
 
+    // @Order(1) in MetalScraper
+
+    @Order(2) // Last Order index
+    @EventListener(ApplicationStartedEvent.class)
+    public void runFrontEnd() throws IOException {
         // Run FrontEnd NodeJS Application
-//        process = new ProcessBuilder(isWindows() ? "npm.cmd" : "npm", "start")
-//                .directory( new File("../InvestmentScraperApp_client"))
-//                .start();
-
-//        tickerService.printTickerStatus();
+        process = new ProcessBuilder(isWindows() ? "npm.cmd" : "yarn", "start")
+                .directory( new File("../ISA-client"))
+                .start();
     }
 
     @EventListener(ApplicationReadyEvent.class)

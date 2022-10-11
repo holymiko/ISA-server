@@ -36,7 +36,7 @@ public class MetalScraper {
     private final ExchangeRateService exchangeRateService;
 
     // Used for Polymorphic calling
-    private final Map<Dealer, MetalAdapterInterface> dealerScrapers = new HashMap<>();
+    private final Map<Dealer, MetalAdapterInterface> dealerToMetalAdapter = new HashMap<>();
 
     private static final long ETHICAL_DELAY = 700;
     private static final int PRINT_INTERVAL = 10;
@@ -65,11 +65,11 @@ public class MetalScraper {
      */
     @Order(1)
     @EventListener(ApplicationStartedEvent.class)
-    public void initializeDealerInterfaces() {
-        dealerScrapers.put(Dealer.BESSERGOLD_CZ, new BessergoldAdapter());
-        dealerScrapers.put(Dealer.SILVERUM, new SilverumAdapter());
-        dealerScrapers.put(Dealer.ZLATAKY, new ZlatakyAdapter());
-        dealerScrapers.put(
+    public void initializeAdapterMap() {
+        dealerToMetalAdapter.put(Dealer.BESSERGOLD_CZ, new BessergoldAdapter());
+        dealerToMetalAdapter.put(Dealer.SILVERUM, new SilverumAdapter());
+        dealerToMetalAdapter.put(Dealer.ZLATAKY, new ZlatakyAdapter());
+        dealerToMetalAdapter.put(
                 Dealer.BESSERGOLD_DE,
                 new BessergoldDeAdapter(
                         // Insert currency exchange rate for conversion to CZK
@@ -169,28 +169,28 @@ public class MetalScraper {
         String name = "";
         final HtmlPage page;
         final ProductCreateDTO productExtracted;
-        final MetalAdapterInterface scraper = dealerScrapers.get(link.getDealer());
+        final MetalAdapterInterface adapter = dealerToMetalAdapter.get(link.getDealer());
 
         if(link.getProductId() != null) {
             throw new ScrapFailedException("ProductScrap - Product already scraped");
         }
-        if(scraper == null) {
+        if(adapter == null) {
             throw new ScrapFailedException("ProductScrap - Scraper for dealer "+link.getDealer()+" not found");
         }
 
         // Throws ResourceNotFoundException
-        page = scraper.getPage(link.getUrl());
+        page = adapter.getPage(link.getUrl());
 
         // Scraps name of the Product
         try {
-            name = scraper.scrapNameFromProductPage(page);
+            name = adapter.scrapNameFromProductPage(page);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         // Scraps name of the Product
         try {
-            name = scraper.scrapNameFromProductPage(page);
+            name = adapter.scrapNameFromProductPage(page);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -305,7 +305,7 @@ public class MetalScraper {
     private void priceScrap(final LinkDTO linkDTO) {
         Double sellingPrice = null;
         Double redemptionPrice = null;
-        final MetalAdapterInterface scraper = dealerScrapers.get(linkDTO.getDealer());
+        final MetalAdapterInterface scraper = dealerToMetalAdapter.get(linkDTO.getDealer());
         final PricePair pricePair;
         HtmlPage productDetailPage;
 
@@ -347,9 +347,9 @@ public class MetalScraper {
     @Deprecated
     private void redemptionScrap(final Metal metal, final Dealer dealer) {
         System.out.println(">>> Redemption Scrap");
-        if( dealerScrapers.get(dealer) instanceof BuyOutInterface) {
+        if( dealerToMetalAdapter.get(dealer) instanceof BuyOutInterface) {
             System.out.println(">>>>> Scraping Redemption List available");
-            List<Pair<String, Double>> nameRedemptionMap = ((BuyOutInterface) dealerScrapers.get(dealer)).scrapRedemptionFromList();
+            List<Pair<String, Double>> nameRedemptionMap = ((BuyOutInterface) dealerToMetalAdapter.get(dealer)).scrapRedemptionFromList();
 
             nameRedemptionMap.forEach(
                 x -> {
@@ -392,7 +392,7 @@ public class MetalScraper {
      */
     public void allLinksScrap() {
         // Polymorphic call
-        dealerScrapers.values().forEach(
+        dealerToMetalAdapter.values().forEach(
                 scraperInterface -> scraperInterface.scrapAllLinksFromProductLists()
                         .forEach(
                                 link -> {
@@ -408,7 +408,7 @@ public class MetalScraper {
     }
 
     public void linksByDealerScrap(Dealer dealer) {
-        dealerScrapers.get(dealer).scrapAllLinksFromProductLists()
+        dealerToMetalAdapter.get(dealer).scrapAllLinksFromProductLists()
                 .forEach(
                         link -> {
                             try {
