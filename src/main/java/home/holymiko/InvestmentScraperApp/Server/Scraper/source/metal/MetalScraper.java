@@ -304,16 +304,16 @@ public class MetalScraper {
      */
     private void priceScrap(final LinkDTO linkDTO) {
         Double sellingPrice = null;
-        Double redemptionPrice = null;
-        final MetalAdapterInterface scraper = dealerToMetalAdapter.get(linkDTO.getDealer());
+        Double butOutPrice = null;
+        final MetalAdapterInterface adapter = dealerToMetalAdapter.get(linkDTO.getDealer());
         final PricePair pricePair;
         HtmlPage productDetailPage;
 
-        if(scraper == null) {
+        if(adapter == null) {
             throw new ScrapFailedException("ProductScrap - Scraper for dealer "+linkDTO.getDealer()+" not found");
         }
         try {
-            productDetailPage = scraper.getPage(linkDTO.getUrl());
+            productDetailPage = adapter.getPage(linkDTO.getUrl());
         } catch (ResourceNotFoundException e) {
             // TODO Handle this & Log this
             return;
@@ -321,16 +321,24 @@ public class MetalScraper {
 
         try {
             // Choose MetalScraperInterface & scrap buy price
-            sellingPrice = scraper.scrapPriceFromProductPage(productDetailPage);
+            sellingPrice = adapter.scrapPriceFromProductPage(productDetailPage);
         } catch (NumberFormatException e) {
             System.out.println(e.getMessage());
         }
-        redemptionPrice = scraper.scrapRedemptionPrice(productDetailPage);
+        if(sellingPrice == null || sellingPrice.intValue() == 0) {
+            // TODO Logging
+            System.out.println("WARNING - Kupni cena = 0");
+        }
+        butOutPrice = adapter.scrapBuyOutPrice(productDetailPage);
+        if(butOutPrice.intValue() == 0) {
+            // TODO Logging
+            System.out.println("WARNING - Vykupni cena = 0");
+        }
 
         pricePair = new PricePair(
                 linkDTO.getDealer(),
                 priceService.save(new Price(LocalDateTime.now(), sellingPrice, false)),
-                priceService.save(new Price(LocalDateTime.now(), redemptionPrice, true)),
+                priceService.save(new Price(LocalDateTime.now(), butOutPrice, true)),
                 productService.findById(linkDTO.getProductId()).get()
         );
 
@@ -349,7 +357,7 @@ public class MetalScraper {
         System.out.println(">>> Redemption Scrap");
         if( dealerToMetalAdapter.get(dealer) instanceof BuyOutInterface) {
             System.out.println(">>>>> Scraping Redemption List available");
-            List<Pair<String, Double>> nameRedemptionMap = ((BuyOutInterface) dealerToMetalAdapter.get(dealer)).scrapRedemptionFromList();
+            List<Pair<String, Double>> nameRedemptionMap = ((BuyOutInterface) dealerToMetalAdapter.get(dealer)).scrapBuyOutFromList();
 
             nameRedemptionMap.forEach(
                 x -> {

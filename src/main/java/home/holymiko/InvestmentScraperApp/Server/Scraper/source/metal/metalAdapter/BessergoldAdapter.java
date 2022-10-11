@@ -59,14 +59,6 @@ public class BessergoldAdapter extends Client implements MetalAdapterInterface {
 
     /////// PRICE
 
-    /**
-     * Takes following pattern:
-     * - Aktuální výkupní cena (bez DPH): xxxx,xx Kč
-     */
-    @Override
-    public String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
-        return redemptionPriceHtml.asText().split(":")[1];
-    }
 
     @Override
     public List<HtmlElement> scrapProductList(HtmlPage page) {
@@ -86,16 +78,31 @@ public class BessergoldAdapter extends Client implements MetalAdapterInterface {
 
     @Override
     public double scrapPriceFromProductPage(HtmlPage productDetailPage) {
-        return Convert.currencyToNumberConvert(
-                scrapPriceFromProductPage(productDetailPage, X_PATH_BUY_PRICE)
-        );
+        try {
+            return Convert.currencyToNumberConvert(
+                    ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText()
+            );
+        } catch (Exception e) {
+            return Convert.currencyToNumberConvert("0.0");
+        }
     }
 
+    /**
+     * Takes following pattern:
+     * - Aktuální výkupní cena (bez DPH): xxxx,xx Kč
+     */
+    public String buyOutHtmlToText(HtmlElement redemptionPriceHtml) {
+        return redemptionPriceHtml.asText().split(":")[1];
+    }
     @Override
-    public double scrapRedemptionPrice(HtmlPage page) {
-        return Convert.currencyToNumberConvert(
-                scrapRedemptionPrice(page, X_PATH_REDEMPTION_PRICE)
-        );
+    public double scrapBuyOutPrice(HtmlPage page) {
+        try {
+            return Convert.currencyToNumberConvert(
+                buyOutHtmlToText(page.getFirstByXPath(X_PATH_REDEMPTION_PRICE))
+            );
+        } catch (Exception e) {
+            return Double.parseDouble("0.0");
+        }
     }
 
 
@@ -112,7 +119,7 @@ public class BessergoldAdapter extends Client implements MetalAdapterInterface {
     }
 
     @Override
-    public List<Pair<String, Double>> scrapRedemptionFromList() {
+    public List<Pair<String, Double>> scrapBuyOutFromList() {
         // TODO Implement scrapRedemptionFromList
         return new ArrayList<>();
     }

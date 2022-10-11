@@ -19,13 +19,4 @@ public interface MetalAdapterInterface extends ProductListInterface, BuyOutInter
         throw new NotImplementedException("Method haven't been implemented yet");
     }
 
-    default String scrapPriceFromProductPage(HtmlPage page, String xPathBuyPrice) {
-        try {
-            return ((HtmlElement) page.getFirstByXPath(xPathBuyPrice)).asText();
-        } catch (Exception e) {
-            System.out.println("WARNING - Kupni cena = 0");
-        }
-        return "0.0";
-    }
-
 }

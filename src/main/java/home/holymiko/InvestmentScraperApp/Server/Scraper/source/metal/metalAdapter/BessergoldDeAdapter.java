@@ -11,6 +11,7 @@ import org.springframework.data.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class BessergoldDeAdapter extends Client implements MetalAdapterInterface {
 
@@ -66,17 +67,6 @@ public class BessergoldDeAdapter extends Client implements MetalAdapterInterface
         return elements;
     }
 
-    /**
-     * Takes following pattern:
-     * - Aktuální výkupní cena (bez DPH): xxxx,xx Kč
-     * @param redemptionPriceHtml
-     * @return
-     */
-    @Override
-    public String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
-        return redemptionPriceHtml.asText().split(":")[1];
-    }
-
     @Override
     public List<HtmlElement> scrapProductList(HtmlPage page) {
         return page.getByXPath(X_PATH_PRODUCT_LIST);
@@ -103,24 +93,41 @@ public class BessergoldDeAdapter extends Client implements MetalAdapterInterface
 
     @Override
     public double scrapPriceFromProductPage(HtmlPage productDetailPage) {
-        return Convert.currencyConvert(
-                scrapPriceFromProductPage(productDetailPage, X_PATH_BUY_PRICE).replace(".", ""),
-                euroExchangeRate,
-                "€"
-        );
+        try {
+            return Convert.currencyConvert(
+                    ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText().replace(".", ""),
+                    euroExchangeRate,
+                    "€"
+            );
+        } catch (Exception e) {
+            return Double.parseDouble("0.0");
+        }
+    }
+
+    /**
+     * Takes following pattern:
+     * - Aktuální výkupní cena (bez DPH): xxxx,xx Kč
+     * @param redemptionPriceHtml
+     * @return
+     */
+    public String buyOutHtmlToText(HtmlElement redemptionPriceHtml) {
+        return redemptionPriceHtml.asText().split(":")[1].replace(".", "");
+    }
+    @Override
+    public double scrapBuyOutPrice(HtmlPage page) {
+        try {
+            return Convert.currencyConvert(
+                    buyOutHtmlToText(page.getFirstByXPath(X_PATH_REDEMPTION_PRICE)),
+                    euroExchangeRate,
+                    "€"
+            );
+        } catch (Exception e) {
+            return Double.parseDouble("0.0");
+        }
     }
 
     @Override
-    public double scrapRedemptionPrice(HtmlPage page) {
-        return Convert.currencyConvert(
-                scrapRedemptionPrice(page, X_PATH_REDEMPTION_PRICE).replace(".", ""),
-                euroExchangeRate,
-                "€"
-        );
-    }
-
-    @Override
-    public List<Pair<String, Double>> scrapRedemptionFromList() {
+    public List<Pair<String, Double>> scrapBuyOutFromList() {
         // TODO Implement scrapRedemptionFromList
         return new ArrayList<>();
     }

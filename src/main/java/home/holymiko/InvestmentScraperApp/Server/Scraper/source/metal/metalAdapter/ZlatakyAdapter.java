@@ -70,15 +70,6 @@ public class ZlatakyAdapter extends Client implements MetalAdapterInterface {
 
     /////// PRICE
 
-    /**
-     * @param redemptionPriceHtml
-     * @return
-     */
-    @Override
-    public String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
-        return redemptionPriceHtml.asText();
-    }
-
     @Override
     public List<HtmlElement> scrapProductList(HtmlPage page) {
         return page.getByXPath(X_PATH_PRODUCT_LIST);
@@ -86,23 +77,32 @@ public class ZlatakyAdapter extends Client implements MetalAdapterInterface {
 
     @Override
     public double scrapPriceFromProductPage(HtmlPage productDetailPage) {
-        String x = Convert.currencyClean(scrapPriceFromProductPage(productDetailPage, X_PATH_BUY_PRICE));
-
-        if(Pattern.compile("původnícena:").matcher(x).find()) {
-            x = x.split("původnícena:\\d+")[1];
+        try {
+            String x = Convert.currencyClean(
+                    ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText()
+            );
+            if(Pattern.compile("původnícena:").matcher(x).find()) {
+                x = x.split("původnícena:\\d+")[1];
+            }
+            return Double.parseDouble(x);
+        } catch (Exception e) {
+            return Double.parseDouble("0.0");
         }
 
-        return Double.parseDouble(x);
     }
     @Override
     public String scrapNameFromProductPage(HtmlPage page) {
         return ((HtmlElement) page.getFirstByXPath(X_PATH_PRODUCT_NAME)).asText();
     }
     @Override
-    public double scrapRedemptionPrice(HtmlPage page) {
-        return Convert.currencyToNumberConvert(
-            scrapRedemptionPrice(page, X_PATH_REDEMPTION_PRICE)
-        );
+    public double scrapBuyOutPrice(HtmlPage page) {
+        try {
+            return Convert.currencyToNumberConvert(
+                    ((HtmlElement) page.getFirstByXPath(X_PATH_REDEMPTION_PRICE)).asText()
+            );
+        } catch (Exception e) {
+            return Double.parseDouble("0.0");
+        }
     }
 
     /////// LINK

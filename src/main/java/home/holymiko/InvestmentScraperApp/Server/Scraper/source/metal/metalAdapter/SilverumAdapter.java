@@ -116,21 +116,15 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
 
     @Override
     public double scrapPriceFromProductPage(HtmlPage productDetailPage) {
-        String x = scrapPriceFromProductPage(productDetailPage, X_PATH_BUY_PRICE);
-        if(Pattern.compile("\\d+,\\d+ Kč bez DPH").matcher(x).find()) {
-            x = x.split("\\d*[ ]?\\d+,\\d+ Kč bez DPH")[0];
+        try {
+            String x = ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText();
+            if(Pattern.compile("\\d+,\\d+ Kč bez DPH").matcher(x).find()) {
+                x = x.split("\\d*[ ]?\\d+,\\d+ Kč bez DPH")[0];
+            }
+            return Convert.currencyToNumberConvert(x);
+        } catch (Exception e) {
+            return Double.parseDouble("0.0");
         }
-
-        return Convert.currencyToNumberConvert(x);
-    }
-
-    /**
-     * Takes following pattern:
-     * - Aktuální výkupní cena (bez DPH): xxxx,xx Kč
-     */
-    @Override
-    public String redemptionHtmlToText(HtmlElement redemptionPriceHtml) {
-        return redemptionPriceHtml.asText().split(":")[1];
     }
 
     /**
@@ -140,7 +134,7 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
      * @return
      */
     @Override
-    public double scrapRedemptionPrice(HtmlPage page) {
+    public double scrapBuyOutPrice(HtmlPage page) {
         final String productName = scrapNameFromProductPage(page).toLowerCase();
         final Metal metal = Extract.metalExtract(productName);
         final double weight = Extract.weightExtract(productName) / Extract.TROY_OUNCE;

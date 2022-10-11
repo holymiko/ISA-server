@@ -56,7 +56,7 @@ public class Run {
         exchangeRateService.printExchangeRates();
     }
 
-    // @Order(1) in MetalScraper
+    // @Order(1) is in MetalScraper
 
     @Order(2) // Last Order index
     @EventListener(ApplicationStartedEvent.class)
@@ -66,6 +66,8 @@ public class Run {
                 .directory( new File("../ISA-client"))
                 .start();
     }
+
+    // TODO @Order(3) if Ticker empty then import tickers from txt/export/tickers/#latest
 
     @EventListener(ApplicationReadyEvent.class)
     public void scrap() throws IOException {
