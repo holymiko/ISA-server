@@ -1,17 +1,17 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal;
+package home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapFailedException;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.Client;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal.dealerMetalClient.*;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.Client;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.parser.Extract;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class MetalScraper {
     private final ExchangeRateService exchangeRateService;
 
     // Used for Polymorphic calling
-    private final Map<Dealer, MetalClientInterface> dealerScrapers = new HashMap<>();
+    private final Map<Dealer, MetalAdapterInterface> dealerScrapers = new HashMap<>();
 
     private static final long ETHICAL_DELAY = 700;
     private static final int PRINT_INTERVAL = 10;
@@ -66,12 +66,12 @@ public class MetalScraper {
     @Order(1)
     @EventListener(ApplicationStartedEvent.class)
     public void initializeDealerInterfaces() {
-        dealerScrapers.put(Dealer.BESSERGOLD_CZ, new BessergoldMetalClient());
-        dealerScrapers.put(Dealer.SILVERUM, new SilverumMetalClient());
-        dealerScrapers.put(Dealer.ZLATAKY, new ZlatakyMetalClient());
+        dealerScrapers.put(Dealer.BESSERGOLD_CZ, new BessergoldAdapter());
+        dealerScrapers.put(Dealer.SILVERUM, new SilverumAdapter());
+        dealerScrapers.put(Dealer.ZLATAKY, new ZlatakyAdapter());
         dealerScrapers.put(
                 Dealer.BESSERGOLD_DE,
-                new BessergoldDeMetalClient(
+                new BessergoldDeAdapter(
                         // Insert currency exchange rate for conversion to CZK
                         exchangeRateService.findFirstByCodeOrderByDateDesc("EUR").getExchangeRate()
                 )
@@ -169,7 +169,7 @@ public class MetalScraper {
         String name = "";
         final HtmlPage page;
         final ProductCreateDTO productExtracted;
-        final MetalClientInterface scraper = dealerScrapers.get(link.getDealer());
+        final MetalAdapterInterface scraper = dealerScrapers.get(link.getDealer());
 
         if(link.getProductId() != null) {
             throw new ScrapFailedException("ProductScrap - Product already scraped");
@@ -305,7 +305,7 @@ public class MetalScraper {
     private void priceScrap(final LinkDTO linkDTO) {
         Double sellingPrice = null;
         Double redemptionPrice = null;
-        final MetalClientInterface scraper = dealerScrapers.get(linkDTO.getDealer());
+        final MetalAdapterInterface scraper = dealerScrapers.get(linkDTO.getDealer());
         final PricePair pricePair;
         HtmlPage productDetailPage;
 
@@ -347,9 +347,9 @@ public class MetalScraper {
     @Deprecated
     private void redemptionScrap(final Metal metal, final Dealer dealer) {
         System.out.println(">>> Redemption Scrap");
-        if( dealerScrapers.get(dealer) instanceof RedemptionInterface) {
+        if( dealerScrapers.get(dealer) instanceof BuyOutInterface) {
             System.out.println(">>>>> Scraping Redemption List available");
-            List<Pair<String, Double>> nameRedemptionMap = ((RedemptionInterface) dealerScrapers.get(dealer)).scrapRedemptionFromList();
+            List<Pair<String, Double>> nameRedemptionMap = ((BuyOutInterface) dealerScrapers.get(dealer)).scrapRedemptionFromList();
 
             nameRedemptionMap.forEach(
                 x -> {

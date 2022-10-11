@@ -1,21 +1,21 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal.dealerMetalClient;
+package home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapFailedException;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.parser.Extract;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.Client;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.parser.Convert;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.Client;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class SilverumMetalClient extends Client implements MetalClientInterface {
+public class SilverumAdapter extends Client implements MetalAdapterInterface {
     private static final String BASE = "https://www.silverum.cz/";
     private static final String SEARCH_URL_GOLD_COIN = "https://www.silverum.cz/investicni-mince.html";
     private static final String SEARCH_URL_GOLD_BAR = "https://www.silverum.cz/investicni-slitky.html";
@@ -40,7 +40,7 @@ public class SilverumMetalClient extends Client implements MetalClientInterface 
     private static final String X_PATH_BID_SPOT_SILVER  = "/html/body/section[1]/div/div/div[2]/div/div/div[2]/div";
     private static final String X_PATH_BID_SPOT_DOLLAR = "/html/body/section[1]/div/div/div[4]/div/div/div[2]/div";
 
-    public SilverumMetalClient() {
+    public SilverumAdapter() {
         super();
     }
 

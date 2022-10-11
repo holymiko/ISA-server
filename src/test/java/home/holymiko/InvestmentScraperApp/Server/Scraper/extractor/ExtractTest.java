@@ -1,4 +1,4 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper.parser;
+package home.holymiko.InvestmentScraperApp.Server.Scraper.extractor;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

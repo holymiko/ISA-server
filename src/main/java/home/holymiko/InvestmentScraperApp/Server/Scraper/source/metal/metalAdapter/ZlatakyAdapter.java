@@ -1,18 +1,18 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal.dealerMetalClient;
+package home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.Client;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.parser.Convert;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.Client;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Convert;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class ZlatakyMetalClient extends Client implements MetalClientInterface {
+public class ZlatakyAdapter extends Client implements MetalAdapterInterface {
 
     private static final String BASE_URL = "https://zlataky.cz";
     private static final String SEARCH_URL_GOLD_COIN = "https://zlataky.cz/investicni-zlate-mince?page=1&page_all=1";
@@ -29,7 +29,7 @@ public class ZlatakyMetalClient extends Client implements MetalClientInterface {
 
 
 
-    public ZlatakyMetalClient() {
+    public ZlatakyAdapter() {
         super();
     }
 

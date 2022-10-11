@@ -1,10 +1,10 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper.sources;
+package home.holymiko.InvestmentScraperApp.Server.Scraper.source;
 
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-public interface SerenityClientInterface {
+public interface SerenityScraperInterface {
 
     default String getRatingOrResult(HtmlPage page, int i) {
         return ((HtmlElement) page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div["+i+"]/div[2]/div")).asText();

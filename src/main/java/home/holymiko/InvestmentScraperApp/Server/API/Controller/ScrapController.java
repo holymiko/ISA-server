@@ -3,8 +3,8 @@ package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.metal.MetalScraper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.sources.SerenityClient;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.SerenityScraper;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class ScrapController {
 
     private final MetalScraper metalScraper;
-    private final SerenityClient serenityClient;
+    private final SerenityScraper serenityScraper;
     private final ScrapHistory scrapHistory;
     private final LinkService linkService;
 
@@ -24,9 +24,9 @@ public class ScrapController {
     // TODO method byPortfolio should include stock scraping
 
     @Autowired
-    public ScrapController(MetalScraper metalScraper, SerenityClient serenityClient, ScrapHistory scrapHistory, LinkService linkService) {
+    public ScrapController(MetalScraper metalScraper, SerenityScraper serenityScraper, ScrapHistory scrapHistory, LinkService linkService) {
         this.metalScraper = metalScraper;
-        this.serenityClient = serenityClient;
+        this.serenityScraper = serenityScraper;
         this.scrapHistory = scrapHistory;
         this.linkService = linkService;
     }
@@ -40,6 +40,7 @@ public class ScrapController {
 
     //////// Products
 
+    // TODO Post
     /**
      * Scrap products for ALL Links. Including Links which doesn't have Product yet.
      * Scraping of Prices is grouped by Product. Prices from different Dealers, are for each Product,
@@ -106,7 +107,7 @@ public class ScrapController {
 
     @RequestMapping({"/serenity", "/serenity/"})
     public void serenity() {
-        this.serenityClient.tickersScrap(TickerState.GOOD);
+        this.serenityScraper.tickersScrap(TickerState.GOOD);
     }
 
     //////// Links
