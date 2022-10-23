@@ -1,13 +1,14 @@
 package home.holymiko.InvestmentScraperApp;
 
+import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import home.holymiko.InvestmentScraperApp.Server.API.Controller.ScrapController;
+import home.holymiko.InvestmentScraperApp.Server.API.TextPort.Import;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.CNBScraper;
-import home.holymiko.InvestmentScraperApp.Server.Service.ExchangeRateService;
+import home.holymiko.InvestmentScraperApp.Server.Service.CurrencyService;
 import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
-import home.holymiko.InvestmentScraperApp.Server.Utils.InvestmentInit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Class used to call methods during the building process
@@ -26,22 +28,22 @@ public class Run {
 
     Process process;
     private final ScrapController scrapController;
-    private final InvestmentInit investmentInit;
     private final TickerService tickerService;
-    private final ExchangeRateService exchangeRateService;
+    private final CurrencyService currencyService;
     private final CNBScraper cnbScraper;
     private final LinkService linkService;
     private final MetalScraper metalScraper;
+    private final Import anImport;
 
     @Autowired
-    public Run(ScrapController scrapController, InvestmentInit investmentInit, TickerService tickerService, ExchangeRateService exchangeRateService, CNBScraper cnbScraper, LinkService linkService, MetalScraper metalScraper) {
+    public Run(ScrapController scrapController, TickerService tickerService, CurrencyService currencyService, CNBScraper cnbScraper, LinkService linkService, MetalScraper metalScraper, Import anImport) {
         this.scrapController = scrapController;
-        this.investmentInit = investmentInit;
         this.tickerService = tickerService;
-        this.exchangeRateService = exchangeRateService;
+        this.currencyService = currencyService;
         this.cnbScraper = cnbScraper;
         this.linkService = linkService;
         this.metalScraper = metalScraper;
+        this.anImport = anImport;
     }
 
     @Order(0)
@@ -53,18 +55,36 @@ public class Run {
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
-        exchangeRateService.printExchangeRates();
+        ConsolePrinter.printExchangeRates(
+                Arrays.asList(
+                        currencyService.findExchangeRate("EUR"),
+                        currencyService.findExchangeRate("USD")
+                )
+        );
     }
 
     // @Order(1) is in MetalScraper
 
-    @Order(2) // Last Order index
+    @Order(2)
     @EventListener(ApplicationStartedEvent.class)
     public void runFrontEnd() throws IOException {
         // Run FrontEnd NodeJS Application
         process = new ProcessBuilder(isWindows() ? "npm.cmd" : "yarn", "start")
                 .directory( new File("../ISA-client"))
                 .start();
+    }
+
+    @Order(3) // Last Order index
+    @EventListener(ApplicationStartedEvent.class)
+    public void runImportTickers() throws IOException {
+        if(tickerService.findAll().isEmpty()) {
+            System.out.println("3) Import Tickers");
+            anImport.importExportedTickers();
+            System.out.println("3) Import finished");
+        } else {
+            // TODO Logging
+            System.out.println("3) SKIP");
+        }
     }
 
     // TODO @Order(3) if Ticker empty then import tickers from txt/export/tickers/#latest

@@ -33,7 +33,7 @@ public class MetalScraper {
     private final PriceService priceService;
     private final PortfolioService portfolioService;
     private final ProductService productService;
-    private final ExchangeRateService exchangeRateService;
+    private final CurrencyService currencyService;
 
     // Used for Polymorphic calling
     private final Map<Dealer, MetalAdapterInterface> dealerToMetalAdapter = new HashMap<>();
@@ -47,14 +47,14 @@ public class MetalScraper {
             PriceService priceService,
             PortfolioService portfolioService,
             ProductService productService,
-            ExchangeRateService exchangeRateService
+            CurrencyService currencyService
     ) {
         super();
         this.linkService = linkService;
         this.priceService = priceService;
         this.portfolioService = portfolioService;
         this.productService = productService;
-        this.exchangeRateService = exchangeRateService;
+        this.currencyService = currencyService;
     }
 
     /**
@@ -73,7 +73,7 @@ public class MetalScraper {
                 Dealer.BESSERGOLD_DE,
                 new BessergoldDeAdapter(
                         // Insert currency exchange rate for conversion to CZK
-                        exchangeRateService.findFirstByCodeOrderByDateDesc("EUR").getExchangeRate()
+                        currencyService.findExchangeRate("EUR").getExchangeRate()
                 )
         );
     }

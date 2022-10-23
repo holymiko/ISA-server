@@ -1,11 +1,16 @@
 package home.holymiko.InvestmentScraperApp.Server.API.TextPort;
 
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Ticker;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.nio.file.Path;
+import java.util.*;
 
+@Component
 public class Import {
 
     private final TickerService tickerService;
@@ -16,7 +21,23 @@ public class Import {
 
     ////// IMPORT
 
-    public void importTickers() {
+    public void importExportedTickers() throws FileNotFoundException {
+        Path latestExportPath = findLastExportDirectory().toPath();
+        importExportedTickers2(
+                new File(latestExportPath + "/good.txt"), TickerState.GOOD
+        );
+        importExportedTickers2(
+                new File(latestExportPath + "/bad.txt"), TickerState.BAD
+        );
+        importExportedTickers2(
+                new File(latestExportPath + "/notfound.txt"), TickerState.NOTFOUND
+        );
+        importExportedTickers2(
+                new File(latestExportPath + "/unknown.txt"), TickerState.NEW
+        );
+    }
+
+    public void importRawTickers() {
         String date = "_20210311.txt";
         String location = "txt/src/";
         readFile(location+"nasdaqtraded.txt");
@@ -30,6 +51,39 @@ public class Import {
         readFile2(location+"OTCBB"+date);
         readFile2(location+"USE"+date);
         readFile3(location+"YahooStockTickers.txt");
+    }
+
+    private static File findLastExportDirectory() throws FileNotFoundException {
+        File dir = new File(Export.TICKER_PATH);
+        if (dir.exists() && dir.isDirectory()) {
+            Optional<File> opFile = Arrays.stream(Objects.requireNonNull(dir.listFiles(File::isDirectory)))
+                    .max(File::compareTo);
+
+            if (opFile.isPresent()){
+                return opFile.get();
+            }
+        }
+
+        throw new FileNotFoundException();
+    }
+
+    private void importExportedTickers2(File file, TickerState tickerState) {
+        int i = 0;
+        Set<Ticker> tickerSet = new HashSet<>();
+        try {
+            Scanner myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                tickerSet.add(new Ticker(data, tickerState));
+                i++;
+            }
+            myReader.close();
+            tickerService.saveAll(tickerSet);
+            System.out.println("Total: "+i);
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
     }
 
     private void readFile(String fileName) {

@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Export {
 
-    private static final String TICKER_PATH = "txt/export/tickers/";
+    public static final String TICKER_PATH = "txt/export/tickers/";
     private static final String STOCK_PATH = "txt/export/stocks/";
     private static final String DELIMITER = "#";
 
@@ -66,7 +66,7 @@ public class Export {
                         stock.getAssetsLiabilities()+DELIMITER+
                         stock.getNetAssetsLongTermDebt()+DELIMITER+
                         stock.getEarningsStability()+DELIMITER+
-                        stock.getDividend()+DELIMITER+
+                        stock.getDividendRecord()+DELIMITER+
                         stock.getNcav()+DELIMITER+
                         stock.getEquityDebt()+DELIMITER+
                         stock.getSizeInAssets()+DELIMITER+

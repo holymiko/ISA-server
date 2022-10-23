@@ -6,8 +6,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public interface SerenityScraperInterface {
 
-    default String getRatingOrResult(HtmlPage page, int i) {
+    default String getRating(HtmlPage page, int i) {
         return ((HtmlElement) page.getFirstByXPath("//*[@id=\"bootstrap-panel-body\"]/div["+i+"]/div[2]/div")).asText();
+    }
+
+    default String getResult(HtmlPage page, int i) {
+        return ((HtmlElement) page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div["+i+"]/div[2]/div")).asText();
     }
 
     default String scrapHeader(HtmlPage page) {
@@ -19,7 +23,7 @@ public interface SerenityScraperInterface {
     }
 
     default String scrapCurrency(HtmlPage page) {
-        return ((DomText) page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div[9]/div/div/text()")).asText();
+        return ((DomText) page.getFirstByXPath("//*[@id=\"bootstrap-panel-2-body\"]/div[9]/div/div/text()[3]")).asText();
     }
 
 }

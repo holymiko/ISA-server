@@ -67,8 +67,8 @@ public class Convert {
             case "enterprising" -> GrahamGrade.ENTERPRISING;
             case "defensive" -> GrahamGrade.DEFENSIVE;
             case "ungraded" -> GrahamGrade.UNGRADED;
-            case "ncav" -> GrahamGrade.NCAV;
-            default -> throw new IllegalArgumentException("Invalid Enum argument");
+            case "ncav (net-net)" -> GrahamGrade.NCAV;
+            default -> throw new IllegalArgumentException("Invalid Enum argument - '"+text+"'");
         };
     }
 

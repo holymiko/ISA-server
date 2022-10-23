@@ -66,13 +66,17 @@ public class TickerService {
     }
 
     @Transactional
-    @Deprecated
     public boolean save(Ticker ticker) {
         if( this.tickerRepository.findById(ticker.getTicker()).isPresent() ) {
             return false;
         }
         this.tickerRepository.save(ticker);
         return true;
+    }
+
+    @Transactional
+    public void saveAll(Set<Ticker> tickers) {
+        this.tickerRepository.saveAll(tickers);
     }
 
     @Transactional

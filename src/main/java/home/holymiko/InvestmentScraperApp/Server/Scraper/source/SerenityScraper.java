@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class SerenityScraper extends Client implements SerenityScraperInterface {
     private static final double MIN_RATING_SCORE = 6.5;
     private static final long ETHICAL_DELAY = 1000;
-    private static final String BASE_URL = "https://www.serenitystocks.com/stock/";
+    private static final String BASE_URL = "https://www.grahamvalue.com/stock/";
 
     private final TickerService tickerService;
     private final StockService stockService;
@@ -71,7 +71,9 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
                 try {
                     // TODO Clean this throwing
                     scrapStock(page, ticker, ratingScore);
-                } catch (Exception ignored){}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } else {
                 this.stockService.deleteByTicker(ticker);
                 this.tickerService.update(ticker, TickerState.BAD);
@@ -99,12 +101,12 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
         for(int i = 2; i <= 11; i++) {
             ratings.add(
                     Convert.numberConvertSerenity(
-                            getRatingOrResult(page, i)
+                            getRating(page, i)
                     )
             );
         }
         for(int i = 2; i <= 8; i++) {
-            String htmlElement = getRatingOrResult(page, i);
+            String htmlElement = getResult(page, i);
             if(i == 5) {
                 grade = Convert.gradeConvert(htmlElement);
                 continue;
@@ -122,6 +124,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
                 header, ticker, grade, currency, ratingScore,
                 ratings.get(0), ratings.get(1), ratings.get(2), ratings.get(3),
                 ratings.get(4), ratings.get(5), ratings.get(6), ratings.get(7),
+                ratings.get(8), ratings.get(9),
                 results.get(0), results.get(1), results.get(2),
                 results.get(3), results.get(4), results.get(5)
         );
