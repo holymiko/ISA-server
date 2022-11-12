@@ -2,9 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
-import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.source.SerenityScraper;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 public class ScrapController {
 
     private final MetalScraper metalScraper;
-    private final SerenityScraper serenityScraper;
     private final ScrapHistory scrapHistory;
     private final LinkService linkService;
 
@@ -24,9 +21,8 @@ public class ScrapController {
     // TODO method byPortfolio should include stock scraping
 
     @Autowired
-    public ScrapController(MetalScraper metalScraper, SerenityScraper serenityScraper, ScrapHistory scrapHistory, LinkService linkService) {
+    public ScrapController(MetalScraper metalScraper, ScrapHistory scrapHistory, LinkService linkService) {
         this.metalScraper = metalScraper;
-        this.serenityScraper = serenityScraper;
         this.scrapHistory = scrapHistory;
         this.linkService = linkService;
     }
@@ -35,7 +31,6 @@ public class ScrapController {
     public void scrapEverything() {
         allLinks();
         allProductsInSync();
-        serenity();
     }
 
     //////// Products
@@ -105,10 +100,6 @@ public class ScrapController {
         ScrapHistory.stopRunning();
     }
 
-    @RequestMapping({"/serenity", "/serenity/"})
-    public void serenity() {
-        this.serenityScraper.tickersScrap(TickerState.GOOD);
-    }
 
     //////// Links
 

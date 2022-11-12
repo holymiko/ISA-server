@@ -15,52 +15,6 @@ public class ConsolePrinter {
         }
     }
 
-    public static void printScrapStock(final String header, final Double ratingScore, final List<Double> ratings, final List<Double> results, final String currency) {
-        System.out.println(header);
-        for (Double x : ratings) {
-            System.out.println(x);
-        }
-        System.out.println("Rating Score = "+ratingScore);
-        for (Double x : results) {
-            System.out.println(x);
-        }
-        System.out.println(currency);
-        System.out.println();
-    }
-
-    /**
-     * Prints short info about stock.
-     * Consists only info of given parameters.
-     * @param header
-     * @param ratingScore
-     * @param intrinsicValue
-     * @param currency
-     */
-    public static void printScrapStockShort(final String header, final Double ratingScore, final Double intrinsicValue, final String currency) {
-        System.out.println(header);
-        System.out.println("  Rating Score = "+ratingScore);
-        System.out.println("  Intrinsic Value = "+intrinsicValue);
-        System.out.println("  "+currency);
-        System.out.println();
-    }
-
-    public static void printTickerStatus(double good, double bad, double notfound, double newTickerCount) {
-        final double sum = good + bad + notfound;
-        final double totalTickers = sum + newTickerCount;
-
-        System.out.println();
-        System.out.println("Serenity Scraper");
-        System.out.println("-----------------------------------------------------------------");
-        System.out.format("Good:     %12d  %3d%s%n", Math.round(good), getPercentage(good, sum), "%");
-        System.out.format("Bad:      %12d  %3d%s%n", Math.round(bad), getPercentage(bad, sum), "%");
-        System.out.format("NotFound: %12d  %3d%s%n", Math.round(notfound), getPercentage(notfound, sum), "%");
-        if(newTickerCount > 0 ) {
-            System.out.format("New:      %12d  %3d%s%n", Math.round(newTickerCount), getPercentage(newTickerCount, sum), "%");
-        }
-        System.out.format("Total: %15d%n", Math.round(totalTickers));
-        System.out.println();
-    }
-
     /**
      * Prints exchange rates.
      * Output includes date of record, iff it's NOT up to date
