@@ -2,13 +2,11 @@ package home.holymiko.InvestmentScraperApp;
 
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import home.holymiko.InvestmentScraperApp.Server.API.Controller.ScrapController;
-import home.holymiko.InvestmentScraperApp.Server.API.TextPort.Import;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.CurrencyService;
 import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
-import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -28,22 +26,18 @@ public class Run {
 
     Process process;
     private final ScrapController scrapController;
-    private final TickerService tickerService;
     private final CurrencyService currencyService;
     private final CNBScraper cnbScraper;
     private final LinkService linkService;
     private final MetalScraper metalScraper;
-    private final Import anImport;
 
     @Autowired
-    public Run(ScrapController scrapController, TickerService tickerService, CurrencyService currencyService, CNBScraper cnbScraper, LinkService linkService, MetalScraper metalScraper, Import anImport) {
+    public Run(ScrapController scrapController, CurrencyService currencyService, CNBScraper cnbScraper, LinkService linkService, MetalScraper metalScraper) {
         this.scrapController = scrapController;
-        this.tickerService = tickerService;
         this.currencyService = currencyService;
         this.cnbScraper = cnbScraper;
         this.linkService = linkService;
         this.metalScraper = metalScraper;
-        this.anImport = anImport;
     }
 
     @Order(0)
@@ -74,25 +68,10 @@ public class Run {
                 .start();
     }
 
-    @Order(3) // Last Order index
-    @EventListener(ApplicationStartedEvent.class)
-    public void runImportTickers() throws IOException {
-        if(tickerService.findAll().isEmpty()) {
-            System.out.println("3) Import Tickers");
-            anImport.importExportedTickers();
-            System.out.println("3) Import finished");
-        } else {
-            // TODO Logging
-            System.out.println("3) SKIP");
-        }
-    }
-
-    // TODO @Order(3) if Ticker empty then import tickers from txt/export/tickers/#latest
-
     @EventListener(ApplicationReadyEvent.class)
     public void scrap() throws IOException {
-//        scrapController.allLinks();
-//        scrapController.allProductsInSync();
+        scrapController.allLinks();
+        scrapController.allProductsInSync();
 //        metalScraper.linksByDealerScrap(Dealer.SILVERUM);
 //        metalScraper.generalScrapAndSleep(
 //                linkService.findByDealer(Dealer.SILVERUM)
@@ -100,7 +79,6 @@ public class Run {
 //        metalScraper.generalScrapAndSleep(
 //                linkService.findByProductId(null)
 //        );
-//        scrapController.serenity();
     }
 
 

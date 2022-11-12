@@ -5,7 +5,6 @@ import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFound
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapFailedException;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.*;
-import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
@@ -31,7 +30,6 @@ import java.util.stream.Collectors;
 public class MetalScraper {
     private final LinkService linkService;
     private final PriceService priceService;
-    private final PortfolioService portfolioService;
     private final ProductService productService;
     private final CurrencyService currencyService;
 
@@ -45,14 +43,12 @@ public class MetalScraper {
     public MetalScraper(
             LinkService linkService,
             PriceService priceService,
-            PortfolioService portfolioService,
             ProductService productService,
             CurrencyService currencyService
     ) {
         super();
         this.linkService = linkService;
         this.priceService = priceService;
-        this.portfolioService = portfolioService;
         this.productService = productService;
         this.currencyService = currencyService;
     }
@@ -124,34 +120,6 @@ public class MetalScraper {
         }
     }
 
-    /**
-     * TODO Needs to be checked and tested before putting into use.
-     * @param portfolioId
-     * @throws ResponseStatusException
-     */
-    @Deprecated
-    public void productByPortfolio(long portfolioId) throws ResponseStatusException {
-        System.out.println("MetalScraper productsByPortfolio");
-        Optional<PortfolioDTO_ProductDTO> optionalPortfolio = portfolioService.findById(portfolioId);
-        if (optionalPortfolio.isEmpty()) {
-            throw new IllegalArgumentException("No portfolio with such ID");
-        }
-
-        // Get Links for scraping
-        // Set prevents one Product to be scrapped more times
-        Set<LinkDTO> linkSet = optionalPortfolio.get().getInvestmentsMetal()
-                .stream()
-                .map(
-                        investment -> linkService.findByProductId( investment.getProductDTO().getId() )
-                ).flatMap(
-                        List::stream
-                ).collect(
-                        Collectors.toSet()
-                );
-
-        generalScrapAndSleep( new ArrayList<>(linkSet) );
-        ConsolePrinter.printTimeStamp();
-    }
 
     /////// PRIVATE
 
