@@ -19,16 +19,15 @@ public class PricePair {
     private Price sellPrice;
     @OneToOne
     private Price redemption;
-    @ManyToOne
-    private Product product;
+    private Long productId;
 
     public PricePair() {
     }
 
-    public PricePair(Dealer dealer, Price sellPrice, Price redemption, Product product) {
+    public PricePair(Dealer dealer, Price sellPrice, Price redemption, Long productId) {
         this.dealer = dealer;
         this.sellPrice = sellPrice;
         this.redemption = redemption;
-        this.product = product;
+        this.productId = productId;
     }
 }

@@ -33,7 +33,7 @@ public class Product {
     @Fetch(FetchMode.SELECT)
     private List<Link> links;      // includes Dealer
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "productId", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private List<PricePair> pricePairs;
 

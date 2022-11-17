@@ -339,7 +339,7 @@ public class MetalScraper {
                 linkDTO.getDealer(),
                 priceService.save(new Price(LocalDateTime.now(), sellingPrice, false)),
                 priceService.save(new Price(LocalDateTime.now(), butOutPrice, true)),
-                productService.findById(linkDTO.getProductId()).get()
+                linkDTO.getProductId()
         );
 
         // Save PricePair
@@ -354,26 +354,26 @@ public class MetalScraper {
      */
     @Deprecated
     private void redemptionScrap(final Metal metal, final Dealer dealer) {
-        System.out.println(">>> Redemption Scrap");
-        if( dealerToMetalAdapter.get(dealer) instanceof BuyOutInterface) {
-            System.out.println(">>>>> Scraping Redemption List available");
-            List<Pair<String, Double>> nameRedemptionMap = ((BuyOutInterface) dealerToMetalAdapter.get(dealer)).scrapBuyOutFromList();
-
-            nameRedemptionMap.forEach(
-                x -> {
-                    try {
-                        priceService.updatePricePair(x.getFirst(), dealer, x.getSecond(), true);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            );
-        } else {
-            System.out.println(">>>>> Scraping Redemption List is NOT available");
-            // TODO Throw and catch in upper layer
-        }
-
-        System.out.println("Redemption "+dealer+" "+metal+" update");
+//        System.out.println(">>> Redemption Scrap");
+//        if( dealerToMetalAdapter.get(dealer) instanceof BuyOutInterface) {
+//            System.out.println(">>>>> Scraping Redemption List available");
+//            List<Pair<String, Double>> nameRedemptionMap = ((BuyOutInterface) dealerToMetalAdapter.get(dealer)).scrapBuyOutFromList();
+//
+//            nameRedemptionMap.forEach(
+//                x -> {
+//                    try {
+//                        priceService.updatePricePair(x.getFirst(), dealer, x.getSecond(), true);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            );
+//        } else {
+//            System.out.println(">>>>> Scraping Redemption List is NOT available");
+//            // TODO Throw and catch in upper layer
+//        }
+//
+//        System.out.println("Redemption "+dealer+" "+metal+" update");
     }
 
 
