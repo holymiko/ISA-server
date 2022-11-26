@@ -79,11 +79,12 @@ public class BessergoldAdapter extends Client implements MetalAdapterInterface {
     @Override
     public double scrapPriceFromProductPage(HtmlPage productDetailPage) {
         try {
-            return Convert.currencyToNumberConvert(
+            return Convert.currencyToDouble(
                     ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText()
             );
         } catch (Exception e) {
-            return Convert.currencyToNumberConvert("0.0");
+            // TODO return 0.0;
+            return Convert.currencyToDouble("0.0");
         }
     }
 
@@ -97,7 +98,7 @@ public class BessergoldAdapter extends Client implements MetalAdapterInterface {
     @Override
     public double scrapBuyOutPrice(HtmlPage page) {
         try {
-            return Convert.currencyToNumberConvert(
+            return Convert.currencyToDouble(
                 buyOutHtmlToText(page.getFirstByXPath(X_PATH_REDEMPTION_PRICE))
             );
         } catch (Exception e) {

@@ -121,8 +121,9 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
             if(Pattern.compile("\\d+,\\d+ Kč bez DPH").matcher(x).find()) {
                 x = x.split("\\d*[ ]?\\d+,\\d+ Kč bez DPH")[0];
             }
-            return Convert.currencyToNumberConvert(x);
+            return Convert.currencyToDouble(x);
         } catch (Exception e) {
+            // TODO return 0.0;
             return Double.parseDouble("0.0");
         }
     }
@@ -138,7 +139,7 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
         final String productName = scrapNameFromProductPage(page).toLowerCase();
         final Metal metal = Extract.metalExtract(productName);
         final double weight = Extract.weightExtract(productName) / Extract.TROY_OUNCE;
-        final Double dollar = Convert.currencyToNumberConvert(
+        final Double dollar = Convert.currencyToDouble(
                 ((HtmlElement) page.getFirstByXPath(X_PATH_BID_SPOT_DOLLAR)).asText()
         );
         String metalDollarSpotTxt;
@@ -162,6 +163,6 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
             throw new ScrapFailedException("ERROR: Silverum unexpected product");
         }
 
-        return Convert.currencyToNumberConvert( metalDollarSpotTxt ) * dollar * weight * q;
+        return Convert.currencyToDouble( metalDollarSpotTxt ) * dollar * weight * q;
     }
 }

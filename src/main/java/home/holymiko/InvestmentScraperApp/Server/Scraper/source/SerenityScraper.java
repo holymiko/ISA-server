@@ -100,7 +100,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
 
         for(int i = 2; i <= 11; i++) {
             ratings.add(
-                    Convert.numberConvertSerenity(
+                    Convert.serenityToNumber(
                             getRating(page, i)
                     )
             );
@@ -108,11 +108,11 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
         for(int i = 2; i <= 8; i++) {
             String htmlElement = getResult(page, i);
             if(i == 5) {
-                grade = Convert.gradeConvert(htmlElement);
+                grade = Convert.grahamGrade(htmlElement);
                 continue;
             }
             results.add(
-                    Convert.numberConvertSerenity(
+                    Convert.serenityToNumber(
                             htmlElement
                     )
             );
