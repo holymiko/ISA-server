@@ -1,39 +1,28 @@
 package home.holymiko.InvestmentScraperApp.Server.API.TextPort;
 
-import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
-import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
-import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
-import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Producer;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Export {
 
+    // TODO Move to .env 
     public static final String TICKER_PATH = "txt/export/tickers/";
     private static final String STOCK_PATH = "txt/export/stocks/";
     private static final String DELIMITER = "#";
 
     ////// EXPORT
 
-    public void exportPDF(/* Product product */) {
-        Product dataExample = new Product(
-            "Zlaty slitek Munzen Osteriach",
-            Producer.MUNZE_OSTERREICH,
-            Form.BAR,
-            Metal.GOLD,
-            500.0,
-            2021,
-            false
-        );
-        Price dataExample1 = new Price(LocalDateTime.MIN, 1800000.0, false);
+    public void exportToPDF(Product product) {
+        // TODO Vyber knihovnu pro export
+        //      Sestav a exportuj PDF soubor
+    }
 
+    public void exportToPDF(Portfolio portfolio) {
         // TODO Vyber knihovnu pro export
         //      Sestav a exportuj PDF soubor
     }

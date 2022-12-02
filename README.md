@@ -56,6 +56,9 @@ https://silverum.cz<br>
 Data je možné získat na http://localhost:8080/api/v2/ +`entita` Jsou poskytovány ve formátu JSON.
 Entity jsou k dispozici v optimalizovaném formátu `DTO` (Data Transfer Object).
 
+### Swagger
+http://localhost:8080/swagger-ui/
+
 ### DTO
 V aplikaci jsou používány Data Transfer Objects, aby se šetřil datový přenos mezi aplikacemi a minimalizovalo množství dat, se kterými se manipuluje.
 

@@ -31,7 +31,7 @@ public class ScrapController {
         this.linkService = linkService;
     }
 
-    @RequestMapping({"/all", "/all/"})
+    @PostMapping({"/all", "/all/"})
     public void scrapEverything() {
         allLinks();
         allProductsInSync();
@@ -40,13 +40,12 @@ public class ScrapController {
 
     //////// Products
 
-    // TODO Post
     /**
      * Scrap products for ALL Links. Including Links which doesn't have Product yet.
      * Scraping of Prices is grouped by Product. Prices from different Dealers, are for each Product,
      * scraped at the same time. Thanks to that, Prices are time synchronized.
      */
-    @RequestMapping({"/products", "/products/"})
+    @PostMapping({"/products", "/products/"})
     public void allProductsInSync() {
         ScrapHistory.frequencyHandlingAll(false);
         ScrapHistory.startRunning();
@@ -68,7 +67,7 @@ public class ScrapController {
         ScrapHistory.stopRunning();
     }
 
-    @RequestMapping({"/product/{id}", "/product/{id}/"})
+    @PostMapping({"/product/{id}", "/product/{id}/"})
     public void scrapProductById(@PathVariable long id) {
         ScrapHistory.startRunning();
 
@@ -89,7 +88,7 @@ public class ScrapController {
      * Scraping of Prices is grouped by Product. Prices from different Dealers, are for each Product,
      * scraped at the same time. Thanks to that, Prices are time synchronized.
      */
-    @GetMapping(value ="/param", headers = "Accept=application/json;charset=UTF-8")
+    @PostMapping(value ="/param", headers = "Accept=application/json;charset=UTF-8")
     public void scrapProductsInSyncByMetal(@RequestParam Metal metal) {
         scrapHistory.frequencyHandling(metal);
         // Lock guard
@@ -105,7 +104,7 @@ public class ScrapController {
         ScrapHistory.stopRunning();
     }
 
-    @RequestMapping({"/serenity", "/serenity/"})
+    @PostMapping({"/serenity", "/serenity/"})
     public void serenity() {
         this.serenityScraper.tickersScrap(TickerState.GOOD);
     }
@@ -115,7 +114,7 @@ public class ScrapController {
     /**
      * Scraps Links from all Dealers
      */
-    @RequestMapping({"/links", "/links/"})
+    @PostMapping({"/links", "/links/"})
     public void allLinks() {
         ScrapHistory.frequencyHandlingAll(true);
         ScrapHistory.startRunning();
