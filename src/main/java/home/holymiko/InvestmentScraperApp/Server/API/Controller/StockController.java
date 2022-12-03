@@ -1,10 +1,8 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Core.annotation.ResourceNotFound;
-import home.holymiko.InvestmentScraperApp.Server.Service.StockService;
-import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PortfolioDTO_ProductDTO;
-import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.PortfolioDTO;
-import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Stock;
+import home.holymiko.InvestmentScraperApp.Server.Service.GrahamStockService;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.GrahamStock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,25 +14,25 @@ import java.util.Optional;
 @RequestMapping("/api/v2/stock")
 public class StockController {
 
-    private final StockService stockService;
+    private final GrahamStockService grahamStockService;
 
     @Autowired
-    public StockController(StockService stockService) {
-        this.stockService = stockService;
+    public StockController(GrahamStockService grahamStockService) {
+        this.grahamStockService = grahamStockService;
     }
 
     @GetMapping({"/", ""})
-    public List<Stock> all() {
+    public List<GrahamStock> all() {
         // TODO Logging
         System.out.println("Get all stocks");
-        return stockService.findAll();
+        return grahamStockService.findAll();
     }
 
     @ResourceNotFound
     @GetMapping("/id/{id}")
-    public Optional<Stock> byId(@PathVariable int id) {
+    public Optional<GrahamStock> byId(@PathVariable int id) {
         // TODO Logging
         System.out.println("Get by Id");
-        return stockService.findById(id);
+        return grahamStockService.findById(id);
     }
 }

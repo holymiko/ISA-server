@@ -33,9 +33,9 @@ strategie popsané v knize <b> Inteligentní Investor</b> od Benjamina Grahama
 ## Získání dat
 > Získání dat zajišťují třídy `scrap`
 Program se pomocí `htmlunit` klienta spojí s webovou stránkou a na základě `XPath` získá z dokumentu relevantní data. 
-Ty jsou následné použity k vytvoření entit `stock` či `product` a uloženy do databáze.
+Ty jsou následné použity k vytvoření entit `grahamStock` či `product` a uloženy do databáze.
 
-> Informace pro `stock` jsou získány z www.serenitystocks.com/stock/ +`ticker`
+> Informace pro `grahamStock` jsou získány z www.serenitystocks.com/grahamStock/ +`ticker`
 Databáze uchovává seznam tickerů (zkratek užívaných na burze) a jejich stav. 
 Jejich zdrojem jsou soubory v adresáři `txt/`
 

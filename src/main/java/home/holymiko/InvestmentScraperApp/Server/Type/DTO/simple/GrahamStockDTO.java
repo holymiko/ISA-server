@@ -4,9 +4,13 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Ticker;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.GrahamGrade;
 import lombok.Getter;
 
+import java.util.Date;
+
 @Getter
-public class StockDTO {
+public class GrahamStockDTO {
     private final int id;
+
+    private final Date timeStamp;
     private final String name;
     private final Ticker ticker;
     private final GrahamGrade grahamGrade;
@@ -29,8 +33,9 @@ public class StockDTO {
     private final Double previousClose;
     private final Double intrinsicValue;
 
-    public StockDTO(int id, String name, Ticker ticker, GrahamGrade grahamGrade, String currency, Double ratingScore, Double sizeInSales, Double assetsLiabilities, Double netAssetsLongTermDebt, Double earningsStability, Double dividend, Double ncav, Double equityDebt, Double sizeInAssets, Double defensivePrice, Double enterprisingPrice, Double ncavPrice, Double intrinsicPrice, Double previousClose, Double intrinsicValue) {
+    public GrahamStockDTO(int id, Date timeStamp, String name, Ticker ticker, GrahamGrade grahamGrade, String currency, Double ratingScore, Double sizeInSales, Double assetsLiabilities, Double netAssetsLongTermDebt, Double earningsStability, Double dividend, Double ncav, Double equityDebt, Double sizeInAssets, Double defensivePrice, Double enterprisingPrice, Double ncavPrice, Double intrinsicPrice, Double previousClose, Double intrinsicValue) {
         this.id = id;
+        this.timeStamp = timeStamp;
         this.name = name;
         this.ticker = ticker;
         this.grahamGrade = grahamGrade;

@@ -7,13 +7,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import java.util.Date;
 
 @Entity
 @Getter
-public class Stock {
+public class GrahamStock {
     @Id
     @GeneratedValue
     private int id;
+    private Date timeStamp;
     private String name;
     @OneToOne
     private Ticker ticker;
@@ -22,7 +24,7 @@ public class Stock {
     private String currency;
     private Double ratingScore;
 
-    // Ratings
+    // Graham Ratings
     private Double sizeInSales;
     private Double assetsLiabilities;
     private Double netAssetsLongTermDebt;
@@ -34,7 +36,7 @@ public class Stock {
     private Double equityDebt;
     private Double sizeInAssets;
 
-    // Results
+    // Graham Result
     private Double defensivePrice;
     private Double enterprisingPrice;
     private Double ncavPrice;
@@ -42,13 +44,22 @@ public class Stock {
     private Double previousClose;
     private Double intrinsicValue;
 
-    public Stock() {}
+    // TODO Financial Condition
+    // TODO Per Share Value
+    // TODO Dividend History
+    // TODO About Stock
+    // TODO private String submittedBy
+    // TODO private ? createdOn
+    // TODO private ? updatedOn
 
-    public Stock(Ticker ticker) {
+    public GrahamStock() {}
+
+    public GrahamStock(Ticker ticker) {
         this.ticker = ticker;
     }
 
-    public Stock(String name, Ticker ticker, GrahamGrade grahamGrade, String currency, Double ratingScore, Double sizeInSales, Double assetsLiabilities, Double netAssetsLongTermDebt, Double earningsStability, Double dividendRecord, Double earningGrowth, Double grahamNumber, Double ncav, Double equityDebt, Double sizeInAssets, Double defensivePrice, Double enterprisingPrice, Double ncavPrice, Double intrinsicPrice, Double previousClose, Double intrinsicValue) {
+    public GrahamStock(Date timeStamp, String name, Ticker ticker, GrahamGrade grahamGrade, String currency, Double ratingScore, Double sizeInSales, Double assetsLiabilities, Double netAssetsLongTermDebt, Double earningsStability, Double dividendRecord, Double earningGrowth, Double grahamNumber, Double ncav, Double equityDebt, Double sizeInAssets, Double defensivePrice, Double enterprisingPrice, Double ncavPrice, Double intrinsicPrice, Double previousClose, Double intrinsicValue) {
+        this.timeStamp = timeStamp;
         this.name = name;
         this.ticker = ticker;
         this.grahamGrade = grahamGrade;
