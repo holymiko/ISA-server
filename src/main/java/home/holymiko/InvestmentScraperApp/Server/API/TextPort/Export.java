@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Export {
 
-    // TODO Move to .env 
+    // TODO Move to .env (senior)
     public static final String TICKER_PATH = "txt/export/tickers/";
     private static final String STOCK_PATH = "txt/export/stocks/";
     private static final String DELIMITER = "#";
@@ -20,11 +20,17 @@ public class Export {
     public void exportToPDF(Product product) {
         // TODO Vyber knihovnu pro export
         //      Sestav a exportuj PDF soubor
+
+        // TODO Remove this
+        System.out.println("Data mock '" + product.getName() + "' has " + product.getPricePairs().size() + " prices");
     }
 
     public void exportToPDF(Portfolio portfolio) {
         // TODO Vyber knihovnu pro export
         //      Sestav a exportuj PDF soubor
+
+        // TODO Remove this
+        System.out.println("Portfolio includes " + portfolio.getInvestmentStocks().size() + " stocks and " + portfolio.getInvestmentMetals().size() + " precious metal investments");
     }
 
 

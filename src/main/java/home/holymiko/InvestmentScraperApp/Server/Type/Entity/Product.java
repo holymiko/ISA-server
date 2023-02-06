@@ -76,7 +76,7 @@ public class Product {
         this.name = name;
     }
 
-    public void setLink(List<Link> link) {
+    public void setLinks(List<Link> link) {
         this.links = link;
     }
 
