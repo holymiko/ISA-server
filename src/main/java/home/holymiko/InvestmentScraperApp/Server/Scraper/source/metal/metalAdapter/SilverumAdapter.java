@@ -138,9 +138,15 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
         final String productName = scrapNameFromProductPage(page).toLowerCase();
         final Metal metal = Extract.metalExtract(productName);
         final double weight = Extract.weightExtract(productName) / Extract.TROY_OUNCE;
-        final Double dollar = Convert.currencyToNumberConvert(
-                ((HtmlElement) page.getFirstByXPath(X_PATH_BID_SPOT_DOLLAR)).asText()
-        );
+        final Double dollar;
+        try {
+            dollar = Convert.currencyToNumberConvert(
+                    ((HtmlElement) page.getFirstByXPath(X_PATH_BID_SPOT_DOLLAR)).asText()
+            );
+        } catch (NullPointerException e) {
+            // TODO resolve NULL pointer exception or validate that this is correct behaviour
+            return 0;
+        }
         String metalDollarSpotTxt;
         double q = 1;
 
