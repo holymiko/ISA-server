@@ -51,7 +51,7 @@ public class Run {
     @Order(0)
     @EventListener(ApplicationStartedEvent.class)
     public void run() throws IOException {
-        LOGGER.info("\nApp has started up");
+        LOGGER.info("App has started up");
         try {
             cnbScraper.scrapExchangeRate();
         } catch (ResourceNotFoundException e) {
@@ -76,8 +76,8 @@ public class Run {
                 .start();
     }
 
-    @Order(3) // Last Order index
-    @EventListener(ApplicationStartedEvent.class)
+//    @Order(3) // Last Order index TODO activate before release
+//    @EventListener(ApplicationStartedEvent.class)
     public void runImportTickers() throws IOException {
         if(tickerService.findAll().isEmpty()) {
             LOGGER.info("3) Import Tickers");

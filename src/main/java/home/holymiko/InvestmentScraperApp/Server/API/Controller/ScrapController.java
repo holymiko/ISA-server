@@ -119,12 +119,12 @@ public class ScrapController {
      */
     @PostMapping({"/links", "/links/"})
     public void allLinks() {
+//        TODO test frequencyHandling status code
         ScrapHistory.frequencyHandlingAll(true);
         ScrapHistory.startRunning();
 
         LOGGER.info("All link scraping in progress...");
         this.metalScraper.allLinksScrap();
-        ConsolePrinter.printTimeStamp();
 
         ScrapHistory.timeUpdate(true, false);
         ScrapHistory.stopRunning();

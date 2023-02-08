@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -397,45 +398,42 @@ public class MetalScraper {
     ///////////////////// LINK
     /////// PUBLIC
 
+    private void saveAndCountLinks(List<Link> linkList, AtomicInteger linkSaveCounter, AtomicInteger linkInDBCounter) {
+        for (Link link : linkList) {
+            try {
+                linkService.save(link);
+                linkSaveCounter.getAndIncrement();
+            } catch (DataIntegrityViolationException e) {
+                linkInDBCounter.getAndIncrement();
+            } catch (IllegalArgumentException e) {
+                LOGGER.info(e.getMessage());
+            } catch (NullPointerException e) {
+                LOGGER.error(e.getMessage());
+            }
+        }
+    }
+
     /**
      * Polymorphic call on all instances of dealerInterfaces a.k.a. dealerMetalScrapers
      */
     public void allLinksScrap() {
-        int linkSaveCounter = 0;
-        int linkInDBCounter = 0;
+//        TODO measure time and log
+        AtomicInteger linkSaveCounter = new AtomicInteger(0);
+        AtomicInteger linkInDBCounter = new AtomicInteger(0);
 
+        // Polymorphic call
         for (MetalAdapterInterface scraperInterface : dealerToMetalAdapter.values()) {
-            // Polymorphic call
-            List<Link> linkList = scraperInterface.scrapAllLinksFromProductLists();
-
-            for (Link link : linkList) {
-                try {
-                    linkService.save(link);
-                    linkSaveCounter++;
-                } catch (DataIntegrityViolationException e) {
-                    linkInDBCounter++;
-                } catch (IllegalArgumentException e) {
-                    LOGGER.info(e.getMessage());
-                } catch (NullPointerException e) {
-                    LOGGER.error(e.getMessage());
-                }
-            }
+            saveAndCountLinks(scraperInterface.scrapAllLinksFromProductLists(), linkSaveCounter, linkInDBCounter);
         }
         LOGGER.info("Links saved: " + linkSaveCounter + ", Links already in DB: " + linkInDBCounter);
     }
 
     public void linksByDealerScrap(Dealer dealer) {
-        dealerToMetalAdapter.get(dealer).scrapAllLinksFromProductLists()
-                .forEach(
-                        link -> {
-                            try {
-                                linkService.save(link);
-                                System.out.println("Link saved");
-                            } catch (Exception e) {
-                                System.out.println(e.getMessage());
-                            }
-                        }
-                );
+        AtomicInteger linkSaveCounter = new AtomicInteger(0);
+        AtomicInteger linkInDBCounter = new AtomicInteger(0);
+
+        saveAndCountLinks(dealerToMetalAdapter.get(dealer).scrapAllLinksFromProductLists(), linkSaveCounter, linkInDBCounter);
+        LOGGER.info("Links saved: " + linkSaveCounter + ", Links already in DB: " + linkInDBCounter);
     }
 
 }
