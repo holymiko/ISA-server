@@ -19,7 +19,6 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,8 +26,15 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Component
 public class MetalScraper {
+    private static final long ETHICAL_DELAY = 700;
+    private static final int PRINT_INTERVAL = 10;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MetalScraper.class);
+
     private final LinkService linkService;
     private final PriceService priceService;
     private final PortfolioService portfolioService;
@@ -38,8 +44,6 @@ public class MetalScraper {
     // Used for Polymorphic calling
     private final Map<Dealer, MetalAdapterInterface> dealerToMetalAdapter = new HashMap<>();
 
-    private static final long ETHICAL_DELAY = 700;
-    private static final int PRINT_INTERVAL = 10;
 
     @Autowired
     public MetalScraper(
@@ -326,13 +330,11 @@ public class MetalScraper {
             System.out.println(e.getMessage());
         }
         if(sellingPrice == null || sellingPrice.intValue() == 0) {
-            // TODO Logging
-            System.out.println("WARNING - Kupni cena = 0");
+            LOGGER.warn("WARNING - Kupni cena = 0");
         }
         butOutPrice = adapter.scrapBuyOutPrice(productDetailPage);
         if(butOutPrice.intValue() == 0) {
-            // TODO Logging
-            System.out.println("WARNING - Vykupni cena = 0");
+            LOGGER.warn("WARNING - Vykupni cena = 0");
         }
 
         pricePair = new PricePair(
@@ -399,20 +401,27 @@ public class MetalScraper {
      * Polymorphic call on all instances of dealerInterfaces a.k.a. dealerMetalScrapers
      */
     public void allLinksScrap() {
-        // Polymorphic call
-        dealerToMetalAdapter.values().forEach(
-                scraperInterface -> scraperInterface.scrapAllLinksFromProductLists()
-                        .forEach(
-                                link -> {
-                                        try {
-                                            linkService.save(link);
-                                            System.out.println("Link saved");
-                                        } catch (Exception e) {
-                                            System.out.println(e.getMessage());
-                                        }
-                                }
-                        )
-        );
+        int linkSaveCounter = 0;
+        int linkInDBCounter = 0;
+
+        for (MetalAdapterInterface scraperInterface : dealerToMetalAdapter.values()) {
+            // Polymorphic call
+            List<Link> linkList = scraperInterface.scrapAllLinksFromProductLists();
+
+            for (Link link : linkList) {
+                try {
+                    linkService.save(link);
+                    linkSaveCounter++;
+                } catch (DataIntegrityViolationException e) {
+                    linkInDBCounter++;
+                } catch (IllegalArgumentException e) {
+                    LOGGER.info(e.getMessage());
+                } catch (NullPointerException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+        LOGGER.info("Links saved: " + linkSaveCounter + ", Links already in DB: " + linkInDBCounter);
     }
 
     public void linksByDealerScrap(Dealer dealer) {
