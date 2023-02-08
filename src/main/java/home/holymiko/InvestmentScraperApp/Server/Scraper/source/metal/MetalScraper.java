@@ -417,7 +417,6 @@ public class MetalScraper {
      * Polymorphic call on all instances of dealerInterfaces a.k.a. dealerMetalScrapers
      */
     public void allLinksScrap() {
-//        TODO measure time and log
         AtomicInteger linkSaveCounter = new AtomicInteger(0);
         AtomicInteger linkInDBCounter = new AtomicInteger(0);
 

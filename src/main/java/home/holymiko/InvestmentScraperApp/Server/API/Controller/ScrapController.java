@@ -124,7 +124,10 @@ public class ScrapController {
         ScrapHistory.startRunning();
 
         LOGGER.info("All link scraping in progress...");
+        long start = System.nanoTime();
         this.metalScraper.allLinksScrap();
+        long finish = System.nanoTime();
+        LOGGER.info("...scraping finished in " + (finish - start)/1000000/1000.0 + " seconds");
 
         ScrapHistory.timeUpdate(true, false);
         ScrapHistory.stopRunning();
