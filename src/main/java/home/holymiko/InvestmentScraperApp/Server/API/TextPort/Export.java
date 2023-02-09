@@ -8,9 +8,13 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Export {
 
-    // TODO Move to .env 
+    // TODO Move to .env
+    private static final Logger LOGGER = LoggerFactory.getLogger(Export.class);
     public static final String TICKER_PATH = "txt/export/tickers/";
     private static final String STOCK_PATH = "txt/export/stocks/";
     private static final String DELIMITER = "#";
@@ -29,7 +33,7 @@ public class Export {
 
 
     public static void exportTickers(final List<Ticker> tickers) {
-        System.out.println("Export tickers");
+        LOGGER.info("Export tickers");
         try {
             final File file = new File(TICKER_PATH + LocalDate.now());
             file.mkdirs();
@@ -52,15 +56,15 @@ public class Export {
             badWriter.close();
             notFoundWriter.close();
             unknownWriter.close();
-            System.out.println("Successfully wrote to the file.");
+            LOGGER.info("Successfully wrote to the file.");
         } catch (IOException e) {
-            System.out.println("An error occurred.");
+            LOGGER.error("An error occurred.");
             e.printStackTrace();
         }
     }
 
     public static void exportStocks(final List<GrahamStock> grahamStocks) {
-        System.out.println("Export grahamStocks");
+        LOGGER.info("Export grahamStocks");
         try {
             final File file = new File(STOCK_PATH + LocalDate.now());
             file.mkdirs();
@@ -91,9 +95,9 @@ public class Export {
                 stockWriter.write(x);
             }
             stockWriter.close();
-            System.out.println("Successfully wrote to the file.");
+            LOGGER.info("Successfully wrote to the file.");
         } catch (IOException e) {
-            System.out.println("An error occurred.");
+            LOGGER.error("An error occurred.");
             e.printStackTrace();
         }
     }

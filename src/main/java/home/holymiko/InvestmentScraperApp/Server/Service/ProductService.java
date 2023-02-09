@@ -20,9 +20,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class ProductService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final PricePairRepository pricePairRepository;
@@ -151,7 +155,7 @@ public class ProductService {
             if(optionalProduct.isPresent()){
                 investments.add(optionalProduct.get());
             } else {
-                System.out.println("Product by ID does exist");
+                LOGGER.error("Product by ID does exist");
             }
         }
         return investments;

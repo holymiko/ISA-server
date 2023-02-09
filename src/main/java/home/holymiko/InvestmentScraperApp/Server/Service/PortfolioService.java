@@ -15,8 +15,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class PortfolioService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PortfolioService.class);
     private final PortfolioRepository portfolioRepository;
     private final ProductService productService;
     private final PortfolioMapper portfolioMapper;
@@ -120,19 +124,19 @@ public class PortfolioService {
 //                        portfolioCreateDTO.getOwner()
 //                )
 //        );
-//        System.out.println(">> Save PortfolioCreateDTO " + portfolioCreateDTO.getOwner());
+//        LOGGER.info("Save PortfolioCreateDTO " + portfolioCreateDTO.getOwner());
 //    }
 
     @Transactional
     public void save(Portfolio portfolio) {
         this.portfolioRepository.save(portfolio);
-        System.out.println(">> Save Portfolio");
+        LOGGER.info("Save Portfolio");
     }
 //
 //    @Transactional
 //    public void save(String name) {
 //        this.portfolioRepository.save(new Portfolio(new ArrayList<>(), name));
-//        System.out.println(">> Save Portfolio");
+//        LOGGER.info("Save Portfolio");
 //    }
 
 //    @Transactional

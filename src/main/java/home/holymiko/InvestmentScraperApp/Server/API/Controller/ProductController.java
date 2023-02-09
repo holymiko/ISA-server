@@ -13,11 +13,15 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v2/product")         // Na url/api/v1/herbivores se zavola HTTP request
 public class ProductController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
     private final ProductService productService;
 
     @Autowired
@@ -30,7 +34,7 @@ public class ProductController {
     @ResourceNotFound
     @GetMapping("/id/{id}")
     public Optional<ProductDTO_AllPrices> byId(@PathVariable long id) {
-        System.out.println("Get product by Id");
+        LOGGER.info("Get product by Id");
         return productService.findByIdAsDTOAllPrices(id);
     }
 
@@ -39,19 +43,19 @@ public class ProductController {
     @ResourceNotFound
     @GetMapping("/dto/id/{id}")
     public Optional<ProductDTO_LatestPrices> byIdAsDTO(@PathVariable long id) {
-        System.out.println("Get by Id "+id+" as Product DTO");
+        LOGGER.info("Get by Id "+id+" as Product DTO");
         return productService.findByIdAsDTO(id);
     }
 
     @GetMapping({ "/dto/", "/dto"})
     public List<ProductDTO_LatestPrices> allAsDTO() {
-        System.out.println("Get all products as DTO");
+        LOGGER.info("Get all products as DTO");
         return productService.findAllAsDTO();
     }
 
     @GetMapping({ "/dto/metal/{metal}", "/dto/metal/{metal}/"})
     public List<ProductDTO_LatestPrices> byMetalAsDTO(@PathVariable String metal) {
-        System.out.println("Get products byMetal "+metal+" as DTO");
+        LOGGER.info("Get products byMetal "+metal+" as DTO");
         return switch (metal) {
             case "gold" -> this.productService.findByMetalAsDTO(Metal.GOLD);
             case "silver" -> this.productService.findByMetalAsDTO(Metal.SILVER);

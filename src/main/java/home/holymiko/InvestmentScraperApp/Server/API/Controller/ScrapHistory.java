@@ -12,8 +12,12 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Component
 public class ScrapHistory {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScrapHistory.class);
     private static final long MINUTES_DELAY = 15;
     private static final long YEAR_DELAY = 1000L;
 
@@ -137,7 +141,7 @@ public class ScrapHistory {
 
     public static void isRunning() throws ScrapRefusedException {
         if(isRunning) {
-            System.out.println("ScrapController - IM_IN_USE");
+            LOGGER.warn("ScrapController - IM_IN_USE");
             throw new ScrapRefusedException();
         }
     }
