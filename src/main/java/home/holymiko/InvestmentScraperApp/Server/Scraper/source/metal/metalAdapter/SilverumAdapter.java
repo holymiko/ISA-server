@@ -12,6 +12,7 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -52,45 +53,9 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
     }
     @Override
     public List<Link> scrapAllLinksFromProductLists() {
-        List<Link> elements = new ArrayList<>();
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_GOLD_COIN)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_GOLD_BAR)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_GOLD_BRICK)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER_COIN_21)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER_COIN_22)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER_BAR)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER_BRICK)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return elements;
+        return scrapAllLinksFromProductListUtil(
+                Arrays.asList(SEARCH_URL_GOLD_COIN, SEARCH_URL_GOLD_BAR, SEARCH_URL_GOLD_BRICK, SEARCH_URL_SILVER_COIN_21, SEARCH_URL_SILVER_COIN_22, SEARCH_URL_SILVER_BAR, SEARCH_URL_SILVER_BRICK)
+        );
     }
 
     @Override
@@ -123,7 +88,7 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
             }
             return Convert.currencyToNumberConvert(x);
         } catch (Exception e) {
-            return Double.parseDouble("0.0");
+            return 0.0;
         }
     }
 

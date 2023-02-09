@@ -170,7 +170,7 @@ public class MetalScraper {
      * @throws ScrapFailedException Link has saved product / Extraction from HTML failed
      * @throws DataIntegrityViolationException
      */
-    private void productScrap(LinkDTO link) throws ResourceNotFoundException, ScrapFailedException, DataIntegrityViolationException{
+    private void productScrap(LinkDTO link) throws ResourceNotFoundException, ScrapFailedException, DataIntegrityViolationException {
         String name = "";
         final HtmlPage page;
         final ProductCreateDTO productExtracted;

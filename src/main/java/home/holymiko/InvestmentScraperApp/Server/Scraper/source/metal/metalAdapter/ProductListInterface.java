@@ -3,15 +3,20 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdap
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import org.apache.commons.lang3.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public interface ProductListInterface {
 
+    default HtmlPage getPage(final String link) throws ResourceNotFoundException {
+        throw new NotImplementedException("Method haven't been implemented yet");
+    }
     default List<Link> scrapAllLinksFromProductLists() {
         throw new NotImplementedException("Method haven't been implemented yet");
     }
@@ -28,6 +33,18 @@ public interface ProductListInterface {
                 .map(
                         this::scrapLink
                 ).collect(Collectors.toList());
+    }
+
+    default List<Link> scrapAllLinksFromProductListUtil(List<String> urls) {
+        List<Link> elements = new ArrayList<>();
+        for (String url:urls) {
+            try {
+                elements.addAll(scrapLinksFromProductList(getPage(url)));
+            } catch (ResourceNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return elements;
     }
 
     default List<HtmlElement> scrapProductList(HtmlPage page) {
