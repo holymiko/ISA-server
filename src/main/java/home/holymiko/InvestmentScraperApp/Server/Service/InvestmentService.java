@@ -10,9 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class InvestmentService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(InvestmentService.class);
     private final ProductRepository productRepository;
     private final InvestmentMetalRepository investmentMetalRepository;
     private final InvestmentStockRepository investmentStockRepository;
@@ -46,7 +50,7 @@ public class InvestmentService {
 //            if(optionalInvestment.isPresent()){
 //                investmentMetals.add(optionalInvestment.get());
 //            } else {
-//                System.out.println("InvestmentMetal by ID does exist");
+//                LOGGER.info("InvestmentMetal by ID does exist");
 //            }
 //        }
 //        return investmentMetals;
@@ -62,7 +66,7 @@ public class InvestmentService {
 //    public InvestmentMetal save(Product product) throws ResponseStatusException {
 //        Optional<Product> optionalProduct = this.productRepository.findById(product.getId());
 //        if(optionalProduct.isPresent()){
-//            System.out.println("localDate");
+//            LOGGER.info("localDate");
 //            InvestmentMetal investmentMetal = new InvestmentMetal( product,  LocalDate.of(100,1,1));
 //            this.investmentRepository.save(investmentMetal);
 //            return this.investmentRepository.findById(investmentMetal.getId()).get();

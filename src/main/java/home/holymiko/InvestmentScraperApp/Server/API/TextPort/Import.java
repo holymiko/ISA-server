@@ -10,9 +10,13 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Component
 public class Import {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Import.class);
     private final TickerService tickerService;
 
     public Import(TickerService tickerService) {
@@ -79,9 +83,9 @@ public class Import {
             }
             myReader.close();
             tickerService.saveAll(tickerSet);
-            System.out.println("Total: "+i);
+            LOGGER.info("Total: "+i);
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
+            LOGGER.error("An error occurred.");
             e.printStackTrace();
         }
     }
@@ -116,13 +120,13 @@ public class Import {
                     tickerService.save(data[a]);
                     i++;
                 } else {
-                    System.out.println("Ticker -> Kicked");
+                    LOGGER.info("Ticker -> Kicked");
                 }
             }
-            System.out.println("Total: "+i);
+            LOGGER.info("Total: "+i);
             myReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
+            LOGGER.error("An error occurred.");
             e.printStackTrace();
         }
     }
@@ -138,7 +142,7 @@ public class Import {
                 int a = 0;
                 String[] data = myReader.nextLine().split(",");
                 if( data.length <= 1 ) {
-                    System.out.println("Kicked");
+                    LOGGER.info("Kicked");
                     k++;
                     continue;
                 }
@@ -150,17 +154,17 @@ public class Import {
             }
             myReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
+            LOGGER.error("An error occurred.");
             e.printStackTrace();
         }
-        System.out.println("Saved: "+i);
-        System.out.println("Known: "+j);
-        System.out.println("Kicked: "+k);
+        LOGGER.info("Saved: "+i);
+        LOGGER.info("Known: "+j);
+        LOGGER.info("Kicked: "+k);
     }
 
     private void readFile3(String fileName) {
         if(!fileName.equals("txt/YahooStockTickers.txt")){
-            System.out.println("Wrong file name");
+            LOGGER.error("Wrong file name");
             return;
         }
         try {
@@ -177,10 +181,10 @@ public class Import {
                 tickerService.save(data);
                 i++;
             }
-            System.out.println("Total: "+i);
+            LOGGER.info("Total: "+i);
             myReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
+            LOGGER.error("An error occurred.");
             e.printStackTrace();
         }
     }

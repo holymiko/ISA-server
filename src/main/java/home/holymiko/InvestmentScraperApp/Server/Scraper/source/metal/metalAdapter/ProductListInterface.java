@@ -10,8 +10,12 @@ import org.apache.commons.lang3.NotImplementedException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public interface ProductListInterface {
 
+    Logger LOGGER = LoggerFactory.getLogger(ProductListInterface.class);
     default List<Link> scrapAllLinksFromProductLists() {
         throw new NotImplementedException("Method haven't been implemented yet");
     }
@@ -41,7 +45,7 @@ public interface ProductListInterface {
     default Link scrapLink(HtmlElement elementProduct, String xPathToLink, Dealer dealer, String baseUrl) {
         HtmlAnchor itemAnchor = elementProduct.getFirstByXPath(xPathToLink);
         if(itemAnchor == null) {
-            System.out.println("Error: "+ elementProduct.asText());
+            LOGGER.error(elementProduct.asText());
             return null;
         }
         return new Link(dealer, baseUrl + itemAnchor.getHrefAttribute());

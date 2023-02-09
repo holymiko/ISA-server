@@ -136,7 +136,7 @@ public class MetalScraper {
      */
     @Deprecated
     public void productByPortfolio(long portfolioId) throws ResponseStatusException {
-        System.out.println("MetalScraper productsByPortfolio");
+        LOGGER.info("MetalScraper productsByPortfolio");
         Optional<PortfolioDTO_ProductDTO> optionalPortfolio = portfolioService.findById(portfolioId);
         if (optionalPortfolio.isEmpty()) {
             throw new IllegalArgumentException("No portfolio with such ID");
@@ -278,7 +278,7 @@ public class MetalScraper {
         Product p = productService.save(productExtracted);
         linkDTO = linkService.updateLinkProductId(linkDTO.getId(), p.getId());
         priceScrap(linkDTO);
-        System.out.println(">> Product saved");
+        LOGGER.info("Product saved");
     }
 
     /**
@@ -296,7 +296,7 @@ public class MetalScraper {
         try {
             productScrap(link);
         } catch (Exception e) {
-            System.out.println( e.getMessage() );
+            LOGGER.warn( e.getMessage() );
         }
     }
 
@@ -328,7 +328,7 @@ public class MetalScraper {
             // Choose MetalScraperInterface & scrap buy price
             sellingPrice = adapter.scrapPriceFromProductPage(productDetailPage);
         } catch (NumberFormatException e) {
-            System.out.println(e.getMessage());
+            LOGGER.warn(e.getMessage());
         }
         if(sellingPrice == null || sellingPrice.intValue() == 0) {
             LOGGER.warn("WARNING - Kupni cena = 0");
@@ -349,7 +349,7 @@ public class MetalScraper {
         this.priceService.save(pricePair);
         this.productService.updatePrices(linkDTO.getProductId(), pricePair);
 
-        System.out.println("> New pricePair saved - " + linkDTO.getUrl());
+        LOGGER.info("New pricePair saved - " + linkDTO.getUrl());
     }
 
     /**
@@ -357,9 +357,9 @@ public class MetalScraper {
      */
     @Deprecated
     private void redemptionScrap(final Metal metal, final Dealer dealer) {
-//        System.out.println(">>> Redemption Scrap");
+//        LOGGER.info("Redemption Scrap");
 //        if( dealerToMetalAdapter.get(dealer) instanceof BuyOutInterface) {
-//            System.out.println(">>>>> Scraping Redemption List available");
+//            LOGGER.info("Scraping Redemption List available");
 //            List<Pair<String, Double>> nameRedemptionMap = ((BuyOutInterface) dealerToMetalAdapter.get(dealer)).scrapBuyOutFromList();
 //
 //            nameRedemptionMap.forEach(
@@ -372,11 +372,11 @@ public class MetalScraper {
 //                }
 //            );
 //        } else {
-//            System.out.println(">>>>> Scraping Redemption List is NOT available");
+//            LOGGER.warn("Scraping Redemption List is NOT available");
 //            // TODO Throw and catch in upper layer
 //        }
 //
-//        System.out.println("Redemption "+dealer+" "+metal+" update");
+//        LOGGER.info("Redemption "+dealer+" "+metal+" update");
     }
 
 
