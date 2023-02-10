@@ -67,8 +67,8 @@ public class Run {
 
     // @Order(1) is in MetalScraper
 
-    @Order(2)
-    @EventListener(ApplicationStartedEvent.class)
+//    @Order(2)                         TODO activate before release
+//    @EventListener(ApplicationStartedEvent.class)
     public void runFrontEnd() throws IOException {
         // Run FrontEnd NodeJS Application
         process = new ProcessBuilder(isWindows() ? "npm.cmd" : "yarn", "start")
@@ -76,7 +76,7 @@ public class Run {
                 .start();
     }
 
-//    @Order(3) // Last Order index TODO activate before release
+//    @Order(3) // Last Order index     TODO activate before release
 //    @EventListener(ApplicationStartedEvent.class)
     public void runImportTickers() throws IOException {
         if(tickerService.findAll().isEmpty()) {

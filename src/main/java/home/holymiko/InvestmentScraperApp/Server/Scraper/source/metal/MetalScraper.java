@@ -170,7 +170,7 @@ public class MetalScraper {
      * @throws ScrapFailedException Link has saved product / Extraction from HTML failed
      * @throws DataIntegrityViolationException
      */
-    private void productScrap(LinkDTO link) throws ResourceNotFoundException, ScrapFailedException, DataIntegrityViolationException{
+    private void productScrap(LinkDTO link) throws ResourceNotFoundException, ScrapFailedException, DataIntegrityViolationException {
         String name = "";
         final HtmlPage page;
         final ProductCreateDTO productExtracted;
@@ -417,7 +417,6 @@ public class MetalScraper {
      * Polymorphic call on all instances of dealerInterfaces a.k.a. dealerMetalScrapers
      */
     public void allLinksScrap() {
-//        TODO measure time and log
         AtomicInteger linkSaveCounter = new AtomicInteger(0);
         AtomicInteger linkInDBCounter = new AtomicInteger(0);
 

@@ -10,6 +10,7 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Convert;
 import org.springframework.data.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BessergoldAdapter extends Client implements MetalAdapterInterface {
@@ -33,32 +34,12 @@ public class BessergoldAdapter extends Client implements MetalAdapterInterface {
     }
     @Override
     public List<Link> scrapAllLinksFromProductLists() {
-        List<Link> elements = new ArrayList<>();
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_GOLD)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_PLATINUM)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_PALLADIUM)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        return elements;
+        return scrapAllLinksFromProductListUtil(
+                Arrays.asList(SEARCH_URL_GOLD, SEARCH_URL_SILVER, SEARCH_URL_PLATINUM, SEARCH_URL_PALLADIUM)
+        );
     }
 
     /////// PRICE
-
 
     @Override
     public List<HtmlElement> scrapProductList(HtmlPage page) {
@@ -83,7 +64,7 @@ public class BessergoldAdapter extends Client implements MetalAdapterInterface {
                     ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText()
             );
         } catch (Exception e) {
-            return Convert.currencyToNumberConvert("0.0");
+            return 0.0;
         }
     }
 
@@ -101,7 +82,7 @@ public class BessergoldAdapter extends Client implements MetalAdapterInterface {
                 buyOutHtmlToText(page.getFirstByXPath(X_PATH_REDEMPTION_PRICE))
             );
         } catch (Exception e) {
-            return Double.parseDouble("0.0");
+            return 0.0;
         }
     }
 

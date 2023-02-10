@@ -9,6 +9,7 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.source.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Convert;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -28,7 +29,6 @@ public class ZlatakyAdapter extends Client implements MetalAdapterInterface {
     private static final String X_PATH_REDEMPTION_PRICE = ".//*[@id=\"snippet--page\"]/div[2]/div[1]/div[2]/div[5]/div[1]/span[2]/strong";
 
 
-
     public ZlatakyAdapter() {
         super();
     }
@@ -39,33 +39,9 @@ public class ZlatakyAdapter extends Client implements MetalAdapterInterface {
     }
     @Override
     public List<Link> scrapAllLinksFromProductLists() {
-        List<Link> elements = new ArrayList<>();
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_GOLD_BAR)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_GOLD_COIN)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER_BAR)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER_COIN)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_PLATINUM)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        return elements;
+        return scrapAllLinksFromProductListUtil(
+                Arrays.asList(SEARCH_URL_GOLD_BAR, SEARCH_URL_GOLD_COIN, SEARCH_URL_SILVER_BAR, SEARCH_URL_SILVER_COIN, SEARCH_URL_PLATINUM)
+        );
     }
 
     /////// PRICE
@@ -86,7 +62,7 @@ public class ZlatakyAdapter extends Client implements MetalAdapterInterface {
             }
             return Double.parseDouble(x);
         } catch (Exception e) {
-            return Double.parseDouble("0.0");
+            return 0.0;
         }
 
     }
@@ -101,7 +77,7 @@ public class ZlatakyAdapter extends Client implements MetalAdapterInterface {
                     ((HtmlElement) page.getFirstByXPath(X_PATH_REDEMPTION_PRICE)).asText()
             );
         } catch (Exception e) {
-            return Double.parseDouble("0.0");
+            return 0.0;
         }
     }
 
