@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 
 @Component
 public class Import {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(Import.class);
+
     private final TickerService tickerService;
 
     public Import(TickerService tickerService) {

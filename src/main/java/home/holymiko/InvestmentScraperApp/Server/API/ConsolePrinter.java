@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 public class ConsolePrinter {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsolePrinter.class);
+
     public static void statusPrint(final int interval, final int size, final int printerCounter) {
         if ((printerCounter % interval) == 0) {
             LOGGER.info(printerCounter + "/" + size);
@@ -20,15 +21,20 @@ public class ConsolePrinter {
     }
 
     public static void printScrapStock(final String header, final Double ratingScore, final List<Double> ratings, final List<Double> results, final String currency) {
+        String variable = "\n";
+
         LOGGER.info(header);
         for (Double x : ratings) {
-            System.out.println(x);
+            variable = variable + x + "\n";
         }
+        LOGGER.info(variable);
         LOGGER.info("Rating Score = "+ratingScore);
+        variable = "\n";
         for (Double x : results) {
-            System.out.println(x);
+            variable = variable + x + "\n";
         }
-        LOGGER.info(currency);
+        LOGGER.info(variable);
+        LOGGER.info(currency + "\n");
     }
 
     /**
@@ -45,7 +51,8 @@ public class ConsolePrinter {
                 header + "\n" +
                 "  Rating Score = " + ratingScore + "\n" +
                 "  Intrinsic Value = " + intrinsicValue + "\n" +
-                "  " + currency);
+                "  " + currency
+        );
     }
 
     public static void printTickerStatus(double good, double bad, double notfound, double newTickerCount) {
@@ -81,13 +88,13 @@ public class ConsolePrinter {
             if(exchangeRate == null) {
                 continue;
             }
-            exchangeRates = exchangeRates.concat(String.format(
+            exchangeRates = exchangeRates + String.format(
                     "%3s:     %10.3f      %10s\n",
                     exchangeRate.getCode(),
                     exchangeRate.getExchangeRate(),
                     // Prints Date only if it's NOT current
                     exchangeRate.getDate().toString().equals(today.toString()) ? "" : exchangeRate.getDate()
-            ));
+            );
         }
         LOGGER.info(
                 "\n" +

@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
 
 @Service
 public class TickerService {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(TickerService.class);
+
     private final TickerRepository tickerRepository;
 
     @Autowired
@@ -93,7 +93,7 @@ public class TickerService {
     public void delete(Ticker ticker) {
         // TODO Throw exceptions
         if( this.tickerRepository.findById(ticker.getTicker()).isEmpty() ) {
-            LOGGER.error("Delete fail, 404");
+            LOGGER.error("Delete failed, Ticker was not found");
             return;
         }
         if( ticker.getTickerState() != TickerState.NEW ) {

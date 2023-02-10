@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 
 @Service
 public class InvestmentService {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(InvestmentService.class);
+
     private final ProductRepository productRepository;
     private final InvestmentMetalRepository investmentMetalRepository;
     private final InvestmentStockRepository investmentStockRepository;

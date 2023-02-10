@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 @RequestMapping("/api/v2/portfolio")         // Na url/api/v1/portfolio se zavola HTTP request
 public class PortfolioController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PortfolioController.class);
+
     private final PortfolioService portfolioService;
 
     @Autowired

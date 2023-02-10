@@ -21,10 +21,10 @@ import org.slf4j.LoggerFactory;
 
 @Component
 public class SerenityScraper extends Client implements SerenityScraperInterface {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SerenityScraper.class);
     private static final double MIN_RATING_SCORE = 6.5;
     private static final long ETHICAL_DELAY = 1000;
     private static final String BASE_URL = "https://www.grahamvalue.com/stock/";
+    private static final Logger LOGGER = LoggerFactory.getLogger(SerenityScraper.class);
 
     private final TickerService tickerService;
     private final GrahamStockService grahamStockService;
@@ -59,7 +59,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
             } catch (ResourceNotFoundException e) {
                 // TODO If I lose Internet connection, Tickers in DB are false rewritten ?!
                 this.tickerService.update(ticker, TickerState.NOTFOUND);
-                LOGGER.info(ticker.getTicker());
+                LOGGER.info(ticker.getTicker() + " - not found");
                 counter++;
                 ConsolePrinter.statusPrint(50, tickers.size(), counter);
                 dynamicSleep(ETHICAL_DELAY, startTime);

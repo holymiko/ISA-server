@@ -20,8 +20,8 @@ import org.slf4j.LoggerFactory;
 @RestController
 @RequestMapping("/api/v2/product")         // Na url/api/v1/herbivores se zavola HTTP request
 public class ProductController {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
+
     private final ProductService productService;
 
     @Autowired
