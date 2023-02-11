@@ -19,11 +19,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Class used to call methods during the building process
  */
 @Component
 public class Run {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Run.class);
 
     Process process;
     private final ScrapController scrapController;
@@ -46,7 +51,7 @@ public class Run {
     @Order(0)
     @EventListener(ApplicationStartedEvent.class)
     public void run() throws IOException {
-        System.out.println("App has started up");
+        LOGGER.info("App has started up");
         try {
             cnbScraper.scrapExchangeRate();
         } catch (ResourceNotFoundException e) {
@@ -62,8 +67,8 @@ public class Run {
 
     // @Order(1) is in MetalScraper
 
-    @Order(2)
-    @EventListener(ApplicationStartedEvent.class)
+//    @Order(2)                         TODO activate before release
+//    @EventListener(ApplicationStartedEvent.class)
     public void runFrontEnd() throws IOException {
         // Run FrontEnd NodeJS Application
         process = new ProcessBuilder(isWindows() ? "npm.cmd" : "yarn", "start")
@@ -71,16 +76,15 @@ public class Run {
                 .start();
     }
 
-    @Order(3) // Last Order index
-    @EventListener(ApplicationStartedEvent.class)
+//    @Order(3) // Last Order index     TODO activate before release
+//    @EventListener(ApplicationStartedEvent.class)
     public void runImportTickers() throws IOException {
         if(tickerService.findAll().isEmpty()) {
-            System.out.println("3) Import Tickers");
+            LOGGER.info("3) Import Tickers");
             anImport.importExportedTickers();
-            System.out.println("3) Import finished");
+            LOGGER.info("3) Import finished");
         } else {
-            // TODO Logging
-            System.out.println("3) SKIP");
+            LOGGER.info("3) SKIP");
         }
     }
 

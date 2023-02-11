@@ -9,10 +9,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v2/stock")
 public class StockController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StockController.class);
 
     private final GrahamStockService grahamStockService;
 
@@ -23,16 +28,16 @@ public class StockController {
 
     @GetMapping({"/", ""})
     public List<GrahamStock> all() {
-        // TODO Logging
-        System.out.println("Get all stocks");
+        LOGGER.info("Get all stocks");
         return grahamStockService.findAll();
     }
 
     @ResourceNotFound
     @GetMapping("/id/{id}")
     public Optional<GrahamStock> byId(@PathVariable int id) {
-        // TODO Logging
-        System.out.println("Get by Id");
+        LOGGER.info("Get by Id");
         return grahamStockService.findById(id);
     }
 }
+
+

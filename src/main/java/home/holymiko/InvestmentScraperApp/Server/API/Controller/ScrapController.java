@@ -9,10 +9,15 @@ import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v2/scrap")
 public class ScrapController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScrapController.class);
 
     private final MetalScraper metalScraper;
     private final SerenityScraper serenityScraper;
@@ -50,8 +55,7 @@ public class ScrapController {
         ScrapHistory.frequencyHandlingAll(false);
         ScrapHistory.startRunning();
 
-        // TODO Logging
-        System.out.println("Scrap ALL products IN SYNC");
+        LOGGER.info("Scrap ALL products IN SYNC");
         // Scrap Links by Product, in sync, grouped by Product
         metalScraper.generalInSyncScrapAndSleep(
                 linkService.findLinksGroupedByProduct()
@@ -61,7 +65,7 @@ public class ScrapController {
             linkService.findByProductId(null)
         );
         ConsolePrinter.printTimeStamp();
-        System.out.println("All products scraped");
+        LOGGER.info("All products scraped");
 
         ScrapHistory.timeUpdate(false, true);
         ScrapHistory.stopRunning();
@@ -71,13 +75,12 @@ public class ScrapController {
     public void scrapProductById(@PathVariable long id) {
         ScrapHistory.startRunning();
 
-        // TODO Logging
-        System.out.println("Client Product ID "+id);
+        LOGGER.info("Client Product ID "+id);
         metalScraper.generalScrapAndSleep(
                 linkService.findByProductId(id)
         );
         ConsolePrinter.printTimeStamp();
-        System.out.println("Products with ID "+id+" scraped");
+        LOGGER.info("Products with ID "+id+" scraped");
 
         ScrapHistory.stopRunning();
     }
@@ -94,7 +97,7 @@ public class ScrapController {
         // Lock guard
         ScrapHistory.startRunning();
 
-        System.out.println("By param scrap products");
+        LOGGER.info("By param scrap products");
         metalScraper.generalInSyncScrapAndSleep(
                 linkService.findLinksGroupedByProduct(metal)
         );
@@ -116,13 +119,15 @@ public class ScrapController {
      */
     @PostMapping({"/links", "/links/"})
     public void allLinks() {
+//        TODO test frequencyHandling status code
         ScrapHistory.frequencyHandlingAll(true);
         ScrapHistory.startRunning();
 
-        // TODO Logging
-        System.out.println("Scrap ALL links");
+        LOGGER.info("All link scraping in progress...");
+        long start = System.nanoTime();
         this.metalScraper.allLinksScrap();
-        ConsolePrinter.printTimeStamp();
+        long finish = System.nanoTime();
+        LOGGER.info("...scraping finished in " + (finish - start)/1000000/1000.0 + " seconds");
 
         ScrapHistory.timeUpdate(true, false);
         ScrapHistory.stopRunning();
@@ -136,9 +141,9 @@ public class ScrapController {
 //            // Scraps from all dealers
 //            this.scrapMetals.values().forEach(
 //                    scrapMetal -> {
-//                        System.out.println("MetalScraper pricesByProducts");
+//                        LOGGER.info("MetalScraper pricesByProducts");
 //                        scrapMetal.scrapProductByIdList(productIds);
-//                        System.out.println(">> Prices scraped");
+//                        LOGGER.info(">> Prices scraped");
 //                        ConsolePrinter.printTimeStamp();
 //                    }
 //            );
