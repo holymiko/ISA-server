@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO Consider refactoring to abstract class
 public interface ProductListInterface {
     Logger LOGGER = LoggerFactory.getLogger(ProductListInterface.class);
 

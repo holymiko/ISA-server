@@ -25,13 +25,13 @@ public class ConsolePrinter {
 
         LOGGER.info(header);
         for (Double x : ratings) {
-            variable = variable + x + "\n";
+            variable += x + "\n";
         }
         LOGGER.info(variable);
         LOGGER.info("Rating Score = "+ratingScore);
         variable = "\n";
         for (Double x : results) {
-            variable = variable + x + "\n";
+            variable += x + "\n";
         }
         LOGGER.info(variable);
         LOGGER.info(currency + "\n");
@@ -47,8 +47,7 @@ public class ConsolePrinter {
      */
     public static void printScrapStockShort(final String header, final Double ratingScore, final Double intrinsicValue, final String currency) {
         LOGGER.info(
-                "\n" +
-                header + "\n" +
+                "\n" + header + "\n" +
                 "  Rating Score = " + ratingScore + "\n" +
                 "  Intrinsic Value = " + intrinsicValue + "\n" +
                 "  " + currency
@@ -60,8 +59,7 @@ public class ConsolePrinter {
         final double totalTickers = sum + newTickerCount;
 
         LOGGER.info(
-                "\n" +
-                "Serenity Scraper\n" +
+                "\nSerenity Scraper\n" +
                 "-----------------------------------------------------------------\n" +
                 String.format("Good:     %12d  %3d%s\n", Math.round(good), getPercentage(good, sum), "%") +
                 String.format("Bad:      %12d  %3d%s\n", Math.round(bad), getPercentage(bad, sum), "%") +
@@ -88,7 +86,7 @@ public class ConsolePrinter {
             if(exchangeRate == null) {
                 continue;
             }
-            exchangeRates = exchangeRates + String.format(
+            exchangeRates += String.format(
                     "%3s:     %10.3f      %10s\n",
                     exchangeRate.getCode(),
                     exchangeRate.getExchangeRate(),
@@ -97,8 +95,7 @@ public class ConsolePrinter {
             );
         }
         LOGGER.info(
-                "\n" +
-                "Exchange rates of Czech National Bank\n" +
+                "\nExchange rates of Czech National Bank\n" +
                 "-----------------------------------------------------------------\n" +
                 exchangeRates
         );
