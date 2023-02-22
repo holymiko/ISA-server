@@ -7,6 +7,12 @@ import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "link")
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Getter
 public class Link {

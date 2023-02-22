@@ -6,6 +6,12 @@ import lombok.Getter;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "ticker")
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Getter
 public class Ticker {

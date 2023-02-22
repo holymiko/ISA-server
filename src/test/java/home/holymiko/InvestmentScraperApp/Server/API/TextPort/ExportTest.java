@@ -12,65 +12,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.xml.bind.JAXBException;
+import java.io.IOException;
+
 class ExportTest {
 
     private final Export export = new Export();
 
     @Test
-    void exportProductToPDF() {
-        // Mock
-        Link link0 = new Link(Dealer.ZLATAKY, "https://zlataky.cz/1-g-argor-heraeus-sa-svycarsko-investicni-zlaty-slitek");
-        Link link1 = new Link(Dealer.BESSERGOLD_CZ, "https://www.bessergold.cz/cs/catalog/product/view/id/1810/s/zlaty-slitek-1-g-argor-heraeus-svycarsko/category/52/");
-        PricePair pricePair00 = new PricePair(
-                Dealer.ZLATAKY,
-                new Price(LocalDateTime.now(), 1808.45, false),
-                new Price(LocalDateTime.now(), 1428.50, true),
-                -1L
-        );
-        PricePair pricePair01 = new PricePair(
-                Dealer.ZLATAKY,
-                new Price(LocalDateTime.now().minusHours(2), 1718.45, false),
-                new Price(LocalDateTime.now().minusHours(2), 1428.50, true),
-                -1L
-        );
-        PricePair pricePair02 = new PricePair(
-                Dealer.ZLATAKY,
-                new Price(LocalDateTime.now().minusDays(1), 1818.45, false),
-                new Price(LocalDateTime.now().minusDays(1), 1528.50, true),
-                -1L
-        );
-        PricePair pricePair10 = new PricePair(
-                Dealer.BESSERGOLD_CZ,
-                new Price(LocalDateTime.now(), 1818.45, false),
-                new Price(LocalDateTime.now(), 1528.50, true),
-                -1L
-        );
-        PricePair pricePair11 = new PricePair(
-                Dealer.BESSERGOLD_CZ,
-                new Price(LocalDateTime.now().minusHours(2), 1918.45, false),
-                new Price(LocalDateTime.now().minusHours(2), 1628.50, true),
-                -1L
-        );
-        PricePair pricePair12 = new PricePair(
-                Dealer.BESSERGOLD_CZ,
-                new Price(LocalDateTime.now().minusDays(1), 1718.45, false),
-                new Price(LocalDateTime.now().minusDays(1), 1428.50, true),
-                -1L
-        );
-
-        Product product = new Product("Zlatý slitek 1g ARGOR-HERAEUS (Švýcarsko)", Producer.ARGOR_HERAEUS, Form.BAR, Metal.GOLD, 1.0, 2023, false);
-        product.setLinks(
-                Arrays.asList(link0, link1)
-        );
-        product.setPricePairs(
-                Arrays.asList(pricePair00, pricePair10, pricePair01, pricePair11, pricePair02, pricePair12)
-        );
-
-        export.exportToPDF(product);
-    }
-
-    @Test
-    void exportPortfolioToPDF() {
+    void exportPortfolioToPDF() throws IOException, JAXBException {
         // Mock
         Link link00 = new Link(Dealer.ZLATAKY, "https://zlataky.cz/1-g-argor-heraeus-sa-svycarsko-investicni-zlaty-slitek");
         Link link01 = new Link(Dealer.BESSERGOLD_CZ, "https://www.bessergold.cz/cs/catalog/product/view/id/1810/s/zlaty-slitek-1-g-argor-heraeus-svycarsko/category/52/");
@@ -148,14 +98,14 @@ class ExportTest {
 
         InvestmentMetal investmentMetal0 = new InvestmentMetal(product0, Dealer.ZLATAKY, 1808.45, LocalDate.now());
         InvestmentMetal investmentMetal1 = new InvestmentMetal(product1, Dealer.BESSERGOLD_CZ, 858.00, LocalDate.now().minusWeeks(65));
-        InvestmentMetal investmentMetal2 = new InvestmentMetal(product2, Dealer.ZLATAKY, 102058.12, LocalDate.now().minusDays(3));
+        InvestmentMetal investmentMetal2 = new InvestmentMetal(product2, Dealer.ZLATAKY, 10205.12, LocalDate.now().minusDays(3));
         InvestmentMetal investmentMetal3 = new InvestmentMetal(product3, Dealer.BESSERGOLD_CZ, 5865.00, LocalDate.now().minusMonths(1));
 
-        GrahamStock stock0 = new GrahamStock();
-        GrahamStock stock1 = new GrahamStock();
+        GrahamStock stock0 = new GrahamStock(null, "stock0", null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+        GrahamStock stock1 = new GrahamStock(null, "stock1", null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
 
-        InvestmentStock investmentStock0 = new InvestmentStock(stock0, 5, 45, LocalDate.now());
-        InvestmentStock investmentStock1 = new InvestmentStock(stock1, 10589, 845, LocalDate.now().minusWeeks(2));
+        InvestmentStock investmentStock0 = new InvestmentStock(stock0, 5, 100, LocalDate.now());
+        InvestmentStock investmentStock1 = new InvestmentStock(stock1, 3, 845, LocalDate.now().minusWeeks(2));
 
         Portfolio portfolio = new Portfolio(
                 "Nelson Mandela",
@@ -163,7 +113,18 @@ class ExportTest {
                 Arrays.asList(investmentStock0, investmentStock1)
         );
 
-        export.exportToPDF(portfolio);
+        export.exportToJSON(portfolio);
+        export.exportToJSON(product0);
+        export.exportToJSON(stock0);
+        export.exportToJSON(investmentMetal0);
+        export.exportToJSON(investmentStock0);
+        export.exportToJSON(pricePair00);
+        export.exportToXML(portfolio);
+        export.exportToXML(product0);
+        export.exportToXML(stock0);
+        export.exportToXML(investmentMetal0);
+        export.exportToXML(investmentStock0);
+        export.exportToXML(pricePair00);
     }
 
 }

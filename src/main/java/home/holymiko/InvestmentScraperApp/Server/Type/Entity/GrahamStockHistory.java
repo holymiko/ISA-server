@@ -11,6 +11,12 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "grahamStockHistory")
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Getter
 public class GrahamStockHistory {
