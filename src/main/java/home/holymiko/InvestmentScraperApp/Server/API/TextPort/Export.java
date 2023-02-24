@@ -36,11 +36,14 @@ public class Export {
     private static final Logger LOGGER = LoggerFactory.getLogger(Export.class);
     public static final String TICKER_PATH = "txt/export/tickers/";
     private static final String STOCK_PATH = "txt/export/stocks/";
+    private static final  String PDF_PATH = "txt/export/pdf";
+    private static final String JSON_PATH = "txt/export/json/";
+    private static final String XML_PATH = "txt/export/xml/";
     private static final String DELIMITER = "#";
     private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss");
 
     public void exportToXML(Object object) throws JAXBException {
-        File file = new File(object.getClass().getSimpleName() + "_" + dtf.format(LocalDateTime.now()) +".xml");
+        File file = new File(XML_PATH + object.getClass().getSimpleName() + "_" + dtf.format(LocalDateTime.now()) +".xml");
         JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
         Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -48,7 +51,7 @@ public class Export {
     }
 
     public void exportToJSON(Object object) throws IOException {
-        FileWriter myWriter = new FileWriter(object.getClass().getSimpleName() + "_" + dtf.format(LocalDateTime.now()) +".json");
+        FileWriter myWriter = new FileWriter(JSON_PATH + object.getClass().getSimpleName() + "_" + dtf.format(LocalDateTime.now()) +".json");
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateSerializer());
         gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer());

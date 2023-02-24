@@ -20,7 +20,7 @@ class ExportTest {
     private final Export export = new Export();
 
     @Test
-    void exportPortfolioToPDF() throws IOException, JAXBException {
+    void exportObjectToXmlAndJson() throws IOException, JAXBException {
         // Mock
         Link link00 = new Link(Dealer.ZLATAKY, "https://zlataky.cz/1-g-argor-heraeus-sa-svycarsko-investicni-zlaty-slitek");
         Link link01 = new Link(Dealer.BESSERGOLD_CZ, "https://www.bessergold.cz/cs/catalog/product/view/id/1810/s/zlaty-slitek-1-g-argor-heraeus-svycarsko/category/52/");
