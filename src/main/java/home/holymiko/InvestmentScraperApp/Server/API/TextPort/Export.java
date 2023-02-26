@@ -36,7 +36,6 @@ public class Export {
     private static final Logger LOGGER = LoggerFactory.getLogger(Export.class);
     public static final String TICKER_PATH = "txt/export/tickers/";
     private static final String STOCK_PATH = "txt/export/stocks/";
-    private static final  String PDF_PATH = "txt/export/pdf";
     private static final String JSON_PATH = "txt/export/json/";
     private static final String XML_PATH = "txt/export/xml/";
     private static final String DELIMITER = "#";
