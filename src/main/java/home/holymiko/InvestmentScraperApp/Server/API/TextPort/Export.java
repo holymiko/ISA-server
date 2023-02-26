@@ -43,6 +43,7 @@ public class Export {
     private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss");
 
     public void exportToXML(Object object) throws JAXBException {
+        new File(XML_PATH).mkdirs();
         File file = new File(XML_PATH + object.getClass().getSimpleName() + "_" + dtf.format(LocalDateTime.now()) +".xml");
         JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
         Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
@@ -51,6 +52,7 @@ public class Export {
     }
 
     public void exportToJSON(Object object) throws IOException {
+        new File(JSON_PATH).mkdirs();
         FileWriter myWriter = new FileWriter(JSON_PATH + object.getClass().getSimpleName() + "_" + dtf.format(LocalDateTime.now()) +".json");
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateSerializer());
