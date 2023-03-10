@@ -79,7 +79,7 @@ public class ProductService {
     /////////// FIND
 
     public Optional<Product> findByLink(String url) {
-        return this.productRepository.findByLinks_Url(url);
+        return this.productRepository.findByLinks_Uri(url);
     }
 
     public List<Product> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean isSpecial) {

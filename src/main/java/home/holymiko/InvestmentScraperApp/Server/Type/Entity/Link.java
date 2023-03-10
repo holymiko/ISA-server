@@ -2,8 +2,10 @@ package home.holymiko.InvestmentScraperApp.Server.Type.Entity;
 
 import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
+import lombok.AccessLevel;
 import lombok.Getter;
-import org.springframework.lang.Nullable;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -13,44 +15,32 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "link")
 @XmlAccessorType(XmlAccessType.FIELD)
-@Entity
+@ToString
 @Getter
+@Setter
+@Entity
 public class Link {
     @Id
     @GeneratedValue
+    @Setter(AccessLevel.NONE)
     private Long Id;
-    private Dealer dealer;
     @NotNull
-    private String url;
+    private String uri;
+    private String name;
+    private Dealer dealer;
     private Long productId;
 
     public Link() {
     }
 
-    public Link(Dealer dealer, String url) {
+    public Link(Dealer dealer, String uri) {
         this.dealer = dealer;
-        this.url = url;
+        this.uri = uri;
     }
 
-    public void setDealer(Dealer dealer) {
+    public Link(String uri, String name, Dealer dealer) {
+        this.uri = uri;
+        this.name = name;
         this.dealer = dealer;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    @Override
-    public String toString() {
-        return "Link{" +
-                "Id=" + Id +
-                ", dealer=" + dealer +
-                ", url='" + url + '\'' +
-//                ", product=" + product +
-                '}';
     }
 }
