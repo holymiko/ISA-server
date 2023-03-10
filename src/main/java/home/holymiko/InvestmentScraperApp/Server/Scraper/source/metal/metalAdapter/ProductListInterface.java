@@ -63,7 +63,7 @@ public interface ProductListInterface {
     /**
      * TODO Refactor name to scrapLinkAndName
      *  Add xPathToName parameter
-     *  Add corresponding xPath to adapters
+     *  To adapters, add corresponding xPath constant 'X_PATH_PRODUCT_LIST_PRODUCT_NAME' matching product name
      *  Use Link constructor including 'name'
      *  Drop DB and check if it loads data
      */
