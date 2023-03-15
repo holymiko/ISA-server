@@ -57,4 +57,14 @@ class ProductControllerTest {
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFoundException))
                 .andExpect(result -> assertEquals(myMsg, result.getResolvedException().getMessage()));
     }
+
+    @Test
+    void byIdNullId() throws Exception {
+        String myMsg = "Some error msg";
+        when(productService.findByIdAsDTOAllPrices(any())).thenThrow(new ResourceNotFoundException(myMsg));
+        this.mockMvc.perform(get("/api/v2/product/id/{id}", (Object) null))
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFoundException))
+                .andExpect(result -> assertEquals(myMsg, result.getResolvedException().getMessage()));
+    }
 }
