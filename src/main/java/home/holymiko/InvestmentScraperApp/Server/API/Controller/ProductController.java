@@ -48,12 +48,12 @@ public class ProductController {
     @GetMapping({ "/dto/metal/{metal}", "/dto/metal/{metal}/"})
     public List<ProductDTO_LatestPrices> byMetalAsDTO(@PathVariable String metal) {
         System.out.println("Get products byMetal "+metal+" as DTO");
-        return switch (metal) {
+        return switch (metal.toLowerCase()) {
             case "gold" -> this.productService.findByMetalAsDTO(Metal.GOLD);
             case "silver" -> this.productService.findByMetalAsDTO(Metal.SILVER);
             case "platinum" -> this.productService.findByMetalAsDTO(Metal.PLATINUM);
             case "palladium" -> this.productService.findByMetalAsDTO(Metal.PALLADIUM);
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only possible values for path variable are: 'gold', 'silver', 'platinum' and 'palladium'");
         };
     }
 
