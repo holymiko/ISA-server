@@ -11,7 +11,6 @@ import org.springframework.data.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class BessergoldDeAdapter extends Client implements MetalAdapterInterface {
 
@@ -94,7 +93,7 @@ public class BessergoldDeAdapter extends Client implements MetalAdapterInterface
     @Override
     public double scrapPriceFromProductPage(HtmlPage productDetailPage) {
         try {
-            return Convert.currencyConvert(
+            return Convert.currency(
                     ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText().replace(".", ""),
                     euroExchangeRate,
                     "€"
@@ -116,7 +115,7 @@ public class BessergoldDeAdapter extends Client implements MetalAdapterInterface
     @Override
     public double scrapBuyOutPrice(HtmlPage page) {
         try {
-            return Convert.currencyConvert(
+            return Convert.currency(
                     buyOutHtmlToText(page.getFirstByXPath(X_PATH_REDEMPTION_PRICE)),
                     euroExchangeRate,
                     "€"

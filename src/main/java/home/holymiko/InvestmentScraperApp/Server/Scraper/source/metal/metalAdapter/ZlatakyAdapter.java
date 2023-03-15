@@ -97,7 +97,7 @@ public class ZlatakyAdapter extends Client implements MetalAdapterInterface {
     @Override
     public double scrapBuyOutPrice(HtmlPage page) {
         try {
-            return Convert.currencyToNumberConvert(
+            return Convert.currencyToDouble(
                     ((HtmlElement) page.getFirstByXPath(X_PATH_REDEMPTION_PRICE)).asText()
             );
         } catch (Exception e) {
