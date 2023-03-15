@@ -6,7 +6,8 @@ import java.util.Locale;
 
 public class Convert {
 
-    public static String currencyClean(String text) throws NumberFormatException{
+    public static String currencyClean(String text) throws NullPointerException {
+        if(text == null) throw new NullPointerException();
         text = text.toLowerCase();
         text = text.replace("\u00a0", "");         // &nbsp;
         text = text.replace(" ", "");
@@ -15,15 +16,19 @@ public class Convert {
         text = text.replace("€", "");
         text = text.replace("$", "");
         text = text.replace("%", "");
+        text = text.replace("£", "");
+        text = text.replace("¥", "");
         return text;
     }
 
     /**
-     * Extracts number from text format.
+     * Extracts number from price text. Preforms currency clean
      * @param text text including only number and currency
+     * @throws NumberFormatException empty
+     * @throws NullPointerException
      * @return price from text
      */
-    public static Double currencyToNumberConvert(String text) throws NumberFormatException{
+    public static Double currencyToDouble(String text) throws NullPointerException, NumberFormatException {
         return Double.parseDouble(
                 currencyClean(text)
         );
@@ -37,19 +42,16 @@ public class Convert {
      * @return
      * @throws NullPointerException
      */
-    public static Double currencyConvert(String text, Double exchangeRate, String currencySignature) throws NullPointerException {
-        // Get number
-        Double number = currencyToNumberConvert(text);
+    public static Double currency(String text, Double exchangeRate, String currencySignature) throws NullPointerException, NumberFormatException, IllegalArgumentException {
         if(text == null || currencySignature == null || exchangeRate == null) {
             throw new NullPointerException("Null pointer in currencyConvert");
         }
-        text = text.toLowerCase();
-        currencySignature = currencySignature.toLowerCase();
+        if(currencySignature.equals("")) throw new IllegalArgumentException("Currency signature is empty");
         // Try to find given currency and perform conversion
-        if(text.contains(currencySignature)) {
-            return number * exchangeRate;
+        if(text.toLowerCase().contains( currencySignature.toLowerCase() )) {
+            return currencyToDouble(text) * exchangeRate;
         }
-        return number;
+        return currencyToDouble(text);
     }
 
     /**
@@ -57,18 +59,27 @@ public class Convert {
      * @param text text including only number and currency
      * @return price from text
      */
-    public static Double numberConvertSerenity(String text) {
+    public static Double serenityToNumber(String text) throws NullPointerException, NumberFormatException {
+        if(text == null) throw new NullPointerException();
         text = text.replace(",", "");             // -> Double
-        return currencyToNumberConvert(text);
+        return currencyToDouble(text);
     }
 
-    public static GrahamGrade gradeConvert(final String text) throws IllegalArgumentException {
-        return switch (text.toLowerCase(Locale.ROOT)) {
+    /**
+     * Converts String to GrahamGrade Enum class.
+     * @param nameOfGG
+     * @return Enum
+     * @throws IllegalArgumentException - No Enum was found
+     * @throws NullPointerException
+     */
+    public static GrahamGrade grahamGrade(final String nameOfGG) throws IllegalArgumentException, NullPointerException {
+        if(nameOfGG == null) throw new NullPointerException();
+        return switch (nameOfGG.toLowerCase(Locale.ROOT)) {
             case "enterprising" -> GrahamGrade.ENTERPRISING;
             case "defensive" -> GrahamGrade.DEFENSIVE;
             case "ungraded" -> GrahamGrade.UNGRADED;
             case "ncav (net-net)" -> GrahamGrade.NCAV;
-            default -> throw new IllegalArgumentException("Invalid Enum argument - '"+text+"'");
+            default -> throw new IllegalArgumentException("Invalid Enum argument - '"+nameOfGG+"'");
         };
     }
 
@@ -78,8 +89,10 @@ public class Convert {
      * @param nameOfMetal - precise name of the metal in Czech or English. Input is CaseInsensitive
      * @return Enum
      * @throws IllegalArgumentException - No Enum was found
+     * @throws NullPointerException
      */
-    public static Metal metalConvert(String nameOfMetal) throws IllegalArgumentException {
+    public static Metal metal(String nameOfMetal) throws IllegalArgumentException, NullPointerException {
+        if(nameOfMetal == null) throw new NullPointerException();
         return switch (nameOfMetal.toLowerCase(Locale.ROOT)) {
             case "zlato", "gold" -> Metal.GOLD;
             case "stříbro", "silver", "silber" -> Metal.SILVER;

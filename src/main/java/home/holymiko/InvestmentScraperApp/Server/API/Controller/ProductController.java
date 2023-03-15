@@ -1,6 +1,5 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
-import home.holymiko.InvestmentScraperApp.Server.Core.annotation.ResourceNotFound;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_LatestPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,18 +29,16 @@ public class ProductController {
 
     /////// GET
 
-    @ResourceNotFound
     @GetMapping("/id/{id}")
-    public Optional<ProductDTO_AllPrices> byId(@PathVariable long id) {
+    public ProductDTO_AllPrices byId(@PathVariable long id) {
         LOGGER.info("Get product by Id");
         return productService.findByIdAsDTOAllPrices(id);
     }
 
     /////// GET DTO
 
-    @ResourceNotFound
     @GetMapping("/dto/id/{id}")
-    public Optional<ProductDTO_LatestPrices> byIdAsDTO(@PathVariable long id) {
+    public ProductDTO_LatestPrices byIdAsDTO(@PathVariable long id) {
         LOGGER.info("Get by Id "+id+" as Product DTO");
         return productService.findByIdAsDTO(id);
     }
@@ -61,7 +57,7 @@ public class ProductController {
             case "silver" -> this.productService.findByMetalAsDTO(Metal.SILVER);
             case "platinum" -> this.productService.findByMetalAsDTO(Metal.PLATINUM);
             case "palladium" -> this.productService.findByMetalAsDTO(Metal.PALLADIUM);
-            default -> throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         };
     }
 
