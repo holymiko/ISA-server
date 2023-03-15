@@ -2,6 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.Service;
 
 import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PricePairRepository;
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_LatestPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDTO;
@@ -40,25 +41,20 @@ public class ProductService {
 
     /////////// FIND AS DTO
 
-    public Optional<Product> findById(Long id) {
-        return productRepository.findById(id);
-    }
-
-    public Optional<ProductDTO_LatestPrices> findByIdAsDTO(Long id) {
-        Optional<Product> optionalProductDTO = this.productRepository.findById(id);
-        return optionalProductDTO.map(
-                x -> productMapper.toProductDTO_LatestPrices(x, pricePairRepository)
-        );
-    }
-
-    public Optional<ProductDTO_AllPrices> findByIdAsDTOAllPrices(Long id) {
+    private Product findById(Long id) {
         Optional<Product> optionalProduct = this.productRepository.findById(id);
-
         if(optionalProduct.isEmpty()) {
-            return Optional.empty();
+            throw new ResourceNotFoundException("Product with id "+id+" was not found");
         }
+        return optionalProduct.get();
+    }
 
-        return Optional.of(productMapper.toProductDTO_AllPrices(optionalProduct.get(), pricePairRepository));
+    public ProductDTO_LatestPrices findByIdAsDTO(Long id) {
+        return productMapper.toProductDTO_LatestPrices(findById(id), pricePairRepository);
+    }
+
+    public ProductDTO_AllPrices findByIdAsDTOAllPrices(Long id) {
+        return productMapper.toProductDTO_AllPrices(findById(id), pricePairRepository);
     }
 
     public List<ProductDTO_LatestPrices> findAllAsDTO() {
@@ -78,8 +74,8 @@ public class ProductService {
 
     /////////// FIND
 
-    public Optional<Product> findByLink(String url) {
-        return this.productRepository.findByLinks_Url(url);
+    public Product findByLink(String uri) {
+        return this.productRepository.findByLinks_Url(uri).orElseThrow(ResourceNotFoundException::new);
     }
 
     public List<Product> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean isSpecial) {
@@ -137,37 +133,4 @@ public class ProductService {
         this.productRepository.save(product);
     }
 
-
-
-/*
-    public Optional<Product> findByLink(Link link) {
-        return this.productRepository.findByLinks(link);
-    }
-
-    public List<Product> findAll() {
-        return this.productRepository.findAll();
-    }
-
-    public List<Product> findProducts(List<Long> investmentIds) {
-        List<Product> investments = new ArrayList<>();
-        for (Long id : investmentIds) {
-            Optional<Product> optionalProduct = this.productRepository.findById(id);
-            if(optionalProduct.isPresent()){
-                investments.add(optionalProduct.get());
-            } else {
-                LOGGER.error("Product by ID does exist");
-            }
-        }
-        return investments;
-    }
-
-    public List<PricePair> findProductPrices(Long id) {
-        Optional<Product> product = this.productRepository.findById(id);
-        if (product.isPresent()) {
-            return product.get().getPricePairs();
-        }
-        return new ArrayList<>();
-    }
-
- */
 }
