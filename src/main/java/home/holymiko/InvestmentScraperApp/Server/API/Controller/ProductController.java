@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/api/v2/product")         // Na url/api/v1/herbivores se zavola HTTP request
+@RequestMapping("/api/v2/product")
 public class ProductController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
 
@@ -49,15 +49,16 @@ public class ProductController {
         return productService.findAllAsDTO();
     }
 
+    // TODO Rebuild to @RequestParam
     @GetMapping({ "/dto/metal/{metal}", "/dto/metal/{metal}/"})
     public List<ProductDTO_LatestPrices> byMetalAsDTO(@PathVariable String metal) {
         LOGGER.info("Get products byMetal "+metal+" as DTO");
-        return switch (metal) {
+        return switch (metal.toLowerCase()) {
             case "gold" -> this.productService.findByMetalAsDTO(Metal.GOLD);
             case "silver" -> this.productService.findByMetalAsDTO(Metal.SILVER);
             case "platinum" -> this.productService.findByMetalAsDTO(Metal.PLATINUM);
             case "palladium" -> this.productService.findByMetalAsDTO(Metal.PALLADIUM);
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only possible values for path variable are: 'gold', 'silver', 'platinum' and 'palladium'");
         };
     }
 

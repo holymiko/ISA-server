@@ -163,6 +163,20 @@ class ConvertTest {
         Assertions.assertEquals(GrahamGrade.ENTERPRISING, Convert.grahamGrade("enTERprising"));
     }
 
+    @Test
+    void grahamGrade3() {
+        Assertions.assertEquals(GrahamGrade.NCAV, Convert.grahamGrade("ncav (net-net)"));
+    }
+
+    @Test
+    void grahamGrade4() {
+        Assertions.assertEquals(GrahamGrade.UNGRADED, Convert.grahamGrade("uNgradeD"));
+    }
+
+    @Test
+    void grahamGrade5() {
+        Assertions.assertEquals(GrahamGrade.DEFENSIVE, Convert.grahamGrade("defensivE"));
+    }
 
     @Test
     void metal0() {
@@ -177,5 +191,20 @@ class ConvertTest {
     @Test
     void metal2() {
         Assertions.assertEquals(Metal.GOLD, Convert.metal("GoLD"));
+    }
+
+    @Test
+    void metal3GE() {
+        Assertions.assertEquals(Metal.SILVER, Convert.metal("SilBER"));
+    }
+
+    @Test
+    void metal4() {
+        Assertions.assertEquals(Metal.PALLADIUM, Convert.metal("palladium"));
+    }
+
+    @Test
+    void metal5GE() {
+        Assertions.assertEquals(Metal.PLATINUM, Convert.metal("platiN"));
     }
 }
