@@ -7,13 +7,13 @@ import lombok.Getter;
 public class LinkDTO {
     private final Long Id;
     private final Dealer dealer;
-    private final String url;
+    private final String uri;
     private final Long productId;
 
-    public LinkDTO(Long id, Dealer dealer, String url, Long productId) {
+    public LinkDTO(Long id, Dealer dealer, String uri, Long productId) {
         Id = id;
         this.dealer = dealer;
-        this.url = url;
+        this.uri = uri;
         this.productId = productId;
     }
 
@@ -22,7 +22,7 @@ public class LinkDTO {
         return "LinkDTO{" +
                 "Id=" + Id +
                 ", dealer=" + dealer +
-                ", url='" + url + '\'' +
+                ", url='" + uri + '\'' +
                 ", productId=" + productId +
                 '}';
     }
