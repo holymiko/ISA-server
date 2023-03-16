@@ -8,7 +8,6 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapt
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
-import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
@@ -18,13 +17,10 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 public class MetalScraper {
@@ -317,48 +313,6 @@ public class MetalScraper {
         System.out.println("> New pricePair saved - " + linkDTO.getUrl());
     }
 
-    /**
-     * TODO Method has to be tested
-     */
-    @Deprecated
-    private void redemptionScrap(final Metal metal, final Dealer dealer) {
-//        System.out.println(">>> Redemption Scrap");
-//        if( dealerToMetalAdapter.get(dealer) instanceof BuyOutInterface) {
-//            System.out.println(">>>>> Scraping Redemption List available");
-//            List<Pair<String, Double>> nameRedemptionMap = ((BuyOutInterface) dealerToMetalAdapter.get(dealer)).scrapBuyOutFromList();
-//
-//            nameRedemptionMap.forEach(
-//                x -> {
-//                    try {
-//                        priceService.updatePricePair(x.getFirst(), dealer, x.getSecond(), true);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            );
-//        } else {
-//            System.out.println(">>>>> Scraping Redemption List is NOT available");
-//            // TODO Throw and catch in upper layer
-//        }
-//
-//        System.out.println("Redemption "+dealer+" "+metal+" update");
-    }
-
-
-    /**
-     * TODO Method has to be tested
-     */
-    @Deprecated
-    public void scrapProductByIdList(final List<Long> productIds) {
-        for (long productId : productIds) {
-            // Scraps new price for this.dealer product link
-            linkService.findByProductId(productId)
-                    .forEach(
-                            this::priceScrap
-                    );
-        }
-    }
-
 
     ///////////////////// LINK
     /////// PUBLIC
@@ -381,20 +335,6 @@ public class MetalScraper {
                                 }
                         )
         );
-    }
-
-    public void linksByDealerScrap(Dealer dealer) {
-        dealerToMetalAdapter.get(dealer).scrapAllLinksFromProductLists()
-                .forEach(
-                        link -> {
-                            try {
-                                linkService.save(link);
-                                System.out.println("Link saved");
-                            } catch (Exception e) {
-                                System.out.println(e.getMessage());
-                            }
-                        }
-                );
     }
 
 }
