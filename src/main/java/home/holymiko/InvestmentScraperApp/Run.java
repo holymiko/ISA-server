@@ -72,11 +72,6 @@ public class Run {
     public void scrap() throws IOException {
         scrapController.allLinks();
         scrapController.allProductsInSync();
-//        scrapController.serenity();
-    }
-
-    @EventListener(ApplicationReadyEvent.class)
-    public void scrapDev() throws IOException {
 //        metalScraper.linksByDealerScrap(Dealer.SILVERUM);
 //        metalScraper.generalScrapAndSleep(
 //                linkService.findByDealer(Dealer.SILVERUM)
@@ -85,6 +80,7 @@ public class Run {
 //                linkService.findByProductId(null)
 //        );
     }
+
 
 
     static boolean isWindows() {

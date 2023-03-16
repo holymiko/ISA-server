@@ -25,5 +25,4 @@ public class LinkController {
         return this.linkService.findByDealer(dealer);
     }
 
-    // TODO getCount
 }

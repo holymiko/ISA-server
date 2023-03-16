@@ -16,10 +16,6 @@ public class ScrapController {
     private final ScrapHistory scrapHistory;
     private final LinkService linkService;
 
-    // TODO Endpoint for cnbScraper
-    // TODO Endpoint for scrap stock by ticker
-    // TODO method byPortfolio should include stock scraping
-
     @Autowired
     public ScrapController(MetalScraper metalScraper, ScrapHistory scrapHistory, LinkService linkService) {
         this.metalScraper = metalScraper;
@@ -35,7 +31,6 @@ public class ScrapController {
 
     //////// Products
 
-    // TODO Post
     /**
      * Scrap products for ALL Links. Including Links which doesn't have Product yet.
      * Scraping of Prices is grouped by Product. Prices from different Dealers, are for each Product,
@@ -46,7 +41,6 @@ public class ScrapController {
         ScrapHistory.frequencyHandlingAll(false);
         ScrapHistory.startRunning();
 
-        // TODO Logging
         System.out.println("Scrap ALL products IN SYNC");
         // Scrap Links by Product, in sync, grouped by Product
         metalScraper.generalInSyncScrapAndSleep(
@@ -67,7 +61,6 @@ public class ScrapController {
     public void scrapProductById(@PathVariable long id) {
         ScrapHistory.startRunning();
 
-        // TODO Logging
         System.out.println("Client Product ID "+id);
         metalScraper.generalScrapAndSleep(
                 linkService.findByProductId(id)
@@ -111,7 +104,6 @@ public class ScrapController {
         ScrapHistory.frequencyHandlingAll(true);
         ScrapHistory.startRunning();
 
-        // TODO Logging
         System.out.println("Scrap ALL links");
         this.metalScraper.allLinksScrap();
         ConsolePrinter.printTimeStamp();
@@ -119,44 +111,5 @@ public class ScrapController {
         ScrapHistory.timeUpdate(true, false);
         ScrapHistory.stopRunning();
     }
-
-//    TODO Test & Activate this endpoint
-//    @RequestMapping({"/productsIds", "/productsIds/"})
-//    public void byProductIds(@RequestBody List<Long> productIds) {
-//        ScrapHistory.startRunning();
-//        try {
-//            // Scraps from all dealers
-//            this.scrapMetals.values().forEach(
-//                    scrapMetal -> {
-//                        System.out.println("MetalScraper pricesByProducts");
-//                        scrapMetal.scrapProductByIdList(productIds);
-//                        System.out.println(">> Prices scraped");
-//                        ConsolePrinter.printTimeStamp();
-//                    }
-//            );
-//        } catch (ResponseStatusException e){
-//            ScrapHistory.stopRunning();
-//            throw e;
-//        }
-//        ScrapHistory.stopRunning();
-//        throw new ResponseStatusException(HttpStatus.OK, "MetalScraper done");
-//    }
-
-//    TODO Test & Activate this endpoint
-//    @RequestMapping({"/portfolio/{id}", "/portfolio/{id}/"})
-//    public void scrapProductsByPortfolio(@PathVariable long id) {
-//        ScrapHistory.startRunning();
-//        try {
-//            // Scraps products from all dealers
-//            this.scrapMetals.values().forEach(
-//                    scrapMetal -> scrapMetal.productByPortfolio(id)
-//            );
-//        } catch (ResponseStatusException e){
-//            ScrapHistory.stopRunning();
-//            throw e;
-//        }
-//        ScrapHistory.stopRunning();
-//        throw new ResponseStatusException(HttpStatus.OK, "MetalScraper done");
-//    }
 
 }
