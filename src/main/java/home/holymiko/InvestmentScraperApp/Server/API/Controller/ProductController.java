@@ -45,6 +45,7 @@ public class ProductController {
         return productService.findAllAsDTO();
     }
 
+    // TODO Rebuild to @RequestParam
     @GetMapping({ "/dto/metal/{metal}", "/dto/metal/{metal}/"})
     public List<ProductDTO_LatestPrices> byMetalAsDTO(@PathVariable String metal) {
         System.out.println("Get products byMetal "+metal+" as DTO");
