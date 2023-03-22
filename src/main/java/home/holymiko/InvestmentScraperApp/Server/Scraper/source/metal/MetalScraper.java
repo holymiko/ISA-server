@@ -184,7 +184,7 @@ public class MetalScraper {
         }
 
         // Throws ResourceNotFoundException
-        page = adapter.getPage(link.getUrl());
+        page = adapter.getPage(link.getUri());
 
         // Scraps name of the Product
         try {
@@ -201,14 +201,14 @@ public class MetalScraper {
         }
 
         if(name == null || name.equals("") ) {
-            throw new ScrapFailedException("Invalid name - "+link.getUrl());
+            throw new ScrapFailedException("Invalid name - "+link.getUri());
         }
 
         // Extraction of parameters for saving new Product to DB
         try {
             productExtracted = Extract.productAggregateExtract(name);
         } catch (IllegalArgumentException e) {
-            throw new ScrapFailedException("Extraction ERROR: "+name +" "+link.getUrl()+" - "+e.getMessage());
+            throw new ScrapFailedException("Extraction ERROR: "+name +" "+link.getUri()+" - "+e.getMessage());
         }
 
         productSaveSwitch(link, productExtracted);
@@ -318,7 +318,7 @@ public class MetalScraper {
             throw new ScrapFailedException("ProductScrap - Scraper for dealer "+linkDTO.getDealer()+" not found");
         }
         try {
-            productDetailPage = adapter.getPage(linkDTO.getUrl());
+            productDetailPage = adapter.getPage(linkDTO.getUri());
         } catch (ResourceNotFoundException e) {
             // TODO Handle this & Log this
             return;
@@ -349,7 +349,7 @@ public class MetalScraper {
         this.priceService.save(pricePair);
         this.productService.updatePrices(linkDTO.getProductId(), pricePair);
 
-        LOGGER.info("New pricePair saved - " + linkDTO.getUrl());
+        LOGGER.info("New pricePair saved - " + linkDTO.getUri());
     }
 
     /**

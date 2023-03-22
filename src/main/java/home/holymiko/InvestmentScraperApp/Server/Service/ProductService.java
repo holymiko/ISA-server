@@ -74,10 +74,6 @@ public class ProductService {
 
     /////////// FIND
 
-    public Product findByLink(String uri) {
-        return this.productRepository.findByLinks_Url(uri).orElseThrow(ResourceNotFoundException::new);
-    }
-
     public List<Product> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean isSpecial) {
         return this.productRepository.findByParams(dealer, producer, metal, form, grams, year, isSpecial);
     }

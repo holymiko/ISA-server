@@ -60,6 +60,13 @@ public interface ProductListInterface {
         throw new NotImplementedException("Method haven't been implemented yet");
     }
 
+    /**
+     * TODO Refactor name to scrapLinkAndName
+     *  Add xPathToName parameter
+     *  To adapters, add corresponding xPath constant 'X_PATH_PRODUCT_LIST_PRODUCT_NAME' matching product name
+     *  Use Link constructor including 'name'
+     *  Drop DB and check if it loads data
+     */
     default Link scrapLink(HtmlElement elementProduct, String xPathToLink, Dealer dealer, String baseUrl) {
         HtmlAnchor itemAnchor = elementProduct.getFirstByXPath(xPathToLink);
         if(itemAnchor == null) {

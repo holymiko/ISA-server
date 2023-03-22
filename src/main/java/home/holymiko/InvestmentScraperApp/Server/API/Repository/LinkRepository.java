@@ -15,7 +15,7 @@ import java.util.Optional;
 @Repository
 public interface LinkRepository extends JpaRepository<Link, Long> {
 
-    Optional<Link> findByUrl(String link);
+    Optional<Link> findByUri(String link);
 
     List<Link> findByProductId(Long productId);
 
