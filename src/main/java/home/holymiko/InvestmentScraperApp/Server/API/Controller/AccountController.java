@@ -2,6 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Core.annotation.ResourceNotFound;
 import home.holymiko.InvestmentScraperApp.Server.Service.AccountService;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.AccountCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.AccountDTO;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +51,22 @@ public class AccountController {
     protected void write(Exception ex, HttpServletResponse response, String msg) throws IOException {
         LOGGER.error("Exception: ", ex);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    /////// POST
+
+    @PostMapping
+    public void createAccount(@RequestBody AccountCreateDTO accountCreateDTO) {
+        this.accountService.save(accountCreateDTO);
+    }
+
+    /////// DELETE
+
+    public void deleteAccountById(long id) {
+        this.accountService.deleteAccountById(id);
+    }
+
+    public void deleteAccountByUsername(String username) {
+        this.accountService.deleteAccountByUsername(username);
     }
 }
