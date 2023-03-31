@@ -7,4 +7,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
     void deleteByUsername(String username);
+
+    void changePasswordById(long id, String password);
+
+    void changePasswordByUsername(String username, String password);
 }

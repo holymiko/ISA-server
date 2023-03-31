@@ -60,4 +60,15 @@ public class AccountService {
         this.accountRepository.deleteByUsername(username);
         LOGGER.info("Delete account");
     }
+
+    /////// PUT
+
+    public void changePasswordById(long id, String password) {
+        this.accountRepository.changePasswordById(id, password);
+        LOGGER.info("Change password");
+    }
+
+    public void changePasswordByUsername(String username, String password) {
+        this.accountRepository.changePasswordByUsername(username, password);
+    }
 }

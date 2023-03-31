@@ -57,16 +57,35 @@ public class AccountController {
 
     @PostMapping
     public void createAccount(@RequestBody AccountCreateDTO accountCreateDTO) {
+        LOGGER.info("Create account");
         this.accountService.save(accountCreateDTO);
     }
 
     /////// DELETE
 
+    @DeleteMapping
     public void deleteAccountById(long id) {
+        LOGGER.info("Delete account by Id");
         this.accountService.deleteAccountById(id);
     }
 
+    @DeleteMapping
     public void deleteAccountByUsername(String username) {
+        LOGGER.info("Delete account by Username");
         this.accountService.deleteAccountByUsername(username);
+    }
+
+    /////// PUT
+
+    @PutMapping
+    public void changePasswordById(long id, String password) {
+        LOGGER.info("Change password by Id");
+        this.accountService.changePasswordById(id, password);
+    }
+
+    @PutMapping
+    public void changePasswordByUsername(String username, String password) {
+        LOGGER.info("Change password by Id");
+        this.accountService.changePasswordByUsername(username, password);
     }
 }
