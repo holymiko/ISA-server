@@ -1,20 +1,16 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
-import home.holymiko.InvestmentScraperApp.Server.Core.annotation.ResourceNotFound;
 import home.holymiko.InvestmentScraperApp.Server.Service.AccountService;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.AccountCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.AccountDTO;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,21 +29,14 @@ public class AccountController {
 
     /////// GET
 
-    @ResourceNotFound
     @GetMapping({"/id/{id}", "/id/"})
-    public Optional<AccountDTO> byId(@PathVariable Long id) {
+    public AccountDTO byId(@PathVariable Long id) {
         LOGGER.info("Get account by Id");
         Assert.notNull(id, "Id cannot be null");
         return accountService.findByIdAsDTO(id);
     }
 
-    @ExceptionHandler({IllegalArgumentException.class})
-    public void handleRuntimeException(Exception ex, HttpServletResponse response) throws IOException {
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        response.getOutputStream().write(ExceptionUtils.getMessage(ex).getBytes());
-        LOGGER.error("Exception: ", ex);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-    }
+
 
 
     /////// POST
@@ -86,9 +75,13 @@ public class AccountController {
         this.accountService.changePasswordByUsername(username, password);
     }
 
-    /////// OTHER
+    /////// Handlers
 
-    public String authenticate (@RequestBody String username, String password) {
-        return accountService.authenticate(username, password);
+    @ExceptionHandler({IllegalArgumentException.class})
+    public void handleRuntimeException(Exception ex, HttpServletResponse response) throws IOException {
+        LOGGER.error("Exception: ", ex);
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.getOutputStream().write(ExceptionUtils.getMessage(ex).getBytes());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     }
 }

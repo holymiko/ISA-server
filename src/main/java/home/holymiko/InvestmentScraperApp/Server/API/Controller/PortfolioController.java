@@ -5,6 +5,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PortfolioDTO_
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.PortfolioCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.PortfolioDTO;
 import home.holymiko.InvestmentScraperApp.Server.Service.PortfolioService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,15 +18,11 @@ import org.slf4j.LoggerFactory;
 @CrossOrigin(origins = "http://localhost:3000")         // Requesty z teto adresy jsou legit
 @RestController
 @RequestMapping("/api/v2/portfolio")         // Na url/api/v1/portfolio se zavola HTTP request
+@AllArgsConstructor
 public class PortfolioController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PortfolioController.class);
 
     private final PortfolioService portfolioService;
-
-    @Autowired
-    public PortfolioController(PortfolioService portfolioService) {
-        this.portfolioService = portfolioService;
-    }
 
     /////// GET
 

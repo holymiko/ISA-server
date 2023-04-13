@@ -10,11 +10,8 @@ import java.util.Optional;
 public interface AccountRepository extends JpaRepository<Account, Long> {
     void deleteByUsername(String username);
 
-//    void changePasswordById(long id, String password);
-
-//    void changePasswordByUsername(String username, String password);
-
-    String findByUsernameAndPassword(String username, String password);
+    // TODO Refactor to find by params, with optional null
+    Optional<Account> findByUsernameAndPassword(String username, String password);
 
     Optional<Account> findByUsername(String username);
 }

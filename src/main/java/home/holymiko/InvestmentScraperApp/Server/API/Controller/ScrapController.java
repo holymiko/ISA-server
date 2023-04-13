@@ -6,6 +6,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.SerenityScraper;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v2/scrap")
+@AllArgsConstructor
 public class ScrapController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScrapController.class);
@@ -27,14 +29,6 @@ public class ScrapController {
     // TODO Endpoint for cnbScraper
     // TODO Endpoint for scrap stock by ticker
     // TODO method byPortfolio should include stock scraping
-
-    @Autowired
-    public ScrapController(MetalScraper metalScraper, SerenityScraper serenityScraper, ScrapHistory scrapHistory, LinkService linkService) {
-        this.metalScraper = metalScraper;
-        this.serenityScraper = serenityScraper;
-        this.scrapHistory = scrapHistory;
-        this.linkService = linkService;
-    }
 
     @PostMapping({"/all", "/all/"})
     public void scrapEverything() {
