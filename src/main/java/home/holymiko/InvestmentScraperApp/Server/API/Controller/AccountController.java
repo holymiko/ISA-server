@@ -4,10 +4,12 @@ import home.holymiko.InvestmentScraperApp.Server.Core.annotation.ResourceNotFoun
 import home.holymiko.InvestmentScraperApp.Server.Service.AccountService;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.AccountCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.AccountDTO;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,20 +24,18 @@ import javax.servlet.http.HttpServletResponse;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v2/account")
+@AllArgsConstructor
 public class AccountController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
 
     private final AccountService accountService;
 
-    @Autowired
-    public AccountController(AccountService accountService) { this.accountService = accountService; }
-
     /////// GET
 
     @ResourceNotFound
     @GetMapping({"/id/{id}", "/id/"})
-    public Optional<AccountDTO> byId(@PathVariable(required = false) Long id) {
+    public Optional<AccountDTO> byId(@PathVariable Long id) {
         LOGGER.info("Get account by Id");
         Assert.notNull(id, "Id cannot be null");
         return accountService.findByIdAsDTO(id);
@@ -45,47 +45,50 @@ public class AccountController {
     public void handleRuntimeException(Exception ex, HttpServletResponse response) throws IOException {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.getOutputStream().write(ExceptionUtils.getMessage(ex).getBytes());
-        write(ex, response, ex.getClass().getName());
-    }
-
-    protected void write(Exception ex, HttpServletResponse response, String msg) throws IOException {
         LOGGER.error("Exception: ", ex);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     }
 
-    /////// POST
 
+    /////// POST
     @PostMapping
     public void createAccount(@RequestBody AccountCreateDTO accountCreateDTO) {
         LOGGER.info("Create account");
         this.accountService.save(accountCreateDTO);
     }
 
-    /////// DELETE
 
-    @DeleteMapping
-    public void deleteAccountById(long id) {
+    /////// DELETE
+    @DeleteMapping({"/id/{id}", "/id/"})
+    public void deleteAccountById(@PathVariable long id) {
         LOGGER.info("Delete account by Id");
         this.accountService.deleteAccountById(id);
     }
 
-    @DeleteMapping
-    public void deleteAccountByUsername(String username) {
+    @DeleteMapping({"/username/{username}", "/username/"})
+    public void deleteAccountByUsername(@PathVariable String username) {
         LOGGER.info("Delete account by Username");
         this.accountService.deleteAccountByUsername(username);
     }
 
-    /////// PUT
 
-    @PutMapping
-    public void changePasswordById(long id, String password) {
+    /////// PUT
+    @PutMapping({"/id/{id}", "/id/"})
+    public void changePasswordById(@PathVariable long id,@RequestBody String password) {
         LOGGER.info("Change password by Id");
         this.accountService.changePasswordById(id, password);
     }
 
-    @PutMapping
-    public void changePasswordByUsername(String username, String password) {
+    @PutMapping({"/username/{username}", "/username/"})
+    public void changePasswordByUsername(@PathVariable String username, @RequestBody String password) {
         LOGGER.info("Change password by Id");
+        System.out.println(username + password);
         this.accountService.changePasswordByUsername(username, password);
+    }
+
+    /////// OTHER
+
+    public String authenticate (@RequestBody String username, String password) {
+        return accountService.authenticate(username, password);
     }
 }

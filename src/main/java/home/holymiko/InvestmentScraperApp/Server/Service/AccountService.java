@@ -14,6 +14,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 @Service
@@ -39,7 +40,7 @@ public class AccountService {
     }
 
     /////// POST
-
+    @Transactional
     public void save(AccountCreateDTO accountCreateDTO) {
         Assert.hasText(accountCreateDTO.getUsername(), "'Username' must not be empty");
         Assert.isTrue(accountCreateDTO.getUsername().length() >= 6, "'Username' must be at least 6 characters long");
@@ -49,26 +50,39 @@ public class AccountService {
         LOGGER.info("Save account");
     }
 
-    /////// DELETE
 
+    /////// DELETE
+    @Transactional
     public void deleteAccountById(long id) {
         this.accountRepository.deleteById(id);
         LOGGER.info("Delete account");
     }
 
+    @Transactional
     public void deleteAccountByUsername(String username) {
         this.accountRepository.deleteByUsername(username);
         LOGGER.info("Delete account");
     }
 
-    /////// PUT
 
+    /////// PUT
+    @Transactional
     public void changePasswordById(long id, String password) {
-        this.accountRepository.changePasswordById(id, password);
+        Optional<Account> account = this.accountRepository.findById(id);
+        account.ifPresent(value -> value.setPassword(password));
         LOGGER.info("Change password");
     }
 
+    @Transactional
     public void changePasswordByUsername(String username, String password) {
-        this.accountRepository.changePasswordByUsername(username, password);
+        Optional<Account> account = this.accountRepository.findByUsername(username);
+        account.ifPresent(value -> value.setPassword(password));
+        LOGGER.info("Change password");
+    }
+
+    /////// OTHER
+
+    public String authenticate(String username, String password) {
+        return accountRepository.findByUsernameAndPassword(username, password);
     }
 }
