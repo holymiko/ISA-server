@@ -1,12 +1,11 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
+import home.holymiko.InvestmentScraperApp.Server.Core.Handler;
 import home.holymiko.InvestmentScraperApp.Server.Service.AccountService;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.AccountCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.AccountDTO;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,8 +88,6 @@ public class AccountController {
     @ExceptionHandler({IllegalArgumentException.class})
     public void handleRuntimeException(Exception ex, HttpServletResponse response) throws IOException {
         LOGGER.error("Exception: ", ex);
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        response.getOutputStream().write(ExceptionUtils.getMessage(ex).getBytes());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        Handler.handleIllegalArgumentException(HttpStatus.BAD_REQUEST, ex, response);
     }
 }

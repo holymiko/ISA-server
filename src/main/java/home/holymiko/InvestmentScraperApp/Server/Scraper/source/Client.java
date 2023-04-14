@@ -4,15 +4,23 @@ import com.gargoylesoftware.htmlunit.TextPage;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Client {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);
 
     // TODO Decide if it can be make static (includes deleting MetalAdapterInterface.getPage()
     //  or if its necessary to keep it for multithreading.
     //  Implement multithreading and measure performance for static/non static
     protected final WebClient client;
 
-    public Client() {
+    protected final String caller;
+
+    public Client(String caller) {
+        this.caller = caller;
+        LOGGER.info("WebClient ON - " + this.caller);
         client = new WebClient();
         client.getOptions().setJavaScriptEnabled(false);
         client.getOptions().setCssEnabled(false);

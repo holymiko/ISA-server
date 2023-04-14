@@ -24,11 +24,12 @@ public class CNBScraper extends Client {
 
     @Autowired
     public CNBScraper(CurrencyService currencyService) {
+        super("CNBScraper");
         this.currencyService = currencyService;
     }
 
     public void scrapExchangeRate() throws ResourceNotFoundException {
-        LOGGER.info("Scrap exchange rates");
+        LOGGER.info("CNBScraper CALL - Scrap exchange rates");
         TextPage textPage = loadTextPage(SEARCH_URL);
 
         String[] rows = textPage.getContent().trim().split("\n");

@@ -30,7 +30,7 @@ public class ZlatakyAdapter extends Client implements MetalAdapterInterface {
 
 
     public ZlatakyAdapter() {
-        super();
+        super("ZlatakyAdapter");
     }
 
     @Override

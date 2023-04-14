@@ -331,11 +331,11 @@ public class MetalScraper {
             LOGGER.warn(e.getMessage());
         }
         if(sellingPrice == null || sellingPrice.intValue() == 0) {
-            LOGGER.warn("WARNING - Kupni cena = 0");
+            LOGGER.warn("Kupni cena = 0");
         }
         butOutPrice = adapter.scrapBuyOutPrice(productDetailPage);
         if(butOutPrice.intValue() == 0) {
-            LOGGER.warn("WARNING - Vykupni cena = 0");
+            LOGGER.warn("Vykupni cena = 0");
         }
 
         pricePair = new PricePair(

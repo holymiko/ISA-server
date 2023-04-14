@@ -30,7 +30,7 @@ public class BessergoldDeAdapter extends Client implements MetalAdapterInterface
     private final double euroExchangeRate;
 
     public BessergoldDeAdapter(double euroExchangeRate) {
-        super();
+        super("BessergoldDeAdapter");
         this.euroExchangeRate = euroExchangeRate;
     }
 

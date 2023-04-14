@@ -25,7 +25,7 @@ public class BessergoldAdapter extends Client implements MetalAdapterInterface {
     private static final String X_PATH_REDEMPTION_PRICE = ".//div[@class='vykupni-cena']";
 
     public BessergoldAdapter() {
-        super();
+        super("BessergoldAdapter");
     }
 
     @Override

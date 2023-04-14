@@ -31,7 +31,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
 
     @Autowired
     public SerenityScraper(TickerService tickerService, GrahamStockService grahamStockService) {
-        super();
+        super("SerenityScraper");
         this.tickerService = tickerService;
         this.grahamStockService = grahamStockService;
     }

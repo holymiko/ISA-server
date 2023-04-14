@@ -1,5 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
+import home.holymiko.InvestmentScraperApp.Server.Core.Handler;
 import home.holymiko.InvestmentScraperApp.Server.Service.AccountService;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.AccountAuthDTO;
 import lombok.AllArgsConstructor;
@@ -38,9 +39,7 @@ public class AuthController {
     @ExceptionHandler({IllegalArgumentException.class})
     public void handleRuntimeException(Exception ex, HttpServletResponse response) throws IOException {
         LOGGER.error("Exception: ", ex);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.getOutputStream().write(ExceptionUtils.getMessage(ex).getBytes());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        Handler.handleIllegalArgumentException(HttpStatus.UNAUTHORIZED, ex, response);
     }
 
 }

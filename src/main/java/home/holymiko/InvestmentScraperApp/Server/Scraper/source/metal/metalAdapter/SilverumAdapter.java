@@ -42,7 +42,7 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
     private static final String X_PATH_BID_SPOT_DOLLAR = "/html/body/section[1]/div/div/div[4]/div/div/div[2]/div";
 
     public SilverumAdapter() {
-        super();
+        super("SilverumAdapter");
     }
 
     /////// LINK

@@ -120,7 +120,7 @@ public class LinkService {
             throw new NullPointerException("Save - Link cannot be null");
         }
 
-        linkFilter( link.getUri() );
+        uriLilter( link.getUri() );
 
         if ( linkRepository.findByUri(link.getUri()).isPresent() ) {
             throw new DataIntegrityViolationException("Link already in DB");
@@ -129,19 +129,19 @@ public class LinkService {
     }
 
     /**
-     * Filtration based on text of the link
-     * @param link Link about to be filtered
-     * @return False for link being filtered
+     * Filtration based on text of the uri
+     * @param uri Link about to be filtered
+     * @return False for uri being filtered
      */
-    private static void linkFilter(String link) throws IllegalArgumentException {
-        if (link.contains("etuje") || link.contains("etui")) {
-            throw new IllegalArgumentException("Link vyřazen: etuje - " + link);
+    private static void uriLilter(String uri) throws IllegalArgumentException {
+        if (uri.contains("etuje") || uri.contains("etui")) {
+            throw new IllegalArgumentException("uri vyřazena: etuje - " + uri);
         }
-        if (link.contains("obalka")) {
-            throw new IllegalArgumentException("Link vyřazen: obalka - " + link);
+        if (uri.contains("obalka")) {
+            throw new IllegalArgumentException("uri vyřazena: obalka - " + uri);
         }
-        if (link.contains("kapsle")) {
-            throw new IllegalArgumentException("Link vyřazen: kapsle - " + link);
+        if (uri.contains("kapsle")) {
+            throw new IllegalArgumentException("uri vyřazena: kapsle - " + uri);
         }
     }
 

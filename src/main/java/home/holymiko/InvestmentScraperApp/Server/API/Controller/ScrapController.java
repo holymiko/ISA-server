@@ -49,7 +49,7 @@ public class ScrapController {
         ScrapHistory.frequencyHandlingAll(false);
         ScrapHistory.startRunning();
 
-        LOGGER.info("Scrap ALL products IN SYNC");
+        LOGGER.info("All products SCRAP IN SYNC");
         // Scrap Links by Product, in sync, grouped by Product
         metalScraper.generalInSyncScrapAndSleep(
                 linkService.findLinksGroupedByProduct()
@@ -117,11 +117,11 @@ public class ScrapController {
         ScrapHistory.frequencyHandlingAll(true);
         ScrapHistory.startRunning();
 
-        LOGGER.info("All link scraping in progress...");
+        LOGGER.info("All link SCRAP ON progress...");
         long start = System.nanoTime();
         this.metalScraper.allLinksScrap();
         long finish = System.nanoTime();
-        LOGGER.info("...scraping finished in " + (finish - start)/1000000/1000.0 + " seconds");
+        LOGGER.info("...SCRAP OFF finished in " + (finish - start)/1000000/1000.0 + " seconds");
 
         ScrapHistory.timeUpdate(true, false);
         ScrapHistory.stopRunning();
