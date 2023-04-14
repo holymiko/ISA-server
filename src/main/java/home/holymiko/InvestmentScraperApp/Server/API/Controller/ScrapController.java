@@ -1,13 +1,12 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
+import home.holymiko.InvestmentScraperApp.Server.Core.LogBuilder;
 import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.SerenityScraper;
-import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import org.slf4j.Logger;
@@ -58,7 +57,7 @@ public class ScrapController {
         metalScraper.generalScrapAndSleep(
             linkService.findByProductId(null)
         );
-        ConsolePrinter.printTimeStamp();
+        LogBuilder.printTimeStamp();
         LOGGER.info("All products scraped");
 
         ScrapHistory.timeUpdate(false, true);
@@ -73,7 +72,7 @@ public class ScrapController {
         metalScraper.generalScrapAndSleep(
                 linkService.findByProductId(id)
         );
-        ConsolePrinter.printTimeStamp();
+        LogBuilder.printTimeStamp();
         LOGGER.info("Products with ID "+id+" scraped");
 
         ScrapHistory.stopRunning();
@@ -138,7 +137,7 @@ public class ScrapController {
 //                        LOGGER.info("MetalScraper pricesByProducts");
 //                        scrapMetal.scrapProductByIdList(productIds);
 //                        LOGGER.info(">> Prices scraped");
-//                        ConsolePrinter.printTimeStamp();
+//                        LogBuilder.printTimeStamp();
 //                    }
 //            );
 //        } catch (ResponseStatusException e){

@@ -13,7 +13,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
-import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
+import home.holymiko.InvestmentScraperApp.Server.Core.LogBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
@@ -100,7 +100,7 @@ public class MetalScraper {
             generalScrap(link);
 
             // TODO Logging
-            ConsolePrinter.statusPrint(PRINT_INTERVAL, links.size(), counter++);
+            LogBuilder.statusPrint(PRINT_INTERVAL, links.size(), counter++);
             // Sleep time is dynamic, according to time took by scrap procedure
             Client.dynamicSleep(ETHICAL_DELAY, startTime);
         }
@@ -123,7 +123,7 @@ public class MetalScraper {
             productLinks.forEach(this::generalScrap);
 
             // TODO Logging
-            ConsolePrinter.statusPrint(PRINT_INTERVAL, linksGroupByProduct.size(), counter++);
+            LogBuilder.statusPrint(PRINT_INTERVAL, linksGroupByProduct.size(), counter++);
             // Sleep time is dynamic, according to time took by scrap procedure
             Client.dynamicSleep(ETHICAL_DELAY, startTime);
         }
@@ -155,7 +155,7 @@ public class MetalScraper {
                 );
 
         generalScrapAndSleep( new ArrayList<>(linkSet) );
-        ConsolePrinter.printTimeStamp();
+        LogBuilder.printTimeStamp();
     }
 
     /////// PRIVATE

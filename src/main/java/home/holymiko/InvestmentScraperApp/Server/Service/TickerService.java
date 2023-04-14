@@ -3,7 +3,7 @@ package home.holymiko.InvestmentScraperApp.Server.Service;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Ticker;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.TickerRepository;
-import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
+import home.holymiko.InvestmentScraperApp.Server.Core.LogBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -104,7 +104,7 @@ public class TickerService {
     }
 
     public void printTickerStatus() {
-        ConsolePrinter.printTickerStatus(
+        LogBuilder.printTickerStatus(
                 findByTickerState(TickerState.GOOD).size(),
                 findByTickerState(TickerState.BAD).size(),
                 findByTickerState(TickerState.NOTFOUND).size(),

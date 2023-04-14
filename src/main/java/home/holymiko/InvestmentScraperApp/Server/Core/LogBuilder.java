@@ -1,4 +1,4 @@
-package home.holymiko.InvestmentScraperApp.Server.API;
+package home.holymiko.InvestmentScraperApp.Server.Core;
 
 
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.ExchangeRate;
@@ -11,8 +11,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConsolePrinter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConsolePrinter.class);
+public class LogBuilder {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogBuilder.class);
 
     public static void statusPrint(final int interval, final int size, final int printerCounter) {
         if ((printerCounter % interval) == 0) {

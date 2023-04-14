@@ -9,7 +9,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Service.GrahamStockService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
-import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
+import home.holymiko.InvestmentScraperApp.Server.Core.LogBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -61,7 +61,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
                 this.tickerService.update(ticker, TickerState.NOTFOUND);
                 LOGGER.info(ticker.getTicker() + " - not found");
                 counter++;
-                ConsolePrinter.statusPrint(50, tickers.size(), counter);
+                LogBuilder.statusPrint(50, tickers.size(), counter);
                 dynamicSleep(ETHICAL_DELAY, startTime);
                 continue;
             }
@@ -84,7 +84,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
                 LOGGER.info(ticker.getTicker() + " - Bad");
             }
             counter++;
-            ConsolePrinter.statusPrint(50, tickers.size(), counter);
+            LogBuilder.statusPrint(50, tickers.size(), counter);
             dynamicSleep(ETHICAL_DELAY, startTime);
         }
         tickerService.printTickerStatus();
@@ -122,7 +122,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
             );
         }
 
-        ConsolePrinter.printScrapStockShort(header, ratingScore, results.get(5), currency);
+        LogBuilder.printScrapStockShort(header, ratingScore, results.get(5), currency);
 
         GrahamStock grahamStock = new GrahamStock(
                 new Date(), header, ticker, grade, currency, ratingScore,
