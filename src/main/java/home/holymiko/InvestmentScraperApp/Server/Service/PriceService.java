@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,6 +29,7 @@ public class PriceService {
         this.pricePairMapper = pricePairMapper;
     }
 
+    @Deprecated
     @Transactional
     public void updatePricePair(@NotNull String productName, @NotNull Dealer dealer, @NotNull Double amount, boolean isRedemption) throws NullPointerException, IllegalArgumentException {
         final PricePair pricePair;
@@ -42,16 +44,12 @@ public class PriceService {
             throw new NullPointerException("amount cannot be null");
         }
 
-        pricePair = pricePairRepository.findByProduct_NameAndDealer(productName, dealer)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if(isRedemption) {
-            pricePair.setRedemption(new Price(LocalDateTime.now(), amount, true));
-        } else {
-            pricePair.setSellPrice(new Price(LocalDateTime.now(), amount, false));
-        }
-
-        this.pricePairRepository.save(pricePair);
+//        pricePair = pricePairRepository.findByProduct_NameAndDealer(productName, dealer)
+//                .orElseThrow(IllegalArgumentException::new);
+//
+//        pricePair.setRedemption(new Price(LocalDateTime.now(), amount, isRedemption));
+//
+//        this.pricePairRepository.save(pricePair);
     }
 
     /**
@@ -59,32 +57,23 @@ public class PriceService {
      * @param productId
      * @return Latest PricePair for each Dealer
      */
+    @Deprecated
     public List<PricePairDTO> findLatestPricePairsByProductId(@NotNull Long productId) throws NullPointerException {
         if(productId == null) {
             throw new NullPointerException("Product ID can't be null");
         }
-        // TODO test invalid productId & add productId Validation
-        return pricePairMapper.toPriceDTOs(
-                pricePairRepository.findLatestPricePairsByProductId(productId)
-        );
+//        // TODO ProductRepo getProductById
+//        // TODO test invalid productId & add productId Validation
+//        return pricePairMapper.toPriceDTOs(
+//                pricePairRepository.findLatestPricePairsByProductId(productId)
+//        );
+        return new ArrayList<>();
     }
 
-    public PricePairDTO getPriceByBestRedemption(Long productId) {
-        List<PricePairDTO> pricePairs = findLatestPricePairsByProductId(productId);
-        PricePairDTO max = pricePairs.get(0);
-        for (PricePairDTO pricePair : pricePairs) {
-            if(pricePair.getRedemption() > max.getRedemption()) {
-                max = pricePair;
-            }
-        }
-        return max;
-    }
 
     @Transactional
-    public PricePairDTO save(PricePair pricePair) {
-        return pricePairMapper.toPriceDTO(
-                this.pricePairRepository.save(pricePair)
-        );
+    public PricePair save(PricePair pricePair) {
+        return this.pricePairRepository.save(pricePair);
     }
 
     @Transactional

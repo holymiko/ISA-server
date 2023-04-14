@@ -7,6 +7,9 @@ import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFound
 
 public class Client {
 
+    // TODO Decide if it can be make static (includes deleting MetalAdapterInterface.getPage()
+    //  or if its necessary to keep it for multithreading.
+    //  Implement multithreading and measure performance for static/non static
     protected final WebClient client;
 
     public Client() {

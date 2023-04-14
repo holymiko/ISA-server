@@ -120,9 +120,9 @@ public class LinkService {
             throw new NullPointerException("Save - Link cannot be null");
         }
 
-        linkFilter( link.getUrl() );
+        linkFilter( link.getUri() );
 
-        if ( linkRepository.findByUrl(link.getUrl()).isPresent() ) {
+        if ( linkRepository.findByUri(link.getUri()).isPresent() ) {
             throw new DataIntegrityViolationException("Link already in DB");
         }
         linkRepository.save(link);

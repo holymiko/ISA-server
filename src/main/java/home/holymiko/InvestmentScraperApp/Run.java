@@ -7,7 +7,6 @@ import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFound
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.CurrencyService;
-import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -20,28 +19,31 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Class used to call methods during the building process
  */
 @Component
 public class Run {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Run.class);
+
     Process process;
     private final ScrapController scrapController;
     private final TickerService tickerService;
     private final CurrencyService currencyService;
     private final CNBScraper cnbScraper;
-    private final LinkService linkService;
     private final MetalScraper metalScraper;
     private final Import anImport;
 
     @Autowired
-    public Run(ScrapController scrapController, TickerService tickerService, CurrencyService currencyService, CNBScraper cnbScraper, LinkService linkService, MetalScraper metalScraper, Import anImport) {
+    public Run(ScrapController scrapController, TickerService tickerService, CurrencyService currencyService, CNBScraper cnbScraper, MetalScraper metalScraper, Import anImport) {
         this.scrapController = scrapController;
         this.tickerService = tickerService;
         this.currencyService = currencyService;
         this.cnbScraper = cnbScraper;
-        this.linkService = linkService;
         this.metalScraper = metalScraper;
         this.anImport = anImport;
     }
@@ -49,7 +51,7 @@ public class Run {
     @Order(0)
     @EventListener(ApplicationStartedEvent.class)
     public void run() throws IOException {
-        System.out.println("App has started up");
+        LOGGER.info("App has started up");
         try {
             cnbScraper.scrapExchangeRate();
         } catch (ResourceNotFoundException e) {
@@ -65,8 +67,8 @@ public class Run {
 
     // @Order(1) is in MetalScraper
 
-    @Order(2)
-    @EventListener(ApplicationStartedEvent.class)
+//    @Order(2)                         TODO activate before release
+//    @EventListener(ApplicationStartedEvent.class)
     public void runFrontEnd() throws IOException {
         // Run FrontEnd NodeJS Application
         process = new ProcessBuilder(isWindows() ? "npm.cmd" : "yarn", "start")
@@ -74,25 +76,27 @@ public class Run {
                 .start();
     }
 
-    @Order(3) // Last Order index
-    @EventListener(ApplicationStartedEvent.class)
+//    @Order(3) // Last Order index     TODO activate before release
+//    @EventListener(ApplicationStartedEvent.class)
     public void runImportTickers() throws IOException {
         if(tickerService.findAll().isEmpty()) {
-            System.out.println("3) Import Tickers");
+            LOGGER.info("3) Import Tickers");
             anImport.importExportedTickers();
-            System.out.println("3) Import finished");
+            LOGGER.info("3) Import finished");
         } else {
-            // TODO Logging
-            System.out.println("3) SKIP");
+            LOGGER.info("3) SKIP");
         }
     }
 
-    // TODO @Order(3) if Ticker empty then import tickers from txt/export/tickers/#latest
-
     @EventListener(ApplicationReadyEvent.class)
     public void scrap() throws IOException {
-//        scrapController.allLinks();
-//        scrapController.allProductsInSync();
+        scrapController.allLinks();
+        scrapController.allProductsInSync();
+//        scrapController.serenity();
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void scrapDev() throws IOException {
 //        metalScraper.linksByDealerScrap(Dealer.SILVERUM);
 //        metalScraper.generalScrapAndSleep(
 //                linkService.findByDealer(Dealer.SILVERUM)
@@ -100,9 +104,7 @@ public class Run {
 //        metalScraper.generalScrapAndSleep(
 //                linkService.findByProductId(null)
 //        );
-//        scrapController.serenity();
     }
-
 
 
     static boolean isWindows() {

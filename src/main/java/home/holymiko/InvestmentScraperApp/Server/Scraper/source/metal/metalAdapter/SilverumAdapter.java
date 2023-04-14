@@ -12,6 +12,7 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -52,45 +53,9 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
     }
     @Override
     public List<Link> scrapAllLinksFromProductLists() {
-        List<Link> elements = new ArrayList<>();
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_GOLD_COIN)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_GOLD_BAR)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_GOLD_BRICK)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER_COIN_21)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER_COIN_22)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER_BAR)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            elements.addAll(scrapLinksFromProductList(getPage(SEARCH_URL_SILVER_BRICK)));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return elements;
+        return scrapAllLinksFromProductListUtil(
+                Arrays.asList(SEARCH_URL_GOLD_COIN, SEARCH_URL_GOLD_BAR, SEARCH_URL_GOLD_BRICK, SEARCH_URL_SILVER_COIN_21, SEARCH_URL_SILVER_COIN_22, SEARCH_URL_SILVER_BAR, SEARCH_URL_SILVER_BRICK)
+        );
     }
 
     @Override
@@ -121,9 +86,9 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
             if(Pattern.compile("\\d+,\\d+ Kč bez DPH").matcher(x).find()) {
                 x = x.split("\\d*[ ]?\\d+,\\d+ Kč bez DPH")[0];
             }
-            return Convert.currencyToNumberConvert(x);
+            return Convert.currencyToDouble(x);
         } catch (Exception e) {
-            return Double.parseDouble("0.0");
+            return 0.0;
         }
     }
 
@@ -138,9 +103,15 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
         final String productName = scrapNameFromProductPage(page).toLowerCase();
         final Metal metal = Extract.metalExtract(productName);
         final double weight = Extract.weightExtract(productName) / Extract.TROY_OUNCE;
-        final Double dollar = Convert.currencyToNumberConvert(
-                ((HtmlElement) page.getFirstByXPath(X_PATH_BID_SPOT_DOLLAR)).asText()
-        );
+        final Double dollar;
+        try {
+            dollar = Convert.currencyToDouble(
+                    ((HtmlElement) page.getFirstByXPath(X_PATH_BID_SPOT_DOLLAR)).asText()
+            );
+        } catch (NullPointerException e) {
+            // TODO resolve NULL pointer exception or validate that this is correct behaviour
+            return 0;
+        }
         String metalDollarSpotTxt;
         double q = 1;
 
@@ -162,6 +133,6 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
             throw new ScrapFailedException("ERROR: Silverum unexpected product");
         }
 
-        return Convert.currencyToNumberConvert( metalDollarSpotTxt ) * dollar * weight * q;
+        return Convert.currencyToDouble( metalDollarSpotTxt ) * dollar * weight * q;
     }
 }

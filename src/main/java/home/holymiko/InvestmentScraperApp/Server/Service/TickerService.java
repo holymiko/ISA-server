@@ -14,8 +14,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class TickerService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TickerService.class);
 
     private final TickerRepository tickerRepository;
 
@@ -58,10 +62,10 @@ public class TickerService {
 
         if( optionalTicker.isEmpty() ) {
             this.tickerRepository.save( new Ticker(tickerName, TickerState.NEW) );
-            System.out.println("Ticker -> New saved "+tickerName);
+            LOGGER.info("Ticker -> New saved "+tickerName);
             return true;
         }
-        System.out.println("Ticker -> Already known "+tickerName);
+        LOGGER.info("Ticker -> Already known "+tickerName);
         return false;
     }
 
@@ -89,11 +93,11 @@ public class TickerService {
     public void delete(Ticker ticker) {
         // TODO Throw exceptions
         if( this.tickerRepository.findById(ticker.getTicker()).isEmpty() ) {
-            System.out.println("Delete fail, 404");
+            LOGGER.error("Delete failed, Ticker was not found");
             return;
         }
         if( ticker.getTickerState() != TickerState.NEW ) {
-            System.out.println("Delete not allowed, wrong state");
+            LOGGER.error("Delete not allowed, wrong state");
             return;
         }
         this.tickerRepository.delete(ticker);

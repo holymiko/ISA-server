@@ -35,5 +35,5 @@ public interface PricePairRepository extends JpaRepository<PricePair, Long> {
     );
 
 
-    Optional<PricePair> findByProduct_NameAndDealer(String productName, Dealer dealer);
+//    Optional<PricePair> findByProduct_NameAndDealer(String productName, Dealer dealer);
 }

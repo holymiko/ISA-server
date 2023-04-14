@@ -33,9 +33,9 @@ strategie popsané v knize <b> Inteligentní Investor</b> od Benjamina Grahama
 ## Získání dat
 > Získání dat zajišťují třídy `scrap`
 Program se pomocí `htmlunit` klienta spojí s webovou stránkou a na základě `XPath` získá z dokumentu relevantní data. 
-Ty jsou následné použity k vytvoření entit `stock` či `product` a uloženy do databáze.
+Ty jsou následné použity k vytvoření entit `grahamStock` či `product` a uloženy do databáze.
 
-> Informace pro `stock` jsou získány z www.serenitystocks.com/stock/ +`ticker`
+> Informace pro `grahamStock` jsou získány z www.serenitystocks.com/grahamStock/ +`ticker`
 Databáze uchovává seznam tickerů (zkratek užívaných na burze) a jejich stav. 
 Jejich zdrojem jsou soubory v adresáři `txt/`
 
@@ -55,6 +55,9 @@ https://silverum.cz<br>
 
 Data je možné získat na http://localhost:8080/api/v2/ +`entita` Jsou poskytovány ve formátu JSON.
 Entity jsou k dispozici v optimalizovaném formátu `DTO` (Data Transfer Object).
+
+### Swagger
+http://localhost:8080/swagger-ui/
 
 ### DTO
 V aplikaci jsou používány Data Transfer Objects, aby se šetřil datový přenos mezi aplikacemi a minimalizovalo množství dat, se kterými se manipuluje.

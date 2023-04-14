@@ -12,14 +12,14 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public abstract class InvestmentStockMapper {
 
-    private static final String PRODUCT_DTO_ALL_PRICES = "java( stockMapper.toStockDTO(entity.getStock()) )";
+    private static final String PRODUCT_DTO_ALL_PRICES = "java( grahamStockMapper.toStockDTO(entity.getGrahamStock()) )";
 
     @Autowired
-    protected StockMapper stockMapper;
+    protected GrahamStockMapper grahamStockMapper;
 
     public abstract InvestmentStockDTO toInvestmentStockDTO(InvestmentStock entity);
 
-    @Mapping(target = "stockDTO", expression = PRODUCT_DTO_ALL_PRICES)
+    @Mapping(target = "grahamStockDTO", expression = PRODUCT_DTO_ALL_PRICES)
     public abstract InvestmentStockDTO_StockDTO toDTO_StockDTO(InvestmentStock entity);
 
     public abstract List<InvestmentStockDTO_StockDTO> toDTO_StockDTO(List<InvestmentStock> entities);

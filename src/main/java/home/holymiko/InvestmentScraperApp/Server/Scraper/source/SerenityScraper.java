@@ -7,7 +7,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.GrahamGrade;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Convert;
-import home.holymiko.InvestmentScraperApp.Server.Service.StockService;
+import home.holymiko.InvestmentScraperApp.Server.Service.GrahamStockService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,20 +16,24 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Component
 public class SerenityScraper extends Client implements SerenityScraperInterface {
     private static final double MIN_RATING_SCORE = 6.5;
     private static final long ETHICAL_DELAY = 1000;
     private static final String BASE_URL = "https://www.grahamvalue.com/stock/";
+    private static final Logger LOGGER = LoggerFactory.getLogger(SerenityScraper.class);
 
     private final TickerService tickerService;
-    private final StockService stockService;
+    private final GrahamStockService grahamStockService;
 
     @Autowired
-    public SerenityScraper(TickerService tickerService, StockService stockService) {
+    public SerenityScraper(TickerService tickerService, GrahamStockService grahamStockService) {
         super();
         this.tickerService = tickerService;
-        this.stockService = stockService;
+        this.grahamStockService = grahamStockService;
     }
 
     //////////// PUBLIC
@@ -38,7 +42,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
         int counter = 0;
         Set<Ticker> tickers = this.tickerService.findByTickerState(tickerState);
 
-        System.out.println("Trying to scrap " + tickerState + " tickers");
+        LOGGER.info("Trying to scrap " + tickerState + " tickers");
         tickerService.printTickerStatus();
 
         // Currency filter
@@ -55,7 +59,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
             } catch (ResourceNotFoundException e) {
                 // TODO If I lose Internet connection, Tickers in DB are false rewritten ?!
                 this.tickerService.update(ticker, TickerState.NOTFOUND);
-                System.out.println(">" + ticker.getTicker() + "<");
+                LOGGER.info(ticker.getTicker() + " - not found");
                 counter++;
                 ConsolePrinter.statusPrint(50, tickers.size(), counter);
                 dynamicSleep(ETHICAL_DELAY, startTime);
@@ -75,9 +79,9 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
                     e.printStackTrace();
                 }
             } else {
-                this.stockService.deleteByTicker(ticker);
+                this.grahamStockService.deleteByTicker(ticker);
                 this.tickerService.update(ticker, TickerState.BAD);
-                System.out.println(">" + ticker.getTicker() + "< Bad");
+                LOGGER.info(ticker.getTicker() + " - Bad");
             }
             counter++;
             ConsolePrinter.statusPrint(50, tickers.size(), counter);
@@ -85,7 +89,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
         }
         tickerService.printTickerStatus();
         Export.exportTickers(tickerService.findAll());
-        Export.exportStocks(stockService.findAll());
+        Export.exportStocks(grahamStockService.findAll());
     }
 
     //////////// PRIVATE
@@ -100,7 +104,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
 
         for(int i = 2; i <= 11; i++) {
             ratings.add(
-                    Convert.numberConvertSerenity(
+                    Convert.serenityToNumber(
                             getRating(page, i)
                     )
             );
@@ -108,11 +112,11 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
         for(int i = 2; i <= 8; i++) {
             String htmlElement = getResult(page, i);
             if(i == 5) {
-                grade = Convert.gradeConvert(htmlElement);
+                grade = Convert.grahamGrade(htmlElement);
                 continue;
             }
             results.add(
-                    Convert.numberConvertSerenity(
+                    Convert.serenityToNumber(
                             htmlElement
                     )
             );
@@ -120,24 +124,24 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
 
         ConsolePrinter.printScrapStockShort(header, ratingScore, results.get(5), currency);
 
-        Stock stock = new Stock(
-                header, ticker, grade, currency, ratingScore,
+        GrahamStock grahamStock = new GrahamStock(
+                new Date(), header, ticker, grade, currency, ratingScore,
                 ratings.get(0), ratings.get(1), ratings.get(2), ratings.get(3),
                 ratings.get(4), ratings.get(5), ratings.get(6), ratings.get(7),
                 ratings.get(8), ratings.get(9),
                 results.get(0), results.get(1), results.get(2),
                 results.get(3), results.get(4), results.get(5)
         );
-        this.stockService.save(stock);
+        this.grahamStockService.save(grahamStock);
     }
 
     private Set<Ticker> filterTickersByCurrencies(Set<Ticker> tickers, Set<String> currencies) {
-        return stockService.findByTicker(tickers)
+        return grahamStockService.findByTicker(tickers)
                 .stream()
                 .filter(
                         stock -> currencies.contains( stock.getCurrency() )
                 ).map(
-                        Stock::getTicker
+                        GrahamStock::getTicker
                 ).collect(Collectors.toSet());
     }
 
@@ -158,7 +162,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
                 }
             }
         }
-        System.out.println("Total saved: "+i);
+        LOGGER.info("Total saved: "+i);
     }
 
 }

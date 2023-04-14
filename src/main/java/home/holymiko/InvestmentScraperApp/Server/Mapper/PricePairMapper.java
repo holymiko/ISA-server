@@ -17,14 +17,15 @@ public interface PricePairMapper {
         @Mapping(target = "redemption", source = "entity.redemption.amount"),
         @Mapping(target = "priceDateTime", source = "entity.sellPrice.dateTime"),
         @Mapping(target = "redemptionDateTime", source = "entity.redemption.dateTime"),
-        @Mapping(target = "grams", source = "entity.product.grams")
+        @Mapping(target = "grams", source = "grams")
     })
-    PricePairDTO toPriceDTO(PricePair entity);
+    PricePairDTO toPriceDTO(PricePair entity, Double grams);
 
-    default List<PricePairDTO> toPriceDTOs(List<PricePair> pricePairs) {
+    // Used in ProductMapper
+    default List<PricePairDTO> toPriceDTOs(List<PricePair> pricePairs, Double grams) {
         return pricePairs
                 .stream()
-                .map(this::toPriceDTO)
+                .map(x -> toPriceDTO(x, grams))
                 .collect(Collectors.toList());
     }
 

@@ -19,16 +19,23 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 public class MetalScraper {
+    private static final long ETHICAL_DELAY = 700;
+    private static final int PRINT_INTERVAL = 10;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MetalScraper.class);
+
     private final LinkService linkService;
     private final PriceService priceService;
     private final PortfolioService portfolioService;
@@ -38,8 +45,6 @@ public class MetalScraper {
     // Used for Polymorphic calling
     private final Map<Dealer, MetalAdapterInterface> dealerToMetalAdapter = new HashMap<>();
 
-    private static final long ETHICAL_DELAY = 700;
-    private static final int PRINT_INTERVAL = 10;
 
     @Autowired
     public MetalScraper(
@@ -131,7 +136,7 @@ public class MetalScraper {
      */
     @Deprecated
     public void productByPortfolio(long portfolioId) throws ResponseStatusException {
-        System.out.println("MetalScraper productsByPortfolio");
+        LOGGER.info("MetalScraper productsByPortfolio");
         Optional<PortfolioDTO_ProductDTO> optionalPortfolio = portfolioService.findById(portfolioId);
         if (optionalPortfolio.isEmpty()) {
             throw new IllegalArgumentException("No portfolio with such ID");
@@ -165,7 +170,7 @@ public class MetalScraper {
      * @throws ScrapFailedException Link has saved product / Extraction from HTML failed
      * @throws DataIntegrityViolationException
      */
-    private void productScrap(LinkDTO link) throws ResourceNotFoundException, ScrapFailedException, DataIntegrityViolationException{
+    private void productScrap(LinkDTO link) throws ResourceNotFoundException, ScrapFailedException, DataIntegrityViolationException {
         String name = "";
         final HtmlPage page;
         final ProductCreateDTO productExtracted;
@@ -179,7 +184,7 @@ public class MetalScraper {
         }
 
         // Throws ResourceNotFoundException
-        page = adapter.getPage(link.getUrl());
+        page = adapter.getPage(link.getUri());
 
         // Scraps name of the Product
         try {
@@ -196,14 +201,14 @@ public class MetalScraper {
         }
 
         if(name == null || name.equals("") ) {
-            throw new ScrapFailedException("Invalid name - "+link.getUrl());
+            throw new ScrapFailedException("Invalid name - "+link.getUri());
         }
 
         // Extraction of parameters for saving new Product to DB
         try {
             productExtracted = Extract.productAggregateExtract(name);
         } catch (IllegalArgumentException e) {
-            throw new ScrapFailedException("Extraction ERROR: "+name +" "+link.getUrl()+" - "+e.getMessage());
+            throw new ScrapFailedException("Extraction ERROR: "+name +" "+link.getUri()+" - "+e.getMessage());
         }
 
         productSaveSwitch(link, productExtracted);
@@ -273,7 +278,7 @@ public class MetalScraper {
         Product p = productService.save(productExtracted);
         linkDTO = linkService.updateLinkProductId(linkDTO.getId(), p.getId());
         priceScrap(linkDTO);
-        System.out.println(">> Product saved");
+        LOGGER.info("Product saved");
     }
 
     /**
@@ -291,7 +296,7 @@ public class MetalScraper {
         try {
             productScrap(link);
         } catch (Exception e) {
-            System.out.println( e.getMessage() );
+            LOGGER.warn( e.getMessage() );
         }
     }
 
@@ -313,7 +318,7 @@ public class MetalScraper {
             throw new ScrapFailedException("ProductScrap - Scraper for dealer "+linkDTO.getDealer()+" not found");
         }
         try {
-            productDetailPage = adapter.getPage(linkDTO.getUrl());
+            productDetailPage = adapter.getPage(linkDTO.getUri());
         } catch (ResourceNotFoundException e) {
             // TODO Handle this & Log this
             return;
@@ -323,30 +328,28 @@ public class MetalScraper {
             // Choose MetalScraperInterface & scrap buy price
             sellingPrice = adapter.scrapPriceFromProductPage(productDetailPage);
         } catch (NumberFormatException e) {
-            System.out.println(e.getMessage());
+            LOGGER.warn(e.getMessage());
         }
         if(sellingPrice == null || sellingPrice.intValue() == 0) {
-            // TODO Logging
-            System.out.println("WARNING - Kupni cena = 0");
+            LOGGER.warn("WARNING - Kupni cena = 0");
         }
         butOutPrice = adapter.scrapBuyOutPrice(productDetailPage);
         if(butOutPrice.intValue() == 0) {
-            // TODO Logging
-            System.out.println("WARNING - Vykupni cena = 0");
+            LOGGER.warn("WARNING - Vykupni cena = 0");
         }
 
         pricePair = new PricePair(
                 linkDTO.getDealer(),
                 priceService.save(new Price(LocalDateTime.now(), sellingPrice, false)),
                 priceService.save(new Price(LocalDateTime.now(), butOutPrice, true)),
-                productService.findById(linkDTO.getProductId()).get()
+                linkDTO.getProductId()
         );
 
         // Save PricePair
         this.priceService.save(pricePair);
         this.productService.updatePrices(linkDTO.getProductId(), pricePair);
 
-        System.out.println("> New pricePair saved - " + linkDTO.getUrl());
+        LOGGER.info("New pricePair saved - " + linkDTO.getUri());
     }
 
     /**
@@ -354,26 +357,26 @@ public class MetalScraper {
      */
     @Deprecated
     private void redemptionScrap(final Metal metal, final Dealer dealer) {
-        System.out.println(">>> Redemption Scrap");
-        if( dealerToMetalAdapter.get(dealer) instanceof BuyOutInterface) {
-            System.out.println(">>>>> Scraping Redemption List available");
-            List<Pair<String, Double>> nameRedemptionMap = ((BuyOutInterface) dealerToMetalAdapter.get(dealer)).scrapBuyOutFromList();
-
-            nameRedemptionMap.forEach(
-                x -> {
-                    try {
-                        priceService.updatePricePair(x.getFirst(), dealer, x.getSecond(), true);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            );
-        } else {
-            System.out.println(">>>>> Scraping Redemption List is NOT available");
-            // TODO Throw and catch in upper layer
-        }
-
-        System.out.println("Redemption "+dealer+" "+metal+" update");
+//        LOGGER.info("Redemption Scrap");
+//        if( dealerToMetalAdapter.get(dealer) instanceof BuyOutInterface) {
+//            LOGGER.info("Scraping Redemption List available");
+//            List<Pair<String, Double>> nameRedemptionMap = ((BuyOutInterface) dealerToMetalAdapter.get(dealer)).scrapBuyOutFromList();
+//
+//            nameRedemptionMap.forEach(
+//                x -> {
+//                    try {
+//                        priceService.updatePricePair(x.getFirst(), dealer, x.getSecond(), true);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            );
+//        } else {
+//            LOGGER.warn("Scraping Redemption List is NOT available");
+//            // TODO Throw and catch in upper layer
+//        }
+//
+//        LOGGER.info("Redemption "+dealer+" "+metal+" update");
     }
 
 
@@ -395,38 +398,41 @@ public class MetalScraper {
     ///////////////////// LINK
     /////// PUBLIC
 
+    private void saveAndCountLinks(List<Link> linkList, AtomicInteger linkSaveCounter, AtomicInteger linkInDBCounter) {
+        for (Link link : linkList) {
+            try {
+                linkService.save(link);
+                linkSaveCounter.getAndIncrement();
+            } catch (DataIntegrityViolationException e) {
+                linkInDBCounter.getAndIncrement();
+            } catch (IllegalArgumentException e) {
+                LOGGER.info(e.getMessage());
+            } catch (NullPointerException e) {
+                LOGGER.error(e.getMessage());
+            }
+        }
+    }
+
     /**
      * Polymorphic call on all instances of dealerInterfaces a.k.a. dealerMetalScrapers
      */
     public void allLinksScrap() {
+        AtomicInteger linkSaveCounter = new AtomicInteger(0);
+        AtomicInteger linkInDBCounter = new AtomicInteger(0);
+
         // Polymorphic call
-        dealerToMetalAdapter.values().forEach(
-                scraperInterface -> scraperInterface.scrapAllLinksFromProductLists()
-                        .forEach(
-                                link -> {
-                                        try {
-                                            linkService.save(link);
-                                            System.out.println("Link saved");
-                                        } catch (Exception e) {
-                                            System.out.println(e.getMessage());
-                                        }
-                                }
-                        )
-        );
+        for (MetalAdapterInterface scraperInterface : dealerToMetalAdapter.values()) {
+            saveAndCountLinks(scraperInterface.scrapAllLinksFromProductLists(), linkSaveCounter, linkInDBCounter);
+        }
+        LOGGER.info("Links saved: " + linkSaveCounter + ", Links already in DB: " + linkInDBCounter);
     }
 
     public void linksByDealerScrap(Dealer dealer) {
-        dealerToMetalAdapter.get(dealer).scrapAllLinksFromProductLists()
-                .forEach(
-                        link -> {
-                            try {
-                                linkService.save(link);
-                                System.out.println("Link saved");
-                            } catch (Exception e) {
-                                System.out.println(e.getMessage());
-                            }
-                        }
-                );
+        AtomicInteger linkSaveCounter = new AtomicInteger(0);
+        AtomicInteger linkInDBCounter = new AtomicInteger(0);
+
+        saveAndCountLinks(dealerToMetalAdapter.get(dealer).scrapAllLinksFromProductLists(), linkSaveCounter, linkInDBCounter);
+        LOGGER.info("Links saved: " + linkSaveCounter + ", Links already in DB: " + linkInDBCounter);
     }
 
 }

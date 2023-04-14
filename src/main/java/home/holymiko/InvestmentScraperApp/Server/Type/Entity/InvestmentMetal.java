@@ -2,14 +2,22 @@ package home.holymiko.InvestmentScraperApp.Server.Type.Entity;
 
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "investmentMetal")
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Getter
+@NoArgsConstructor
 public class InvestmentMetal {
     @Id
     @GeneratedValue
@@ -26,13 +34,10 @@ public class InvestmentMetal {
     public InvestmentMetal(Product product, Dealer dealer, double beginPrice, LocalDate beginDate) {
         this.product = product;
         this.dealer = dealer;
+//      TODO Change beginPrice to bestRedemption/bestBuyOut
         this.beginPrice = beginPrice;
         this.beginDate = beginDate;
     }
-
-    public InvestmentMetal() {
-    }
-
 
     @Override
     public String toString() {

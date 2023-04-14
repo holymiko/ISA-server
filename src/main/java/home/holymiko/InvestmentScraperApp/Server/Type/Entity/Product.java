@@ -4,7 +4,10 @@ import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDT
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Producer;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -13,12 +16,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "product")
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Getter
+@NoArgsConstructor
 public class Product {
 
     @Id
     @GeneratedValue
+    @Setter(AccessLevel.NONE)
     private long id;
     private String name;
     private Producer producer;
@@ -31,14 +42,11 @@ public class Product {
 
     @OneToMany(mappedBy = "productId", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
-    private List<Link> links;      // includes Dealer
+    private List<Link> links = new ArrayList<>();      // includes Dealer
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "productId", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
-    private List<PricePair> pricePairs;
-
-    public Product() {
-    }
+    private List<PricePair> pricePairs = new ArrayList<>();
 
     public Product(String name, Producer producer, Form form, Metal metal, double grams, int year, boolean isSpecial) {
         this.name = name;
@@ -48,8 +56,6 @@ public class Product {
         this.grams = grams;
         this.year = year;
         this.isSpecial = isSpecial;
-        this.links = new ArrayList<>();
-        this.pricePairs = new ArrayList<>();
     }
 
     public Product(ProductCreateDTO productCreateDTO) {
@@ -60,15 +66,13 @@ public class Product {
         this.grams = productCreateDTO.getGrams();
         this.year = productCreateDTO.getYear();
         this.isSpecial = productCreateDTO.isSpecial();
-        this.links = new ArrayList<>();
-        this.pricePairs = new ArrayList<>();
     }
 
 
     public List<String> getLinksAsString() {
         return links
                 .stream()
-                .map(Link::getUrl)
+                .map(Link::getUri)
                 .collect(Collectors.toList());
     }
 
@@ -76,7 +80,7 @@ public class Product {
         this.name = name;
     }
 
-    public void setLink(List<Link> link) {
+    public void setLinks(List<Link> link) {
         this.links = link;
     }
 

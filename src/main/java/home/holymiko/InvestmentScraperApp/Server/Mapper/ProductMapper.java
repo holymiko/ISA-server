@@ -1,6 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.Mapper;
 
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PricePairRepository;
+import home.holymiko.InvestmentScraperApp.Server.API.Repository.ProductRepository;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_LatestPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.ProductDTO;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class ProductMapper {
 
     private static final String LINKS_AS_STRINGS = "java( product.getLinksAsString() )";
-    private static final String LATEST_PRICES_DTOS = "java( pricePairMapper.toPriceDTOs(pricePairRepository.findLatestPricePairsByProductId(product.getId())) )";
+    private static final String LATEST_PRICES_DTOS = "java( pricePairMapper.toPriceDTOs(pricePairRepository.findLatestPricePairsByProductId(product.getId()), product.getGrams()) )";
 
     @Autowired
     protected PricePairMapper pricePairMapper;
@@ -21,7 +22,7 @@ public abstract class ProductMapper {
 
     @Mappings({
             @Mapping(target = "links", expression = LINKS_AS_STRINGS),
-            @Mapping(target = "prices", expression = "java( pricePairMapper.toPriceDTOs(product.getPricePairs()) )"),
+            @Mapping(target = "prices", expression = "java( pricePairMapper.toPriceDTOs(product.getPricePairs(), product.getGrams()) )"),
             @Mapping(target = "latestPrices", expression = LATEST_PRICES_DTOS)
     })
     public abstract ProductDTO_AllPrices toProductDTO_AllPrices(Product product, @Context PricePairRepository pricePairRepository);

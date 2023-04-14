@@ -5,35 +5,37 @@ import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PortfolioDTO_
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.PortfolioCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.PortfolioDTO;
 import home.holymiko.InvestmentScraperApp.Server.Service.PortfolioService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @CrossOrigin(origins = "http://localhost:3000")         // Requesty z teto adresy jsou legit
 @RestController
 @RequestMapping("/api/v2/portfolio")         // Na url/api/v1/portfolio se zavola HTTP request
+@AllArgsConstructor
 public class PortfolioController {
-    private final PortfolioService portfolioService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PortfolioController.class);
 
-    @Autowired
-    public PortfolioController(PortfolioService portfolioService) {
-        this.portfolioService = portfolioService;
-    }
+    private final PortfolioService portfolioService;
 
     /////// GET
 
     @GetMapping({"/", ""})
     public List<PortfolioDTO> all() {
-        System.out.println("Get all portfolios");
+        LOGGER.info("Get all portfolios");
         return portfolioService.findAllAsDTO();
     }
 
     @ResourceNotFound
     @GetMapping("/id/{id}")
     public Optional<PortfolioDTO_ProductDTO> byId(@PathVariable long id) {
-        System.out.println("Get by Id");
+        LOGGER.info("Get by Id");
         return portfolioService.findById(id);
     }
 
@@ -48,7 +50,7 @@ public class PortfolioController {
 
     @GetMapping({"/dto/{dtoSwitch}","/dto/{dtoSwitch}/"})
     public List<PortfolioDTO> asDTO(@PathVariable int dtoSwitch) {
-        System.out.println("Get all portfolios as DTO");
+        LOGGER.info("Get all portfolios as DTO");
         return portfolioService.findAllAsPortfolioDTO(dtoSwitch);
     }
 
@@ -58,7 +60,7 @@ public class PortfolioController {
             @PathVariable("dtoSwitch") int dtoSwitch,
             @PathVariable("id") long id
     ) {
-        System.out.println("Get by Id as Portfolio-InvestmentMetal DTO");
+        LOGGER.info("Get by Id as Portfolio-InvestmentMetal DTO");
         return portfolioService.findByIdAsPortfolioDTO(id, dtoSwitch);
     }
 
@@ -67,7 +69,7 @@ public class PortfolioController {
 
     @PostMapping({"/", ""})
     public void createPortfolio(@RequestBody PortfolioCreateDTO portfolioCreateDTO) {
-        System.out.println("Add Portfolio");
+        LOGGER.info("Add Portfolio");
 //        this.portfolioService.save(portfolioCreateDTO);
     }
 
