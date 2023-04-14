@@ -1,5 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.UserCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.UserDTO;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -17,6 +18,13 @@ public class UserController {
     @GetMapping({"/me", "/me/"})
     public UserDTO getAssignedClient() {
         return new UserDTO("Tomas", "Dummy", "User", "tomas_dummy_user@world.com", 45665466);
+    }
+
+    @PostMapping
+    public void createUser(@RequestBody UserCreateDTO userCreateDTO) {
+        LOGGER.info("User save");
+//        this.accountService.save(accountCreateDTO);
+//        LOGGER.info("User save success");
     }
 
 }
