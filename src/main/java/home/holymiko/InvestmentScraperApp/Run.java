@@ -1,13 +1,14 @@
 package home.holymiko.InvestmentScraperApp;
 
-import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
+import home.holymiko.InvestmentScraperApp.Server.Core.LogBuilder;
 import home.holymiko.InvestmentScraperApp.Server.API.Controller.ScrapController;
 import home.holymiko.InvestmentScraperApp.Server.API.TextPort.Import;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.CNBScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.CurrencyService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -19,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -51,13 +51,13 @@ public class Run {
     @Order(0)
     @EventListener(ApplicationStartedEvent.class)
     public void run() throws IOException {
-        LOGGER.info("App has started up");
+        LOGGER.info("App has started UP");
         try {
             cnbScraper.scrapExchangeRate();
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
-        ConsolePrinter.printExchangeRates(
+        LogBuilder.printExchangeRates(
                 Arrays.asList(
                         currencyService.findExchangeRate("EUR"),
                         currencyService.findExchangeRate("USD")
@@ -67,10 +67,11 @@ public class Run {
 
     // @Order(1) is in MetalScraper
 
-//    @Order(2)                         TODO activate before release
+//    @Order(2)                       //  TODO activate before release
 //    @EventListener(ApplicationStartedEvent.class)
     public void runFrontEnd() throws IOException {
         // Run FrontEnd NodeJS Application
+        LOGGER.info("Attempt START frontend");
         process = new ProcessBuilder(isWindows() ? "npm.cmd" : "yarn", "start")
                 .directory( new File("../ISA-client"))
                 .start();
