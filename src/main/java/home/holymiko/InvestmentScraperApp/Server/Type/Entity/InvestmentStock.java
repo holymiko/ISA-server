@@ -23,15 +23,15 @@ public class InvestmentStock {
     private long id;
     @ManyToOne(fetch = FetchType.EAGER)             // To avoid problem with Hibernate closing session
     @Fetch(FetchMode.SELECT)                        // To avoid duplicates
-    private GrahamStock grahamStock;
+    private StockGraham stockGraham;
     private Integer amount;
     private double beginPrice;
     private double endPrice;
     private LocalDate beginDate;
     private LocalDate endDate;
 
-    public InvestmentStock(GrahamStock grahamStock, Integer amount, double beginPrice, LocalDate beginDate) {
-        this.grahamStock = grahamStock;
+    public InvestmentStock(StockGraham stockGraham, Integer amount, double beginPrice, LocalDate beginDate) {
+        this.stockGraham = stockGraham;
         this.amount = amount;
         this.beginPrice = beginPrice;
         this.beginDate = beginDate;

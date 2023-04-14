@@ -7,7 +7,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.GrahamGrade;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Convert;
-import home.holymiko.InvestmentScraperApp.Server.Service.GrahamStockService;
+import home.holymiko.InvestmentScraperApp.Server.Service.StockGrahamService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 import home.holymiko.InvestmentScraperApp.Server.Core.LogBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +27,13 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
     private static final Logger LOGGER = LoggerFactory.getLogger(SerenityScraper.class);
 
     private final TickerService tickerService;
-    private final GrahamStockService grahamStockService;
+    private final StockGrahamService stockGrahamService;
 
     @Autowired
-    public SerenityScraper(TickerService tickerService, GrahamStockService grahamStockService) {
+    public SerenityScraper(TickerService tickerService, StockGrahamService stockGrahamService) {
         super("SerenityScraper");
         this.tickerService = tickerService;
-        this.grahamStockService = grahamStockService;
+        this.stockGrahamService = stockGrahamService;
     }
 
     //////////// PUBLIC
@@ -79,7 +79,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
                     e.printStackTrace();
                 }
             } else {
-                this.grahamStockService.deleteByTicker(ticker);
+                this.stockGrahamService.deleteByTicker(ticker);
                 this.tickerService.update(ticker, TickerState.BAD);
                 LOGGER.info(ticker.getTicker() + " - Bad");
             }
@@ -89,7 +89,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
         }
         tickerService.printTickerStatus();
         Export.exportTickers(tickerService.findAll());
-        Export.exportStocks(grahamStockService.findAll());
+        Export.exportStocks(stockGrahamService.findAll());
     }
 
     //////////// PRIVATE
@@ -124,7 +124,7 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
 
         LogBuilder.printScrapStockShort(header, ratingScore, results.get(5), currency);
 
-        GrahamStock grahamStock = new GrahamStock(
+        StockGraham stockGraham = new StockGraham(
                 new Date(), header, ticker, grade, currency, ratingScore,
                 ratings.get(0), ratings.get(1), ratings.get(2), ratings.get(3),
                 ratings.get(4), ratings.get(5), ratings.get(6), ratings.get(7),
@@ -132,16 +132,16 @@ public class SerenityScraper extends Client implements SerenityScraperInterface 
                 results.get(0), results.get(1), results.get(2),
                 results.get(3), results.get(4), results.get(5)
         );
-        this.grahamStockService.save(grahamStock);
+        this.stockGrahamService.save(stockGraham);
     }
 
     private Set<Ticker> filterTickersByCurrencies(Set<Ticker> tickers, Set<String> currencies) {
-        return grahamStockService.findByTicker(tickers)
+        return stockGrahamService.findByTicker(tickers)
                 .stream()
                 .filter(
                         stock -> currencies.contains( stock.getCurrency() )
                 ).map(
-                        GrahamStock::getTicker
+                        StockGraham::getTicker
                 ).collect(Collectors.toSet());
     }
 

@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Getter
 @NoArgsConstructor
-public class GrahamStock {
+public class StockGraham {
     @Id
     @GeneratedValue
     private int id;
@@ -60,11 +60,11 @@ public class GrahamStock {
     // TODO private ? createdOn
     // TODO private ? updatedOn
 
-    public GrahamStock(Ticker ticker) {
+    public StockGraham(Ticker ticker) {
         this.ticker = ticker;
     }
 
-    public GrahamStock(Date timeStamp, String name, Ticker ticker, GrahamGrade grahamGrade, String currency, Double ratingScore, Double sizeInSales, Double assetsLiabilities, Double netAssetsLongTermDebt, Double earningsStability, Double dividendRecord, Double earningGrowth, Double grahamNumber, Double ncav, Double equityDebt, Double sizeInAssets, Double defensivePrice, Double enterprisingPrice, Double ncavPrice, Double intrinsicPrice, Double previousClose, Double intrinsicValue) {
+    public StockGraham(Date timeStamp, String name, Ticker ticker, GrahamGrade grahamGrade, String currency, Double ratingScore, Double sizeInSales, Double assetsLiabilities, Double netAssetsLongTermDebt, Double earningsStability, Double dividendRecord, Double earningGrowth, Double grahamNumber, Double ncav, Double equityDebt, Double sizeInAssets, Double defensivePrice, Double enterprisingPrice, Double ncavPrice, Double intrinsicPrice, Double previousClose, Double intrinsicValue) {
         this.timeStamp = timeStamp;
         this.name = name;
         this.ticker = ticker;

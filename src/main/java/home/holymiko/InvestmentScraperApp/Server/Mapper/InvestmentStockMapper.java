@@ -12,10 +12,10 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public abstract class InvestmentStockMapper {
 
-    private static final String PRODUCT_DTO_ALL_PRICES = "java( grahamStockMapper.toStockDTO(entity.getGrahamStock()) )";
+    private static final String PRODUCT_DTO_ALL_PRICES = "java( stockGrahamMapper.toStockDTO(entity.getStockGraham()) )";
 
     @Autowired
-    protected GrahamStockMapper grahamStockMapper;
+    protected StockGrahamMapper stockGrahamMapper;
 
     public abstract InvestmentStockDTO toInvestmentStockDTO(InvestmentStock entity);
 
