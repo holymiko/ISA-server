@@ -6,10 +6,13 @@ import home.holymiko.InvestmentScraperApp.Server.Mapper.AccountMapper;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.AccountCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.AccountDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Account;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +36,13 @@ public class AccountService {
 
     /////// FIND AS DTO
 
+    public List<AccountDTO> findAll() {
+        return accountRepository.findAll()
+                .stream()
+                .map(accountMapper::toAccountDTO)
+                .collect(Collectors.toList());
+    }
+
     public AccountDTO findByIdAsDTO(long id) {
         return accountMapper.toAccountDTO( findById(id) );
     }
@@ -40,54 +50,48 @@ public class AccountService {
     /////// POST
     @Transactional
     public void save(AccountCreateDTO accountCreateDTO) {
-        LOGGER.info("Account save");
-        Assert.hasText(accountCreateDTO.getUsername(), "'Username' must not be empty");
-        Assert.isTrue(accountCreateDTO.getUsername().length() >= 6, "'Username' must be at least 6 characters long");
-        Assert.hasText(accountCreateDTO.getPassword(), "'Password' must not be empty");
-        Assert.isTrue(accountCreateDTO.getPassword().matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$"), "'Password' must contain at least one lower letter, one upper letter, one number and be at least 6 characters long");
-
+        if( this.accountRepository.findByUsername(accountCreateDTO.getUsername()).isPresent() ) {
+            throw new IllegalArgumentException("Account with username '"+accountCreateDTO.getUsername()+"' already exists");
+        }
+        assertUsername(accountCreateDTO.getUsername());
+        assertPassword(accountCreateDTO.getPassword());
+        // Default role
+        if(accountCreateDTO.getRole() == null) {
+            accountCreateDTO.setRole(Role.USER);
+            LOGGER.info("Role set to default: " + accountCreateDTO.getRole());
+        }
         this.accountRepository.save(
                 accountMapper.toAccount(accountCreateDTO)
         );
-        LOGGER.info("Account saved");
     }
 
 
     /////// DELETE
     @Transactional
     public void deleteAccountById(long id) {
-        LOGGER.info("Delete account");
-        this.accountRepository.deleteById(id);
-        LOGGER.info("Account deleted");
+        this.accountRepository.delete( findById(id) );
     }
 
     @Transactional
     public void deleteAccountByUsername(String username) {
-        LOGGER.info("Delete account");
-        this.accountRepository.deleteByUsername(username);
-        LOGGER.info("Account deleted");
+        this.accountRepository.delete( findByUsername(username) );
     }
 
 
     /////// PUT
     @Transactional
-    public void changePasswordById(long id, String password) {
-        LOGGER.info("Change password");
-        Account account = findById(id);
+    public void changePassword(Account account, String password) {
+        assertPassword(password);
         account.setPassword(password);
         this.accountRepository.save(account);
-        LOGGER.info("Password changed");
     }
 
-    @Transactional
+    public void changePasswordById(long id, String password) {
+        changePassword( findById(id), password );
+    }
+
     public void changePasswordByUsername(String username, String password) {
-        LOGGER.info("Change password");
-        Account account = this.accountRepository.findByUsername(username).orElseThrow(
-                () -> new ResourceNotFoundException("Account with given username was not found")
-        );
-        account.setPassword(password);
-        this.accountRepository.save(account);
-        LOGGER.info("Password changed");
+        changePassword( findByUsername(username), password );
     }
 
     /////// UTILS
@@ -99,6 +103,14 @@ public class AccountService {
         }
         return optional.get();
     }
+    // TODO Create param endpoint
+    private Account findByUsername(String username) {
+        Optional<Account> optional = this.accountRepository.findByUsername(username);
+        if(optional.isEmpty()) {
+            throw new ResourceNotFoundException("Account with username "+username+" was not found");
+        }
+        return optional.get();
+    }
 
     private Account findById(Long id) {
         Optional<Account> optionalProduct = this.accountRepository.findById(id);
@@ -106,5 +118,15 @@ public class AccountService {
             throw new ResourceNotFoundException("Account with id "+id+" was not found");
         }
         return optionalProduct.get();
+    }
+
+    private static void assertUsername(String username) {
+        Assert.hasText(username, "'Username' must not be empty");
+        Assert.isTrue(username.length() >= 6, "'Username' must be at least 6 characters long");
+    }
+
+    private static void assertPassword(String password) {
+        Assert.hasText(password, "'Password' must not be empty");
+        Assert.isTrue(password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$"), "'Password' must contain at least one lower letter, one upper letter, one number and be at least 6 characters long");
     }
 }

@@ -6,6 +6,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Producer;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -23,6 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Getter
+@NoArgsConstructor
 public class Product {
 
     @Id
@@ -45,9 +47,6 @@ public class Product {
     @OneToMany(mappedBy = "productId", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private List<PricePair> pricePairs = new ArrayList<>();
-
-    public Product() {
-    }
 
     public Product(String name, Producer producer, Form form, Metal metal, double grams, int year, boolean isSpecial) {
         this.name = name;

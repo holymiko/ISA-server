@@ -10,8 +10,7 @@ import lombok.ToString;
 @ToString
 public class LinkDTO {
 
-    // TODO refactor id name
-    private final Long Id;
+    private final Long id;
     private final Dealer dealer;
     private final String uri;
     private final Long productId;

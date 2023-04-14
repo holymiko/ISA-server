@@ -2,10 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.Type.Entity;
 
 import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -19,6 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Link {
     @Id
     @GeneratedValue
@@ -29,9 +27,6 @@ public class Link {
     private String name;
     private Dealer dealer;
     private Long productId;
-
-    public Link() {
-    }
 
     public Link(Dealer dealer, String uri) {
         this.dealer = dealer;

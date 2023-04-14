@@ -1,6 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.Type.Entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -15,6 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Getter
+@NoArgsConstructor
 public class InvestmentStock {
     @Id
     @GeneratedValue
@@ -33,9 +35,6 @@ public class InvestmentStock {
         this.amount = amount;
         this.beginPrice = beginPrice;
         this.beginDate = beginDate;
-    }
-
-    public InvestmentStock() {
     }
 
 }

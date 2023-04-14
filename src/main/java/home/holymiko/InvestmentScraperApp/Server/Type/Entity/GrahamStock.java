@@ -2,6 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.Type.Entity;
 
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.GrahamGrade;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Getter
+@NoArgsConstructor
 public class GrahamStock {
     @Id
     @GeneratedValue
@@ -57,8 +59,6 @@ public class GrahamStock {
     // TODO private String submittedBy
     // TODO private ? createdOn
     // TODO private ? updatedOn
-
-    public GrahamStock() {}
 
     public GrahamStock(Ticker ticker) {
         this.ticker = ticker;

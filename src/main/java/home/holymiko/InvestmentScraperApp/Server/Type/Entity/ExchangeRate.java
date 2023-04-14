@@ -1,6 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.Type.Entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Getter
+@NoArgsConstructor
 public class ExchangeRate {
     @Id
     @GeneratedValue
@@ -36,8 +38,5 @@ public class ExchangeRate {
         this.exchangeRate = exchangeRate;
     }
 
-    public ExchangeRate() {
-
-    }
 }
 

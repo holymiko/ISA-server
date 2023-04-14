@@ -2,6 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.Type.Entity;
 
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -16,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Getter
+@NoArgsConstructor
 public class InvestmentMetal {
     @Id
     @GeneratedValue
@@ -36,10 +38,6 @@ public class InvestmentMetal {
         this.beginPrice = beginPrice;
         this.beginDate = beginDate;
     }
-
-    public InvestmentMetal() {
-    }
-
 
     @Override
     public String toString() {

@@ -2,6 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.Type.Entity;
 
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class PricePair {
 
     @Id
@@ -26,9 +28,6 @@ public class PricePair {
     @OneToOne
     private Price redemption;
     private Long productId;
-
-    public PricePair() {
-    }
 
     public PricePair(Dealer dealer, Price sellPrice, Price redemption, Long productId) {
         this.dealer = dealer;

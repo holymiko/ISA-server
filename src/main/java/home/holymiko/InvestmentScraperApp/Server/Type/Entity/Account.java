@@ -33,7 +33,7 @@ public class Account {
     private String password;
     private Role role;
 
-    public Account (String username, String password, Role role) {
+    public Account(String username, String password, Role role) {
         this.username = username;
         this.password = password;
         this.role = role;
