@@ -1,6 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Repository;
 
-import home.holymiko.InvestmentScraperApp.Server.Type.Entity.GrahamStock;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.StockGraham;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.GrahamGrade;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Ticker;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface GrahamStockRepository extends JpaRepository<GrahamStock, Integer> {
+public interface StockGrahamRepository extends JpaRepository<StockGraham, Integer> {
 
-    Optional<GrahamStock> findByTicker(Ticker ticker);
+    Optional<StockGraham> findByTicker(Ticker ticker);
 
-    Optional<GrahamStock> findByTicker_Ticker(String ticker);
+    Optional<StockGraham> findByTicker_Ticker(String ticker);
 
 
-    @Query("select s from GrahamStock s where " +
+    @Query("select s from StockGraham s where " +
             "(:grahamGrade is null or s.grahamGrade = :grahamGrade) " +
             "and " +
             "(:intrinsicValue is null or s.intrinsicValue = :intrinsicValue) " +
@@ -28,7 +28,7 @@ public interface GrahamStockRepository extends JpaRepository<GrahamStock, Intege
             "and " +
             "(:currency is null or s.currency = :currency) "
     )
-    List<GrahamStock> findByParams(
+    List<StockGraham> findByParams(
             @Param("grahamGrade") GrahamGrade grahamGrade,
             @Param("intrinsicValue") Double intrinsicValue,
             @Param("ratingScore") Double ratingScore,

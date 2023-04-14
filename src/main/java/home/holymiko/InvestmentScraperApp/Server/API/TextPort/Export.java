@@ -130,35 +130,35 @@ public class Export {
         }
     }
 
-    public static void exportStocks(final List<GrahamStock> grahamStocks) {
-        LOGGER.info("Export grahamStocks");
+    public static void exportStocks(final List<StockGraham> stockGrahams) {
+        LOGGER.info("Export stockGrahams");
         try {
             final File file = new File(STOCK_PATH + LocalDate.now());
             file.mkdirs();
             final FileWriter stockWriter = new FileWriter(file.getPath()+"/stock.txt");
 
-            for (GrahamStock grahamStock : grahamStocks) {
-                String x = grahamStock.getName()+DELIMITER+
-                        grahamStock.getTicker().getTicker()+DELIMITER+
-                        grahamStock.getGrahamGrade()+DELIMITER+
-                        grahamStock.getCurrency()+DELIMITER+
+            for (StockGraham stockGraham : stockGrahams) {
+                String x = stockGraham.getName()+DELIMITER+
+                        stockGraham.getTicker().getTicker()+DELIMITER+
+                        stockGraham.getGrahamGrade()+DELIMITER+
+                        stockGraham.getCurrency()+DELIMITER+
 
-                        grahamStock.getRatingScore()+DELIMITER+
-                        grahamStock.getSizeInSales()+DELIMITER+
-                        grahamStock.getAssetsLiabilities()+DELIMITER+
-                        grahamStock.getNetAssetsLongTermDebt()+DELIMITER+
-                        grahamStock.getEarningsStability()+DELIMITER+
-                        grahamStock.getDividendRecord()+DELIMITER+
-                        grahamStock.getNcav()+DELIMITER+
-                        grahamStock.getEquityDebt()+DELIMITER+
-                        grahamStock.getSizeInAssets()+DELIMITER+
+                        stockGraham.getRatingScore()+DELIMITER+
+                        stockGraham.getSizeInSales()+DELIMITER+
+                        stockGraham.getAssetsLiabilities()+DELIMITER+
+                        stockGraham.getNetAssetsLongTermDebt()+DELIMITER+
+                        stockGraham.getEarningsStability()+DELIMITER+
+                        stockGraham.getDividendRecord()+DELIMITER+
+                        stockGraham.getNcav()+DELIMITER+
+                        stockGraham.getEquityDebt()+DELIMITER+
+                        stockGraham.getSizeInAssets()+DELIMITER+
 
-                        grahamStock.getDefensivePrice()+DELIMITER+
-                        grahamStock.getEnterprisingPrice()+DELIMITER+
-                        grahamStock.getNcavPrice()+DELIMITER+
-                        grahamStock.getIntrinsicPrice()+DELIMITER+
-                        grahamStock.getPreviousClose()+DELIMITER+
-                        grahamStock.getIntrinsicValue()+"\n";
+                        stockGraham.getDefensivePrice()+DELIMITER+
+                        stockGraham.getEnterprisingPrice()+DELIMITER+
+                        stockGraham.getNcavPrice()+DELIMITER+
+                        stockGraham.getIntrinsicPrice()+DELIMITER+
+                        stockGraham.getPreviousClose()+DELIMITER+
+                        stockGraham.getIntrinsicValue()+"\n";
                 stockWriter.write(x);
             }
             stockWriter.close();

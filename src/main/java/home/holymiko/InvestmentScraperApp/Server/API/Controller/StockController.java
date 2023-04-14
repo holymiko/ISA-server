@@ -1,10 +1,9 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Core.annotation.ResourceNotFound;
-import home.holymiko.InvestmentScraperApp.Server.Service.GrahamStockService;
-import home.holymiko.InvestmentScraperApp.Server.Type.Entity.GrahamStock;
+import home.holymiko.InvestmentScraperApp.Server.Service.StockGrahamService;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.StockGraham;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,19 +20,19 @@ public class StockController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StockController.class);
 
-    private final GrahamStockService grahamStockService;
+    private final StockGrahamService stockGrahamService;
 
     @GetMapping({"/", ""})
-    public List<GrahamStock> all() {
+    public List<StockGraham> all() {
         LOGGER.info("Get all stocks");
-        return grahamStockService.findAll();
+        return stockGrahamService.findAll();
     }
 
     @ResourceNotFound
     @GetMapping("/id/{id}")
-    public Optional<GrahamStock> byId(@PathVariable int id) {
+    public Optional<StockGraham> byId(@PathVariable int id) {
         LOGGER.info("Get by Id");
-        return grahamStockService.findById(id);
+        return stockGrahamService.findById(id);
     }
 }
 

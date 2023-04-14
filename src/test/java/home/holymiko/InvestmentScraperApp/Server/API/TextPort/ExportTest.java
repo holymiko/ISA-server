@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.xml.bind.JAXBException;
@@ -101,8 +100,8 @@ class ExportTest {
         InvestmentMetal investmentMetal2 = new InvestmentMetal(product2, Dealer.ZLATAKY, 10205.12, LocalDate.now().minusDays(3));
         InvestmentMetal investmentMetal3 = new InvestmentMetal(product3, Dealer.BESSERGOLD_CZ, 5865.00, LocalDate.now().minusMonths(1));
 
-        GrahamStock stock0 = new GrahamStock(null, "stock0", null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
-        GrahamStock stock1 = new GrahamStock(null, "stock1", null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+        StockGraham stock0 = new StockGraham(null, "stock0", null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+        StockGraham stock1 = new StockGraham(null, "stock1", null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
 
         InvestmentStock investmentStock0 = new InvestmentStock(stock0, 5, 100, LocalDate.now());
         InvestmentStock investmentStock1 = new InvestmentStock(stock1, 3, 845, LocalDate.now().minusWeeks(2));

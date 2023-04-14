@@ -1,7 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.Utils;
 
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.ProductRepository;
-import home.holymiko.InvestmentScraperApp.Server.API.Repository.GrahamStockRepository;
+import home.holymiko.InvestmentScraperApp.Server.API.Repository.StockGrahamRepository;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
@@ -22,14 +22,14 @@ public class InvestmentInit {
 
     private static final double TROY_OUNCE = 31.1034768;
 
-    private final GrahamStockRepository grahamStockRepository;
+    private final StockGrahamRepository stockGrahamRepository;
     private final ProductRepository productRepository;
     private final InvestmentService investmentService;
     private final PortfolioService portfolioService;
 
     @Autowired
-    public InvestmentInit(GrahamStockRepository grahamStockRepository, ProductRepository productRepository, InvestmentService investmentService, PortfolioService portfolioService) {
-        this.grahamStockRepository = grahamStockRepository;
+    public InvestmentInit(StockGrahamRepository stockGrahamRepository, ProductRepository productRepository, InvestmentService investmentService, PortfolioService portfolioService) {
+        this.stockGrahamRepository = stockGrahamRepository;
         this.productRepository = productRepository;
         this.investmentService = investmentService;
         this.portfolioService = portfolioService;
@@ -308,13 +308,13 @@ public class InvestmentInit {
     }
 
     private List<InvestmentStock> saveSomeStockInvestments() {
-        GrahamStock grahamStock = this.grahamStockRepository.findByTicker_Ticker("RINO").get();
-        GrahamStock grahamStock1 = this.grahamStockRepository.findByTicker_Ticker("NC").get();
-        GrahamStock grahamStock2 = this.grahamStockRepository.findByTicker_Ticker("CMC").get();
+        StockGraham stockGraham = this.stockGrahamRepository.findByTicker_Ticker("RINO").get();
+        StockGraham stockGraham1 = this.stockGrahamRepository.findByTicker_Ticker("NC").get();
+        StockGraham stockGraham2 = this.stockGrahamRepository.findByTicker_Ticker("CMC").get();
 
-        InvestmentStock silverBar1 = new InvestmentStock(grahamStock, 10, grahamStock.getPreviousClose(), LocalDate.of(2018, 9, 10));
-        InvestmentStock silverBar2 = new InvestmentStock(grahamStock1, 10, grahamStock1.getPreviousClose(), LocalDate.of(2018, 9, 10));
-        InvestmentStock silverBar3 = new InvestmentStock(grahamStock2, 100, grahamStock2.getPreviousClose(), LocalDate.of(2018, 9, 10));
+        InvestmentStock silverBar1 = new InvestmentStock(stockGraham, 10, stockGraham.getPreviousClose(), LocalDate.of(2018, 9, 10));
+        InvestmentStock silverBar2 = new InvestmentStock(stockGraham1, 10, stockGraham1.getPreviousClose(), LocalDate.of(2018, 9, 10));
+        InvestmentStock silverBar3 = new InvestmentStock(stockGraham2, 100, stockGraham2.getPreviousClose(), LocalDate.of(2018, 9, 10));
 
 
         List<InvestmentStock> investmentMetalList = new ArrayList<>() {{
