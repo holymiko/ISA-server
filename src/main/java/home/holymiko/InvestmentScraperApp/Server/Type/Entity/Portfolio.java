@@ -21,7 +21,8 @@ public class Portfolio {
     @Id
     @GeneratedValue
     private long id;
-    private String owner;
+
+    private Long accountId;
 
     @OneToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
@@ -31,8 +32,7 @@ public class Portfolio {
     @Fetch(FetchMode.SELECT)
     private List<InvestmentStock> investmentStocks;
 
-    public Portfolio(String owner, List<InvestmentMetal> investmentMetals, List<InvestmentStock> investmentStocks) {
-        this.owner = owner;
+    public Portfolio(List<InvestmentMetal> investmentMetals, List<InvestmentStock> investmentStocks) {
         this.investmentMetals = investmentMetals;
         this.investmentStocks = investmentStocks;
     }

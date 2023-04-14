@@ -3,6 +3,7 @@ package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 import home.holymiko.InvestmentScraperApp.Server.Core.Handler;
 import home.holymiko.InvestmentScraperApp.Server.Service.AccountService;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.CredentialDTO;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ public class AuthController {
 
     // TODO Hash credentials
     @PostMapping
+    @Operation(description = "Returns dummy token")
     public String authenticate(@RequestBody CredentialDTO credentialDTO) {
         Assert.notNull(credentialDTO, "Credentials were not given");
         Assert.notNull(credentialDTO.getUsername(), "Username is missing");

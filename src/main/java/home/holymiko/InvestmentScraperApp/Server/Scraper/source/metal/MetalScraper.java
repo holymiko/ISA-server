@@ -74,13 +74,17 @@ public class MetalScraper {
         dealerToMetalAdapter.put(Dealer.BESSERGOLD_CZ, new BessergoldAdapter());
         dealerToMetalAdapter.put(Dealer.SILVERUM, new SilverumAdapter());
         dealerToMetalAdapter.put(Dealer.ZLATAKY, new ZlatakyAdapter());
-        dealerToMetalAdapter.put(
-                Dealer.BESSERGOLD_DE,
-                new BessergoldDeAdapter(
-                        // Insert currency exchange rate for conversion to CZK
-                        currencyService.findExchangeRate("EUR").getExchangeRate()
-                )
-        );
+        try {
+            dealerToMetalAdapter.put(
+                    Dealer.BESSERGOLD_DE,
+                    new BessergoldDeAdapter(
+                            // Insert currency exchange rate for conversion to CZK
+                            currencyService.findExchangeRate("EUR").getExchangeRate()
+                    )
+            );
+        } catch (NullPointerException e) {
+            LOGGER.warn("WebClient OFF - BessergoldDeAdapter - EUR exchange rate is missing");
+        }
     }
 
     ////////////// PRODUCT

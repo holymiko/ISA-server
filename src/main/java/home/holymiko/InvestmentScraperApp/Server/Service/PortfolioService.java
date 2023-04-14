@@ -90,10 +90,8 @@ public class PortfolioService {
     }
 
     public Optional<PortfolioDTO_ProductDTO> findByOwner(String owner) {
-        return portfolioRepository.findByOwner(owner)
-                .map(
-                        portfolioMapper::toDTO_AllPrices
-                );
+        // TODO Implement
+        return Optional.empty();
     }
 
     public List<PortfolioDTO> findAllAsDTO() {

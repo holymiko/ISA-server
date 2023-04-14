@@ -8,7 +8,9 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public class UserDTO {
+public class PersonDTO {
+
+    private final Long id;
 
     private final String firstName;
     private final String middleName;

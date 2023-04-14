@@ -40,19 +40,19 @@ public class InvestmentInit {
      */
     public void saveInitPortfolios() {
         if(this.portfolioService.findByOwner("Carlos").isEmpty()) {
-            Portfolio portfolio = new Portfolio("Carlos", this.saveCarlosMetalInvestments(), new ArrayList<>());
+            Portfolio portfolio = new Portfolio(this.saveCarlosMetalInvestments(), new ArrayList<>());
             this.portfolioService.save(portfolio);
         }
         if(this.portfolioService.findByOwner("Sanchez").isEmpty()) {
-            Portfolio portfolio = new Portfolio("Sanchez", this.saveSanchezMetalInvestments(), new ArrayList<>());
+            Portfolio portfolio = new Portfolio(this.saveSanchezMetalInvestments(), new ArrayList<>());
             this.portfolioService.save(portfolio);
         }
         if(this.portfolioService.findByOwner("Eduardo").isEmpty()) {
-            Portfolio portfolio = new Portfolio("Eduardo", this.saveEduardoMetalInvestments(), new ArrayList<>());
+            Portfolio portfolio = new Portfolio(this.saveEduardoMetalInvestments(), new ArrayList<>());
             this.portfolioService.save(portfolio);
         }
         if(this.portfolioService.findByOwner("Filip").isEmpty()) {
-            Portfolio portfolio = new Portfolio("Filip", this.saveEduardoMetalInvestments(), this.saveSomeStockInvestments());
+            Portfolio portfolio = new Portfolio(this.saveEduardoMetalInvestments(), this.saveSomeStockInvestments());
             this.portfolioService.save(portfolio);
         }
 

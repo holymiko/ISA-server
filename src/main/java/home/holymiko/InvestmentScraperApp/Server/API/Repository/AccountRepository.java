@@ -8,9 +8,9 @@ import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    void deleteByUsername(String username);
 
-    // TODO Refactor to find by params, with optional null
+    Optional<Account> findByPersonId(Long id);
+
     Optional<Account> findByUsernameAndPassword(String username, String password);
 
     Optional<Account> findByUsername(String username);

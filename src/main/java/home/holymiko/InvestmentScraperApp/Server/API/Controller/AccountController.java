@@ -4,6 +4,7 @@ import home.holymiko.InvestmentScraperApp.Server.Core.Handler;
 import home.holymiko.InvestmentScraperApp.Server.Service.AccountService;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.AccountCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.AccountDTO;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
@@ -45,10 +46,9 @@ public class AccountController {
 
     /////// POST
     @PostMapping
-    public void createAccount(@RequestBody AccountCreateDTO accountCreateDTO) {
+    public AccountDTO createAccount(@RequestBody AccountCreateDTO accountCreateDTO) {
         LOGGER.info("Account save");
-        this.accountService.save(accountCreateDTO);
-        LOGGER.info("Account save success");
+        return this.accountService.save(accountCreateDTO);
     }
 
     /////// PUT
@@ -69,17 +69,19 @@ public class AccountController {
 
     /////// DELETE
     @DeleteMapping({"/id/{id}", "/id/"})
+    @Operation(description = "Deletes account and linked person based on account ID")
     public void deleteAccountById(@PathVariable(required = false) Long id) {
         LOGGER.info("Delete account by Id");
         Assert.notNull(id, "ID was not given");
-        this.accountService.deleteAccountById(id);
+        this.accountService.deleteById(id);
         LOGGER.info("Account delete success");
     }
 
     @DeleteMapping({"/username/{username}", "/username/"})
+    @Operation(description = "Deletes account and linked person based on account username")
     public void deleteAccountByUsername(@PathVariable String username) {
         LOGGER.info("Delete account by username");
-        this.accountService.deleteAccountByUsername(username);
+        this.accountService.deleteByUsername(username);
         LOGGER.info("Account delete success");
     }
 

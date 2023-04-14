@@ -108,7 +108,6 @@ class ExportTest {
         InvestmentStock investmentStock1 = new InvestmentStock(stock1, 3, 845, LocalDate.now().minusWeeks(2));
 
         Portfolio portfolio = new Portfolio(
-                "Nelson Mandela",
                 Arrays.asList(investmentMetal0, investmentMetal1, investmentMetal2, investmentMetal3),
                 Arrays.asList(investmentStock0, investmentStock1)
         );

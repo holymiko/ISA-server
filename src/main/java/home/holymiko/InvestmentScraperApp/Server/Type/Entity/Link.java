@@ -21,7 +21,7 @@ public class Link {
     @Id
     @GeneratedValue
     @Setter(AccessLevel.NONE)
-    private Long Id;
+    private Long id;
     @NotNull
     private String uri;
     private String name;

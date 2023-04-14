@@ -49,7 +49,8 @@ public class AccountService {
 
     /////// POST
     @Transactional
-    public void save(AccountCreateDTO accountCreateDTO) {
+    public AccountDTO save(AccountCreateDTO accountCreateDTO) {
+        // Unique username
         if( this.accountRepository.findByUsername(accountCreateDTO.getUsername()).isPresent() ) {
             throw new IllegalArgumentException("Account with username '"+accountCreateDTO.getUsername()+"' already exists");
         }
@@ -60,20 +61,29 @@ public class AccountService {
             accountCreateDTO.setRole(Role.USER);
             LOGGER.info("Role set to default: " + accountCreateDTO.getRole());
         }
-        this.accountRepository.save(
-                accountMapper.toAccount(accountCreateDTO)
+        return accountMapper.toAccountDTO(
+            this.accountRepository.save(
+                    accountMapper.toAccount(accountCreateDTO)
+            )
+        );
+    }
+
+    @Transactional
+    public AccountDTO save(Account account) {
+        return accountMapper.toAccountDTO(
+                this.accountRepository.save(account)
         );
     }
 
 
     /////// DELETE
     @Transactional
-    public void deleteAccountById(long id) {
+    public void deleteById(long id) {
         this.accountRepository.delete( findById(id) );
     }
 
     @Transactional
-    public void deleteAccountByUsername(String username) {
+    public void deleteByUsername(String username) {
         this.accountRepository.delete( findByUsername(username) );
     }
 
@@ -112,10 +122,18 @@ public class AccountService {
         return optional.get();
     }
 
-    private Account findById(Long id) {
+    public Account findById(long id) {
         Optional<Account> optionalProduct = this.accountRepository.findById(id);
         if(optionalProduct.isEmpty()) {
             throw new ResourceNotFoundException("Account with id "+id+" was not found");
+        }
+        return optionalProduct.get();
+    }
+
+    public Account findByPersonId(long id) {
+        Optional<Account> optionalProduct = this.accountRepository.findByPersonId(id);
+        if(optionalProduct.isEmpty()) {
+            throw new ResourceNotFoundException("Account with personId "+id+" was not found");
         }
         return optionalProduct.get();
     }
