@@ -1,11 +1,11 @@
-package home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced;
+package home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AccountAuthDTO {
+public class CredentialDTO {
 
     private final String username;
     private final String password;
