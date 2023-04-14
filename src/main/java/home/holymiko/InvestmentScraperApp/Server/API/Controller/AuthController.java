@@ -23,13 +23,13 @@ public class AuthController {
 
     private final AccountService accountService;
 
-    // TODO Rebuild this, credentials should be hashed
+    // TODO Hash credentials
     @PostMapping
-    public String authenticate(@RequestBody CredentialDTO authDTO) {
-        Assert.notNull(authDTO, "Credentials were not given");
-        Assert.notNull(authDTO.getUsername(), "Username is missing");
-        Assert.notNull(authDTO.getPassword(), "Password is missing");
-        return accountService.authenticate(authDTO.getUsername(), authDTO.getPassword());
+    public String authenticate(@RequestBody CredentialDTO credentialDTO) {
+        Assert.notNull(credentialDTO, "Credentials were not given");
+        Assert.notNull(credentialDTO.getUsername(), "Username is missing");
+        Assert.notNull(credentialDTO.getPassword(), "Password is missing");
+        return accountService.authenticate(credentialDTO.getUsername(), credentialDTO.getPassword());
     }
 
     /////// Handlers
