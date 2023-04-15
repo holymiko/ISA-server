@@ -38,7 +38,7 @@ public class AuthController {
 
     @ExceptionHandler({IllegalArgumentException.class})
     public void handleRuntimeException(Exception ex, HttpServletResponse response) throws IOException {
-        LOGGER.error("Exception: ", ex);
+        LOGGER.error("IllegalArgumentException: " + ex.getMessage());
         Handler.handleIllegalArgumentException(HttpStatus.UNAUTHORIZED, ex, response);
     }
 

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -121,6 +122,7 @@ public class ProductService {
 
     @Transactional
     public void changeLinkProduct(LinkChangeDTO dto) {
+        Assert.isTrue(!Objects.equals(dto.getToProductId(), dto.getFromProductId()), "fromProductId cannot be same as toProductId");
         Link link = this.linkService.findById(dto.getLinkId());
         Product oldProduct = findById(dto.getFromProductId());
         Assert.isTrue(link.getProductId() == oldProduct.getId(), "Link hasn't reference Product with ID fromProductId");
@@ -131,7 +133,7 @@ public class ProductService {
         } else {
             // Connect Link to existing Product
             Product newProduct = findById(dto.getToProductId());
-//           TODO Test this Assert.isTrue(link.getProductId() == newProduct.getId(), "Link already has reference to Product with ID toProductId");
+            Assert.isTrue(link.getProductId() != newProduct.getId(), "Link already has reference to Product with ID toProductId");
             // TODO Finish impl. of Connect Link to existing Product
         }
     }
