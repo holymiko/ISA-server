@@ -5,6 +5,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Entity.InvestmentMetal;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.InvestmentMetalRepository;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.ProductRepository;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.InvestmentStock;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
+@AllArgsConstructor
 public class InvestmentService {
     private static final Logger LOGGER = LoggerFactory.getLogger(InvestmentService.class);
 
@@ -21,14 +23,6 @@ public class InvestmentService {
     private final InvestmentMetalRepository investmentMetalRepository;
     private final InvestmentStockRepository investmentStockRepository;
     private final ProductService productService;
-
-    @Autowired
-    public InvestmentService(ProductRepository productRepository, InvestmentMetalRepository investmentMetalRepository, InvestmentStockRepository investmentStockRepository, ProductService productService) {
-        this.productRepository = productRepository;
-        this.investmentMetalRepository = investmentMetalRepository;
-        this.investmentStockRepository = investmentStockRepository;
-        this.productService = productService;
-    }
 
 
     @Transactional

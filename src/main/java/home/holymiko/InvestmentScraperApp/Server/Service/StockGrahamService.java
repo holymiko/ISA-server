@@ -6,6 +6,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Entity.StockGraham;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.GrahamGrade;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Ticker;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.StockGrahamRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -14,18 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class StockGrahamService {
 
     private final StockGrahamRepository stockGrahamRepository;
     private final StockGrahamMapper stockGrahamMapper;
     private final StockGrahamHistoryRepository stockGrahamHistoryRepository;
-
-    @Autowired
-    public StockGrahamService(StockGrahamRepository stockGrahamRepository, StockGrahamMapper stockGrahamMapper, StockGrahamHistoryRepository stockGrahamHistoryRepository) {
-        this.stockGrahamRepository = stockGrahamRepository;
-        this.stockGrahamMapper = stockGrahamMapper;
-        this.stockGrahamHistoryRepository = stockGrahamHistoryRepository;
-    }
 
     ////// FIND
 

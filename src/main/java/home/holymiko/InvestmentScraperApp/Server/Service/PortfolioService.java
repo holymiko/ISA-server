@@ -5,6 +5,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.PortfolioDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Portfolio;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.PortfolioMapper;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PortfolioRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,18 +20,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
+@AllArgsConstructor
 public class PortfolioService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PortfolioService.class);
     private final PortfolioRepository portfolioRepository;
     private final ProductService productService;
     private final PortfolioMapper portfolioMapper;
-
-    @Autowired
-    public PortfolioService(PortfolioRepository portfolioRepository, ProductService productService, PortfolioMapper portfolioMapper) {
-        this.portfolioRepository = portfolioRepository;
-        this.productService = productService;
-        this.portfolioMapper = portfolioMapper;
-    }
 
     ////// FIND AS DTO
 

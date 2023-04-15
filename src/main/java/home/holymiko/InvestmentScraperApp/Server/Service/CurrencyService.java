@@ -2,6 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.Service;
 
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.ExchangeRate;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.ExchangeRateRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,14 +12,10 @@ import java.sql.Date;
 
 
 @Service
+@AllArgsConstructor
 public class CurrencyService {
 
     private final ExchangeRateRepository exchangeRateRepository;
-
-    @Autowired
-    public CurrencyService(ExchangeRateRepository exchangeRateRepository) {
-        this.exchangeRateRepository = exchangeRateRepository;
-    }
 
     @Transactional
     public ExchangeRate save(ExchangeRate exchangeRate) throws ResponseStatusException {

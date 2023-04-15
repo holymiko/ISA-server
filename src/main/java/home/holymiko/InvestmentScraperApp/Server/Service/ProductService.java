@@ -3,6 +3,7 @@ package home.holymiko.InvestmentScraperApp.Server.Service;
 import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PricePairRepository;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.LinkChangeDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_LatestPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDTO;
@@ -13,7 +14,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Producer;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.ProductMapper;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +24,10 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 @Service
+@AllArgsConstructor
 public class ProductService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
 
@@ -32,22 +35,9 @@ public class ProductService {
     private final ProductMapper productMapper;
     private final PricePairRepository pricePairRepository;
 
-    @Autowired
-    public ProductService(ProductRepository productRepository, ProductMapper productMapper, PricePairRepository pricePairRepository) {
-        this.productRepository = productRepository;
-        this.productMapper = productMapper;
-        this.pricePairRepository = pricePairRepository;
-    }
+    private final LinkService linkService;
 
     /////////// FIND AS DTO
-
-    private Product findById(Long id) {
-        Optional<Product> optionalProduct = this.productRepository.findById(id);
-        if(optionalProduct.isEmpty()) {
-            throw new ResourceNotFoundException("Product with id "+id+" was not found");
-        }
-        return optionalProduct.get();
-    }
 
     public ProductDTO_LatestPrices findByIdAsDTO(Long id) {
         return productMapper.toProductDTO_LatestPrices(findById(id), pricePairRepository);
@@ -127,6 +117,32 @@ public class ProductService {
         pricePairList.add(pricePair);
         product.setPricePairs(pricePairList);
         this.productRepository.save(product);
+    }
+
+    @Transactional
+    public void changeLinkProduct(LinkChangeDTO dto) {
+        Link link = this.linkService.findById(dto.getLinkId());
+        Product oldProduct = findById(dto.getFromProductId());
+        Assert.isTrue(link.getProductId() == oldProduct.getId(), "Link hasn't reference Product with ID fromProductId");
+
+        if(dto.getToProductId() == null) {
+            // Save Link separately
+            // TODO Finish impl. of Save Link separately
+        } else {
+            // Connect Link to existing Product
+            Product newProduct = findById(dto.getToProductId());
+//           TODO Test this Assert.isTrue(link.getProductId() == newProduct.getId(), "Link already has reference to Product with ID toProductId");
+            // TODO Finish impl. of Connect Link to existing Product
+        }
+    }
+
+    /////////// UTILS
+    private Product findById(Long id) {
+        Optional<Product> optional = this.productRepository.findById(id);
+        if(optional.isEmpty()) {
+            throw new ResourceNotFoundException("Product with id "+id+" was not found");
+        }
+        return optional.get();
     }
 
 }

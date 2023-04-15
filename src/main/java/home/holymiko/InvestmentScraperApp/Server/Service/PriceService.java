@@ -8,6 +8,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Price;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.PricePair;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PricePairRepository;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,17 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class PriceService {
     private final PricePairRepository pricePairRepository;
     private final PriceRepository priceRepository;
     private final PricePairMapper pricePairMapper;
-
-    @Autowired
-    public PriceService(PricePairRepository pricePairRepository, PriceRepository priceRepository, PricePairMapper pricePairMapper) {
-        this.pricePairRepository = pricePairRepository;
-        this.priceRepository = priceRepository;
-        this.pricePairMapper = pricePairMapper;
-    }
 
     @Deprecated
     @Transactional

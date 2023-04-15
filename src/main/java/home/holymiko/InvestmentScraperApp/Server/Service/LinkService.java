@@ -2,6 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.Service;
 
 import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.ProductRepository;
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
@@ -9,7 +10,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.LinkRepository;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -19,19 +20,21 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class LinkService {
     private final LinkRepository linkRepository;
     private final LinkMapper linkMapper;
     private final ProductRepository productRepository;
 
-    @Autowired
-    public LinkService(LinkRepository linkRepository, LinkMapper linkMapper, ProductRepository productRepository) {
-        this.linkRepository = linkRepository;
-        this.linkMapper = linkMapper;
-        this.productRepository = productRepository;
+    public Link findById(Long id) {
+        Optional<Link> optional = this.linkRepository.findById(id);
+        if(optional.isEmpty()) {
+            throw new ResourceNotFoundException("Link with id "+id+" was not found");
+        }
+        return optional.get();
     }
 
-    public LinkDTO findById(Long linkId) throws IllegalArgumentException {
+    public LinkDTO findByIdAsDto(Long linkId) throws IllegalArgumentException {
         return linkMapper.toDTO(
                 linkRepository.findById(linkId).orElseThrow(IllegalArgumentException::new)
         );

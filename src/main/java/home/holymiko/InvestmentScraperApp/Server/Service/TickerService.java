@@ -4,6 +4,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Ticker;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.TickerRepository;
 import home.holymiko.InvestmentScraperApp.Server.Core.LogBuilder;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,16 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
+@AllArgsConstructor
 public class TickerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TickerService.class);
 
     private final TickerRepository tickerRepository;
-
-    @Autowired
-    public TickerService(TickerRepository tickerRepository) {
-        this.tickerRepository = tickerRepository;
-    }
-
 
     ////// FIND
 

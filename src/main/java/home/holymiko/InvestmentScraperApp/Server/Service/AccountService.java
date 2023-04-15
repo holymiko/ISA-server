@@ -122,20 +122,20 @@ public class AccountService {
         return optional.get();
     }
 
-    public Account findById(long id) {
-        Optional<Account> optionalProduct = this.accountRepository.findById(id);
-        if(optionalProduct.isEmpty()) {
+    public Account findById(Long id) {
+        Optional<Account> optional = this.accountRepository.findById(id);
+        if(optional.isEmpty()) {
             throw new ResourceNotFoundException("Account with id "+id+" was not found");
         }
-        return optionalProduct.get();
+        return optional.get();
     }
 
-    public Account findByPersonId(long id) {
-        Optional<Account> optionalProduct = this.accountRepository.findByPersonId(id);
-        if(optionalProduct.isEmpty()) {
+    public Account findByPersonId(Long id) {
+        Optional<Account> optional = this.accountRepository.findByPersonId(id);
+        if(optional.isEmpty()) {
             throw new ResourceNotFoundException("Account with personId "+id+" was not found");
         }
-        return optionalProduct.get();
+        return optional.get();
     }
 
     private static void assertUsername(String username) {
