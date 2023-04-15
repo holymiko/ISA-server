@@ -3,7 +3,6 @@ package home.holymiko.InvestmentScraperApp.Server.Service;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.ExchangeRate;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.ExchangeRateRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,7 +12,7 @@ import java.sql.Date;
 
 @Service
 @AllArgsConstructor
-public class CurrencyService {
+public class RateService {
 
     private final ExchangeRateRepository exchangeRateRepository;
 
