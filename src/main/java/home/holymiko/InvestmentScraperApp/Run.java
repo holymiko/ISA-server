@@ -6,7 +6,7 @@ import home.holymiko.InvestmentScraperApp.Server.API.TextPort.Import;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
-import home.holymiko.InvestmentScraperApp.Server.Service.CurrencyService;
+import home.holymiko.InvestmentScraperApp.Server.Service.RateService;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +33,16 @@ public class Run {
     Process process;
     private final ScrapController scrapController;
     private final TickerService tickerService;
-    private final CurrencyService currencyService;
+    private final RateService rateService;
     private final CNBScraper cnbScraper;
     private final MetalScraper metalScraper;
     private final Import anImport;
 
     @Autowired
-    public Run(ScrapController scrapController, TickerService tickerService, CurrencyService currencyService, CNBScraper cnbScraper, MetalScraper metalScraper, Import anImport) {
+    public Run(ScrapController scrapController, TickerService tickerService, RateService rateService, CNBScraper cnbScraper, MetalScraper metalScraper, Import anImport) {
         this.scrapController = scrapController;
         this.tickerService = tickerService;
-        this.currencyService = currencyService;
+        this.rateService = rateService;
         this.cnbScraper = cnbScraper;
         this.metalScraper = metalScraper;
         this.anImport = anImport;
@@ -59,8 +59,8 @@ public class Run {
         }
         LogBuilder.printExchangeRates(
                 Arrays.asList(
-                        currencyService.findExchangeRate("EUR"),
-                        currencyService.findExchangeRate("USD")
+                        rateService.findExchangeRate("EUR"),
+                        rateService.findExchangeRate("USD")
                 )
         );
     }
