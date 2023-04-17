@@ -94,30 +94,29 @@ public class ProductService {
     }
 
     /**
-     * PricePair is added to Product. Product is saved.
-     * @param productId Product where the PricePair gonna be added
+     * PricePair is added to Link. Link is saved.
+     * @param linkId Link where the PricePair gonna be added
      * @param pricePair PricePair already saved in DB, which should be added to Product
      * @throws NullPointerException For null value in one of the parameters
      */
     @Transactional
-    public void updatePrices(@NotNull Long productId, @NotNull PricePair pricePair) throws NullPointerException, IllegalArgumentException {
-        final Product product;
+    public void updatePrices(@NotNull Long linkId, @NotNull PricePair pricePair) throws NullPointerException, IllegalArgumentException {
+        final Link link;
         final List<PricePair> pricePairList;
 
-        if(productId == null) {
-            throw new NullPointerException("ProductId cannot be null");
+        if(linkId == null) {
+            throw new NullPointerException("LinkId cannot be null");
         }
         if(pricePair == null) {
             throw new NullPointerException("PricePair cannot be null");
         }
 
-        product = productRepository.findById(productId)
-                .orElseThrow(IllegalArgumentException::new);
+        link = linkService.findById(linkId);
 
-        pricePairList = product.getPricePairs();
+        pricePairList = link.getPricePairs();
         pricePairList.add(pricePair);
-        product.setPricePairs(pricePairList);
-        this.productRepository.save(product);
+        link.setPricePairs(pricePairList);
+        this.linkService.saveOrUpdate(link);
     }
 
     @Transactional

@@ -13,6 +13,7 @@ import java.util.Arrays;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.util.List;
 
 class ExportTest {
 
@@ -21,45 +22,39 @@ class ExportTest {
     @Test
     void exportObjectToXmlAndJson() throws IOException, JAXBException {
         // Mock
-        Link link00 = new Link(Dealer.ZLATAKY, "https://zlataky.cz/1-g-argor-heraeus-sa-svycarsko-investicni-zlaty-slitek");
-        Link link01 = new Link(Dealer.BESSERGOLD_CZ, "https://www.bessergold.cz/cs/catalog/product/view/id/1810/s/zlaty-slitek-1-g-argor-heraeus-svycarsko/category/52/");
-        Link link10 = new Link(Dealer.ZLATAKY, "https://zlataky.cz/stribrna-investicni-mince-wiener-philharmoniker-1-oz");
-        Link link11 = new Link(Dealer.BESSERGOLD_CZ, "https://www.bessergold.cz/cs/catalog/product/view/id/1834/s/wiener-philharmoniker-1-trojska-unce-stribrna-mince-rakousko/category/84/");
-        Link link20 = new Link(Dealer.ZLATAKY, "https://zlataky.cz/5000g-heraeus-nemecko-investicni-stribrny-slitek");
-        Link link30 = new Link(Dealer.BESSERGOLD_CZ, "https://www.bessergold.cz/cs/catalog/product/view/id/2227/s/platinovy-slitek-5-g-argor-heraeus-svycarsko/category/96/");
+        Link link00 = new Link(Dealer.ZLATAKY, "https://zlataky.cz/1-g-argor-heraeus-sa-svycarsko-investicni-zlaty-slitek", "Test");
+        Link link01 = new Link(Dealer.BESSERGOLD_CZ, "https://www.bessergold.cz/cs/catalog/product/view/id/1810/s/zlaty-slitek-1-g-argor-heraeus-svycarsko/category/52/", "Test");
+        Link link10 = new Link(Dealer.ZLATAKY, "https://zlataky.cz/stribrna-investicni-mince-wiener-philharmoniker-1-oz", "Test");
+        Link link11 = new Link(Dealer.BESSERGOLD_CZ, "https://www.bessergold.cz/cs/catalog/product/view/id/1834/s/wiener-philharmoniker-1-trojska-unce-stribrna-mince-rakousko/category/84/", "Test");
+        Link link20 = new Link(Dealer.ZLATAKY, "https://zlataky.cz/5000g-heraeus-nemecko-investicni-stribrny-slitek", "Test");
+        Link link30 = new Link(Dealer.BESSERGOLD_CZ, "https://www.bessergold.cz/cs/catalog/product/view/id/2227/s/platinovy-slitek-5-g-argor-heraeus-svycarsko/category/96/", "Test");
 
         PricePair pricePair00 = new PricePair(
-                Dealer.ZLATAKY,
                 new Price(LocalDateTime.now(), 1808.45, false),
                 new Price(LocalDateTime.now(), 1428.50, true),
                 -1L
         );
         PricePair pricePair01 = new PricePair(
-                Dealer.BESSERGOLD_CZ,
                 new Price(LocalDateTime.now(), 1818.45, false),
                 new Price(LocalDateTime.now(), 1528.50, true),
                 -1L
         );
         PricePair pricePair10 = new PricePair(
-                Dealer.ZLATAKY,
                 new Price(LocalDateTime.now().minusHours(2), 718.45, false),
                 new Price(LocalDateTime.now().minusHours(2), 428.50, true),
                 -1L
         );
         PricePair pricePair11 = new PricePair(
-                Dealer.BESSERGOLD_CZ,
                 new Price(LocalDateTime.now().minusHours(2), 918.45, false),
                 new Price(LocalDateTime.now().minusHours(2), 628.50, true),
                 -1L
         );
         PricePair pricePair20 = new PricePair(
-                Dealer.ZLATAKY,
                 new Price(LocalDateTime.now().minusDays(1), 108958.00, false),
                 new Price(LocalDateTime.now().minusDays(1), 100000.98, true),
                 -1L
         );
         PricePair pricePair30 = new PricePair(
-                Dealer.BESSERGOLD_CZ,
                 new Price(LocalDateTime.now().minusDays(1), 6014.78, false),
                 new Price(LocalDateTime.now().minusDays(1), 5014.78, true),
                 -1L
@@ -70,29 +65,35 @@ class ExportTest {
         Product product2 = new Product("5000g Argor Heraeus / Heraeus Investiční stříbrný slitek", Producer.MUNZE_OSTERREICH, Form.BAR, Metal.SILVER, 5000, 2023, false);
         Product product3 = new Product("Platinový slitek 5 g ARGOR-HERAEUS (Švýcarsko)", Producer.HERAEUS, Form.BAR, Metal.PLATINUM, 5, 2021, false);
 
+        link00.setPricePairs(
+                List.of(pricePair00)
+        );
+        link01.setPricePairs(
+                List.of(pricePair01)
+        );
+        link11.setPricePairs(
+                List.of(pricePair11)
+        );
+        link10.setPricePairs(
+                List.of(pricePair10)
+        );
+        link20.setPricePairs(
+                List.of(pricePair20)
+        );
+        link30.setPricePairs(
+                List.of(pricePair30)
+        );
         product0.setLinks(
                 Arrays.asList(link00, link01)
-        );
-        product0.setPricePairs(
-                Arrays.asList(pricePair00, pricePair01)
         );
         product1.setLinks(
                 Arrays.asList(link10, link11)
         );
-        product1.setPricePairs(
-                Arrays.asList(pricePair10, pricePair11)
-        );
         product2.setLinks(
-                Arrays.asList(link20)
-        );
-        product2.setPricePairs(
-                Arrays.asList(pricePair20)
+                List.of(link20)
         );
         product3.setLinks(
-                Arrays.asList(link30)
-        );
-        product3.setPricePairs(
-                Arrays.asList(pricePair30)
+                List.of(link30)
         );
 
         InvestmentMetal investmentMetal0 = new InvestmentMetal(product0, Dealer.ZLATAKY, 1808.45, LocalDate.now());

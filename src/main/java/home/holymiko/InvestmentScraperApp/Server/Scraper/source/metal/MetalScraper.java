@@ -343,15 +343,14 @@ public class MetalScraper {
         }
 
         pricePair = new PricePair(
-                linkDTO.getDealer(),
                 priceService.save(new Price(LocalDateTime.now(), sellingPrice, false)),
                 priceService.save(new Price(LocalDateTime.now(), butOutPrice, true)),
-                linkDTO.getProductId()
+                linkDTO.getId()
         );
 
         // Save PricePair
         this.priceService.save(pricePair);
-        this.productService.updatePrices(linkDTO.getProductId(), pricePair);
+        this.productService.updatePrices(linkDTO.getId(), pricePair);
 
         LOGGER.info("New pricePair saved - " + linkDTO.getUri());
     }
@@ -405,7 +404,7 @@ public class MetalScraper {
     private void saveAndCountLinks(List<Link> linkList, AtomicInteger linkSaveCounter, AtomicInteger linkInDBCounter) {
         for (Link link : linkList) {
             try {
-                linkService.save(link);
+                linkService.saveOrUpdate(link);
                 linkSaveCounter.getAndIncrement();
             } catch (DataIntegrityViolationException e) {
                 linkInDBCounter.getAndIncrement();

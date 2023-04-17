@@ -1,6 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.Type.Entity;
 
-import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,18 +21,17 @@ public class PricePair {
 
     @Id
     @GeneratedValue
+    @Setter(AccessLevel.NONE)
     private long id;
-    private Dealer dealer;
     @OneToOne
     private Price sellPrice;
     @OneToOne
     private Price redemption;
-    private Long productId;
+    private Long linkId;
 
-    public PricePair(Dealer dealer, Price sellPrice, Price redemption, Long productId) {
-        this.dealer = dealer;
+    public PricePair(Price sellPrice, Price redemption, Long linkId) {
         this.sellPrice = sellPrice;
         this.redemption = redemption;
-        this.productId = productId;
+        this.linkId = linkId;
     }
 }

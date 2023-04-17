@@ -16,6 +16,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -98,13 +99,7 @@ public class LinkService {
             throw new NullPointerException("LinkId cannot be null");
         }
 
-        final Link link;
-        final Optional<Link> optionalLink = linkRepository.findById(linkId);
-
-        if(optionalLink.isEmpty()) {
-            throw new IllegalArgumentException("Link for given ID doesnt exist");
-        }
-        link = optionalLink.get();
+        final Link link = findById(linkId);
         link.setProductId(productId);
         return linkMapper.toDTO(
                 linkRepository.save(link)
@@ -118,14 +113,16 @@ public class LinkService {
      * @throws DataIntegrityViolationException link.url already present in DB || link.url has duplicities in DB
      * @throws NullPointerException if parameter link == null
      */
-    public void save(@NotNull Link link) throws DataIntegrityViolationException, IllegalArgumentException, NullPointerException {
+    public void saveOrUpdate(@NotNull Link link) throws DataIntegrityViolationException, IllegalArgumentException, NullPointerException {
         if(link == null) {
             throw new NullPointerException("Save - Link cannot be null");
         }
 
         uriLilter( link.getUri() );
 
-        if ( linkRepository.findByUri(link.getUri()).isPresent() ) {
+        Optional<Link> optional = linkRepository.findByUri(link.getUri());
+        // Switches save & update
+        if ( optional.isPresent() && !Objects.equals(optional.get().getId(), link.getId())) {
             throw new DataIntegrityViolationException("Link already in DB");
         }
         linkRepository.save(link);

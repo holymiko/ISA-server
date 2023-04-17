@@ -2,6 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.Mapper;
 
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.PricePairDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.PricePair;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -17,15 +18,16 @@ public interface PricePairMapper {
         @Mapping(target = "redemption", source = "entity.redemption.amount"),
         @Mapping(target = "priceDateTime", source = "entity.sellPrice.dateTime"),
         @Mapping(target = "redemptionDateTime", source = "entity.redemption.dateTime"),
-        @Mapping(target = "grams", source = "grams")
+        @Mapping(target = "grams", source = "grams"),
+        @Mapping(target = "dealer", source = "dealer")
     })
-    PricePairDTO toPriceDTO(PricePair entity, Double grams);
+    PricePairDTO toPriceDTO(PricePair entity, Double grams, Dealer dealer);
 
     // Used in ProductMapper
-    default List<PricePairDTO> toPriceDTOs(List<PricePair> pricePairs, Double grams) {
+    default List<PricePairDTO> toPriceDTOs(List<PricePair> pricePairs, Double grams, Dealer dealer) {
         return pricePairs
                 .stream()
-                .map(x -> toPriceDTO(x, grams))
+                .map(x -> toPriceDTO(x, grams, dealer))
                 .collect(Collectors.toList());
     }
 

@@ -73,7 +73,7 @@ public interface ProductListInterface {
             LOGGER.error(elementProduct.asText());
             return null;
         }
-        return new Link(dealer, baseUrl + itemAnchor.getHrefAttribute());
+        return new Link(dealer, baseUrl + itemAnchor.getHrefAttribute(), "TODO");
     }
 
 }
