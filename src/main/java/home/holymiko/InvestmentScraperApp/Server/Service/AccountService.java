@@ -31,6 +31,7 @@ public class AccountService {
 
     public String authenticate(String username, String password) {
         findByUsernameAndPassword(username, password);
+        // TODO JWT token impl.
         return "myDummyToken";
     }
 
