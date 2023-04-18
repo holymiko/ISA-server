@@ -71,15 +71,17 @@ public class ProductController {
     /////// PUT
 
     @PutMapping({ "/link", "/link/"})
-    @Operation(description = "Mocked. Removes reference between product (fromProductId) and link. " +
+    @Operation(description = "Removes reference between product (fromProductId) and link. " +
             "When toProductId is given, creates reference between existing product (toProductId) and link. " +
-            "When toProductId is missing, creates new product to save the link separately.")
-    public void changeLinkProduct(@RequestBody LinkChangeDTO linkChangeDTO) {
+            "When toProductId is missing, creates new product to save the link separately. " +
+            "Returns new/updated Product."
+    )
+    public ProductDTO_AllPrices changeLinkProduct(@RequestBody LinkChangeDTO linkChangeDTO) {
         LOGGER.info("changeLinkProduct");
         Assert.notNull(linkChangeDTO, "linkChangeDTO cannot be null");
         Assert.notNull(linkChangeDTO.getLinkId(), "linkId cannot be null");
         Assert.notNull(linkChangeDTO.getFromProductId(), "fromProductId cannot be null");
-        this.productService.changeLinkProduct(linkChangeDTO);
+        return this.productService.changeLinkProduct(linkChangeDTO);
     }
 
     /////// Handlers

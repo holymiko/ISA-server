@@ -120,21 +120,35 @@ public class ProductService {
     }
 
     @Transactional
-    public void changeLinkProduct(LinkChangeDTO dto) {
+    public ProductDTO_AllPrices changeLinkProduct(LinkChangeDTO dto) {
+        Product theProduct;
         Assert.isTrue(!Objects.equals(dto.getToProductId(), dto.getFromProductId()), "fromProductId cannot be same as toProductId");
         Link link = this.linkService.findById(dto.getLinkId());
         Product oldProduct = findById(dto.getFromProductId());
         Assert.isTrue(link.getProductId() == oldProduct.getId(), "Link hasn't reference Product with ID fromProductId");
 
         if(dto.getToProductId() == null) {
-            // Save Link separately
-            // TODO Finish impl. of Save Link separately
+            // Save Link separately, create Product copy
+            LOGGER.info("Create Product copy and save Link separately");
+            theProduct = new Product(
+                    link.getName(), oldProduct.getProducer(), oldProduct.getForm(), oldProduct.getMetal(),
+                    oldProduct.getGrams(), oldProduct.getYear(), oldProduct.isSpecial(), List.of(link)
+            );
         } else {
             // Connect Link to existing Product
-            Product newProduct = findById(dto.getToProductId());
-            Assert.isTrue(link.getProductId() != newProduct.getId(), "Link already has reference to Product with ID toProductId");
-            // TODO Finish impl. of Connect Link to existing Product
+            LOGGER.info("Connect Link to existing Product");
+            Assert.isTrue(link.getProductId() != dto.getToProductId(), "Link already has reference to Product with ID toProductId");
+            theProduct = findById( dto.getToProductId() );
+            theProduct.getLinks().add(link);
         }
+        theProduct = this.productRepository.save( theProduct );
+        // Update Link
+        link.setProductId( theProduct.getId() );
+        this.linkService.saveOrUpdate(link);
+        return productMapper.toProductDTO_AllPrices(
+                theProduct,
+                pricePairRepository
+        );
     }
 
     /////////// UTILS

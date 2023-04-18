@@ -123,6 +123,7 @@ public class LinkService {
         Optional<Link> optional = linkRepository.findByUri(link.getUri());
         // Switches save & update
         if ( optional.isPresent() && !Objects.equals(optional.get().getId(), link.getId())) {
+            // Same URI, different ID
             throw new DataIntegrityViolationException("Link already in DB");
         }
         linkRepository.save(link);

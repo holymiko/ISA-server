@@ -43,7 +43,7 @@ public class Product {
     private List<Link> links = new ArrayList<>();      // includes Dealer
 
 
-    public Product(String name, Producer producer, Form form, Metal metal, double grams, int year, boolean isSpecial) {
+    public Product(String name, Producer producer, Form form, Metal metal, double grams, int year, boolean isSpecial, List<Link> links) {
         this.name = name;
         this.producer = producer;
         this.form = form;
@@ -51,6 +51,7 @@ public class Product {
         this.grams = grams;
         this.year = year;
         this.isSpecial = isSpecial;
+        this.links = links;
     }
 
     public Product(ProductCreateDTO productCreateDTO) {
