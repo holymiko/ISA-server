@@ -1,6 +1,5 @@
 package home.holymiko.InvestmentScraperApp.Server.Mapper;
 
-import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PersonAccountDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.PersonAccountCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.PersonCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.PersonDTO;

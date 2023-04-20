@@ -4,6 +4,7 @@ import home.holymiko.InvestmentScraperApp.Server.Core.Handler;
 import home.holymiko.InvestmentScraperApp.Server.Service.AccountService;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.AccountCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.AccountDTO;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.CredentialDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,17 +31,17 @@ public class AccountController {
 
     /////// GET
 
-    @GetMapping({"/id/{id}", "/id/"})
-    public AccountDTO byId(@PathVariable(required = false) Long id) {
-        LOGGER.info("Get account by id");
-        Assert.notNull(id, "ID cannot be null");
-        return accountService.findByIdAsDTO(id);
-    }
-
-    @GetMapping()
+    @GetMapping
     public List<AccountDTO> all() {
         LOGGER.info("Get all accounts");
         return accountService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public AccountDTO byId(@PathVariable Long id) {
+        LOGGER.info("Get account by id");
+        Assert.notNull(id, "ID cannot be null");
+        return accountService.findByIdAsDTO(id);
     }
 
 
@@ -52,34 +53,34 @@ public class AccountController {
     }
 
     /////// PUT
-    @PutMapping({"/id/{id}", "/id/"})
-    public void changePasswordById(@PathVariable(required = false) Long id, @RequestBody String password) {
+    @PutMapping(path = "/password/{id}")
+    public void changePasswordById(@PathVariable Long id, @RequestBody String password) {
         LOGGER.info("Change password by id");
         Assert.notNull(id, "ID was not given");
         this.accountService.changePasswordById(id, password);
         LOGGER.info("Password was successfully changed");
     }
 
-    @PutMapping({"/username/{username}", "/username/"})
-    public void changePasswordByUsername(@PathVariable String username, @RequestBody String password) {
+    @PutMapping(path = "/password")
+    public void changePasswordByUsername(@RequestBody CredentialDTO credentials) {
         LOGGER.info("Change password by username");
-        this.accountService.changePasswordByUsername(username, password);
+        this.accountService.changePasswordByUsername(credentials.getUsername(), credentials.getPassword());
         LOGGER.info("Password change success");
     }
 
     /////// DELETE
-    @DeleteMapping({"/id/{id}", "/id/"})
+    @DeleteMapping("/{id}")
     @Operation(description = "Deletes account and linked person based on account ID")
-    public void deleteAccountById(@PathVariable(required = false) Long id) {
+    public void deleteAccountById(@PathVariable Long id) {
         LOGGER.info("Delete account by Id");
         Assert.notNull(id, "ID was not given");
         this.accountService.deleteById(id);
         LOGGER.info("Account delete success");
     }
 
-    @DeleteMapping({"/username/{username}", "/username/"})
+    @DeleteMapping
     @Operation(description = "Deletes account and linked person based on account username")
-    public void deleteAccountByUsername(@PathVariable String username) {
+    public void deleteAccountByUsername(@RequestParam String username) {
         LOGGER.info("Delete account by username");
         this.accountService.deleteByUsername(username);
         LOGGER.info("Account delete success");

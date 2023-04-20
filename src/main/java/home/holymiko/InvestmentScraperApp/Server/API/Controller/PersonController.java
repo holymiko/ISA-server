@@ -33,10 +33,16 @@ public class PersonController {
         return new PersonDTO(Long.parseLong("450"), "Tomas", "Dummy", "Person", "tomas_dummy_user@world.com", 45665466);
     }
 
-    @GetMapping()
-    public List<PersonDTO> all() {
+    @GetMapping
+    public List<PersonAccountDTO> all() {
         LOGGER.info("Get all accounts");
         return this.personService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public PersonAccountDTO byId(@PathVariable Long id) {
+        LOGGER.info("Get all accounts");
+        return this.personService.findByIdAsDTO( id );
     }
 
     @PostMapping
@@ -56,9 +62,9 @@ public class PersonController {
         return this.personService.save(personAccountCreateDTO);
     }
 
-    @DeleteMapping({"/id/{id}", "/id/"})
+    @DeleteMapping("/{id}")
     @Operation(description = "Deletes person and removes personId from linked account")
-    public void deletePersonById(@PathVariable(required = false) Long id) {
+    public void deletePersonById(@PathVariable Long id) {
         LOGGER.info("Delete person by ID");
         Assert.notNull(id, "ID was not given");
         this.personService.deleteById(id);

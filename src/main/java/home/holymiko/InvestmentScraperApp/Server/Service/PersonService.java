@@ -1,5 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
+import home.holymiko.InvestmentScraperApp.Server.API.Repository.AccountRepository;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PersonRepository;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.AccountMapper;
@@ -27,24 +28,24 @@ public class PersonService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonService.class);
     private final PersonRepository personRepository;
-
     private final AccountService accountService;
     private final PersonMapper personMapper;
 
+    private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
 
 
     /////// FIND AS DTO
 
-    public List<PersonDTO> findAll() {
-        return personRepository.findAll()
+    public List<PersonAccountDTO> findAll() {
+        return accountRepository.findAll()
                 .stream()
-                .map(personMapper::toPersonDTO)
+                .map(accountMapper::toPersonAccountDTO)
                 .collect(Collectors.toList());
     }
 
-    public PersonDTO findByIdAsDTO(long id) {
-        return personMapper.toPersonDTO( findById(id) );
+    public PersonAccountDTO findByIdAsDTO(long id) {
+        return accountMapper.toPersonAccountDTO( accountService.findByPersonId(id) );
     }
 
     /////// POST
