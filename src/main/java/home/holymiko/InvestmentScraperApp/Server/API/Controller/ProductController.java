@@ -74,6 +74,7 @@ public class ProductController {
     @Operation(description = "Removes reference between product (fromProductId) and link. " +
             "When toProductId is given, creates reference between existing product (toProductId) and link. " +
             "When toProductId is missing, creates new product to save the link separately. " +
+            "Enables removal of last link and keeping product without references. " +
             "Returns new/updated Product."
     )
     public ProductDTO_AllPrices changeLinkProduct(@RequestBody LinkChangeDTO linkChangeDTO) {
