@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class StockGrahamHistory {
     @Id
     @GeneratedValue
-    private int id;
+    private long id;
 
     private Date timeStamp;
     private String name;

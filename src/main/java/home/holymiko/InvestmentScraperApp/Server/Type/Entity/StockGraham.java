@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class StockGraham {
     @Id
     @GeneratedValue
-    private int id;
+    private long id;
     private Date timeStamp;
     private String name;
     @OneToOne

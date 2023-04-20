@@ -17,7 +17,7 @@ public class LinkController {
 
     private final LinkService linkService;
 
-    @RequestMapping(method = RequestMethod.GET, value ="/param", headers = "Accept=application/json;charset=UTF-8")
+    @GetMapping
     public List<LinkDTO> findByDealer(@RequestParam Dealer dealer) {
         return this.linkService.findByDealer(dealer);
     }

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface StockGrahamRepository extends JpaRepository<StockGraham, Integer> {
+public interface StockGrahamRepository extends JpaRepository<StockGraham, Long> {
 
     Optional<StockGraham> findByTicker(Ticker ticker);
 

@@ -1,7 +1,9 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.StockGrahamHistoryRepository;
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.StockGrahamMapper;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Account;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.StockGraham;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.GrahamGrade;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Ticker;
@@ -24,16 +26,17 @@ public class StockGrahamService {
 
     ////// FIND
 
-    public Optional<StockGraham> findById(int id) {
-        return this.stockGrahamRepository.findById(id);
+    // TODO Return DTO
+    public StockGraham findById(Long id) {
+        Optional<StockGraham> optional = this.stockGrahamRepository.findById(id);
+        if(optional.isEmpty()) {
+            throw new ResourceNotFoundException("StockGraham with ID "+id+" was not found");
+        }
+        return optional.get();
     }
 
     public List<StockGraham> findAll() {
         return this.stockGrahamRepository.findAll();
-    }
-
-    public Optional<StockGraham> findByTicker(Ticker ticker) {
-        return this.stockGrahamRepository.findByTicker(ticker);
     }
 
     public Set<StockGraham> findByTicker(Set<Ticker> tickers) {
