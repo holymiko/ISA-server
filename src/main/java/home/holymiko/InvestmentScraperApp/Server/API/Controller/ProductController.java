@@ -8,7 +8,6 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
@@ -31,32 +30,22 @@ public class ProductController {
 
     private final ProductService productService;
 
-    // TODO Remove /dto/ from path. We always return DTO. Sync FE
-
     /////// GET
 
-    @GetMapping("/id/{id}")
-    public ProductDTO_AllPrices byId(@PathVariable long id) {
-        LOGGER.info("Get product by Id");
-        return productService.findByIdAsDTOAllPrices(id);
-    }
-
-    /////// GET DTO
-
-    @GetMapping("/dto/id/{id}")
-    public ProductDTO_LatestPrices byIdAsDTO(@PathVariable long id) {
-        LOGGER.info("Get by Id "+id+" as Product DTO");
-        return productService.findByIdAsDTO(id);
-    }
-
-    @GetMapping({ "/dto/", "/dto"})
-    public List<ProductDTO_LatestPrices> allAsDTO() {
+    @GetMapping
+    public List<ProductDTO_LatestPrices> all() {
         LOGGER.info("Get all products as DTO");
         return productService.findAllAsDTO();
     }
 
+    @GetMapping("/{id}")
+    public ProductDTO_AllPrices byId(@PathVariable Long id) {
+        LOGGER.info("Get product by Id");
+        return productService.findByIdAsDTOAllPrices(id);
+    }
+
     // TODO Rebuild to @RequestParam
-    @GetMapping({ "/dto/metal/{metal}", "/dto/metal/{metal}/"})
+    @GetMapping({ "/metal/{metal}", "/metal/{metal}/"})
     public List<ProductDTO_LatestPrices> byMetalAsDTO(@PathVariable String metal) {
         LOGGER.info("Get products byMetal "+metal+" as DTO");
         return switch (metal.toLowerCase()) {
