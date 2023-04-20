@@ -44,7 +44,7 @@ public class ProductController {
         return productService.findByIdAsDTOAllPrices(id);
     }
 
-    // TODO Rebuild to @RequestParam
+    // TODO Rebuild to @RequestParam and join with all endpoint
     @GetMapping({ "/metal/{metal}", "/metal/{metal}/"})
     public List<ProductDTO_LatestPrices> byMetalAsDTO(@PathVariable String metal) {
         LOGGER.info("Get products byMetal "+metal+" as DTO");
