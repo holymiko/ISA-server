@@ -1,10 +1,12 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.PortfolioDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Portfolio;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.PortfolioMapper;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PortfolioRepository;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Product;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,11 +79,8 @@ public class PortfolioService {
 
     ////// FIND
 
-    public Optional<PortfolioDTO_ProductDTO> findById(Long id) {
-        return portfolioRepository.findById(id)
-                .map(
-                        portfolioMapper::toDTO_AllPrices
-                );
+    public PortfolioDTO_ProductDTO findByIdAsDTO(Long id) {
+        return portfolioMapper.toDTO_AllPrices( findById(id) );
     }
 
     public Optional<PortfolioDTO_ProductDTO> findByOwner(String owner) {
@@ -124,6 +123,15 @@ public class PortfolioService {
     public void save(Portfolio portfolio) {
         this.portfolioRepository.save(portfolio);
         LOGGER.info("Save Portfolio");
+    }
+
+    /////////// UTILS
+    private Portfolio findById(Long id) {
+        Optional<Portfolio> optional = this.portfolioRepository.findById(id);
+        if(optional.isEmpty()) {
+            throw new ResourceNotFoundException("Portfolio with ID "+id+" was not found");
+        }
+        return optional.get();
     }
 //
 //    @Transactional

@@ -208,7 +208,7 @@ class ProductControllerTest {
 
     @Test
     void allAsDtoEmpty() throws Exception {
-        when(productService.findAllAsDTO()).thenReturn(new ArrayList<>());
+        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any())).thenReturn(new ArrayList<>());
         this.mockMvc.perform(get("/api/v2/product"))
                 .andExpect(status().isOk())
                 .andExpect(result -> assertEquals(result.getResponse().getContentAsString(), "[]"));

@@ -45,15 +45,6 @@ public class ProductService {
     }
 
     // TODO Remove
-    public List<ProductDTO_LatestPrices> findAllAsDTO() {
-        return productRepository.findAll()
-                .stream()
-                .filter(product -> product.getGrams() >= 0)
-                .map(x -> productMapper.toProductDTO_LatestPrices(x, pricePairRepository))
-                .collect(Collectors.toList());
-    }
-
-    // TODO Remove
     public List<ProductDTO_LatestPrices> findByMetalAsDTO(Metal metal) {
         return productRepository.findProductsByMetal(metal)
                 .stream()
