@@ -40,14 +40,11 @@ public class ProductService {
 
     /////////// FIND AS DTO
 
-    public ProductDTO_LatestPrices findByIdAsDTO(Long id) {
-        return productMapper.toProductDTO_LatestPrices(findById(id), pricePairRepository);
-    }
-
     public ProductDTO_AllPrices findByIdAsDTOAllPrices(Long id) {
         return productMapper.toProductDTO_AllPrices(findById(id), pricePairRepository);
     }
 
+    // TODO Remove
     public List<ProductDTO_LatestPrices> findAllAsDTO() {
         return productRepository.findAll()
                 .stream()
@@ -56,6 +53,7 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+    // TODO Remove
     public List<ProductDTO_LatestPrices> findByMetalAsDTO(Metal metal) {
         return productRepository.findProductsByMetal(metal)
                 .stream()
@@ -65,8 +63,11 @@ public class ProductService {
 
     /////////// FIND
 
-    public List<Product> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean isSpecial) {
-        return this.productRepository.findByParams(dealer, producer, metal, form, grams, year, isSpecial);
+    public List<ProductDTO_LatestPrices> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean isSpecial) {
+        return productRepository.findByParams(dealer, producer, metal, form, grams, year, isSpecial)
+                .stream()
+                .map(x -> productMapper.toProductDTO_LatestPrices(x, pricePairRepository))
+                .collect(Collectors.toList());
     }
 
     public List<Product> findByParams(Dealer dealer, ProductCreateDTO product) {

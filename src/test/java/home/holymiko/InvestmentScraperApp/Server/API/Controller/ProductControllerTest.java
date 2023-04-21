@@ -42,7 +42,7 @@ class ProductControllerTest {
     @Test
     void byId200() throws Exception {
         when(productService.findByIdAsDTOAllPrices(any())).thenReturn(new ProductDTO_AllPrices(1, "", Metal.GOLD, Form.BAR, 2, new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));
-        this.mockMvc.perform(get("/api/v2/product/id/{id}", 5))
+        this.mockMvc.perform(get("/api/v2/product/{id}", 5))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(productService, times(1)).findByIdAsDTOAllPrices(any());
@@ -52,7 +52,7 @@ class ProductControllerTest {
     void byId404() throws Exception {
         String myMsg = "Some error msg";
         when(productService.findByIdAsDTOAllPrices(any())).thenThrow(new ResourceNotFoundException(myMsg));
-        this.mockMvc.perform(get("/api/v2/product/id/{id}", 5))
+        this.mockMvc.perform(get("/api/v2/product/{id}", 5))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFoundException))
                 .andExpect(result -> assertEquals(myMsg, result.getResolvedException().getMessage()));
@@ -62,7 +62,7 @@ class ProductControllerTest {
     @Test
     void byId404NullId() throws Exception {
         when(productService.findByIdAsDTOAllPrices(any())).thenThrow(new ResourceNotFoundException());
-        this.mockMvc.perform(get("/api/v2/product/id/{id}", (Object) null))
+        this.mockMvc.perform(get("/api/v2/product/{id}", (Object) null))
                 .andExpect(status().isNotFound());
         verify(productService, times(0)).findByIdAsDTOAllPrices(any());
     }
@@ -70,62 +70,73 @@ class ProductControllerTest {
     @Test
     void byId400RandomString() throws Exception {
         when(productService.findByIdAsDTOAllPrices(any())).thenThrow(new ResourceNotFoundException());
-        this.mockMvc.perform(get("/api/v2/product/id/{id}", "sdf"))
+        this.mockMvc.perform(get("/api/v2/product/{id}", "sdf"))
                 .andExpect(status().isBadRequest());
         verify(productService, times(0)).findByIdAsDTOAllPrices(any());
     }
 
     @Test
     void byIdAsDto200() throws Exception {
-        when(productService.findByIdAsDTO(any())).thenReturn(new ProductDTO_LatestPrices(1, "", Metal.GOLD, Form.BAR, 2, new ArrayList<>(), new ArrayList<>()));
-        this.mockMvc.perform(get("/api/v2/product/dto/id/{id}", 5))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        when(productService.findByIdAsDTOAllPrices(any())).thenReturn(new ProductDTO_AllPrices(1, "", Metal.GOLD, Form.BAR, 2, new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));
+        this.mockMvc.perform(get("/api/v2/product/{id}", 5))
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(productService, times(1)).findByIdAsDTO(any());
+        verify(productService, times(1)).findByIdAsDTOAllPrices(any());
     }
 
     @Test
     void byIdAsDto404() throws Exception {
         String myMsg = "Some error msg";
-        when(productService.findByIdAsDTO(any())).thenThrow(new ResourceNotFoundException(myMsg));
-        this.mockMvc.perform(get("/api/v2/product/dto/id/{id}", 5))
+        when(productService.findByIdAsDTOAllPrices(any())).thenThrow(new ResourceNotFoundException(myMsg));
+        this.mockMvc.perform(get("/api/v2/product/{id}", 5))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFoundException))
                 .andExpect(result -> assertEquals(myMsg, result.getResolvedException().getMessage()));
-        verify(productService, times(1)).findByIdAsDTO(any());
+        verify(productService, times(1)).findByIdAsDTOAllPrices(any());
     }
 
     @Test
     void byIdAsDto404NullId() throws Exception {
-        when(productService.findByIdAsDTO(any())).thenThrow(new ResourceNotFoundException());
-        this.mockMvc.perform(get("/api/v2/product/dto/id/{id}", (Object) null))
+        when(productService.findByIdAsDTOAllPrices(any())).thenThrow(new ResourceNotFoundException());
+        this.mockMvc.perform(get("/api/v2/product/{id}", (Object) null))
                 .andExpect(status().isNotFound());
-        verify(productService, times(0)).findByIdAsDTO(any());
+        verify(productService, times(0)).findByIdAsDTOAllPrices(any());
     }
 
     @Test
     void byIdAsDto404NullId2() throws Exception {
-        when(productService.findByIdAsDTO(any())).thenThrow(new ResourceNotFoundException());
-        this.mockMvc.perform(get("/api/v2/product/dto/id/"))
+        when(productService.findByIdAsDTOAllPrices(any())).thenThrow(new ResourceNotFoundException());
+        this.mockMvc.perform(get("/api/v2/product/"))
                 .andExpect(status().isNotFound());
-        verify(productService, times(0)).findByIdAsDTO(any());
+        verify(productService, times(0)).findByIdAsDTOAllPrices(any());
     }
 
     @Test
     void byIdAsDto400RandomString() throws Exception {
-        when(productService.findByIdAsDTO(any())).thenThrow(new ResourceNotFoundException());
-        this.mockMvc.perform(get("/api/v2/product/dto/id/{id}", "sdf"))
+        when(productService.findByIdAsDTOAllPrices(any())).thenThrow(new ResourceNotFoundException());
+        this.mockMvc.perform(get("/api/v2/product/{id}", "sdf"))
                 .andExpect(status().isBadRequest());
-        verify(productService, times(0)).findByIdAsDTO(any());
+        verify(productService, times(0)).findByIdAsDTOAllPrices(any());
     }
 
     @Test
     void byMetalEmpty() throws Exception {
-        when(productService.findByMetalAsDTO(any())).thenReturn(new ArrayList<>());
-        this.mockMvc.perform(get("/api/v2/product/dto/metal/{metal}", "silver"))
+        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any())).thenReturn(new ArrayList<>());
+        this.mockMvc.perform(get("/api/v2/product")
+                        .param("metal", "SILVER"))
                 .andExpect(status().isOk())
                 .andExpect(result -> assertEquals(result.getResponse().getContentAsString(), "[]"));
-        verify(productService, times(1)).findByMetalAsDTO(any());
+        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any());
+    }
+
+    @Test
+    void byMetalEmptyLowerCase() throws Exception {
+        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any())).thenReturn(new ArrayList<>());
+        this.mockMvc.perform(get("/api/v2/product")
+                        .param("metal", "silver"))
+                .andExpect(status().isOk())
+                .andExpect(result -> assertEquals(result.getResponse().getContentAsString(), "[]"));
+        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -134,7 +145,7 @@ class ProductControllerTest {
         ProductDTO_LatestPrices p2 = new ProductDTO_LatestPrices(2, "P2", Metal.GOLD, Form.COIN, 30, new ArrayList<>(), new ArrayList<>());
 
         when(productService.findByMetalAsDTO(any())).thenReturn(Arrays.asList(p1, p2));
-        this.mockMvc.perform(get("/api/v2/product/dto/metal/{metal}", "gold"))
+        this.mockMvc.perform(get("/api/v2/product/metal/{metal}", "gold"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].name").value("p1"))
@@ -155,7 +166,7 @@ class ProductControllerTest {
     @Test
     void byMetal404NullParam() throws Exception {
         when(productService.findByMetalAsDTO(any())).thenReturn(new ArrayList<>());
-        this.mockMvc.perform(get("/api/v2/product/dto/metal/{metal}", (Object) null))
+        this.mockMvc.perform(get("/api/v2/product/metal/{metal}", (Object) null))
                 .andExpect(status().isNotFound());
         verify(productService, times(0)).findByMetalAsDTO(any());
     }
@@ -163,7 +174,7 @@ class ProductControllerTest {
     @Test
     void byMetal404NullParam2() throws Exception {
         when(productService.findByMetalAsDTO(any())).thenReturn(new ArrayList<>());
-        this.mockMvc.perform(get("/api/v2/product/dto/metal/"))
+        this.mockMvc.perform(get("/api/v2/product/metal/"))
                 .andExpect(status().isNotFound());
         verify(productService, times(0)).findByMetalAsDTO(any());
     }
@@ -171,7 +182,7 @@ class ProductControllerTest {
     @Test
     void byMetal400RandomString() throws Exception {
         when(productService.findByMetalAsDTO(any())).thenReturn(new ArrayList<>());
-        this.mockMvc.perform(get("/api/v2/product/dto/metal/{metal}", "sdf"))
+        this.mockMvc.perform(get("/api/v2/product/metal/{metal}", "sdf"))
                 .andExpect(status().isBadRequest());
 //                .andExpect(result -> assertEquals("Only possible values for path variable are: 'gold', 'silver', 'platinum' and 'palladium'", result.getResolvedException().getMessage()));
         verify(productService, times(0)).findByMetalAsDTO(any());
@@ -180,7 +191,7 @@ class ProductControllerTest {
     @Test
     void byMetalUpperCaseParam() throws Exception {
         when(productService.findByMetalAsDTO(any())).thenReturn(new ArrayList<>());
-        this.mockMvc.perform(get("/api/v2/product/dto/metal/{metal}", "PLATINUM"))
+        this.mockMvc.perform(get("/api/v2/product/metal/{metal}", "PLATINUM"))
                 .andExpect(status().isOk())
                 .andExpect(result -> assertEquals(result.getResponse().getContentAsString(), "[]"));
         verify(productService, times(1)).findByMetalAsDTO(any());
@@ -189,7 +200,7 @@ class ProductControllerTest {
     @Test
     void byMetalOtherPath() throws Exception {
         when(productService.findByMetalAsDTO(any())).thenReturn(new ArrayList<>());
-        this.mockMvc.perform(get("/api/v2/product/dto/metal/{metal}/", "palladium"))
+        this.mockMvc.perform(get("/api/v2/product/metal/{metal}/", "palladium"))
                 .andExpect(status().isOk())
                 .andExpect(result -> assertEquals(result.getResponse().getContentAsString(), "[]"));
         verify(productService, times(1)).findByMetalAsDTO(any());
@@ -198,10 +209,10 @@ class ProductControllerTest {
     @Test
     void allAsDtoEmpty() throws Exception {
         when(productService.findAllAsDTO()).thenReturn(new ArrayList<>());
-        this.mockMvc.perform(get("/api/v2/product/dto"))
+        this.mockMvc.perform(get("/api/v2/product"))
                 .andExpect(status().isOk())
                 .andExpect(result -> assertEquals(result.getResponse().getContentAsString(), "[]"));
-        verify(productService, times(1)).findAllAsDTO();
+        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -209,8 +220,8 @@ class ProductControllerTest {
         ProductDTO_LatestPrices p1 = new ProductDTO_LatestPrices(1, "p1", Metal.GOLD, Form.BAR, 20, new ArrayList<>(), new ArrayList<>());
         ProductDTO_LatestPrices p2 = new ProductDTO_LatestPrices(2, "P2", Metal.GOLD, Form.COIN, 30, new ArrayList<>(), new ArrayList<>());
 
-        when(productService.findAllAsDTO()).thenReturn(Arrays.asList(p1, p2));
-        this.mockMvc.perform(get("/api/v2/product/dto"))
+        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any())).thenReturn(Arrays.asList(p1, p2));
+        this.mockMvc.perform(get("/api/v2/product"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].name").value("p1"))
@@ -225,6 +236,6 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$[1].form").value("COIN"));
 //                .andExpect(jsonPath("$[1].links").value("[]"))
 //                .andExpect(jsonPath("$[1].latestPrices").value("[]"));
-        verify(productService, times(1)).findAllAsDTO();
+        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any());
     }
 }

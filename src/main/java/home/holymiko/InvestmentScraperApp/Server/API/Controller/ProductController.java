@@ -4,6 +4,7 @@ import home.holymiko.InvestmentScraperApp.Server.Core.Handler;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.LinkChangeDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_LatestPrices;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,28 +34,16 @@ public class ProductController {
     /////// GET
 
     @GetMapping
-    public List<ProductDTO_LatestPrices> all() {
-        LOGGER.info("Get all products as DTO");
-        return productService.findAllAsDTO();
+    @Operation(description = "Without params, returns all products")
+    public List<ProductDTO_LatestPrices> byParams(@RequestParam(required = false) Metal metal) {
+        LOGGER.info("Get products by parameters");
+        return productService.findByParams(null, null, metal, null, null, null, null);
     }
 
     @GetMapping("/{id}")
     public ProductDTO_AllPrices byId(@PathVariable Long id) {
-        LOGGER.info("Get product by Id");
+        LOGGER.info("Get product by ID");
         return productService.findByIdAsDTOAllPrices(id);
-    }
-
-    // TODO Rebuild to @RequestParam and join with all endpoint
-    @GetMapping({ "/metal/{metal}", "/metal/{metal}/"})
-    public List<ProductDTO_LatestPrices> byMetalAsDTO(@PathVariable String metal) {
-        LOGGER.info("Get products byMetal "+metal+" as DTO");
-        return switch (metal.toLowerCase()) {
-            case "gold" -> this.productService.findByMetalAsDTO(Metal.GOLD);
-            case "silver" -> this.productService.findByMetalAsDTO(Metal.SILVER);
-            case "platinum" -> this.productService.findByMetalAsDTO(Metal.PLATINUM);
-            case "palladium" -> this.productService.findByMetalAsDTO(Metal.PALLADIUM);
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only possible values for path variable are: 'gold', 'silver', 'platinum' and 'palladium'");
-        };
     }
 
     /////// PUT
