@@ -141,14 +141,11 @@ public class MetalScraper {
     @Deprecated
     public void productByPortfolio(long portfolioId) throws ResponseStatusException {
         LOGGER.info("MetalScraper productsByPortfolio");
-        Optional<PortfolioDTO_ProductDTO> optionalPortfolio = portfolioService.findById(portfolioId);
-        if (optionalPortfolio.isEmpty()) {
-            throw new IllegalArgumentException("No portfolio with such ID");
-        }
+        PortfolioDTO_ProductDTO optionalPortfolio = portfolioService.findByIdAsDTO(portfolioId);
 
         // Get Links for scraping
         // Set prevents one Product to be scrapped more times
-        Set<LinkDTO> linkSet = optionalPortfolio.get().getInvestmentsMetal()
+        Set<LinkDTO> linkSet = optionalPortfolio.getInvestmentsMetal()
                 .stream()
                 .map(
                         investment -> linkService.findByProductId( investment.getProductDTO().getId() )

@@ -126,7 +126,7 @@ public class PortfolioService {
     }
 
     /////////// UTILS
-    private Portfolio findById(Long id) {
+    public Portfolio findById(Long id) {
         Optional<Portfolio> optional = this.portfolioRepository.findById(id);
         if(optional.isEmpty()) {
             throw new ResourceNotFoundException("Portfolio with ID "+id+" was not found");
