@@ -1,31 +1,27 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
+import home.holymiko.InvestmentScraperApp.Run;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.ExchangeRate;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.sql.Date;
 
 @SpringBootTest
 class CurrencyServiceIntegrationTest {
 
+    // Prevent @EventListener
+    @MockBean
+    private Run run;
+
     @Autowired
     private CurrencyService currencyService;
 
-    @BeforeEach
-    void setUp() {
-    }
-
-    @AfterEach
-    void tearDown() {
-    }
-
     @Test
-    void save() {
+    void currencyIntegrationTest() {
         ExchangeRate exchangeRate0 = new ExchangeRate(new Date(200000000000L), "country", "currency", 1, "code", 25.0);
         ExchangeRate exchangeRate1 = new ExchangeRate(new Date(500000000001L), "country1", "currency1", 1, "code1", 15.1);
         ExchangeRate exchangeRate2 = new ExchangeRate(new Date(800000000002L), "country2", "currency2", 1, "code2", 15.2);
@@ -85,11 +81,4 @@ class CurrencyServiceIntegrationTest {
         Assertions.assertEquals(saved.getExchangeRate(), origin.getExchangeRate(), 0.001);
     }
 
-    @Test
-    void findExchangeRate() {
-    }
-
-    @Test
-    void delete() {
-    }
 }
