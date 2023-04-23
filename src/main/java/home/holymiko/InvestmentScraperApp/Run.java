@@ -90,16 +90,9 @@ public class Run {
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    public void scrap() throws IOException {
+    public void scrap() {
         scrapController.allLinks();
         scrapController.allProductsInSync();
-//        metalScraper.linksByDealerScrap(Dealer.SILVERUM);
-//        metalScraper.generalScrapAndSleep(
-//                linkService.findByDealer(Dealer.SILVERUM)
-//        );
-//        metalScraper.generalScrapAndSleep(
-//                linkService.findByProductId(null)
-//        );
     }
 
     static boolean isWindows() {
