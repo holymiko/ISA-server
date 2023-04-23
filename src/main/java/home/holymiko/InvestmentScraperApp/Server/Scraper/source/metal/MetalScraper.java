@@ -15,9 +15,6 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
 import home.holymiko.InvestmentScraperApp.Server.Core.LogBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationStartedEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,7 +37,6 @@ public class MetalScraper {
     private final PriceService priceService;
     private final PortfolioService portfolioService;
     private final ProductService productService;
-    private final RateService rateService;
 
     // Used for Polymorphic calling
     private final Map<Dealer, MetalAdapterInterface> dealerToMetalAdapter = new HashMap<>();
@@ -51,40 +47,17 @@ public class MetalScraper {
             LinkService linkService,
             PriceService priceService,
             PortfolioService portfolioService,
-            ProductService productService,
-            RateService rateService
+            ProductService productService
     ) {
         super();
         this.linkService = linkService;
         this.priceService = priceService;
         this.portfolioService = portfolioService;
         this.productService = productService;
-        this.rateService = rateService;
     }
 
-    /**
-     * Automatically called method. Initialize instances dealer interfaces which are locally used in MetalScraper.java
-     * Instances can be initialized in constructor, because exchange rate has to be scraped and injected at first
-     * (for foreign website scrapers)
-     * Exchange rates are scraped in Run.java by EventListener with @Order(0)
-     */
-    @Order(1)
-    @EventListener(ApplicationStartedEvent.class)
-    public void initializeAdapterMap() {
-        dealerToMetalAdapter.put(Dealer.BESSERGOLD_CZ, new BessergoldAdapter());
-        dealerToMetalAdapter.put(Dealer.SILVERUM, new SilverumAdapter());
-        dealerToMetalAdapter.put(Dealer.ZLATAKY, new ZlatakyAdapter());
-        try {
-            dealerToMetalAdapter.put(
-                    Dealer.BESSERGOLD_DE,
-                    new BessergoldDeAdapter(
-                            // Insert currency exchange rate for conversion to CZK
-                            rateService.findExchangeRate("EUR").getExchangeRate()
-                    )
-            );
-        } catch (NullPointerException e) {
-            LOGGER.warn("WebClient OFF - BessergoldDeAdapter - EUR exchange rate is missing");
-        }
+    public void addAdapter(Dealer dealer, MetalAdapterInterface adapter) {
+        dealerToMetalAdapter.put(dealer, adapter);
     }
 
     ////////////// PRODUCT

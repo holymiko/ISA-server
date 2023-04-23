@@ -152,4 +152,12 @@ public class ProductService {
         return optional.get();
     }
 
+    @Transactional
+    public void deleteById(Long productId) {
+        if(productId == null) {
+            throw new NullPointerException("ProductId cannot be null");
+        }
+        productRepository.deleteById(productId);
+    }
+
 }

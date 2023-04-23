@@ -18,11 +18,12 @@ public class RateService {
 
     @Transactional
     public ExchangeRate save(ExchangeRate exchangeRate) throws ResponseStatusException {
+        delete(exchangeRate.getCode(), exchangeRate.getDate());
         return exchangeRateRepository.save(exchangeRate);
     }
 
-    public ExchangeRate findExchangeRate(String currencySignature) {
-        return exchangeRateRepository.findFirstByCodeOrderByDateDesc(currencySignature);
+    public ExchangeRate findExchangeRate(String code) {
+        return exchangeRateRepository.findFirstByCodeOrderByDateDesc(code);
     }
 
     @Transactional

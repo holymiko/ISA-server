@@ -40,7 +40,6 @@ public class CNBScraper extends Client {
 
         for (int i = 2; i < rows.length; i++) {
             String[] elements = rows[i].trim().split("\\|");
-            this.rateService.delete(elements[3], extractedDate);
             this.rateService.save(
                     new ExchangeRate(
                             extractedDate,

@@ -7,8 +7,13 @@ import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFound
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Service.RateService;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.BessergoldAdapter;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.BessergoldDeAdapter;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.SilverumAdapter;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.ZlatakyAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 import org.slf4j.Logger;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -63,9 +68,33 @@ public class Run {
                         rateService.findExchangeRate("USD")
                 )
         );
+
     }
 
-    // @Order(1) is in MetalScraper
+    /**
+     * Initialize instances dealer interfaces which are locally used in MetalScraper.java
+     * Instances can be initialized in constructor, because exchange rate has to be scraped and injected at first
+     * (for foreign website scrapers)
+     * Exchange rates are scraped in Run.java by EventListener with @Order(0)
+     */
+    @Order(1)
+    @EventListener(ApplicationStartedEvent.class)
+    public void initializeAdapterMap() {
+        metalScraper.addAdapter(Dealer.BESSERGOLD_CZ, new BessergoldAdapter());
+        metalScraper.addAdapter(Dealer.SILVERUM, new SilverumAdapter());
+        metalScraper.addAdapter(Dealer.ZLATAKY, new ZlatakyAdapter());
+        try {
+            metalScraper.addAdapter(
+                    Dealer.BESSERGOLD_DE,
+                    new BessergoldDeAdapter(
+                            // Insert currency exchange rate for conversion to CZK
+                            rateService.findExchangeRate("EUR").getExchangeRate()
+                    )
+            );
+        } catch (NullPointerException e) {
+            LOGGER.warn("WebClient OFF - BessergoldDeAdapter - EUR exchange rate is missing");
+        }
+    }
 
 //    @Order(2)                       //  TODO activate before release
 //    @EventListener(ApplicationStartedEvent.class)
