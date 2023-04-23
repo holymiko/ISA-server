@@ -125,4 +125,12 @@ public class ProductService {
         this.productRepository.save(product);
     }
 
+    @Transactional
+    public void deleteById(Long productId) {
+        if(productId == null) {
+            throw new NullPointerException("ProductId cannot be null");
+        }
+        productRepository.deleteById(productId);
+    }
+
 }

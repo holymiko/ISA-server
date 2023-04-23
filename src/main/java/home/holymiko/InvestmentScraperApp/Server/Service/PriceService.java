@@ -29,6 +29,11 @@ public class PriceService {
         this.pricePairMapper = pricePairMapper;
     }
 
+    public long count() {
+        return pricePairRepository.count();
+    }
+
+
     @Deprecated
     @Transactional
     public void updatePricePair(@NotNull String productName, @NotNull Dealer dealer, @NotNull Double amount, boolean isRedemption) throws NullPointerException, IllegalArgumentException {

@@ -1,6 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
 import home.holymiko.InvestmentScraperApp.Run;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.ExchangeRate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,8 @@ class CurrencyServiceIntegrationTest {
     // Prevent @EventListener
     @MockBean
     private Run run;
+    @MockBean
+    private MetalScraper metalScraper;
 
     @Autowired
     private CurrencyService currencyService;
