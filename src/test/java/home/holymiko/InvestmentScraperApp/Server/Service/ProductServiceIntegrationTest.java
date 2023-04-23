@@ -25,10 +25,7 @@ class ProductServiceIntegrationTest {
     // Prevent @EventListener
     @MockBean
     private Run run;
-    @MockBean
-    private MetalScraper metalScraper;
-    @Autowired
-    private PriceService priceService;
+
     @Autowired
     private ProductService productService;
 

@@ -31,18 +31,6 @@ public class LinkService {
         this.productRepository = productRepository;
     }
 
-    public LinkDTO findById(Long linkId) throws IllegalArgumentException {
-        return linkMapper.toDTO(
-                linkRepository.findById(linkId).orElseThrow(IllegalArgumentException::new)
-        );
-    }
-
-    public LinkDTO findByDealerAndProductId(Dealer dealer, long productId) {
-        return linkMapper.toDTO(
-                linkRepository.findByDealerAndProductId(dealer, productId).orElseThrow(IllegalArgumentException::new)
-        );
-    }
-
     public List<List<LinkDTO>> findLinksGroupedByProduct() {
         return this.productRepository.findAll().stream().map(
                 product -> linkMapper.toDTO(product.getLinks())
@@ -53,18 +41,6 @@ public class LinkService {
         return this.productRepository.findProductsByMetal(metal).stream().map(
                 product -> linkMapper.toDTO(product.getLinks())
         ).collect(Collectors.toList());
-    }
-
-    public List<LinkDTO> findByProductParams(Metal metal, Form form) {
-        return linkMapper.toDTO(
-                linkRepository.findByProductParams(metal, form)
-        );
-    }
-
-    public List<LinkDTO> findAll() {
-        return linkMapper.toDTO(
-                this.linkRepository.findAll()
-        );
     }
 
     public List<LinkDTO> findByDealer(Dealer dealer) {

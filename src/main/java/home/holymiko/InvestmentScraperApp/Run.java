@@ -5,8 +5,12 @@ import home.holymiko.InvestmentScraperApp.Server.API.Controller.ScrapController;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.CNBScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.BessergoldAdapter;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.BessergoldDeAdapter;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.SilverumAdapter;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.ZlatakyAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Service.CurrencyService;
-import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -28,15 +32,13 @@ public class Run {
     private final ScrapController scrapController;
     private final CurrencyService currencyService;
     private final CNBScraper cnbScraper;
-    private final LinkService linkService;
     private final MetalScraper metalScraper;
 
     @Autowired
-    public Run(ScrapController scrapController, CurrencyService currencyService, CNBScraper cnbScraper, LinkService linkService, MetalScraper metalScraper) {
+    public Run(ScrapController scrapController, CurrencyService currencyService, CNBScraper cnbScraper, MetalScraper metalScraper) {
         this.scrapController = scrapController;
         this.currencyService = currencyService;
         this.cnbScraper = cnbScraper;
-        this.linkService = linkService;
         this.metalScraper = metalScraper;
     }
 

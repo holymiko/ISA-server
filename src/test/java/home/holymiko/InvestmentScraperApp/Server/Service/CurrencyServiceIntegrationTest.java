@@ -17,8 +17,6 @@ class CurrencyServiceIntegrationTest {
     // Prevent @EventListener
     @MockBean
     private Run run;
-    @MockBean
-    private MetalScraper metalScraper;
 
     @Autowired
     private CurrencyService currencyService;
