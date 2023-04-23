@@ -57,26 +57,8 @@ public class MetalScraper {
         this.currencyService = currencyService;
     }
 
-    // TODO Manage this by setter
-    /**
-     * Automatically called method. Initialize instances dealer interfaces which are locally used in MetalScraper.java
-     * Instances can be initialized in constructor, because exchange rate has to be scraped and injected at first
-     * (for foreign website scrapers)
-     * Exchange rates are scraped in Run.java by EventListener with @Order(0)
-     */
-    @Order(1)
-    @EventListener(ApplicationStartedEvent.class)
-    public void initializeAdapterMap() {
-        dealerToMetalAdapter.put(Dealer.BESSERGOLD_CZ, new BessergoldAdapter());
-        dealerToMetalAdapter.put(Dealer.SILVERUM, new SilverumAdapter());
-        dealerToMetalAdapter.put(Dealer.ZLATAKY, new ZlatakyAdapter());
-        dealerToMetalAdapter.put(
-                Dealer.BESSERGOLD_DE,
-                new BessergoldDeAdapter(
-                        // Insert currency exchange rate for conversion to CZK
-                        currencyService.findExchangeRate("EUR").getExchangeRate()
-                )
-        );
+    public void addAdapter(Dealer dealer, MetalAdapterInterface adapter) {
+        dealerToMetalAdapter.put(dealer, adapter);
     }
 
     ////////////// PRODUCT
