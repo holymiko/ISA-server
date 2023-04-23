@@ -57,7 +57,26 @@ public class Run {
         );
     }
 
-    // @Order(1) is in MetalScraper
+    /**
+     * Initialize instances dealer interfaces which are locally used in MetalScraper.java
+     * Instances can be initialized in constructor, because exchange rate has to be scraped and injected at first
+     * (for foreign website scrapers)
+     * Exchange rates are scraped in Run.java by EventListener with @Order(0)
+     */
+    @Order(1)
+    @EventListener(ApplicationStartedEvent.class)
+    public void initializeAdapterMap() {
+        metalScraper.addAdapter(Dealer.BESSERGOLD_CZ, new BessergoldAdapter());
+        metalScraper.addAdapter(Dealer.SILVERUM, new SilverumAdapter());
+        metalScraper.addAdapter(Dealer.ZLATAKY, new ZlatakyAdapter());
+        metalScraper.addAdapter(
+                Dealer.BESSERGOLD_DE,
+                new BessergoldDeAdapter(
+                        // Insert currency exchange rate for conversion to CZK
+                        currencyService.findExchangeRate("EUR").getExchangeRate()
+                )
+        );
+    }
 
     @Order(2)
     @EventListener(ApplicationStartedEvent.class)
@@ -80,8 +99,6 @@ public class Run {
 //                linkService.findByProductId(null)
 //        );
     }
-
-
 
     static boolean isWindows() {
         return System.getProperty("os.name").toLowerCase().contains("win");
