@@ -49,6 +49,7 @@ public class MetalScraper {
         this.currencyService = currencyService;
     }
 
+    // TODO Manage this by setter
     /**
      * Automatically called method. Initialize instances dealer interfaces which are locally used in MetalScraper.java
      * Instances can be initialized in constructor, because exchange rate has to be scraped and injected at first
