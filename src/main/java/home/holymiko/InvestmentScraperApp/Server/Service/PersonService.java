@@ -54,11 +54,11 @@ public class PersonService {
     public PersonDTO update(long id, PersonDTO personDTO) {
         Person person = findById(id);
         // TODO Use mapper and test
-        person.setFirstName(person.getFirstName());
-        person.setMiddleName(person.getMiddleName());
-        person.setLastName(person.getLastName());
-        person.setEmail(person.getEmail());
-        person.setPhone(person.getPhone());
+        person.setFirstName(personDTO.getFirstName());
+        person.setMiddleName(personDTO.getMiddleName());
+        person.setLastName(personDTO.getLastName());
+        person.setEmail(personDTO.getEmail());
+        person.setPhone(personDTO.getPhone());
 
         return personMapper.toPersonDTO(
                 personRepository.save(person)
