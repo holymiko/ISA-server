@@ -25,7 +25,9 @@ public class Person {
     private String middleName;
     private String lastName;
 
+    // TODO Email validation
     private String email;
+    // TODO Phone validation
     private Long phone;
 
     public Person(String firstName, String middleName, String lastName, String email, Long phone) {

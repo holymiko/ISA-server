@@ -23,6 +23,7 @@ public class Account {
     @Id
     @GeneratedValue
     private long id;
+    // TODO Unique
     @Pattern(regexp = "^.{6,}",
             message = "Username must be at least 6 characters long")
     private String username;

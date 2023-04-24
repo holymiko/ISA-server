@@ -53,6 +53,15 @@ public class PersonController {
         return this.personService.save(personCreateDTO);
     }
 
+    @PutMapping("/{id}")
+    @Operation(description = "Update person")
+    public PersonDTO updatePerson(@PathVariable Long id, @RequestBody PersonDTO personDTO) {
+        LOGGER.info("Person update");
+        Assert.notNull(id, "ID cannot be null");
+        Assert.notNull(personDTO, "personDTO must not be null");
+        return this.personService.update(id, personDTO);
+    }
+
     @PostMapping("/account")
     @Operation(description = "Creates first account and then person. Entities are linked together.")
     public PersonAccountDTO createPersonWithAccount(@RequestBody PersonAccountCreateDTO personAccountCreateDTO) {

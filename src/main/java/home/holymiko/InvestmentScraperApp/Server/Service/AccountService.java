@@ -97,6 +97,11 @@ public class AccountService {
         this.accountRepository.save(account);
     }
 
+    public void changRoleById(long id, Role role) {
+        Account account = findById(id);
+        account.setRole(role);
+        accountRepository.save(account);
+    }
     public void changePasswordById(long id, String password) {
         changePassword( findById(id), password );
     }

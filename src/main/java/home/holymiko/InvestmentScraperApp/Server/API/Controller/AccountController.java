@@ -5,9 +5,11 @@ import home.holymiko.InvestmentScraperApp.Server.Service.AccountService;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.AccountCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.AccountDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.CredentialDTO;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Role;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +55,16 @@ public class AccountController {
     }
 
     /////// PUT
-    @PutMapping(path = "/password/{id}")
+    @PutMapping(path = "/role/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void changeRoleById(@PathVariable Long id, @RequestBody Role role) {
+        LOGGER.info("Change role by ID");
+        Assert.notNull(id, "ID was not given");
+        Assert.notNull(role, "Role was not given");
+        this.accountService.changRoleById(id, role);
+        LOGGER.info("Role was successfully changed");
+    }
+
+    @PutMapping(path = "/password/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void changePasswordById(@PathVariable Long id, @RequestBody String password) {
         LOGGER.info("Change password by id");
         Assert.notNull(id, "ID was not given");
