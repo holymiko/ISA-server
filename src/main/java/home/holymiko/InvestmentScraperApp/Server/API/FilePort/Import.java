@@ -1,4 +1,4 @@
-package home.holymiko.InvestmentScraperApp.Server.API.TextPort;
+package home.holymiko.InvestmentScraperApp.Server.API.FilePort;
 
 import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Ticker;

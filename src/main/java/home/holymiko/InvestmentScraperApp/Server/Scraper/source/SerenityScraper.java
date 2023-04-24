@@ -1,7 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.Scraper.source;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import home.holymiko.InvestmentScraperApp.Server.API.TextPort.Export;
+import home.holymiko.InvestmentScraperApp.Server.API.FilePort.Export;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.GrahamGrade;

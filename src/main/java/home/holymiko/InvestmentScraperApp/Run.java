@@ -2,7 +2,7 @@ package home.holymiko.InvestmentScraperApp;
 
 import home.holymiko.InvestmentScraperApp.Server.Core.LogBuilder;
 import home.holymiko.InvestmentScraperApp.Server.API.Controller.ScrapController;
-import home.holymiko.InvestmentScraperApp.Server.API.TextPort.Import;
+import home.holymiko.InvestmentScraperApp.Server.API.FilePort.Import;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
@@ -96,8 +96,8 @@ public class Run {
         }
     }
 
-//    @Order(2)                       //  TODO activate before release
-//    @EventListener(ApplicationStartedEvent.class)
+    @Order(2)                       //  TODO activate before release
+    @EventListener(ApplicationStartedEvent.class)
     public void runFrontEnd() throws IOException {
         // Run FrontEnd NodeJS Application
         LOGGER.info("Attempt START frontend");
