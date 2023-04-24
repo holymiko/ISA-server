@@ -1,10 +1,12 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import home.holymiko.InvestmentScraperApp.Server.Core.Handler;
 import home.holymiko.InvestmentScraperApp.Server.Service.AccountService;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.AccountCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.AccountDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.CredentialDTO;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.PasswordDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Role;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,19 +67,12 @@ public class AccountController {
         LOGGER.info("Role was successfully changed");
     }
 
-    @PutMapping(path = "/password/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void changePasswordById(@PathVariable Long id, @RequestBody String password) {
+    @PutMapping(path = "/password/{id}")
+    public void changePasswordById(@PathVariable Long id, @RequestBody PasswordDTO passwordDTO) {
         LOGGER.info("Change password by id");
         Assert.notNull(id, "ID was not given");
-        this.accountService.changePasswordById(id, password);
+        this.accountService.changePasswordById(id, passwordDTO.getPassword());
         LOGGER.info("Password was successfully changed");
-    }
-
-    @PutMapping(path = "/password")
-    public void changePasswordByUsername(@RequestBody CredentialDTO credentials) {
-        LOGGER.info("Change password by username");
-        this.accountService.changePasswordByUsername(credentials.getUsername(), credentials.getPassword());
-        LOGGER.info("Password change success");
     }
 
     /////// DELETE
