@@ -6,7 +6,6 @@ import home.holymiko.InvestmentScraperApp.Server.Service.AccountService;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.AccountCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.AccountDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.CredentialDTO;
-import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.PasswordDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Role;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -59,8 +58,10 @@ public class AccountController {
 
     /////// PUT
     @PutMapping(path = "/role/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void changeRoleById(@PathVariable Long id, @RequestBody Role role) {
+    @Operation(description = "Accepts 'role' param, ignores others")
+    public void changeRoleById(@PathVariable Long id, @RequestBody @JsonProperty("role") Map<String, Role> roleMap) {
         LOGGER.info("Change role by ID");
+        Role role = roleMap.get("role");
         Assert.notNull(id, "ID was not given");
         Assert.notNull(role, "Role was not given");
         this.accountService.changRoleById(id, role);
@@ -68,10 +69,12 @@ public class AccountController {
     }
 
     @PutMapping(path = "/password/{id}")
-    public void changePasswordById(@PathVariable Long id, @RequestBody PasswordDTO passwordDTO) {
+    @Operation(description = "Accepts 'password' param, ignores others")
+    public void changePasswordById(@PathVariable Long id, @RequestBody @JsonProperty("password") Map<String, String> passwordMap) {
         LOGGER.info("Change password by id");
+        String password = passwordMap.get("password");
         Assert.notNull(id, "ID was not given");
-        this.accountService.changePasswordById(id, passwordDTO.getPassword());
+        this.accountService.changePasswordById(id, password);
         LOGGER.info("Password was successfully changed");
     }
 
