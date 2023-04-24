@@ -1,9 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.Mapper;
 
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PricePairRepository;
-import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_AllPrices;
-import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_LatestPrices;
-import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.ProductDTO;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Product;
 import org.mapstruct.*;
@@ -18,7 +16,11 @@ public abstract class ProductMapper {
     @Autowired
     protected PricePairMapper pricePairMapper;
 
-    public abstract ProductDTO toProductDTO(Product entity);
+    @Mappings({
+            @Mapping(target = "prices",  ignore = true),
+            @Mapping(target = "latestPrices", ignore = true)
+    })
+    public abstract ProductDTO_Link_AllPrices toProductDTO_Link_AllPrices(Product entity, @Context PricePairRepository pricePairRepository);
 
     @Mappings({
             @Mapping(target = "links", ignore = true),
@@ -60,4 +62,31 @@ public abstract class ProductMapper {
         );
     }
 
+    @BeforeMapping
+    public void afterMapping3(Product product, @Context PricePairRepository pricePairRepository, @MappingTarget ProductDTO_Link_AllPrices productDTO) {
+        productDTO.setLatestPrices(
+                product.getLinks().stream().map(
+                        link -> new LinkDTO_Price(
+                                link.getId(),
+                                link.getDealer(),
+                                link.getUri(),
+                                pricePairMapper.toPriceDTO(
+                                        pricePairRepository.findLatestPricePairByLinkId(link.getId()),
+                                        product.getGrams()
+                                )
+                        )
+                ).collect(Collectors.toList())
+        );
+
+        productDTO.setPrices(
+                product.getLinks().stream().map(
+                        link -> new LinkDTO_Prices(
+                                link.getId(),
+                                link.getDealer(),
+                                link.getUri(),
+                                pricePairMapper.toPriceDTOs(link.getPricePairs(), product.getGrams())
+                        )
+                ).collect(Collectors.toList())
+        );
+    }
 }

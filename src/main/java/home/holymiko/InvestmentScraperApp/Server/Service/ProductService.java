@@ -6,6 +6,7 @@ import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFound
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.LinkChangeDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_LatestPrices;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_Link_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
@@ -42,6 +43,10 @@ public class ProductService {
 
     public ProductDTO_AllPrices findByIdAsDTOAllPrices(Long id) {
         return productMapper.toProductDTO_AllPrices(findById(id), pricePairRepository);
+    }
+
+    public ProductDTO_Link_AllPrices findByIdAsDTOLinkAllPrices(Long id) {
+        return productMapper.toProductDTO_Link_AllPrices(findById(id), pricePairRepository);
     }
 
     // TODO Remove

@@ -4,10 +4,12 @@ import home.holymiko.InvestmentScraperApp.Server.Core.Handler;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.LinkChangeDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_LatestPrices;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
@@ -41,9 +43,13 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ProductDTO_AllPrices byId(@PathVariable Long id) {
+    public ProductDTO byId(@PathVariable Long id,
+                           @RequestParam(required = false) @Parameter(description = "For dto = 1 returns new DTO") Long dto) {
         LOGGER.info("Get product by ID");
-        return productService.findByIdAsDTOAllPrices(id);
+        if(dto == null || dto != 1) {
+            return productService.findByIdAsDTOAllPrices(id);
+        }
+        return productService.findByIdAsDTOLinkAllPrices(id);
     }
 
     /////// PUT

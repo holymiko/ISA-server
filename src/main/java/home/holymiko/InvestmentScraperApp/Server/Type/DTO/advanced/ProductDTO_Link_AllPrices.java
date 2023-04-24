@@ -10,14 +10,14 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ProductDTO_LatestPrices extends ProductDTO {
+public class ProductDTO_Link_AllPrices extends ProductDTO {
 
-    private List<String> links;
-    private List<PricePairDTO_Dealer> latestPrices;
+    private List<LinkDTO_Price> latestPrices;
+    private List<LinkDTO_Prices> prices;
 
-    public ProductDTO_LatestPrices(long id, String name, Metal metal, Form form, double grams, List<String> links, List<PricePairDTO_Dealer> latestPrices) {
+    public ProductDTO_Link_AllPrices(long id, String name, Metal metal, Form form, double grams, List<LinkDTO_Price> latestPrices, List<LinkDTO_Prices> prices) {
         super(id, name, metal, form, grams);
-        this.links = links;
+        this.prices = prices;
         this.latestPrices = latestPrices;
     }
 }

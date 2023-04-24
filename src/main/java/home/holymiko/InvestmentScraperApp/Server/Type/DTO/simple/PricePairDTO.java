@@ -13,17 +13,15 @@ public class PricePairDTO {
     private final LocalDateTime redemptionDateTime;
     private final double price;
     private final double redemption;
-    private final Dealer dealer;
     private final double spread;
     private final double pricePerGram;
 
-    public PricePairDTO(long id, LocalDateTime priceDateTime, LocalDateTime redemptionDateTime, double price, double redemption, Dealer dealer, double grams) {
+    public PricePairDTO(long id, LocalDateTime priceDateTime, LocalDateTime redemptionDateTime, double price, double redemption, double grams) {
         this.id = id;
         this.priceDateTime = priceDateTime;
         this.redemptionDateTime = redemptionDateTime;
         this.price = price;
         this.redemption = redemption;
-        this.dealer = dealer;
 
         if(price > 0) {
             this.spread = redemption / price;

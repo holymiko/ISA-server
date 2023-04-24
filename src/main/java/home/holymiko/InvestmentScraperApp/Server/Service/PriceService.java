@@ -3,17 +3,15 @@ package home.holymiko.InvestmentScraperApp.Server.Service;
 import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PriceRepository;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.PricePairMapper;
-import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.PricePairDTO;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PricePairDTO_Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Price;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.PricePair;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PricePairRepository;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +51,7 @@ public class PriceService {
      * @return Latest PricePair for each Dealer
      */
     @Deprecated
-    public List<PricePairDTO> findLatestPricePairsByProductId(@NotNull Long productId) throws NullPointerException {
+    public List<PricePairDTO_Dealer> findLatestPricePairsByProductId(@NotNull Long productId) throws NullPointerException {
         if(productId == null) {
             throw new NullPointerException("Product ID can't be null");
         }
