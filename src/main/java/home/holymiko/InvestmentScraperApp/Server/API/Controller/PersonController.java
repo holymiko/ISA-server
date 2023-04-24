@@ -30,7 +30,7 @@ public class PersonController {
 
     @GetMapping({"/me", "/me/"})
     public PersonDTO getAssignedClient() {
-        return new PersonDTO(Long.parseLong("450"), "Tomas", "Dummy", "Person", "tomas_dummy_user@world.com", 45665466);
+        return new PersonDTO(Long.parseLong("450"), "Tomas", "Dummy", "Person", "tomas_dummy_user@world.com", 45665466L);
     }
 
     @GetMapping
