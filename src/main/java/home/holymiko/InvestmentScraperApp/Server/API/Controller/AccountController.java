@@ -75,6 +75,13 @@ public class AccountController {
         LOGGER.info("Password was successfully changed");
     }
 
+    @PutMapping(path = "/password")
+    public void changePasswordByUsername(@RequestBody CredentialDTO credentials) {
+        LOGGER.info("Change password by username");
+        this.accountService.changePasswordByUsername(credentials.getUsername(), credentials.getPassword());
+        LOGGER.info("Password change success");
+    }
+
     /////// DELETE
     @DeleteMapping("/{id}")
     @Operation(description = "Deletes account and linked person based on account ID")
