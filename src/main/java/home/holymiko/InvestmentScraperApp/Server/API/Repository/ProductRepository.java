@@ -16,13 +16,6 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    Optional<Product> findByLinks(Link link);
-
-    Optional<Product> findByLinks_Url(String link);
-
-    List<Product> findProductsByMetal(Metal metal);
-
-    Optional<Product> findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer dealer, Producer producer, Metal metal, Form form, double grams, int year);
 
     @Query("select m from Product m where " +
             "(:dealer is null or m.id IN (SELECT l.productId FROM Link l WHERE l.dealer = :dealer )) " +

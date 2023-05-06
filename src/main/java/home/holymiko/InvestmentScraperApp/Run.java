@@ -4,7 +4,7 @@ import home.holymiko.InvestmentScraperApp.Server.API.ConsolePrinter;
 import home.holymiko.InvestmentScraperApp.Server.API.Controller.ScrapController;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.source.CNBScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.CNBAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.BessergoldAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.BessergoldDeAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.SilverumAdapter;
@@ -31,23 +31,23 @@ public class Run {
     Process process;
     private final ScrapController scrapController;
     private final CurrencyService currencyService;
-    private final CNBScraper cnbScraper;
+    private final CNBAdapter cnbAdapter;
     private final MetalScraper metalScraper;
 
     @Autowired
-    public Run(ScrapController scrapController, CurrencyService currencyService, CNBScraper cnbScraper, MetalScraper metalScraper) {
+    public Run(ScrapController scrapController, CurrencyService currencyService, CNBAdapter cnbAdapter, MetalScraper metalScraper) {
         this.scrapController = scrapController;
         this.currencyService = currencyService;
-        this.cnbScraper = cnbScraper;
+        this.cnbAdapter = cnbAdapter;
         this.metalScraper = metalScraper;
     }
 
     @Order(0)
     @EventListener(ApplicationStartedEvent.class)
-    public void run() throws IOException {
+    public void run() {
         System.out.println("App has started up");
         try {
-            cnbScraper.scrapExchangeRate();
+            cnbAdapter.scrapExchangeRate();
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }

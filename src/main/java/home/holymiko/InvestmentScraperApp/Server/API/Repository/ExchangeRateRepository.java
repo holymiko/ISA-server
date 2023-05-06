@@ -11,7 +11,5 @@ public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long
 
     void deleteByCodeAndDate(String x, Date y);
 
-    ExchangeRate getByDateAndCode(Date x, String y);
-
     ExchangeRate findFirstByCodeOrderByDateDesc(String x);
 }

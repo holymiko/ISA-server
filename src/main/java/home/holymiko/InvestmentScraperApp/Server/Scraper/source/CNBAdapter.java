@@ -13,14 +13,14 @@ import java.sql.Date;
 Class scraping data from Czech National Bank
  */
 @Component
-public class CNBScraper extends Client {
+public class CNBAdapter extends Client {
 
     private static final String SEARCH_URL = "https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/denni_kurz.txt";
 
     private final CurrencyService currencyService;
 
     @Autowired
-    public CNBScraper(CurrencyService currencyService) {
+    public CNBAdapter(CurrencyService currencyService) {
         this.currencyService = currencyService;
     }
 

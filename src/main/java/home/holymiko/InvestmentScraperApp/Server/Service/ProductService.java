@@ -62,7 +62,7 @@ public class ProductService {
     }
 
     public List<ProductDTO_LatestPrices> findByMetalAsDTO(Metal metal) {
-        return productRepository.findProductsByMetal(metal)
+        return productRepository.findByParams(null, null, metal, null, null, null, null)
                 .stream()
                 .map(x -> productMapper.toProductDTO_LatestPrices(x, pricePairRepository))
                 .collect(Collectors.toList());

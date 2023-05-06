@@ -18,19 +18,5 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
     Optional<Link> findByUrl(String link);
 
     List<Link> findByProductId(Long productId);
-
-    @Query("select m from Link m, Product p where " +
-            "(m.productId = p.id) " +
-            "and " +
-            "(:metal is null or p.metal = :metal) " +
-            "and " +
-            "(:form is null or p.form = :form) "
-    )
-    List<Link> findByProductParams(
-            @Param("metal") Metal metal,
-            @Param("form") Form form
-    );
-
     List<Link> findByDealer(Dealer dealer);
-    Optional<Link> findByDealerAndProductId(Dealer dealer, long product);
 }

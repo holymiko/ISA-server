@@ -15,7 +15,7 @@ public interface PricePairRepository extends JpaRepository<PricePair, Long> {
 
 
     /**
-     * Method used for resolving issue of Product.latestPrices vs. Product.prices
+     * Used in Mapper, for resolving issue of Product.latestPrices vs. Product.prices
      * @param productId
      * @return Latest PricePair for each Dealer
      */
@@ -34,6 +34,4 @@ public interface PricePairRepository extends JpaRepository<PricePair, Long> {
             @Param("productId") Long productId
     );
 
-
-//    Optional<PricePair> findByProduct_NameAndDealer(String productName, Dealer dealer);
 }

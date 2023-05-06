@@ -83,8 +83,7 @@ public class BessergoldAdapter extends Client implements MetalAdapterInterface {
                     ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText()
             );
         } catch (Exception e) {
-            // TODO return 0.0;
-            return Convert.currencyToDouble("0.0");
+            return 0.0;
         }
     }
 
@@ -119,9 +118,4 @@ public class BessergoldAdapter extends Client implements MetalAdapterInterface {
         );
     }
 
-    @Override
-    public List<Pair<String, Double>> scrapBuyOutFromList() {
-        // TODO Implement scrapRedemptionFromList
-        return new ArrayList<>();
-    }
 }

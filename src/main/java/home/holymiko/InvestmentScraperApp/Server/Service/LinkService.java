@@ -38,9 +38,10 @@ public class LinkService {
     }
 
     public List<List<LinkDTO>> findLinksGroupedByProduct(Metal metal) {
-        return this.productRepository.findProductsByMetal(metal).stream().map(
-                product -> linkMapper.toDTO(product.getLinks())
-        ).collect(Collectors.toList());
+        return this.productRepository.findByParams(null, null, metal, null, null, null, null)
+                .stream().map(
+                        product -> linkMapper.toDTO(product.getLinks()))
+                .collect(Collectors.toList());
     }
 
     public List<LinkDTO> findByDealer(Dealer dealer) {
