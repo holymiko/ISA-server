@@ -1,6 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
-import home.holymiko.InvestmentScraperApp.Server.Core.config.EnumMappingAppConfig;
+import home.holymiko.InvestmentScraperApp.Server.Core.config.SpringConfig;
 import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Import(EnumMappingAppConfig.class)
+@Import(SpringConfig.class)
 @ContextConfiguration(classes = LinkController.class)
 @WebMvcTest(LinkController.class)
 class LinkControllerTest {

@@ -50,9 +50,6 @@ public class CNBScraper extends Client {
                             Double.parseDouble(elements[4].replace(",", "."))
                     )
             );
-
         }
-
-
     }
 }

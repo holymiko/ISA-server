@@ -19,6 +19,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -96,8 +97,8 @@ public class Run {
         }
     }
 
-    @Order(2)                       //  TODO activate before release
-    @EventListener(ApplicationStartedEvent.class)
+//    @Order(2)                       //  TODO activate before release
+//    @EventListener(ApplicationStartedEvent.class)
     public void runFrontEnd() throws IOException {
         // Run FrontEnd NodeJS Application
         LOGGER.info("Attempt START frontend");
@@ -123,6 +124,14 @@ public class Run {
         scrapController.allLinks();
         scrapController.allProductsInSync();
 //        scrapController.serenity();
+    }
+
+    /**
+     * Runs every day at 9:30 and 17:30
+     */
+    @Scheduled(cron = "0 30 9,17 * * ?")
+    public void scheduleFixedRateWithInitialDelayTask() {
+        scrapController.allProductsInSync();
     }
 
     @EventListener(ApplicationReadyEvent.class)
