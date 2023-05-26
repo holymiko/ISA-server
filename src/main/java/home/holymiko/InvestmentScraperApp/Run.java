@@ -130,7 +130,7 @@ public class Run {
      * Runs every day at 9:30 and 17:30
      */
     @Scheduled(cron = "0 30 9,17 * * ?")
-    public void scheduleFixedRateWithInitialDelayTask() {
+    public void scheduleScrap() {
         scrapController.allProductsInSync();
     }
 
