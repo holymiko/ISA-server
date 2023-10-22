@@ -21,6 +21,7 @@
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
         <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
+        <start-class>home.holymiko.InvestmentScraperApp.InvestmentScraperApp</start-class>
     </properties>
 
 <!--    TODO Rise versions of old packages -->
@@ -133,18 +134,6 @@
                             <version>${org.mapstruct.version}</version>
                         </path>
                     </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>src/main/java/home/holymiko/InvestmentScraperApp/InvestmentScraperApp</mainClass> <!-- Replace with your main class -->
-                        </manifest>
-                    </archive>
                 </configuration>
             </plugin>
         </plugins>

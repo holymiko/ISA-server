@@ -2,28 +2,21 @@ FROM maven:3.6.3-amazoncorretto-15 AS build
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
-COPY docker/ScrapApp-0.0.1-SNAPSHOT.jar .
 
 RUN mvn clean
-RUN mvn package -DskipTests
+RUN mvn package -DskipTests spring-boot:repackage
 
-RUN echo "Go0o"
-RUN ls -la ./target
-# RUN ls -la .
-RUN echo $(find target/ -name '*.jar' -print -quit)
-RUN echo $( stat target/ScrapApp-0.0.1-SNAPSHOT.jar)
+ENTRYPOINT ["java", "-jar", "/app/target/ScrapApp-0.0.1-SNAPSHOT.jar"]
 
-# CMD ["cp",  "./ScrapApp-0.0.1-SNAPSHOT.jar", "/app/your-app.jar"]
-RUN ls -la .
-RUN echo $( stat target/ScrapApp-0.0.1-SNAPSHOT.jar)
-
-
-#RUN mvn install -DskipTests
-#CMD ["java", "-jar", "/app/your-app.jar"]
-CMD ["java", "-jar", "ScrapApp-0.0.1-SNAPSHOT.jar"]
-#CMD ["java", "src/main/java/home/holymiko/InvestmentScraperApp/InvestmentScraperApp"]
-
-
+# TODO remove hardcoded version
+# Attemps to COPY from /app/target/ to /app
+# Attemps to use VERSION variable
+#RUN ls -la .
+#RUN ls -la ./target
+#RUN find target/ -name '*.jar' -exec echo "JAR file found: {}" \;
+#RUN export VERSION=$(find target/ -name '*.jar' -print -quit)
+#RUN echo $VERSION
+#RUN echo $( stat target/$VERSION)
 
 #RUN export JAR_FILE=$(find /app/target/ -name '*.jar' -print -quit)
 #RUN echo "JAR_FILE $JAR_FILE"
