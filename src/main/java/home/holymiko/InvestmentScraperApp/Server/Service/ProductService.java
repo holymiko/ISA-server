@@ -16,6 +16,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Producer;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.ProductMapper;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.ProductRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +52,7 @@ public class ProductService {
 
     // TODO Remove
     public List<ProductDTO_LatestPrices> findByMetalAsDTO(Metal metal) {
-        return productRepository.findProductsByMetal(metal)
+        return productRepository.findProductsByMetal(metal, Pageable.unpaged())
                 .stream()
                 .map(x -> productMapper.toProductDTO_LatestPrices(x, pricePairRepository))
                 .collect(Collectors.toList());
@@ -60,14 +61,14 @@ public class ProductService {
     /////////// FIND
 
     public List<ProductDTO_LatestPrices> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean isSpecial) {
-        return productRepository.findByParams(dealer, producer, metal, form, grams, year, isSpecial)
+        return productRepository.findByParams(dealer, producer, metal, form, grams, year, isSpecial, Pageable.unpaged())
                 .stream()
                 .map(x -> productMapper.toProductDTO_LatestPrices(x, pricePairRepository))
                 .collect(Collectors.toList());
     }
 
     public List<Product> findByParams(Dealer dealer, ProductCreateDTO product) {
-        return this.productRepository.findByParams(dealer, product.getProducer(), product.getMetal(), product.getForm(), product.getGrams(), product.getYear(), product.isSpecial());
+        return this.productRepository.findByParams(dealer, product.getProducer(), product.getMetal(), product.getForm(), product.getGrams(), product.getYear(), product.isSpecial(), Pageable.unpaged());
     }
 
     /////////// SAVE

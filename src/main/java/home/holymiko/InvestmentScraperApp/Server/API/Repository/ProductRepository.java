@@ -5,6 +5,8 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Producer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,7 +17,7 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    List<Product> findProductsByMetal(Metal metal);
+    List<Product> findProductsByMetal(Metal metal, Pageable pageable);
 
     Optional<Product> findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer dealer, Producer producer, Metal metal, Form form, double grams, int year);
 
@@ -41,7 +43,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("form") Form form,
             @Param("grams") Double grams,
             @Param("year") Integer year,
-            @Param("isSpecial") Boolean isSpecial
+            @Param("isSpecial") Boolean isSpecial,
+            Pageable pageable
     );
-
 }

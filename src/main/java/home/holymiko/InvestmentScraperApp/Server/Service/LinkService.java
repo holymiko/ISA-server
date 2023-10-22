@@ -12,6 +12,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +55,7 @@ public class LinkService {
     }
 
     public List<List<LinkDTO>> findLinksGroupedByProduct(Metal metal) {
-        return this.productRepository.findProductsByMetal(metal).stream().map(
+        return this.productRepository.findProductsByMetal(metal, Pageable.unpaged()).stream().map(
                 product -> linkMapper.toDTO(product.getLinks())
         ).collect(Collectors.toList());
     }

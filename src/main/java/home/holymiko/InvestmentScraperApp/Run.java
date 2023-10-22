@@ -119,7 +119,7 @@ public class Run {
         }
     }
 
-    @EventListener(ApplicationReadyEvent.class)
+//    @EventListener(ApplicationReadyEvent.class)
     public void scrap() throws IOException {
         scrapController.allLinks();
         scrapController.allProductsInSync();
