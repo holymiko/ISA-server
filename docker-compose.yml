@@ -5,9 +5,6 @@ services:
     image: isa-client
     ports:
       - "3000:3000"
-#    depends_on:
-#      isa-server:
-#        condition: service_healthy
     build:
       context: ../ISA-client
       dockerfile: Dockerfile
