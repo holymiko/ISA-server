@@ -1,7 +1,31 @@
-version: '3'
+version: '3.9'
 services:
-  postgres:
-    restart: always
+
+  isa-client:
+    image: isa-client
+    ports:
+      - "3000:3000"
+#    depends_on:
+#      isa-server:
+#        condition: service_healthy
+    build:
+      context: ../ISA-client
+      dockerfile: Dockerfile
+
+  isa-server:
+    image: isa-server
+    network_mode: "host"
+#    ports:
+#      - "8080:8080"
+    depends_on:
+        isa-postgres:
+          condition: service_healthy
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+  isa-postgres:
+    restart: on-failure
     image: postgres
     ports:
     - "5432:5432"
@@ -11,6 +35,15 @@ services:
       - POSTGRES_DB=goldSilver
     volumes:
       - postgres_data:/var/lib/postgrsql/data
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
 volumes:
   postgres_data:
     external: false
+
+#  sudo docker-compose build/run isa-client
+#  sudo docker-compose up
