@@ -24,7 +24,7 @@ class RateServiceIntegrationTest {
     private RateService rateService;
 
     @Test
-    void currencyIntegrationTest() {
+    void exchangeRateIntegrationTest() {
         ExchangeRate exchangeRate0 = new ExchangeRate(new Date(200000000000L), "country", "currency", 1, "code", 25.0);
         ExchangeRate exchangeRate1 = new ExchangeRate(new Date(500000000001L), "country1", "currency1", 1, "code1", 15.1);
         ExchangeRate exchangeRate2 = new ExchangeRate(new Date(800000000002L), "country2", "currency2", 1, "code2", 15.2);
