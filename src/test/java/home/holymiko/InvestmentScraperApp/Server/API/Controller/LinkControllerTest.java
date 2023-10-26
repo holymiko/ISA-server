@@ -40,66 +40,66 @@ class LinkControllerTest {
     }
 
     @Test
-    void domain404() throws Exception {
-        when(linkService.findByDealer(any())).thenReturn(new ArrayList<>());
+    void domain200() throws Exception {
+        when(linkService.findByParams(any(), any())).thenReturn(new ArrayList<>());
         this.mockMvc.perform(get("/api/v2/link"))
-                .andExpect(status().isNotFound());
-        verify(linkService, times(0)).findByDealer(any());
+                .andExpect(status().isOk());
+        verify(linkService, times(1)).findByParams(any(), any());
     }
 
     @Test
-    void findByDealer200() throws Exception {
-        when(linkService.findByDealer(any())).thenReturn(new ArrayList<>());
-        this.mockMvc.perform(get("/api/v2/link/param")
+    void findByParams200() throws Exception {
+        when(linkService.findByParams(any(), any())).thenReturn(new ArrayList<>());
+        this.mockMvc.perform(get("/api/v2/link")
                         .param("dealer", String.valueOf(Dealer.ZLATAKY)))
                 .andExpect(status().isOk());
-        verify(linkService, times(1)).findByDealer(any());
+        verify(linkService, times(1)).findByParams(any(), any());
     }
 
     @Test
-    void findByDealerRandomCase() throws Exception {
-        when(linkService.findByDealer(any())).thenReturn(new ArrayList<>());
-        this.mockMvc.perform(get("/api/v2/link/param")
+    void findByParamsRandomCase() throws Exception {
+        when(linkService.findByParams(any(), any())).thenReturn(new ArrayList<>());
+        this.mockMvc.perform(get("/api/v2/link")
                         .param("dealer", "zLaTakY"))
                 .andDo(print())
                 .andExpect(status().isOk());
-        verify(linkService, times(1)).findByDealer(any());
+        verify(linkService, times(1)).findByParams(any(), any());
     }
 
     @Test
-    void findByDealerLowerCase() throws Exception {
-        when(linkService.findByDealer(any())).thenReturn(new ArrayList<>());
-        this.mockMvc.perform(get("/api/v2/link/param")
+    void findByParamsLowerCase() throws Exception {
+        when(linkService.findByParams(any(), any())).thenReturn(new ArrayList<>());
+        this.mockMvc.perform(get("/api/v2/link")
                         .param("dealer", "zlataky"))
                 .andExpect(status().isOk());
-        verify(linkService, times(1)).findByDealer(any());
+        verify(linkService, times(1)).findByParams(any(), any());
     }
 
     @Test
-    void findByDealerUpperCase() throws Exception {
-        when(linkService.findByDealer(any())).thenReturn(new ArrayList<>());
-        this.mockMvc.perform(get("/api/v2/link/param")
+    void findByParamsUpperCase() throws Exception {
+        when(linkService.findByParams(any(), any())).thenReturn(new ArrayList<>());
+        this.mockMvc.perform(get("/api/v2/link")
                         .param("dealer", "ZLATAKY"))
                 .andExpect(status().isOk());
-        verify(linkService, times(1)).findByDealer(any());
+        verify(linkService, times(1)).findByParams(any(), any());
     }
 
     @Test
-    void findByDealer400RandomString() throws Exception {
-        when(linkService.findByDealer(any())).thenReturn(new ArrayList<>());
-        this.mockMvc.perform(get("/api/v2/link/param")
+    void findByParams400RandomString() throws Exception {
+        when(linkService.findByParams(any(), any())).thenReturn(new ArrayList<>());
+        this.mockMvc.perform(get("/api/v2/link")
                         .param("dealer", "sdf"))
                 .andExpect(status().isBadRequest());
-        verify(linkService, times(0)).findByDealer(any());
+        verify(linkService, times(0)).findByParams(any(), any());
     }
 
     @Test
-    void findByDealer400EmptyString() throws Exception {
-        when(linkService.findByDealer(any())).thenReturn(new ArrayList<>());
-        this.mockMvc.perform(get("/api/v2/link/param")
+    void findByParamsIgnoreEmptyString() throws Exception {
+        when(linkService.findByParams(any(), any())).thenReturn(new ArrayList<>());
+        this.mockMvc.perform(get("/api/v2/link")
                         .param("dealer", ""))
-                .andExpect(status().isBadRequest());
-        verify(linkService, times(0)).findByDealer(any());
+                .andExpect(status().isOk());
+        verify(linkService, times(1)).findByParams(any(), any());
     }
 
 }

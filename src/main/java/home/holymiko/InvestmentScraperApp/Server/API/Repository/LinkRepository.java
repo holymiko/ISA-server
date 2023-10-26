@@ -31,6 +31,20 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
             @Param("form") Form form
     );
 
-    List<Link> findByDealer(Dealer dealer);
-    Optional<Link> findByDealerAndProductId(Dealer dealer, long product);
+    @Query("select m from Link m where " +
+            "(:productId is null or m.productId = :productId) " +
+            "and " +
+            "(:dealer is null or m.dealer = :dealer) "
+    )
+    List<Link> findByParams(
+            @Param("productId") Long productId,
+            @Param("dealer") Dealer dealer
+    );
+
+    @Query("select count(m) from Link m where " +
+            "(:dealer is null or m.dealer = :dealer) "
+    )
+    Long countByParams(
+            @Param("dealer") Dealer dealer
+    );
 }

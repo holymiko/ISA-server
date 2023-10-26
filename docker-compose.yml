@@ -43,4 +43,4 @@ volumes:
     external: false
 
 #  sudo docker-compose build/run isa-client
-#  sudo docker-compose up
+#  sudo docker-compose up/down

@@ -129,7 +129,7 @@ public class MetalScraper {
                 );
 
         generalScrapAndSleep( new ArrayList<>(linkSet) );
-        LogBuilder.printTimeStamp();
+        LogBuilder.logTimeStamp();
     }
 
     /////// PRIVATE

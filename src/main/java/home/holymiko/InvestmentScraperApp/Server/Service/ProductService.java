@@ -40,6 +40,10 @@ public class ProductService {
 
     private final LinkService linkService;
 
+    public Long countByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean isSpecial) {
+        return productRepository.countByParams(dealer, producer, metal, form, grams, year, isSpecial);
+    }
+
     /////////// FIND AS DTO
 
     public ProductDTO_AllPrices findByIdAsDTOAllPrices(Long id) {
@@ -48,14 +52,6 @@ public class ProductService {
 
     public ProductDTO_Link_AllPrices findByIdAsDTOLinkAllPrices(Long id) {
         return productMapper.toProductDTO_Link_AllPrices(findById(id), pricePairRepository);
-    }
-
-    // TODO Remove
-    public List<ProductDTO_LatestPrices> findByMetalAsDTO(Metal metal) {
-        return productRepository.findProductsByMetal(metal, Pageable.unpaged())
-                .stream()
-                .map(x -> productMapper.toProductDTO_LatestPrices(x, pricePairRepository))
-                .collect(Collectors.toList());
     }
 
     /////////// FIND

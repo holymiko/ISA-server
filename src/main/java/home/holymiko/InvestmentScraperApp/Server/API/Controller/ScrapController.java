@@ -57,7 +57,7 @@ public class ScrapController {
         metalScraper.generalScrapAndSleep(
             linkService.findByProductId(null)
         );
-        LogBuilder.printTimeStamp();
+        LogBuilder.logTimeStamp();
         LOGGER.info("All products scraped");
 
         ScrapHistory.timeUpdate(false, true);
@@ -72,7 +72,7 @@ public class ScrapController {
         metalScraper.generalScrapAndSleep(
                 linkService.findByProductId(id)
         );
-        LogBuilder.printTimeStamp();
+        LogBuilder.logTimeStamp();
         LOGGER.info("Products with ID "+id+" scraped");
 
         ScrapHistory.stopRunning();
@@ -98,6 +98,9 @@ public class ScrapController {
         // Unlock guard
         scrapHistory.timeUpdate(metal);
         ScrapHistory.stopRunning();
+        // Log
+        LogBuilder.logTimeStamp();
+        LOGGER.info(metal + " products scraped");
     }
 
     @PostMapping({"/serenity", "/serenity/"})

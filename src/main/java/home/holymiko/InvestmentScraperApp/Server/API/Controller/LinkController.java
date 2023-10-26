@@ -18,8 +18,10 @@ public class LinkController {
     private final LinkService linkService;
 
     @GetMapping
-    public List<LinkDTO> findByDealer(@RequestParam Dealer dealer) {
-        return this.linkService.findByDealer(dealer);
+    public List<LinkDTO> findByParams(
+            @RequestParam(required = false) Long productId,
+            @RequestParam(required = false) Dealer dealer) {
+        return this.linkService.findByParams(productId, dealer);
     }
 
     // TODO getCount

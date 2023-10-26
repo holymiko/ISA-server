@@ -16,6 +16,10 @@ public class RateService {
 
     private final ExchangeRateRepository exchangeRateRepository;
 
+    public Long count() {
+        return this.exchangeRateRepository.count();
+    }
+
     @Transactional
     public ExchangeRate save(ExchangeRate exchangeRate) throws ResponseStatusException {
         delete(exchangeRate.getCode(), exchangeRate.getDate());

@@ -5,7 +5,6 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Ticker;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.TickerRepository;
 import home.holymiko.InvestmentScraperApp.Server.Core.LogBuilder;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +23,10 @@ public class TickerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TickerService.class);
 
     private final TickerRepository tickerRepository;
+
+    public Long countByParams(TickerState tickerState) {
+        return this.tickerRepository.countByParams(tickerState);
+    }
 
     ////// FIND
 

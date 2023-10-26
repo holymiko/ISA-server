@@ -46,4 +46,29 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("isSpecial") Boolean isSpecial,
             Pageable pageable
     );
+
+    @Query("select count(m) from Product m where " +
+            "(:dealer is null or m.id IN (SELECT l.productId FROM Link l WHERE l.dealer = :dealer )) " +
+            "and " +
+            "(:producer is null or m.producer = :producer) " +
+            "and " +
+            "(:metal is null or m.metal = :metal) " +
+            "and " +
+            "(:form is null or m.form = :form) " +
+            "and " +
+            "(:grams is null or m.grams = :grams) " +
+            "and " +
+            "(:year is null or m.year = :year) " +
+            "and " +
+            "(:isSpecial is null or m.isSpecial = :isSpecial) "
+    )
+    Long countByParams(
+            @Param("dealer") Dealer dealer,
+            @Param("producer") Producer producer,
+            @Param("metal") Metal metal,
+            @Param("form") Form form,
+            @Param("grams") Double grams,
+            @Param("year") Integer year,
+            @Param("isSpecial") Boolean isSpecial
+    );
 }

@@ -45,7 +45,8 @@ public class ProductController {
     @GetMapping("/{id}")
     public ProductDTO byId(@PathVariable Long id,
                            @RequestParam(required = false) @Parameter(description = "For dto = 1 returns new DTO") Long dto) {
-        LOGGER.info("Get product by ID");
+        LOGGER.info("Get product by ID"+id);
+        Assert.notNull(id, "Id cannot be null");
         if(dto == null || dto != 1) {
             return productService.findByIdAsDTOAllPrices(id);
         }

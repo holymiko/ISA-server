@@ -28,6 +28,10 @@ public class LinkService {
     private final LinkMapper linkMapper;
     private final ProductRepository productRepository;
 
+    public Long countByParams(Dealer dealer)  {
+        return this.linkRepository.countByParams(dealer);
+    }
+
     public Link findById(Long id) {
         Optional<Link> optional = this.linkRepository.findById(id);
         if(optional.isEmpty()) {
@@ -39,12 +43,6 @@ public class LinkService {
     public LinkDTO findByIdAsDto(Long linkId) throws IllegalArgumentException {
         return linkMapper.toDTO(
                 linkRepository.findById(linkId).orElseThrow(IllegalArgumentException::new)
-        );
-    }
-
-    public LinkDTO findByDealerAndProductId(Dealer dealer, long productId) {
-        return linkMapper.toDTO(
-                linkRepository.findByDealerAndProductId(dealer, productId).orElseThrow(IllegalArgumentException::new)
         );
     }
 
@@ -66,15 +64,9 @@ public class LinkService {
         );
     }
 
-    public List<LinkDTO> findAll() {
+    public List<LinkDTO> findByParams(Long productId, Dealer dealer) {
         return linkMapper.toDTO(
-                this.linkRepository.findAll()
-        );
-    }
-
-    public List<LinkDTO> findByDealer(Dealer dealer) {
-        return linkMapper.toDTO(
-                linkRepository.findByDealer(dealer)
+                linkRepository.findByParams(productId, dealer)
         );
     }
 
@@ -133,7 +125,7 @@ public class LinkService {
     /**
      * Filtration based on text of the uri
      * @param uri Link about to be filtered
-     * @return False for uri being filtered
+     * @throws IllegalArgumentException for uri being filtered
      */
     private static void uriLilter(String uri) throws IllegalArgumentException {
         if (uri.contains("etuje") || uri.contains("etui")) {
