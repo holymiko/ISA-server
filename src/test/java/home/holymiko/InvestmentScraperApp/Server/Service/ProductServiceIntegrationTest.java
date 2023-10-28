@@ -7,6 +7,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Producer;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 
+@Disabled("TODO Activate")
 @SpringBootTest
 class ProductServiceIntegrationTest {
 

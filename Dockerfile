@@ -4,7 +4,8 @@ COPY pom.xml .
 COPY src ./src
 
 RUN mvn clean
-RUN mvn package -DskipTests spring-boot:repackage
+# RUN mvn package -DskipTests spring-boot:repackage # this works
+RUN mvn package spring-boot:repackage
 
 ENTRYPOINT ["java", "-jar", "/app/target/ScrapApp-0.0.1-SNAPSHOT.jar"]
 
