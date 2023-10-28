@@ -18,11 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v2/person")
 @AllArgsConstructor
-public class PersonController {
+public class PersonController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonController.class);
 

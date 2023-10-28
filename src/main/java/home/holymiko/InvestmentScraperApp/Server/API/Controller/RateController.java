@@ -8,11 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v2/rate")
 @AllArgsConstructor
-public class RateController {
+public class RateController extends BaseController {
     private final RateService rateService;
 
     /////// GET

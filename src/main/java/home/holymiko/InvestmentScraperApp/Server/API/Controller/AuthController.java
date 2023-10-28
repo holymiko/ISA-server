@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v2/auth")
 @AllArgsConstructor
-public class AuthController {
+public class AuthController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 

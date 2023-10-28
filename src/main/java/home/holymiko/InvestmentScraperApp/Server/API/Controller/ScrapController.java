@@ -12,11 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v2/scrap")
 @AllArgsConstructor
-public class ScrapController {
+public class ScrapController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScrapController.class);
 

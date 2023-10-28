@@ -10,11 +10,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v2/stock")
 @AllArgsConstructor
-public class StockController {
+public class StockController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StockController.class);
 

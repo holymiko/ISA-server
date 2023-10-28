@@ -9,11 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v2/link")
 @AllArgsConstructor
-public class LinkController {
+public class LinkController extends BaseController {
 
     private final LinkService linkService;
 

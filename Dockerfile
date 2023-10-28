@@ -7,9 +7,9 @@ RUN mvn clean
 # RUN mvn package -DskipTests spring-boot:repackage # this works
 RUN mvn package spring-boot:repackage
 
+# TODO remove hardcoded version
 ENTRYPOINT ["java", "-jar", "/app/target/ScrapApp-0.0.1-SNAPSHOT.jar"]
 
-# TODO remove hardcoded version
 # Attemps to COPY from /app/target/ to /app
 # Attemps to use VERSION variable
 #RUN ls -la .

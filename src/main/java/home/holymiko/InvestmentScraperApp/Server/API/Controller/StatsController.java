@@ -7,11 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v2/stats")
 @AllArgsConstructor
-public class StatsController {
+public class StatsController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatsController.class);
 

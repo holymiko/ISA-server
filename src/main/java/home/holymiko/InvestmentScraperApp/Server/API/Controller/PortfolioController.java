@@ -11,11 +11,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@CrossOrigin(origins = "http://localhost:3000")         // Requesty z teto adresy jsou legit
 @RestController
 @RequestMapping("/api/v2/portfolio")         // Na url/api/v1/portfolio se zavola HTTP request
 @AllArgsConstructor
-public class PortfolioController {
+public class PortfolioController extends BaseController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PortfolioController.class);
 
     private final PortfolioService portfolioService;

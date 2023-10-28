@@ -23,11 +23,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletResponse;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v2/account")
 @AllArgsConstructor
-public class AccountController {
+public class AccountController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
 
