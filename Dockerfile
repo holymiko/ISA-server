@@ -8,7 +8,7 @@ RUN mvn clean
 RUN mvn package spring-boot:repackage
 
 # TODO remove hardcoded version
-ENTRYPOINT ["java", "-jar", "/app/target/ScrapApp-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/app/target/ISA-server-1.2.0-SNAPSHOT.jar"]
 
 # Attemps to COPY from /app/target/ to /app
 # Attemps to use VERSION variable
