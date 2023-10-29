@@ -28,7 +28,7 @@ public class ScrapController extends BaseController {
     // TODO Endpoint for scrap stock by ticker
     // TODO method byPortfolio should include stock scraping
 
-    @PostMapping({"/all", "/all/"})
+    @PostMapping("/all")
     public void scrapEverything() {
         allLinks();
         allProductsInSync();
@@ -42,7 +42,7 @@ public class ScrapController extends BaseController {
      * Scraping of Prices is grouped by Product. Prices from different Dealers, are for each Product,
      * scraped at the same time. Thanks to that, Prices are time synchronized.
      */
-    @PostMapping({"/products", "/products/"})
+    @PostMapping("/products")
     public void allProductsInSync() {
         ScrapHistory.frequencyHandlingAll(false);
         ScrapHistory.startRunning();
@@ -63,7 +63,27 @@ public class ScrapController extends BaseController {
         ScrapHistory.stopRunning();
     }
 
-    @PostMapping({"/product/{id}", "/product/{id}/"})
+    /**
+     * Scrap products for ALL Links. Including Links which doesn't have Product yet.
+     */
+    @PostMapping({"/products/async"})
+    public void allProductsAsync() {
+        ScrapHistory.frequencyHandlingAll(false);
+        ScrapHistory.startRunning();
+
+        LOGGER.info("All products SCRAP ASYNC");
+        // Scrap Links without Product
+        metalScraper.generalScrapAndSleep(
+                linkService.findByParams(null, null)
+        );
+        LogBuilder.logTimeStamp();
+        LOGGER.info("All products scraped");
+
+        ScrapHistory.timeUpdate(false, true);
+        ScrapHistory.stopRunning();
+    }
+
+    @PostMapping("/product/{id}")
     public void scrapProductById(@PathVariable long id) {
         ScrapHistory.startRunning();
 
@@ -102,7 +122,7 @@ public class ScrapController extends BaseController {
         LOGGER.info(metal + " products scraped");
     }
 
-    @PostMapping({"/serenity", "/serenity/"})
+    @PostMapping("/serenity")
     public void serenity() {
         this.serenityScraper.tickersScrap(TickerState.GOOD);
     }
@@ -112,7 +132,7 @@ public class ScrapController extends BaseController {
     /**
      * Scraps Links from all Dealers
      */
-    @PostMapping({"/links", "/links/"})
+    @PostMapping("/links")
     public void allLinks() {
 //        TODO test frequencyHandling status code
         ScrapHistory.frequencyHandlingAll(true);

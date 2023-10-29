@@ -54,7 +54,7 @@ public class ProductController extends BaseController {
 
     /////// PUT
 
-    @PutMapping({ "/link", "/link/"})
+    @PutMapping("/link")
     @Operation(description = "Removes reference between product (fromProductId) and link. " +
             "When toProductId is given, creates reference between existing product (toProductId) and link. " +
             "When toProductId is missing, creates new product to save the link separately. " +

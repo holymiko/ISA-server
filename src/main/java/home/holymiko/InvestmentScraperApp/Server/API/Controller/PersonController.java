@@ -27,7 +27,7 @@ public class PersonController extends BaseController {
 
     private final PersonService personService;
 
-    @GetMapping({"/me", "/me/"})
+    @GetMapping("/me")
     public PersonDTO getAssignedClient() {
         return new PersonDTO(Long.parseLong("450"), "Tomas", "Dummy", "Person", "tomas_dummy_user@world.com", 45665466L);
     }
