@@ -11,6 +11,7 @@ services:
 
   isa-server:
     image: isa-server
+    restart: on-failure
     network_mode: "host"
 #    ports:
 #      - "8080:8080"
@@ -30,10 +31,13 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=goldSilver
+      # solves problem of incompatible password hashing functions (related to pg_isready)
+      - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
     volumes:
       - ../postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready"]
+      # -U postgres solves problem with missing root user
+      test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 30s
       timeout: 10s
       retries: 5
