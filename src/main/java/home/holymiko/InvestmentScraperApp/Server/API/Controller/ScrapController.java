@@ -76,6 +76,7 @@ public class ScrapController extends BaseController {
         metalScraper.generalScrapAndSleep(
                 linkService.findByParams(null, null)
         );
+        // TODO Scrap others
         LogBuilder.logTimeStamp();
         LOGGER.info("All products scraped");
 

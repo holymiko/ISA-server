@@ -52,4 +52,4 @@ volumes:
 #  sudo docker compose logs isa-server
 
 #  sudo docker exec -it <container_id_or_name> psql -U <username> -d <database_name>
-#  ALTER USER postgres PASSWORD 'postgres';
+#  ALTER USER postgres PASSWORD 'prahapodoli';
