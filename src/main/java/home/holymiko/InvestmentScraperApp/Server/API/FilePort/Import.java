@@ -43,7 +43,7 @@ public class Import {
 
     public void importRawTickers() {
         String date = "_20210311.txt";
-        String location = "/app/ISA-server/txt/src/";
+        String location = "txt/src/";
         readFile(location+"nasdaqtraded.txt");
         readFile(location+"nasdaqlisted.txt");
         readFile(location+"otherlisted.txt");

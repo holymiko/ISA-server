@@ -2,6 +2,8 @@ FROM maven:3.6.3-amazoncorretto-15 AS build
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
+COPY txt/src ./txt/src
+COPY txt/export/tickers ./txt/export/tickers
 
 RUN mvn clean
 # RUN mvn package -DskipTests spring-boot:repackage # this works
