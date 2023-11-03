@@ -8,6 +8,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Entity.StockGraham;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.GrahamGrade;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Ticker;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.StockGrahamRepository;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
@@ -25,6 +26,10 @@ public class StockGrahamService {
     private final StockGrahamHistoryRepository stockGrahamHistoryRepository;
 
     ////// FIND
+
+    public Long countByParams() {
+        return this.stockGrahamRepository.countByParams(null, null, null, null);
+    }
 
     // TODO Return DTO
     public StockGraham findById(Long id) {

@@ -19,6 +19,7 @@ public class StatsController extends BaseController {
     private final ProductService productService;
     private final PriceService priceService;
     private final TickerService tickerService;
+    private final StockGrahamService stockGrahamService;
 
     @GetMapping
     @Operation(description = "Returns stats")
@@ -27,7 +28,8 @@ public class StatsController extends BaseController {
                 "\nlinks: " + linkService.countByParams(null) +
                 "\nproducts: " + productService.countByParams(null, null, null, null, null, null, null) +
                 "\nprice pairs: " + priceService.countPricePairs() +
-                "\ntickers: " + tickerService.countByParams(null);
+                "\ntickers: " + tickerService.countByParams(null) +
+                "\nstocks: " + stockGrahamService.countByParams();
     }
 
 }
