@@ -27,10 +27,14 @@ public class StockController extends BaseController {
     private final Import anImport;
 
     @PostMapping("/tickers")
-    public void importTickers() throws FileNotFoundException {
+    public void importTickers() {
         if(tickerService.findAll().isEmpty()) {
             LOGGER.info("3) Import Tickers");
-            anImport.importExportedTickers();
+            try {
+                anImport.importExportedTickers();
+            } catch (FileNotFoundException e) {
+                LOGGER.error(e.getMessage());
+            }
             LOGGER.info("3) Import finished");
         } else {
             throw new IllegalArgumentException("Tickers are not empty");

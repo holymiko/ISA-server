@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Getter
+@NoArgsConstructor
 public class StockGrahamHistory {
     @Id
     @GeneratedValue

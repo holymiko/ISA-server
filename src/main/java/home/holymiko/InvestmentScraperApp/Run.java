@@ -1,5 +1,6 @@
 package home.holymiko.InvestmentScraperApp;
 
+import home.holymiko.InvestmentScraperApp.Server.API.Controller.StockController;
 import home.holymiko.InvestmentScraperApp.Server.Core.LogBuilder;
 import home.holymiko.InvestmentScraperApp.Server.API.Controller.ScrapController;
 import home.holymiko.InvestmentScraperApp.Server.API.FilePort.Import;
@@ -11,7 +12,6 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapt
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.BessergoldDeAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.SilverumAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.ZlatakyAdapter;
-import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 import org.slf4j.Logger;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,16 +38,16 @@ public class Run {
 
     Process process;
     private final ScrapController scrapController;
-    private final TickerService tickerService;
+    private final StockController stockController;
     private final RateService rateService;
     private final CNBScraper cnbScraper;
     private final MetalScraper metalScraper;
     private final Import anImport;
 
     @Autowired
-    public Run(ScrapController scrapController, TickerService tickerService, RateService rateService, CNBScraper cnbScraper, MetalScraper metalScraper, Import anImport) {
+    public Run(ScrapController scrapController, StockController stockController, RateService rateService, CNBScraper cnbScraper, MetalScraper metalScraper, Import anImport) {
         this.scrapController = scrapController;
-        this.tickerService = tickerService;
+        this.stockController = stockController;
         this.rateService = rateService;
         this.cnbScraper = cnbScraper;
         this.metalScraper = metalScraper;
@@ -109,14 +109,8 @@ public class Run {
 
     @Order(3) // Last Order index
     @EventListener(ApplicationStartedEvent.class)
-    public void runImportTickers() throws IOException {
-        if(tickerService.findAll().isEmpty()) {
-            LOGGER.info("3) Import Tickers");
-            anImport.importExportedTickers();
-            LOGGER.info("3) Import finished");
-        } else {
-            LOGGER.info("3) SKIP");
-        }
+    public void runImportTickers() {
+        stockController.importTickers();
     }
 
 //    @EventListener(ApplicationReadyEvent.class)
