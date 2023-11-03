@@ -29,10 +29,11 @@ public class StockController extends BaseController {
     @PostMapping("/tickers")
     public void importTickers() {
         if(tickerService.findAll().isEmpty()) {
-            LOGGER.info("3) Import Tickers");
+            LOGGER.info("3.1) Import exported Tickers");
             try {
                 anImport.importExportedTickers();
             } catch (FileNotFoundException e) {
+                LOGGER.info("3.2) Import raw Tickers");
                 anImport.importRawTickers();
                 LOGGER.error(e.getMessage());
             }
