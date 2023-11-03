@@ -33,6 +33,7 @@ public class StockController extends BaseController {
             try {
                 anImport.importExportedTickers();
             } catch (FileNotFoundException e) {
+                anImport.importRawTickers();
                 LOGGER.error(e.getMessage());
             }
             LOGGER.info("3) Import finished");
