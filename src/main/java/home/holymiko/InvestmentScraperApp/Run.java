@@ -107,8 +107,8 @@ public class Run {
                 .start();
     }
 
-//    @Order(3) // Last Order index     TODO activate before release
-//    @EventListener(ApplicationStartedEvent.class)
+    @Order(3) // Last Order index
+    @EventListener(ApplicationStartedEvent.class)
     public void runImportTickers() throws IOException {
         if(tickerService.findAll().isEmpty()) {
             LOGGER.info("3) Import Tickers");
@@ -133,18 +133,6 @@ public class Run {
     public void scheduleScrap() {
         scrapController.allProductsInSync();
     }
-
-    @EventListener(ApplicationReadyEvent.class)
-    public void scrapDev() throws IOException {
-//        metalScraper.linksByDealerScrap(Dealer.SILVERUM);
-//        metalScraper.generalScrapAndSleep(
-//                linkService.findByDealer(Dealer.SILVERUM)
-//        );
-//        metalScraper.generalScrapAndSleep(
-//                linkService.findByProductId(null)
-//        );
-    }
-
 
     static boolean isWindows() {
         return System.getProperty("os.name").toLowerCase().contains("win");
