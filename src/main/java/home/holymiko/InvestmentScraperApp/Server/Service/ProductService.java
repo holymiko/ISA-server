@@ -56,8 +56,8 @@ public class ProductService {
 
     /////////// FIND
 
-    public List<ProductDTO_LatestPrices> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean isSpecial) {
-        return productRepository.findByParams(dealer, producer, metal, form, grams, year, isSpecial, Pageable.unpaged())
+    public List<ProductDTO_LatestPrices> findByParams(Dealer includesDealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean isSpecial) {
+        return productRepository.findByParams(includesDealer, producer, metal, form, grams, year, isSpecial, Pageable.unpaged())
                 .stream()
                 .map(x -> productMapper.toProductDTO_LatestPrices(x, pricePairRepository))
                 .collect(Collectors.toList());
@@ -160,6 +160,11 @@ public class ProductService {
             throw new NullPointerException("ProductId cannot be null");
         }
         productRepository.deleteById(productId);
+    }
+
+    @Transactional
+    public void deleteAll() {
+        productRepository.deleteAll();
     }
 
 }

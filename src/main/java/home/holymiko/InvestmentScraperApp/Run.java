@@ -42,16 +42,14 @@ public class Run {
     private final RateService rateService;
     private final CNBScraper cnbScraper;
     private final MetalScraper metalScraper;
-    private final Import anImport;
 
     @Autowired
-    public Run(ScrapController scrapController, StockController stockController, RateService rateService, CNBScraper cnbScraper, MetalScraper metalScraper, Import anImport) {
+    public Run(ScrapController scrapController, StockController stockController, RateService rateService, CNBScraper cnbScraper, MetalScraper metalScraper) {
         this.scrapController = scrapController;
         this.stockController = stockController;
         this.rateService = rateService;
         this.cnbScraper = cnbScraper;
         this.metalScraper = metalScraper;
-        this.anImport = anImport;
     }
 
     @Order(0)
@@ -107,8 +105,8 @@ public class Run {
                 .start();
     }
 
-    @Order(3) // Last Order index
-    @EventListener(ApplicationStartedEvent.class)
+//    @Order(3) // Last Order index
+//    @EventListener(ApplicationStartedEvent.class)
     public void runImportTickers() {
         stockController.importTickers();
     }

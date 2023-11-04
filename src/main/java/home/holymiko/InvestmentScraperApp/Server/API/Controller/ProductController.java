@@ -5,16 +5,17 @@ import home.holymiko.InvestmentScraperApp.Server.Type.DTO.LinkChangeDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_LatestPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.ProductDTO;
-import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Service.ProductService;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Producer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,9 +37,17 @@ public class ProductController extends BaseController {
 
     @GetMapping
     @Operation(description = "Without params, returns all products")
-    public List<ProductDTO_LatestPrices> byParams(@RequestParam(required = false) Metal metal) {
-        LOGGER.info("Get products by parameters");
-        return productService.findByParams(null, null, metal, null, null, null, null);
+    public List<ProductDTO_LatestPrices> byParams(
+            @RequestParam(required = false) Dealer includesDealer,
+            @RequestParam(required = false) Producer producer,
+            @RequestParam(required = false) Metal metal,
+            @RequestParam(required = false) Form form,
+            @RequestParam(required = false) Double grams,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Boolean saveAlone
+    ) {
+        LOGGER.info("GET List<ProductDTO_LatestPrices> ByParams {} {} {} {} {} {} {}", includesDealer, producer, metal, form, grams, year, saveAlone);
+        return productService.findByParams(includesDealer, producer, metal, form, grams, year, saveAlone);
     }
 
     @GetMapping("/{id}")
@@ -67,6 +76,14 @@ public class ProductController extends BaseController {
         Assert.notNull(linkChangeDTO.getLinkId(), "linkId cannot be null");
         Assert.notNull(linkChangeDTO.getFromProductId(), "fromProductId cannot be null");
         return this.productService.changeLinkProduct(linkChangeDTO);
+    }
+
+    /////// DELETE
+    @DeleteMapping
+    @Operation(description = "WARNING: Deletes ALL products. Removes reference between product (fromProductId) and link.")
+    public void deleteAll() {
+        LOGGER.info("Delete all products");
+        this.productService.deleteAll();
     }
 
     /////// Handlers
