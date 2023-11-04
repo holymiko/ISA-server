@@ -36,21 +36,21 @@ public class Product {
     // TODO Convert to Double, test on the frontEnd as well
     private double grams;
     private int year;
-    private boolean isSpecial;
+    private boolean saveAlone;
 
     @OneToMany(mappedBy = "productId", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private List<Link> links = new ArrayList<>();      // includes Dealer
 
 
-    public Product(String name, Producer producer, Form form, Metal metal, double grams, int year, boolean isSpecial, List<Link> links) {
+    public Product(String name, Producer producer, Form form, Metal metal, double grams, int year, boolean saveAlone, List<Link> links) {
         this.name = name;
         this.producer = producer;
         this.form = form;
         this.metal = metal;
         this.grams = grams;
         this.year = year;
-        this.isSpecial = isSpecial;
+        this.saveAlone = saveAlone;
         this.links = links;
     }
 
@@ -61,7 +61,7 @@ public class Product {
         this.metal = productCreateDTO.getMetal();
         this.grams = productCreateDTO.getGrams();
         this.year = productCreateDTO.getYear();
-        this.isSpecial = productCreateDTO.isSpecial();
+        this.saveAlone = productCreateDTO.isSaveAlone();
     }
 
 }

@@ -40,8 +40,8 @@ public class ProductService {
 
     private final LinkService linkService;
 
-    public Long countByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean isSpecial) {
-        return productRepository.countByParams(dealer, producer, metal, form, grams, year, isSpecial);
+    public Long countByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean saveAlone) {
+        return productRepository.countByParams(dealer, producer, metal, form, grams, year, saveAlone);
     }
 
     /////////// FIND AS DTO
@@ -56,15 +56,15 @@ public class ProductService {
 
     /////////// FIND
 
-    public List<ProductDTO_LatestPrices> findByParams(Dealer includesDealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean isSpecial) {
-        return productRepository.findByParams(includesDealer, producer, metal, form, grams, year, isSpecial, Pageable.unpaged())
+    public List<ProductDTO_LatestPrices> findByParams(Dealer includesDealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean saveAlone) {
+        return productRepository.findByParams(includesDealer, producer, metal, form, grams, year, saveAlone, Pageable.unpaged())
                 .stream()
                 .map(x -> productMapper.toProductDTO_LatestPrices(x, pricePairRepository))
                 .collect(Collectors.toList());
     }
 
     public List<Product> findByParams(Dealer dealer, ProductCreateDTO product) {
-        return this.productRepository.findByParams(dealer, product.getProducer(), product.getMetal(), product.getForm(), product.getGrams(), product.getYear(), product.isSpecial(), Pageable.unpaged());
+        return this.productRepository.findByParams(dealer, product.getProducer(), product.getMetal(), product.getForm(), product.getGrams(), product.getYear(), product.isSaveAlone(), Pageable.unpaged());
     }
 
     /////////// SAVE
@@ -126,7 +126,7 @@ public class ProductService {
             LOGGER.info("Create Product copy and save Link separately");
             theProduct = new Product(
                     link.getName(), oldProduct.getProducer(), oldProduct.getForm(), oldProduct.getMetal(),
-                    oldProduct.getGrams(), oldProduct.getYear(), oldProduct.isSpecial(), List.of(link)
+                    oldProduct.getGrams(), oldProduct.getYear(), oldProduct.isSaveAlone(), List.of(link)
             );
         } else {
             // Connect Link to existing Product

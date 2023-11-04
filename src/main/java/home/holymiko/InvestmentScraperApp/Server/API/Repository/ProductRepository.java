@@ -17,7 +17,6 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    List<Product> findProductsByMetal(Metal metal, Pageable pageable);
 
     Optional<Product> findProductByLinks_DealerAndProducerAndMetalAndFormAndGramsAndYear(Dealer dealer, Producer producer, Metal metal, Form form, double grams, int year);
 
@@ -34,7 +33,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "and " +
             "(:year is null or m.year = :year) " +
             "and " +
-            "(:isSpecial is null or m.isSpecial = :isSpecial) "
+            "(:isSpecial is null or m.saveAlone = :saveAlone) "
     )
     List<Product> findByParams(
             @Param("dealer") Dealer dealer,
@@ -43,7 +42,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("form") Form form,
             @Param("grams") Double grams,
             @Param("year") Integer year,
-            @Param("isSpecial") Boolean isSpecial,
+            @Param("saveAlone") Boolean saveAlone,
             Pageable pageable
     );
 
@@ -60,7 +59,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "and " +
             "(:year is null or m.year = :year) " +
             "and " +
-            "(:isSpecial is null or m.isSpecial = :isSpecial) "
+            "(:isSpecial is null or m.saveAlone = :saveAlone) "
     )
     Long countByParams(
             @Param("dealer") Dealer dealer,
@@ -69,6 +68,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("form") Form form,
             @Param("grams") Double grams,
             @Param("year") Integer year,
-            @Param("isSpecial") Boolean isSpecial
+            @Param("saveAlone") Boolean saveAlone
     );
 }

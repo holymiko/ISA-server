@@ -48,20 +48,16 @@ public class LinkService {
 
     public List<List<LinkDTO>> findLinksGroupedByProduct() {
         return this.productRepository.findAll().stream().map(
-                product -> linkMapper.toDTO(product.getLinks())
-        ).collect(Collectors.toList());
+                    product -> linkMapper.toDTO(product.getLinks())
+                ).collect(Collectors.toList());
     }
 
     public List<List<LinkDTO>> findLinksGroupedByProduct(Metal metal) {
-        return this.productRepository.findProductsByMetal(metal, Pageable.unpaged()).stream().map(
-                product -> linkMapper.toDTO(product.getLinks())
-        ).collect(Collectors.toList());
-    }
-
-    public List<LinkDTO> findByProductParams(Metal metal, Form form) {
-        return linkMapper.toDTO(
-                linkRepository.findByProductParams(metal, form)
-        );
+        return this.productRepository.findByParams(
+                null, null, metal, null, null, null, null, Pageable.unpaged()
+                ).stream().map(
+                    product -> linkMapper.toDTO(product.getLinks())
+                ).collect(Collectors.toList());
     }
 
     public List<LinkDTO> findByParams(Long productId, Dealer dealer) {
