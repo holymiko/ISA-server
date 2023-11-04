@@ -13,6 +13,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Producer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,7 @@ public class ProductController extends BaseController {
     @GetMapping
     @Operation(description = "Without params, returns all products")
     public List<ProductDTO_LatestPrices> byParams(
-            @RequestParam(required = false) Dealer includesDealer,
+            @RequestParam(required = false) Dealer dealer,
             @RequestParam(required = false) Producer producer,
             @RequestParam(required = false) Metal metal,
             @RequestParam(required = false) Form form,
@@ -46,8 +47,8 @@ public class ProductController extends BaseController {
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) Boolean saveAlone
     ) {
-        LOGGER.info("GET List<ProductDTO_LatestPrices> ByParams {} {} {} {} {} {} {}", includesDealer, producer, metal, form, grams, year, saveAlone);
-        return productService.findByParams(includesDealer, producer, metal, form, grams, year, saveAlone);
+        LOGGER.info("GET List<ProductDTO_LatestPrices> ByParams {} {} {} {} {} {} {}", dealer, producer, metal, form, grams, year, saveAlone);
+        return productService.findByParams(dealer, producer, metal, form, grams, year, saveAlone, Pageable.unpaged());
     }
 
     @GetMapping("/{id}")

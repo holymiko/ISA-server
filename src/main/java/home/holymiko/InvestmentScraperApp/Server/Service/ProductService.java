@@ -56,8 +56,8 @@ public class ProductService {
 
     /////////// FIND
 
-    public List<ProductDTO_LatestPrices> findByParams(Dealer includesDealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean saveAlone) {
-        return productRepository.findByParams(includesDealer, producer, metal, form, grams, year, saveAlone, Pageable.unpaged())
+    public List<ProductDTO_LatestPrices> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean saveAlone, Pageable pageable) {
+        return productRepository.findByParams(dealer, producer, metal, form, grams, year, saveAlone, pageable)
                 .stream()
                 .map(x -> productMapper.toProductDTO_LatestPrices(x, pricePairRepository))
                 .collect(Collectors.toList());

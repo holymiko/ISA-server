@@ -99,7 +99,7 @@ class ProductControllerTest {
         when(productService.findByIdAsDTOAllPrices(any())).thenThrow(new ResourceNotFoundException());
         this.mockMvc.perform(get("/api/v2/product/{id}", (Object) null))
                 .andExpect(status().isOk());
-        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any());
+        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any(), any());
         verify(productService, times(0)).findByIdAsDTOAllPrices(any());
         verify(productService, times(0)).findByIdAsDTOLinkAllPrices(any());
     }
@@ -109,7 +109,7 @@ class ProductControllerTest {
         when(productService.findByIdAsDTOAllPrices(any())).thenThrow(new ResourceNotFoundException());
         this.mockMvc.perform(get("/api/v2/product/"))
                 .andExpect(status().isOk());
-        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any());
+        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any(), any());
         verify(productService, times(0)).findByIdAsDTOAllPrices(any());
         verify(productService, times(0)).findByIdAsDTOLinkAllPrices(any());
     }
@@ -124,22 +124,22 @@ class ProductControllerTest {
 
     @Test
     void byMetalEmpty() throws Exception {
-        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any())).thenReturn(new ArrayList<>());
+        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(new ArrayList<>());
         this.mockMvc.perform(get("/api/v2/product")
                         .param("metal", "SILVER"))
                 .andExpect(status().isOk())
                 .andExpect(result -> assertEquals(result.getResponse().getContentAsString(), "[]"));
-        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any());
+        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
     void byMetalEmptyLowerCase() throws Exception {
-        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any())).thenReturn(new ArrayList<>());
+        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(new ArrayList<>());
         this.mockMvc.perform(get("/api/v2/product")
                         .param("metal", "silver"))
                 .andExpect(status().isOk())
                 .andExpect(result -> assertEquals(result.getResponse().getContentAsString(), "[]"));
-        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any());
+        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -147,7 +147,7 @@ class ProductControllerTest {
         ProductDTO_LatestPrices p1 = new ProductDTO_LatestPrices(1, "p1", Metal.GOLD, Form.BAR, 20, new ArrayList<>(), new ArrayList<>());
         ProductDTO_LatestPrices p2 = new ProductDTO_LatestPrices(2, "P2", Metal.GOLD, Form.COIN, 30, new ArrayList<>(), new ArrayList<>());
 
-        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any())).thenReturn(Arrays.asList(p1, p2));
+        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(Arrays.asList(p1, p2));
         this.mockMvc.perform(get("/api/v2/product")
                         .param("metal", "GOLD"))
                 .andExpect(status().isOk())
@@ -164,7 +164,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$[1].form").value("COIN"));
 //                .andExpect(jsonPath("$[1].links").value("[]"))
 //                .andExpect(jsonPath("$[1].latestPrices").value("[]"));
-        verify(productService, times(1)).findByParams(any(), any(), eq(Metal.GOLD), any(), any(), any(), any());
+        verify(productService, times(1)).findByParams(any(), any(), eq(Metal.GOLD), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -172,24 +172,24 @@ class ProductControllerTest {
         this.mockMvc.perform(get("/api/v2/product")
                         .param("metal", (String) null))
                 .andExpect(status().isOk());
-        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any());
+        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
     void byMetalRedirect400() throws Exception {
         this.mockMvc.perform(get("/api/v2/product/metal/"))
                 .andExpect(status().isBadRequest());
-        verify(productService, times(0)).findByParams(any(), any(), any(), any(), any(), any(), any());
+        verify(productService, times(0)).findByParams(any(), any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
     void byMetalUpperCaseParam() throws Exception {
-        when(productService.findByParams(any(), any(), eq(Metal.PLATINUM), any(), any(), any(), any())).thenReturn(new ArrayList<>());
+        when(productService.findByParams(any(), any(), eq(Metal.PLATINUM), any(), any(), any(), any(), any())).thenReturn(new ArrayList<>());
         this.mockMvc.perform(get("/api/v2/product")
                         .param("metal", "PLATINUM"))
                 .andExpect(status().isOk())
                 .andExpect(result -> assertEquals(result.getResponse().getContentAsString(), "[]"));
-        verify(productService, times(1)).findByParams(any(), any(), eq(Metal.PLATINUM), any(), any(), any(), any());
+        verify(productService, times(1)).findByParams(any(), any(), eq(Metal.PLATINUM), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -197,16 +197,16 @@ class ProductControllerTest {
         this.mockMvc.perform(get("/api/v2/product")
                         .param("metal", "palladium"))
                 .andExpect(status().isOk());
-        verify(productService, times(1)).findByParams(any(), any(), eq(Metal.PALLADIUM), any(), any(), any(), any());
+        verify(productService, times(1)).findByParams(any(), any(), eq(Metal.PALLADIUM), any(), any(), any(), any(), any());
     }
 
     @Test
     void allAsDtoEmpty() throws Exception {
-        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any())).thenReturn(new ArrayList<>());
+        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(new ArrayList<>());
         this.mockMvc.perform(get("/api/v2/product"))
                 .andExpect(status().isOk())
                 .andExpect(result -> assertEquals(result.getResponse().getContentAsString(), "[]"));
-        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any());
+        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -214,7 +214,7 @@ class ProductControllerTest {
         ProductDTO_LatestPrices p1 = new ProductDTO_LatestPrices(1, "p1", Metal.GOLD, Form.BAR, 20, new ArrayList<>(), new ArrayList<>());
         ProductDTO_LatestPrices p2 = new ProductDTO_LatestPrices(2, "P2", Metal.GOLD, Form.COIN, 30, new ArrayList<>(), new ArrayList<>());
 
-        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any())).thenReturn(Arrays.asList(p1, p2));
+        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(Arrays.asList(p1, p2));
         this.mockMvc.perform(get("/api/v2/product"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
@@ -230,6 +230,6 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$[1].form").value("COIN"));
 //                .andExpect(jsonPath("$[1].links").value("[]"))
 //                .andExpect(jsonPath("$[1].latestPrices").value("[]"));
-        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any());
+        verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any(), any());
     }
 }
