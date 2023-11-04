@@ -225,6 +225,12 @@ public class MetalScraper {
             final Dealer linkDealer = link.getDealer();
             final Product productFound = nonSpecialProducts.get(0);
 
+            if(productFound.isSaveAlone()) {
+                throw new DataIntegrityViolationException(
+                        "ERROR: Trying to merge to saveAlone Product"
+                );
+            }
+
             // Max one Link per Dealer
             if(productFound.getLinks().stream().anyMatch(link1 -> link1.getDealer() == linkDealer)) {
                 throw new DataIntegrityViolationException(
@@ -234,7 +240,7 @@ public class MetalScraper {
                 );
             }
 
-            link = linkService.updateLinkProductId(link.getId(), productFound.getId());
+            link = linkService.updateLinkProductId(link.getId(), productFound.getId(), productExtracted.getName());
             priceScrap(link);
             return;
         }
@@ -250,7 +256,7 @@ public class MetalScraper {
      */
     private void saveValidNewProductAndScrapPrice(LinkDTO linkDTO, ProductCreateDTO productExtracted) {
         Product p = productService.save(productExtracted);
-        linkDTO = linkService.updateLinkProductId(linkDTO.getId(), p.getId());
+        linkDTO = linkService.updateLinkProductId(linkDTO.getId(), p.getId(), p.getName());
         priceScrap(linkDTO);
         LOGGER.info("Product saved");
     }

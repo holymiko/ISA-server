@@ -12,6 +12,7 @@ public class LinkDTO {
 
     private final Long id;
     private final Dealer dealer;
+    private final String name;
     private final String uri;
     private final Long productId;
 

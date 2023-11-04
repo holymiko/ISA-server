@@ -80,7 +80,7 @@ public class LinkService {
      * @return
      * @throws NullPointerException
      */
-    public LinkDTO updateLinkProductId(@NotNull Long linkId, @NotNull Long productId) throws NullPointerException, IllegalArgumentException {
+    public LinkDTO updateLinkProductId(@NotNull Long linkId, @NotNull Long productId, String productName) throws NullPointerException, IllegalArgumentException {
         if(productId == null) {
             throw new NullPointerException("ProductId cannot be null");
         }
@@ -90,6 +90,7 @@ public class LinkService {
 
         final Link link = findById(linkId);
         link.setProductId(productId);
+        link.setName(productName);      // TODO Fill this during scrapLink from ProductListPage
         return linkMapper.toDTO(
                 linkRepository.save(link)
         );
