@@ -33,7 +33,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "and " +
             "(:year is null or m.year = :year) " +
             "and " +
-            "(:isSpecial is null or m.saveAlone = :saveAlone) "
+            "(:saveAlone is null or m.saveAlone = :saveAlone) "
     )
     List<Product> findByParams(
             @Param("dealer") Dealer dealer,
@@ -59,7 +59,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "and " +
             "(:year is null or m.year = :year) " +
             "and " +
-            "(:isSpecial is null or m.saveAlone = :saveAlone) "
+            "(:saveAlone is null or m.saveAlone = :saveAlone) "
     )
     Long countByParams(
             @Param("dealer") Dealer dealer,
