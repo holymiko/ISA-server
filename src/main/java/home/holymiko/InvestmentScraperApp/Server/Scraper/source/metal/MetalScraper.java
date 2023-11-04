@@ -204,7 +204,7 @@ public class MetalScraper {
         final List<Product> nonSpecialProducts;
 
         // Special products are saved separately
-        if(productExtracted.isSpecial()) {
+        if(productExtracted.isSaveAlone()) {
             saveValidNewProductAndScrapPrice(link, productExtracted);
             return;
         }
