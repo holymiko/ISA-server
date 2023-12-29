@@ -72,7 +72,7 @@ public class ProductController extends BaseController {
             "Returns new/updated Product."
     )
     public ProductDTO_Link_AllPrices updateLinkReference(@RequestBody LinkChangeDTO linkChangeDTO) {
-        LOGGER.info("changeLinkProduct");
+        LOGGER.info("updateLinkReference");
         Assert.notNull(linkChangeDTO, "linkChangeDTO cannot be null");
         Assert.notNull(linkChangeDTO.getLinkId(), "linkId cannot be null");
         Assert.notNull(linkChangeDTO.getFromProductId(), "fromProductId cannot be null");
