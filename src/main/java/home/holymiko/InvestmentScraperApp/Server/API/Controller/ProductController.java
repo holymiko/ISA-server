@@ -2,8 +2,8 @@ package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Core.Handler;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.LinkChangeDTO;
-import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_LatestPrices;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_Link_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
@@ -71,7 +71,7 @@ public class ProductController extends BaseController {
             "Enables removal of last link and keeping product without references. " +
             "Returns new/updated Product."
     )
-    public ProductDTO_AllPrices changeLinkProduct(@RequestBody LinkChangeDTO linkChangeDTO) {
+    public ProductDTO_Link_AllPrices updateLinkReference(@RequestBody LinkChangeDTO linkChangeDTO) {
         LOGGER.info("changeLinkProduct");
         Assert.notNull(linkChangeDTO, "linkChangeDTO cannot be null");
         Assert.notNull(linkChangeDTO.getLinkId(), "linkId cannot be null");

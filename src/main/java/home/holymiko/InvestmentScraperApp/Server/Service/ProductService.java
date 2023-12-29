@@ -114,7 +114,7 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDTO_AllPrices changeLinkProduct(LinkChangeDTO dto) {
+    public ProductDTO_Link_AllPrices changeLinkProduct(LinkChangeDTO dto) {
         Product theProduct;
         Assert.isTrue(!Objects.equals(dto.getToProductId(), dto.getFromProductId()), "fromProductId cannot be same as toProductId");
         Link link = this.linkService.findById(dto.getLinkId());
@@ -139,7 +139,7 @@ public class ProductService {
         // Update Link
         link.setProductId( theProduct.getId() );
         this.linkService.saveOrUpdate(link);
-        return productMapper.toProductDTO_AllPrices(
+        return productMapper.toProductDTO_Link_AllPrices(
                 theProduct,
                 pricePairRepository
         );
