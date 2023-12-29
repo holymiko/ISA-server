@@ -76,7 +76,7 @@ public class ProductController extends BaseController {
         Assert.notNull(linkChangeDTO, "linkChangeDTO cannot be null");
         Assert.notNull(linkChangeDTO.getLinkId(), "linkId cannot be null");
         Assert.notNull(linkChangeDTO.getFromProductId(), "fromProductId cannot be null");
-        return this.productService.changeLinkProduct(linkChangeDTO);
+        return this.productService.updateLinkReference(linkChangeDTO);
     }
 
     /////// DELETE

@@ -114,7 +114,7 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDTO_Link_AllPrices changeLinkProduct(LinkChangeDTO dto) {
+    public ProductDTO_Link_AllPrices updateLinkReference(LinkChangeDTO dto) {
         Product theProduct;
         Assert.isTrue(!Objects.equals(dto.getToProductId(), dto.getFromProductId()), "fromProductId cannot be same as toProductId");
         Link link = this.linkService.findById(dto.getLinkId());
