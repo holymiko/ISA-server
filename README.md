@@ -14,6 +14,11 @@
 >Enter client directory
 >* yarn install<br>
 >* yarn start<br>
+>### Server 
+>sudo ssh -v -p 22 root@67.223.117.163 <br>
+>scp root@67.223.117.163:/root/app/postgres_data_dump/14-04-24-after-clean-up.sql .
+
+
 
 
 ## Tech stack 
