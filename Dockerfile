@@ -7,10 +7,11 @@ COPY txt/export/tickers ./txt/export/tickers
 
 RUN mvn clean
 # RUN mvn package -DskipTests spring-boot:repackage # this works
-RUN mvn package spring-boot:repackage
+RUN mvn package -P prod  # Production exclusive Dockerfile TODO Solve switching profiles
+# mvn package automatically triggeres spring-boot:repackage due to pom.xml build plugin
 
-# TODO remove hardcoded version
-ENTRYPOINT ["java", "-jar", "/app/target/ISA-server-1.2.0-SNAPSHOT.jar"]
+# TODO remove hardcoded version, remove hardcoded profile
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "/app/target/ISA-server-1.2.1-SNAPSHOT.jar"]
 
 # Attemps to COPY from /app/target/ to /app
 # Attemps to use VERSION variable
