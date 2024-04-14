@@ -11,7 +11,7 @@ RUN mvn package -P prod  # Production exclusive Dockerfile TODO Solve switching 
 # mvn package automatically triggeres spring-boot:repackage due to pom.xml build plugin
 
 # TODO remove hardcoded version, remove hardcoded profile
-ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "/app/target/ISA-server-1.2.1.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "/app/target/ISA-server-1.2.2-SNAPSHOT.jar"]
 
 # Attemps to COPY from /app/target/ to /app
 # Attemps to use VERSION variable
