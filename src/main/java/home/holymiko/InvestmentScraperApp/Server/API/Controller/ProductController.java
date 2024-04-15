@@ -13,6 +13,8 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Producer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
@@ -30,31 +32,57 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/api/v2/product")
 @AllArgsConstructor
 public class ProductController extends BaseController {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
 
     private final ProductService productService;
 
     /////// GET
 
-    @GetMapping
+    @GetMapping("/old")
     @Operation(description = "Without params, returns all products")
-    public List<ProductDTO_LatestPrices> byParams(
+    public List<ProductDTO_LatestPrices> byParamsOld(
             @RequestParam(required = false) Dealer dealer,
             @RequestParam(required = false) Producer producer,
             @RequestParam(required = false) Metal metal,
             @RequestParam(required = false) Form form,
             @RequestParam(required = false) Double grams,
             @RequestParam(required = false) Integer year,
-            @RequestParam(required = false) Boolean saveAlone
+            @RequestParam(required = false) Boolean savedAlone
     ) {
-        LOGGER.info("GET List<ProductDTO_LatestPrices> ByParams {} {} {} {} {} {} {}", dealer, producer, metal, form, grams, year, saveAlone);
-        return productService.findByParams(dealer, producer, metal, form, grams, year, saveAlone, Pageable.unpaged());
+        LOGGER.info("GET List<ProductDTO_LatestPrices> ByParamsOld {} {} {} {} {} {} {}", dealer, producer, metal, form, grams, year, savedAlone);
+        return productService.findByParamsOld(dealer, producer, metal, form, grams, year, savedAlone, Pageable.unpaged());
+    }
+
+    @GetMapping
+    @Operation(description = "Without params, returns all products")
+    public Page<ProductDTO_LatestPrices> byParams(
+            @RequestParam(required = false) Dealer dealer,
+            @RequestParam(required = false) Producer producer,
+            @RequestParam(required = false) Metal metal,
+            @RequestParam(required = false) Form form,
+            @RequestParam(required = false) Double grams,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Boolean savedAlone,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) Integer size
+    ) {
+        LOGGER.info("GET List<ProductDTO_LatestPrices> ByParams {} {} {} {} {} {} {}", dealer, producer, metal, form, grams, year, savedAlone);
+
+        if (size == null) {
+            size = Integer.MAX_VALUE;
+        }
+
+        // TODO Add sorting, create PricePairHistory, create PriceHistory, add column bestSpread and price/gram
+        return productService.findByParams(dealer, producer, metal, form, grams, year, savedAlone, PageRequest.of(page, size));
     }
 
     @GetMapping("/{id}")
-    public ProductDTO byId(@PathVariable Long id,
-                           @RequestParam(required = false) @Parameter(description = "For dto = 1 returns new DTO") Long dto) {
-        LOGGER.info("Get product by ID"+id);
+    public ProductDTO byId(
+            @PathVariable Long id,
+            @RequestParam(required = false) @Parameter(description = "For dto = 1 returns new DTO") Long dto
+    ) {
+        LOGGER.info("Get product by ID " + id);
         Assert.notNull(id, "Id cannot be null");
         if(dto == null || dto != 1) {
             return productService.findByIdAsDTOAllPrices(id);

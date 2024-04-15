@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -124,21 +127,21 @@ class ProductControllerTest {
 
     @Test
     void byMetalEmpty() throws Exception {
-        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(new ArrayList<>());
+        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(Page.empty());
         this.mockMvc.perform(get("/api/v2/product")
                         .param("metal", "SILVER"))
                 .andExpect(status().isOk())
-                .andExpect(result -> assertEquals(result.getResponse().getContentAsString(), "[]"));
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().startsWith("{\"content\":[],")));
         verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
     void byMetalEmptyLowerCase() throws Exception {
-        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(new ArrayList<>());
+        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(Page.empty());
         this.mockMvc.perform(get("/api/v2/product")
                         .param("metal", "silver"))
                 .andExpect(status().isOk())
-                .andExpect(result -> assertEquals(result.getResponse().getContentAsString(), "[]"));
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().startsWith("{\"content\":[],")));
         verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any(), any());
     }
 
@@ -147,23 +150,23 @@ class ProductControllerTest {
         ProductDTO_LatestPrices p1 = new ProductDTO_LatestPrices(1, "p1", Metal.GOLD, Form.BAR, 20, new ArrayList<>(), new ArrayList<>());
         ProductDTO_LatestPrices p2 = new ProductDTO_LatestPrices(2, "P2", Metal.GOLD, Form.COIN, 30, new ArrayList<>(), new ArrayList<>());
 
-        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(Arrays.asList(p1, p2));
+        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(new PageImpl<>(Arrays.asList(p1, p2), PageRequest.of(0, 5), 2));
         this.mockMvc.perform(get("/api/v2/product")
                         .param("metal", "GOLD"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].name").value("p1"))
-                .andExpect(jsonPath("$[0].metal").value("GOLD"))
-                .andExpect(jsonPath("$[0].form").value("BAR"))
-                .andExpect(jsonPath("$[0].grams").value(20))
-//                .andExpect(jsonPath("$[0].links").value("[]"))
-//                .andExpect(jsonPath("$[0].latestPrices").value("[]"))
-                .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[1].name").value("P2"))
-                .andExpect(jsonPath("$[1].metal").value("GOLD"))
-                .andExpect(jsonPath("$[1].form").value("COIN"));
-//                .andExpect(jsonPath("$[1].links").value("[]"))
-//                .andExpect(jsonPath("$[1].latestPrices").value("[]"));
+                .andExpect(jsonPath("content.[0].id").value(1))
+                .andExpect(jsonPath("content.[0].name").value("p1"))
+                .andExpect(jsonPath("content.[0].metal").value("GOLD"))
+                .andExpect(jsonPath("content.[0].form").value("BAR"))
+                .andExpect(jsonPath("content.[0].grams").value(20))
+//                .andExpect(jsonPath("content.[0].links").value("[]"))
+//                .andExpect(jsonPath("content.[0].latestPrices").value("[]"))
+                .andExpect(jsonPath("content.[1].id").value(2))
+                .andExpect(jsonPath("content.[1].name").value("P2"))
+                .andExpect(jsonPath("content.[1].metal").value("GOLD"))
+                .andExpect(jsonPath("content.[1].form").value("COIN"));
+//                .andExpect(jsonPath("content.[1].links").value("[]"))
+//                .andExpect(jsonPath("content.[1].latestPrices").value("[]"));
         verify(productService, times(1)).findByParams(any(), any(), eq(Metal.GOLD), any(), any(), any(), any(), any());
     }
 
@@ -184,11 +187,11 @@ class ProductControllerTest {
 
     @Test
     void byMetalUpperCaseParam() throws Exception {
-        when(productService.findByParams(any(), any(), eq(Metal.PLATINUM), any(), any(), any(), any(), any())).thenReturn(new ArrayList<>());
+        when(productService.findByParams(any(), any(), eq(Metal.PLATINUM), any(), any(), any(), any(), any())).thenReturn(Page.empty());
         this.mockMvc.perform(get("/api/v2/product")
                         .param("metal", "PLATINUM"))
                 .andExpect(status().isOk())
-                .andExpect(result -> assertEquals(result.getResponse().getContentAsString(), "[]"));
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().startsWith("{\"content\":[],")));
         verify(productService, times(1)).findByParams(any(), any(), eq(Metal.PLATINUM), any(), any(), any(), any(), any());
     }
 
@@ -202,10 +205,10 @@ class ProductControllerTest {
 
     @Test
     void allAsDtoEmpty() throws Exception {
-        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(new ArrayList<>());
+        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(Page.empty());
         this.mockMvc.perform(get("/api/v2/product"))
                 .andExpect(status().isOk())
-                .andExpect(result -> assertEquals(result.getResponse().getContentAsString(), "[]"));
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().startsWith("{\"content\":[],")));
         verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any(), any());
     }
 
@@ -214,22 +217,22 @@ class ProductControllerTest {
         ProductDTO_LatestPrices p1 = new ProductDTO_LatestPrices(1, "p1", Metal.GOLD, Form.BAR, 20, new ArrayList<>(), new ArrayList<>());
         ProductDTO_LatestPrices p2 = new ProductDTO_LatestPrices(2, "P2", Metal.GOLD, Form.COIN, 30, new ArrayList<>(), new ArrayList<>());
 
-        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(Arrays.asList(p1, p2));
+        when(productService.findByParams(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(new PageImpl<>(Arrays.asList(p1, p2), PageRequest.of(0, 5), 2));
         this.mockMvc.perform(get("/api/v2/product"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].name").value("p1"))
-                .andExpect(jsonPath("$[0].metal").value("GOLD"))
-                .andExpect(jsonPath("$[0].form").value("BAR"))
-                .andExpect(jsonPath("$[0].grams").value(20))
-//                .andExpect(jsonPath("$[0].links").value("[]"))
-//                .andExpect(jsonPath("$[0].latestPrices").value("[]"))
-                .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[1].name").value("P2"))
-                .andExpect(jsonPath("$[1].metal").value("GOLD"))
-                .andExpect(jsonPath("$[1].form").value("COIN"));
-//                .andExpect(jsonPath("$[1].links").value("[]"))
-//                .andExpect(jsonPath("$[1].latestPrices").value("[]"));
+                .andExpect(jsonPath("content.[0].id").value(1))
+                .andExpect(jsonPath("content.[0].name").value("p1"))
+                .andExpect(jsonPath("content.[0].metal").value("GOLD"))
+                .andExpect(jsonPath("content.[0].form").value("BAR"))
+                .andExpect(jsonPath("content.[0].grams").value(20))
+//                .andExpect(jsonPath("content.[0].links").value("[]"))
+//                .andExpect(jsonPath("content.[0].latestPrices").value("[]"))
+                .andExpect(jsonPath("content.[1].id").value(2))
+                .andExpect(jsonPath("content.[1].name").value("P2"))
+                .andExpect(jsonPath("content.[1].metal").value("GOLD"))
+                .andExpect(jsonPath("content.[1].form").value("COIN"));
+//                .andExpect(jsonPath("content.[1].links").value("[]"))
+//                .andExpect(jsonPath("content.[1].latestPrices").value("[]"));
         verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any(), any());
     }
 }
