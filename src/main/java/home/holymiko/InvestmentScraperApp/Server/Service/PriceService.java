@@ -1,80 +1,76 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
 import com.sun.istack.NotNull;
+import home.holymiko.InvestmentScraperApp.Server.API.Repository.LinkRepository;
+import home.holymiko.InvestmentScraperApp.Server.API.Repository.PricePairHistoryRepository;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PriceRepository;
-import home.holymiko.InvestmentScraperApp.Server.Mapper.PricePairMapper;
-import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PricePairDTO_Dealer;
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Price;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.PricePair;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PricePairRepository;
+import home.holymiko.InvestmentScraperApp.Server.Type.Entity.PricePairHistory;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class PriceService {
     private final PricePairRepository pricePairRepository;
+    private final PricePairHistoryRepository pricePairHistoryRepository;
     private final PriceRepository priceRepository;
-    private final PricePairMapper pricePairMapper;
+    private final LinkRepository linkRepository;
+    private final LinkService linkService;
 
     public Long countPricePairs()  {
         return this.pricePairRepository.count();
     }
 
-    @Deprecated
-    @Transactional
-    public void updatePricePair(@NotNull String productName, @NotNull Dealer dealer, @NotNull Double amount, boolean isRedemption) throws NullPointerException, IllegalArgumentException {
-        final PricePair pricePair;
-
-        if(productName == null) {
-            throw new NullPointerException("productName cannot be null");
-        }
-        if(dealer == null) {
-            throw new NullPointerException("dealer cannot be null");
-        }
-        if(amount == null) {
-            throw new NullPointerException("amount cannot be null");
-        }
-
-//        pricePair = pricePairRepository.findByProduct_NameAndDealer(productName, dealer)
-//                .orElseThrow(IllegalArgumentException::new);
-//
-//        pricePair.setRedemption(new Price(LocalDateTime.now(), amount, isRedemption));
-//
-//        this.pricePairRepository.save(pricePair);
-    }
-
     /**
-     * Method used for resolving issue of Product.latestPrices vs. Product.prices
-     * @param productId
-     * @return Latest PricePair for each Dealer
+     * Saves Price, PricePair and PricePairHistory to DB.
+     * Link references are updated.
+     * @param linkId Link to which the PricePair and PricePairHistory is added
+     * @param sell parameter of Price
+     * @param buyOut parameter of Price
+     * @throws NullPointerException linkId is null
+     * @throws ResourceNotFoundException Link for linkId doesn't exist
      */
-    @Deprecated
-    public List<PricePairDTO_Dealer> findLatestPricePairsByProductId(@NotNull Long productId) throws NullPointerException {
-        if(productId == null) {
-            throw new NullPointerException("Product ID can't be null");
+    @Transactional
+    public void savePriceAndUpdateLink(@NotNull Long linkId, Double sell, Double buyOut) {
+        final Link link;
+        final Price sellPrice;
+        final Price buyPrice;
+        final PricePair pricePair;
+        final PricePairHistory pricePairHistory;
+        final List<PricePairHistory> pricePairList;
+
+        // Validate inputs
+        link = this.linkService.findById(linkId);
+
+        // Remove old record
+        if(link.getPricePair() != null) {
+            this.pricePairRepository.delete(link.getPricePair());
         }
-//        // TODO ProductRepo getProductById
-//        // TODO test invalid productId & add productId Validation
-//        return pricePairMapper.toPriceDTOs(
-//                pricePairRepository.findLatestPricePairsByProductId(productId)
-//        );
-        return new ArrayList<>();
+
+        // Save new records
+        sellPrice = this.priceRepository.save(new Price(LocalDateTime.now(), sell, false));
+        buyPrice = this.priceRepository.save(new Price(LocalDateTime.now(), buyOut, true));
+        pricePair = new PricePair(sellPrice, buyPrice);
+        pricePairHistory = new PricePairHistory(sellPrice, buyPrice, linkId);
+        this.pricePairRepository.save(pricePair);
+        this.pricePairHistoryRepository.save(pricePairHistory);
+
+        // Update relations
+        pricePairList = link.getPricePairsHistory();
+        pricePairList.add(pricePairHistory);
+        link.setPricePair(pricePair);
+        link.setPricePairsHistory(pricePairList);
+        linkRepository.save(link);
     }
 
-
-    @Transactional
-    public PricePair save(PricePair pricePair) {
-        return this.pricePairRepository.save(pricePair);
-    }
-
-    @Transactional
-    public Price save(Price price) {
-        return this.priceRepository.save(price);
-    }
 }

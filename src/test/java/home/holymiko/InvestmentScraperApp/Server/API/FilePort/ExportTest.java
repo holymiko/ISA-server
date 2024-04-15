@@ -31,53 +31,35 @@ class ExportTest {
 
         PricePair pricePair00 = new PricePair(
                 new Price(LocalDateTime.now(), 1808.45, false),
-                new Price(LocalDateTime.now(), 1428.50, true),
-                -1L
+                new Price(LocalDateTime.now(), 1428.50, true)
         );
         PricePair pricePair01 = new PricePair(
                 new Price(LocalDateTime.now(), 1818.45, false),
-                new Price(LocalDateTime.now(), 1528.50, true),
-                -1L
+                new Price(LocalDateTime.now(), 1528.50, true)
         );
         PricePair pricePair10 = new PricePair(
                 new Price(LocalDateTime.now().minusHours(2), 718.45, false),
-                new Price(LocalDateTime.now().minusHours(2), 428.50, true),
-                -1L
+                new Price(LocalDateTime.now().minusHours(2), 428.50, true)
         );
         PricePair pricePair11 = new PricePair(
                 new Price(LocalDateTime.now().minusHours(2), 918.45, false),
-                new Price(LocalDateTime.now().minusHours(2), 628.50, true),
-                -1L
+                new Price(LocalDateTime.now().minusHours(2), 628.50, true)
         );
         PricePair pricePair20 = new PricePair(
                 new Price(LocalDateTime.now().minusDays(1), 108958.00, false),
-                new Price(LocalDateTime.now().minusDays(1), 100000.98, true),
-                -1L
+                new Price(LocalDateTime.now().minusDays(1), 100000.98, true)
         );
         PricePair pricePair30 = new PricePair(
                 new Price(LocalDateTime.now().minusDays(1), 6014.78, false),
-                new Price(LocalDateTime.now().minusDays(1), 5014.78, true),
-                -1L
+                new Price(LocalDateTime.now().minusDays(1), 5014.78, true)
         );
 
-        link00.setPricePairs(
-                List.of(pricePair00)
-        );
-        link01.setPricePairs(
-                List.of(pricePair01)
-        );
-        link11.setPricePairs(
-                List.of(pricePair11)
-        );
-        link10.setPricePairs(
-                List.of(pricePair10)
-        );
-        link20.setPricePairs(
-                List.of(pricePair20)
-        );
-        link30.setPricePairs(
-                List.of(pricePair30)
-        );
+        link00.setPricePair(pricePair00);
+        link01.setPricePair(pricePair01);
+        link11.setPricePair(pricePair11);
+        link10.setPricePair(pricePair10);
+        link20.setPricePair(pricePair20);
+        link30.setPricePair(pricePair30);
 
         Product product0 = new Product("Zlatý slitek 1g ARGOR-HERAEUS (Švýcarsko)", Producer.ARGOR_HERAEUS, Form.BAR, Metal.GOLD, 1.0, 2023, false, Arrays.asList(link00, link01));
         Product product1 = new Product("Stříbrná mince 1 oz (trojská unce) WIENER PHILHARMONIKER Rakousko 2011", Producer.MUNZE_OSTERREICH, Form.COIN, Metal.SILVER, 31.1, 2022, false, Arrays.asList(link10, link11));

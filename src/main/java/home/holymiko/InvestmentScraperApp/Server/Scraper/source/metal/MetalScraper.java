@@ -19,7 +19,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -285,13 +284,12 @@ public class MetalScraper {
 
     /**
      * Main Price scraping method
-     * Scraps new price for linkDTO with assigned product
+     * Scraps new price. Saves entities Price, PricePair and PricePairHistory. Updates relations.
      */
     private void priceScrap(final LinkDTO linkDTO) {
         Double sellingPrice = null;
-        Double butOutPrice = null;
+        Double buyOutPrice = null;
         final MetalAdapterInterface adapter = dealerToMetalAdapter.get(linkDTO.getDealer());
-        final PricePair pricePair;
         HtmlPage productDetailPage;
 
         if(adapter == null) {
@@ -313,21 +311,12 @@ public class MetalScraper {
         if(sellingPrice == null || sellingPrice.intValue() == 0) {
             LOGGER.warn("Kupni cena = 0");
         }
-        butOutPrice = adapter.scrapBuyOutPrice(productDetailPage);
-        if(butOutPrice.intValue() == 0) {
+        buyOutPrice = adapter.scrapBuyOutPrice(productDetailPage);
+        if(buyOutPrice.intValue() == 0) {
             LOGGER.warn("Vykupni cena = 0");
         }
 
-        pricePair = new PricePair(
-                priceService.save(new Price(LocalDateTime.now(), sellingPrice, false)),
-                priceService.save(new Price(LocalDateTime.now(), butOutPrice, true)),
-                linkDTO.getId()
-        );
-
-        // Save PricePair
-        this.priceService.save(pricePair);
-        this.productService.updatePrices(linkDTO.getId(), pricePair);
-
+        this.priceService.savePriceAndUpdateLink(linkDTO.getId(), sellingPrice, buyOutPrice);
         LOGGER.info("New pricePair saved - " + linkDTO.getUri());
     }
 

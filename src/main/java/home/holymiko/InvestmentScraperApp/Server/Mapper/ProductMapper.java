@@ -1,6 +1,5 @@
 package home.holymiko.InvestmentScraperApp.Server.Mapper;
 
-import home.holymiko.InvestmentScraperApp.Server.API.Repository.PricePairRepository;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Product;
@@ -20,30 +19,30 @@ public abstract class ProductMapper {
             @Mapping(target = "prices",  ignore = true),
             @Mapping(target = "latestPrices", ignore = true)
     })
-    public abstract ProductDTO_Link_AllPrices toProductDTO_Link_AllPrices(Product entity, @Context PricePairRepository pricePairRepository);
+    public abstract ProductDTO_Link_AllPrices toProductDTO_Link_AllPrices(Product entity);
 
     @Mappings({
             @Mapping(target = "links", ignore = true),
             @Mapping(target = "prices",  ignore = true),
             @Mapping(target = "latestPrices", ignore = true)
     })
-    public abstract ProductDTO_AllPrices toProductDTO_AllPrices(Product product, @Context PricePairRepository pricePairRepository);
+    public abstract ProductDTO_AllPrices toProductDTO_AllPrices(Product product);
 
     @Mappings({
             @Mapping(target = "links", ignore = true),
             @Mapping(target = "latestPrices", ignore = true)
     })
-    public abstract ProductDTO_LatestPrices toProductDTO_LatestPrices(Product product, @Context PricePairRepository pricePairRepository);
+    public abstract ProductDTO_LatestPrices toProductDTO_LatestPrices(Product product);
 
     @BeforeMapping
-    public void afterMapping(Product product, @Context PricePairRepository pricePairRepository, @MappingTarget ProductDTO_LatestPrices productDTO) {
+    public void afterMapping(Product product, @MappingTarget ProductDTO_LatestPrices productDTO) {
         productDTO.setLinks(
                 product.getLinks().stream().map(Link::getUri).collect(Collectors.toList())
         );
         productDTO.setLatestPrices(
                 product.getLinks().stream().map(
                         link -> pricePairMapper.toPriceDTO(
-                                pricePairRepository.findLatestPricePairByLinkId(link.getId()),
+                                link.getPricePair(),
                                 product.getGrams(),
                                 link.getDealer()
                         )
@@ -55,7 +54,11 @@ public abstract class ProductMapper {
     public void afterMapping2(Product product, @MappingTarget ProductDTO_AllPrices productDTO) {
         productDTO.setPrices(
                 product.getLinks().stream().map(
-                                link -> pricePairMapper.toPriceDTOs(link.getPricePairs(), product.getGrams(), link.getDealer())
+                                link -> pricePairMapper.toPriceDTOs(
+                                        link.getPricePairsHistory(),
+                                        product.getGrams(),
+                                        link.getDealer()
+                                )
                         )
                         .flatMap(List::stream)
                         .collect(Collectors.toList())
@@ -63,7 +66,7 @@ public abstract class ProductMapper {
     }
 
     @BeforeMapping
-    public void afterMapping3(Product product, @Context PricePairRepository pricePairRepository, @MappingTarget ProductDTO_Link_AllPrices productDTO) {
+    public void afterMapping3(Product product, @MappingTarget ProductDTO_Link_AllPrices productDTO) {
         productDTO.setLatestPrices(
                 product.getLinks().stream().map(
                         link -> new LinkDTO_Price(
@@ -71,7 +74,7 @@ public abstract class ProductMapper {
                                 link.getDealer(),
                                 link.getUri(),
                                 pricePairMapper.toPriceDTO(
-                                        pricePairRepository.findLatestPricePairByLinkId(link.getId()),
+                                        link.getPricePair(),
                                         product.getGrams()
                                 )
                         )
@@ -84,7 +87,10 @@ public abstract class ProductMapper {
                                 link.getId(),
                                 link.getDealer(),
                                 link.getUri(),
-                                pricePairMapper.toPriceDTOs(link.getPricePairs(), product.getGrams())
+                                pricePairMapper.toPriceDTOs(
+                                        link.getPricePairsHistory(),
+                                        product.getGrams()
+                                )
                         )
                 ).collect(Collectors.toList())
         );

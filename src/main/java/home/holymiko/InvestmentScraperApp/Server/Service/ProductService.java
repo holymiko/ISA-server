@@ -1,7 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
 import com.sun.istack.NotNull;
-import home.holymiko.InvestmentScraperApp.Server.API.Repository.PricePairRepository;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.LinkChangeDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_AllPrices;
@@ -38,8 +37,6 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
-    private final PricePairRepository pricePairRepository;
-
     private final LinkService linkService;
 
     public Long countByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean saveAlone) {
@@ -49,11 +46,11 @@ public class ProductService {
     /////////// FIND AS DTO
 
     public ProductDTO_AllPrices findByIdAsDTOAllPrices(Long id) {
-        return productMapper.toProductDTO_AllPrices(findById(id), pricePairRepository);
+        return productMapper.toProductDTO_AllPrices(findById(id));
     }
 
     public ProductDTO_Link_AllPrices findByIdAsDTOLinkAllPrices(Long id) {
-        return productMapper.toProductDTO_Link_AllPrices(findById(id), pricePairRepository);
+        return productMapper.toProductDTO_Link_AllPrices(findById(id));
     }
 
     /////////// FIND
@@ -62,7 +59,7 @@ public class ProductService {
     public List<ProductDTO_LatestPrices> findByParamsOld(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean saveAlone, Pageable pageable) {
         return productRepository.findByParams(dealer, producer, metal, form, grams, year, saveAlone, pageable).getContent()
                 .stream()
-                .map(x -> productMapper.toProductDTO_LatestPrices(x, pricePairRepository))
+                .map(productMapper::toProductDTO_LatestPrices)
                 .collect(Collectors.toList());
     }
 
@@ -70,7 +67,7 @@ public class ProductService {
         List<ProductDTO_LatestPrices> products =
                 productRepository.findByParams(dealer, producer, metal, form, grams, year, saveAlone, pageable)
                         .stream()
-                        .map(x -> productMapper.toProductDTO_LatestPrices(x, pricePairRepository))
+                        .map(productMapper::toProductDTO_LatestPrices)
                         .collect(Collectors.toList());
         return new PageImpl<>(products, pageable, products.size());
     }
@@ -99,32 +96,6 @@ public class ProductService {
         return this.productRepository.save(product);
     }
 
-    /**
-     * PricePair is added to Link. Link is saved.
-     * @param linkId Link where the PricePair gonna be added
-     * @param pricePair PricePair already saved in DB, which should be added to Product
-     * @throws NullPointerException For null value in one of the parameters
-     */
-    @Transactional
-    public void updatePrices(@NotNull Long linkId, @NotNull PricePair pricePair) throws NullPointerException, IllegalArgumentException {
-        final Link link;
-        final List<PricePair> pricePairList;
-
-        if(linkId == null) {
-            throw new NullPointerException("LinkId cannot be null");
-        }
-        if(pricePair == null) {
-            throw new NullPointerException("PricePair cannot be null");
-        }
-
-        link = linkService.findById(linkId);
-
-        pricePairList = link.getPricePairs();
-        pricePairList.add(pricePair);
-        link.setPricePairs(pricePairList);
-        this.linkService.saveOrUpdate(link);
-    }
-
     @Transactional
     public ProductDTO_Link_AllPrices updateLinkReference(LinkChangeDTO dto) {
         Product theProduct;
@@ -151,10 +122,7 @@ public class ProductService {
         // Update Link
         link.setProductId( theProduct.getId() );
         this.linkService.saveOrUpdate(link);
-        return productMapper.toProductDTO_Link_AllPrices(
-                theProduct,
-                pricePairRepository
-        );
+        return productMapper.toProductDTO_Link_AllPrices(theProduct);
     }
 
     /////////// UTILS

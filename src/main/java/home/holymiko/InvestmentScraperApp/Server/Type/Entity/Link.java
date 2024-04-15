@@ -31,9 +31,12 @@ public class Link {
     private String name;
     private Dealer dealer;
 
-    @OneToMany(mappedBy = "linkId", fetch = FetchType.EAGER)
+    @OneToOne
+    private PricePair pricePair;
+
+    @OneToMany(mappedBy = "linkId", fetch = FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
-    private List<PricePair> pricePairs = new ArrayList<>();
+    private List<PricePairHistory> pricePairsHistory = new ArrayList<>();
 
     private Long productId;
 
