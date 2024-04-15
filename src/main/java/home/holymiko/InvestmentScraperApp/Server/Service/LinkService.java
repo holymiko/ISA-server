@@ -8,13 +8,13 @@ import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.LinkRepository;
-import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,18 +24,25 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class LinkService {
-    private final LinkRepository linkRepository;
     private final LinkMapper linkMapper;
+    private final LinkRepository linkRepository;
     private final ProductRepository productRepository;
 
     public Long countByParams(Dealer dealer)  {
         return this.linkRepository.countByParams(dealer);
     }
 
-    public Link findById(Long id) {
-        Optional<Link> optional = this.linkRepository.findById(id);
+    /**
+     * @throws NullPointerException input validation
+     * @throws ResourceNotFoundException occurrence validation
+     */
+    public Link findById(@NotNull Long linkId) {
+        if(linkId == null) {
+            throw new NullPointerException("LinkId cannot be null");
+        }
+        Optional<Link> optional = this.linkRepository.findById(linkId);
         if(optional.isEmpty()) {
-            throw new ResourceNotFoundException("Link with id "+id+" was not found");
+            throw new ResourceNotFoundException("Link with id "+linkId+" was not found");
         }
         return optional.get();
     }
@@ -77,8 +84,7 @@ public class LinkService {
      * Product links are extended, but productId is not saved here.
      * @param linkId
      * @param productId
-     * @return
-     * @throws NullPointerException
+     * @throws NullPointerException linkId or productId is null
      */
     public LinkDTO updateLinkProductId(@NotNull Long linkId, @NotNull Long productId, String productName) throws NullPointerException, IllegalArgumentException {
         if(productId == null) {
@@ -103,12 +109,13 @@ public class LinkService {
      * @throws DataIntegrityViolationException link.url already present in DB || link.url has duplicities in DB
      * @throws NullPointerException if parameter link == null
      */
+    @Transactional
     public void saveOrUpdate(@NotNull Link link) throws DataIntegrityViolationException, IllegalArgumentException, NullPointerException {
+        // Validate inputs
         if(link == null) {
             throw new NullPointerException("Save - Link cannot be null");
         }
-
-        uriLilter( link.getUri() );
+        uriFilter( link.getUri() );
 
         Optional<Link> optional = linkRepository.findByUri(link.getUri());
         // Switches save & update
@@ -124,7 +131,7 @@ public class LinkService {
      * @param uri Link about to be filtered
      * @throws IllegalArgumentException for uri being filtered
      */
-    private static void uriLilter(String uri) throws IllegalArgumentException {
+    private static void uriFilter(String uri) throws IllegalArgumentException {
         if (uri.contains("etuje") || uri.contains("etui")) {
             throw new IllegalArgumentException("uri vyřazena: etuje - " + uri);
         }
