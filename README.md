@@ -17,11 +17,12 @@
 >### Server and Deployment
 > #### Tips
 > After FE deployment, open app in new tab. Otherwise, changes won't take place.
-> #### Commands
+> #### Useful commands
 >Login to server<br>
->`sudo ssh -v -p 22 root@67.223.117.163`<br>
+>`sudo ssh -v -p 22 root@67.223.117.163`<p>
 > Copy db dump from server to local machine<br>
->`scp root@67.223.117.163:/root/app/postgres_data_dump/14-04-24-after-clean-up.sql .`<br>
+>`scp root@67.223.117.163:/root/app/postgres_data_dump/14-04-24-after-clean-up.sql .`<p>
+> [useful SQL commands](request.sql) <br>
 
 
 
