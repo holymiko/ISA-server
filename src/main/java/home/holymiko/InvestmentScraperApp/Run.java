@@ -123,6 +123,7 @@ public class Run {
      */
     @Scheduled(cron = "0 30 9,17 * * ?")
     public void scheduleScrap() {
+        scrapController.allLinks();
         scrapController.allProductsInSync();
     }
 
