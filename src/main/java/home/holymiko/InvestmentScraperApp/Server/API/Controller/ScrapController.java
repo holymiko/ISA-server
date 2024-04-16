@@ -135,7 +135,6 @@ public class ScrapController extends BaseController {
      */
     @PostMapping("/links")
     public void allLinks() {
-//        TODO test frequencyHandling status code
         ScrapHistory.frequencyHandlingAll(true);
         ScrapHistory.startRunning();
 

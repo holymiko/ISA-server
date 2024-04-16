@@ -73,7 +73,7 @@ public class ProductController extends BaseController {
             size = Integer.MAX_VALUE;
         }
 
-        // TODO Add sorting, create PricePairHistory, create PriceHistory, add column bestSpread and price/gram
+        // TODO Add sorting, add column bestSpread and price/gram
         return productService.findByParams(dealer, producer, metal, form, grams, year, savedAlone, PageRequest.of(page, size));
     }
 
