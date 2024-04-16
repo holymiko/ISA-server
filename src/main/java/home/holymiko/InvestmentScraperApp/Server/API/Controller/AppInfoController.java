@@ -13,6 +13,9 @@ import java.util.Properties;
 @AllArgsConstructor
 public class AppInfoController extends BaseController {
 
+    private static final String APP_CONFIG_PATH = "target/classes/application.properties";
+
+
     private final RateService rateService;
     private final LinkService linkService;
     private final ProductService productService;
@@ -33,10 +36,8 @@ public class AppInfoController extends BaseController {
 
     @GetMapping("/version")
     public String getProjectVersion() throws IOException {
-        final String appConfigPath = "classes/application.properties";
-
         Properties appProps = new Properties();
-        appProps.load(new FileInputStream(appConfigPath));
+        appProps.load(new FileInputStream(APP_CONFIG_PATH));
 
         return appProps.getProperty("project.version");
     }
