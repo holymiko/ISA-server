@@ -14,9 +14,14 @@
 >Enter client directory
 >* yarn install<br>
 >* yarn start<br>
->### Server 
->sudo ssh -v -p 22 root@67.223.117.163 <br>
->scp root@67.223.117.163:/root/app/postgres_data_dump/14-04-24-after-clean-up.sql .
+>### Server and Deployment
+> #### Tips
+> After FE deployment, open app in new tab. Otherwise, changes won't take place.
+> #### Commands
+>Login to server<br>
+>`sudo ssh -v -p 22 root@67.223.117.163`<br>
+> Copy db dump from server to local machine<br>
+>`scp root@67.223.117.163:/root/app/postgres_data_dump/14-04-24-after-clean-up.sql .`<br>
 
 
 
@@ -47,7 +52,7 @@ Jejich zdrojem jsou soubory v adresáři `txt/`
 >Drahé kovy jsou reprezentovány entitou `product` s relací na `link` a `pricePair` 
 Na základě link adresy je zjištěna cena, váha, výrobce atd.
 
-<img src="doc/img/ISA%20draw/scraper_api_5_legend.png" title="app diagram" alt="app diagram"/>
+<img src="doc/img/isa_draw/scraper_api_5_legend.png" title="app diagram" alt="app diagram"/>
 
 ### Zdroje dat
 https://www.serenitystocks.com<br>
