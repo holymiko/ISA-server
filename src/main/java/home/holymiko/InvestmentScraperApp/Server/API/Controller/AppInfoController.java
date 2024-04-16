@@ -1,18 +1,17 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/v2/stats")
-@AllArgsConstructor
-public class StatsController extends BaseController {
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StatsController.class);
+@RestController
+@RequestMapping("/api/v2/info")
+@AllArgsConstructor
+public class AppInfoController extends BaseController {
 
     private final RateService rateService;
     private final LinkService linkService;
@@ -21,15 +20,25 @@ public class StatsController extends BaseController {
     private final TickerService tickerService;
     private final StockGrahamService stockGrahamService;
 
-    @GetMapping
-    @Operation(description = "Returns stats")
-    public String getStats() {
+    @GetMapping("/stats")
+    public String getDatabaseStatistics() {
         return "rates: " + rateService.count() +
                 "\nlinks: " + linkService.countByParams(null) +
                 "\nproducts: " + productService.countByParams(null, null, null, null, null, null, null) +
                 "\nprice pairs: " + priceService.countPricePairs() +
+                "\nprice pairs history: " + priceService.countPricePairsHistory() +
                 "\ntickers: " + tickerService.countByParams(null) +
                 "\nstocks: " + stockGrahamService.countByParams();
+    }
+
+    @GetMapping("/version")
+    public String getProjectVersion() throws IOException {
+        final String appConfigPath = "classes/application.properties";
+
+        Properties appProps = new Properties();
+        appProps.load(new FileInputStream(appConfigPath));
+
+        return appProps.getProperty("project.version");
     }
 
 }

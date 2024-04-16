@@ -10,7 +10,6 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Price;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.PricePair;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PricePairRepository;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.PricePairHistory;
-import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +28,10 @@ public class PriceService {
 
     public Long countPricePairs()  {
         return this.pricePairRepository.count();
+    }
+
+    public Long countPricePairsHistory()  {
+        return this.pricePairHistoryRepository.count();
     }
 
     /**
