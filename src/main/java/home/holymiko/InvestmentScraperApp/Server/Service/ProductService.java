@@ -100,8 +100,8 @@ public class ProductService {
     public ProductDTO_Link_AllPrices updateLinkReference(LinkChangeDTO dto) {
         Product theProduct;
         Assert.isTrue(!Objects.equals(dto.getToProductId(), dto.getFromProductId()), "fromProductId cannot be same as toProductId");
-        Link link = this.linkService.findById(dto.getLinkId());
-        Product oldProduct = findById(dto.getFromProductId());
+        final Link link = this.linkService.findById(dto.getLinkId());
+        final Product oldProduct = findById(dto.getFromProductId());
         Assert.isTrue(link.getProductId() == oldProduct.getId(), "Link hasn't reference Product with ID fromProductId");
 
         if(dto.getToProductId() == null) {
@@ -118,10 +118,16 @@ public class ProductService {
             theProduct = findById( dto.getToProductId() );
             theProduct.getLinks().add(link);
         }
+        // Update Product
         theProduct = this.productRepository.save( theProduct );
         // Update Link
         link.setProductId( theProduct.getId() );
         this.linkService.saveOrUpdate(link);
+
+        if(oldProduct.getLinks().size() == 1) {
+            // Remove Product without Link
+            this.productRepository.deleteById(dto.getFromProductId());
+        }
         return productMapper.toProductDTO_Link_AllPrices(theProduct);
     }
 
