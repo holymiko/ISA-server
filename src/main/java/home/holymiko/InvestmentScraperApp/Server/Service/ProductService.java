@@ -142,9 +142,4 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
-    @Transactional
-    public void deleteAll() {
-        productRepository.deleteAll();
-    }
-
 }

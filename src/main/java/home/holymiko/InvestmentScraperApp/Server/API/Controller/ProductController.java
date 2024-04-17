@@ -108,11 +108,11 @@ public class ProductController extends BaseController {
     }
 
     /////// DELETE
-    @DeleteMapping
-    @Operation(description = "WARNING: Deletes ALL products. Removes reference between product (fromProductId) and link.")
-    public void deleteAll() {
-        LOGGER.info("Delete all products");
-        this.productService.deleteAll();
+    @DeleteMapping("/{id}")
+    @Operation(description = "WARNING: Deletes product. Removes reference between product (fromProductId) and link.")
+    public void deleteById(@PathVariable Long id) {
+        LOGGER.info("Delete product by ID "+id);
+        this.productService.deleteById(id);
     }
 
     /////// Handlers
