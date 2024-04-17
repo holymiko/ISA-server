@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Properties;
 
 @RestController
@@ -40,6 +41,11 @@ public class AppInfoController extends BaseController {
         appProps.load(new FileInputStream(APP_CONFIG_PATH));
 
         return appProps.getProperty("project.version");
+    }
+
+    @GetMapping("/time")
+    public String getServerTime() {
+        return LocalDateTime.now().toString();
     }
 
 }
