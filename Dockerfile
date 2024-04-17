@@ -2,6 +2,7 @@ FROM maven:3.6.3-amazoncorretto-15 AS build
 WORKDIR /app
 
 ENV PROFILE prod
+ENV TIME_ZONE "Europe/Prague"
 
 COPY pom.xml .
 COPY src ./src
@@ -15,6 +16,6 @@ RUN mvn package -P $PROFILE  # Production exclusive Dockerfile
 
 # Dynamic loading of project.version from pom.xml throw application.properties
 ENTRYPOINT java -Dspring.profiles.active=$PROFILE \
-                -Duser.timezone="Europe/Prague" \
+                -Duser.timezone=$TIME_ZONE \
                 -jar \
                 /app/target/ISA-server-$(grep 'project.version=\S*' <<< cat ./target/classes/application.properties | cut -d '=' -f 2).jar
