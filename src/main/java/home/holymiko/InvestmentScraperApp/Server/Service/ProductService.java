@@ -43,6 +43,10 @@ public class ProductService {
         return productRepository.countByParams(dealer, producer, metal, form, grams, year, saveAlone);
     }
 
+    public boolean existsById(Long id) {
+        return productRepository.existsById(id);
+    }
+
     /////////// FIND AS DTO
 
     public ProductDTO_AllPrices findByIdAsDTOAllPrices(Long id) {

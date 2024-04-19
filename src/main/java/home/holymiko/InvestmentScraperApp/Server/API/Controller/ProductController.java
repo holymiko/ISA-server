@@ -90,6 +90,13 @@ public class ProductController extends BaseController {
         return productService.findByIdAsDTOLinkAllPrices(id);
     }
 
+    @GetMapping("/exists/{id}")
+    public boolean existsById(@PathVariable Long id) {
+        LOGGER.info("Exists product by ID " + id);
+        Assert.notNull(id, "Id cannot be null");
+        return productService.existsById(id);
+    }
+
     /////// PUT
 
     @PutMapping("/link")
