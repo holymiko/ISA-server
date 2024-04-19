@@ -2,6 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.Service;
 
 import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.LinkChangeDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_AllPrices;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_LatestPrices;
@@ -109,11 +110,10 @@ public class ProductService {
         Assert.isTrue(link.getProductId() == oldProduct.getId(), "Link hasn't reference Product with ID fromProductId");
 
         if(dto.getToProductId() == null) {
-            // Save Link separately, create Product copy
-            LOGGER.info("Create Product copy and save Link separately");
+            // Save Link separately, extract Product from Link name
+            LOGGER.info("Extract Product from Link name and save Link separately");
             theProduct = new Product(
-                    link.getName(), oldProduct.getProducer(), oldProduct.getForm(), oldProduct.getMetal(),
-                    oldProduct.getGrams(), oldProduct.getYear(), oldProduct.isSaveAlone(), List.of(link)
+                    Extract.productAggregateExtract(link.getName())
             );
         } else {
             // Connect Link to existing Product
