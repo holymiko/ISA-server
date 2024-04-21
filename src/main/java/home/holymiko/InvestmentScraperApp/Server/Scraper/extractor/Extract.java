@@ -137,7 +137,7 @@ public class Extract {
         if(text.contains("münzbarren")) {
             return Form.MUNZBARREN;
         }
-        if(text.contains("combibar") || text.contains("multidisc") || text.contains("multigram")) {
+        if(text.contains("combibar") || text.contains("combi bar") || text.contains("multidisc") || text.contains("multigram")) {
             return Form.COMBIBAR;
         }
         if(text.contains("roundbar")) {
@@ -152,11 +152,11 @@ public class Extract {
         if(text.contains("kinebar")) {
             return Form.KINEBAR;
         }
-        if(text.contains("bar") || text.contains("slitek") || text.contains("slitky") || text.contains("cihla")) {
-            return Form.BAR;
-        }
         if(text.contains("multicard")) {
             return Form.MULTICARD;
+        }
+        if(text.contains("bar") || text.contains("slitek") || text.contains("slitky") || text.contains("cihla")) {
+            return Form.BAR;
         }
 
         throw new IllegalArgumentException("Invalid argument for Form enum");
