@@ -5,33 +5,29 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.4.2</version>
+        <version>3.1.11</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>home.holymiko</groupId>
     <artifactId>ISA-server</artifactId>
     <version>1.4.0-SNAPSHOT</version>
     <name>ISA-server</name>
-    <description>Demo project for Spring Boot</description>
+    <description>Investment scraper application backend</description>
 
     <properties>
-        <java.version>15</java.version>
-        <java.source.version>15</java.source.version>
-        <java.target.version>15</java.target.version>
-        <maven.compiler.source>15</maven.compiler.source>
-        <maven.compiler.target>15</maven.compiler.target>
-        <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
+        <java.version>17</java.version>
+        <maven.compiler.release>17</maven.compiler.release>
+        <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <start-class>home.holymiko.InvestmentScraperApp.InvestmentScraperApp</start-class>
     </properties>
 
-<!--    TODO Rise versions of old packages -->
     <dependencies>
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.3.0</version>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.2</version>
         </dependency>
-<!--        Adapter's client-->
+        <!-- Adapter's client -->
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
@@ -40,7 +36,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.11.2</version>
+            <version>2.15.4</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -59,13 +55,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-<!--        Database -->
+        <!-- Database -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
-<!--        Lombok -->
+        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -75,34 +71,29 @@
             <artifactId>lombok-mapstruct-binding</artifactId>
             <version>0.2.0</version>
         </dependency>
-<!--        Mapping -->
+        <!-- Mapping -->
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
         </dependency>
-<!--        Swagger -->
+        <!-- Swagger -->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
-            <version>3.0.0</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.5.0</version>
         </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-<!--        XML export -->
+        <!-- XML export -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
         </dependency>
-<!--       FE input validation -->
+        <!-- FE input validation -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>6.0.21.Final</version>
+            <version>8.0.1.Final</version>
         </dependency>
     </dependencies>
 

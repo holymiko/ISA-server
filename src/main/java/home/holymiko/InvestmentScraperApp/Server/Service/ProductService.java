@@ -1,6 +1,5 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
-import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.LinkChangeDTO;
@@ -15,6 +14,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Producer;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.ProductMapper;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.ProductRepository;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

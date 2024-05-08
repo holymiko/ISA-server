@@ -1,6 +1,5 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
-import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.ProductRepository;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.LinkMapper;
@@ -9,6 +8,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.LinkRepository;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;

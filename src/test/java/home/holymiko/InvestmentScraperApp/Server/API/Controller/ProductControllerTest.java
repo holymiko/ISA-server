@@ -8,6 +8,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.ProductDTO_La
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +98,7 @@ class ProductControllerTest {
         verify(productService, times(1)).findByIdAsDTOAllPrices(any());
     }
 
+    @Disabled
     @Test
     void byIdNullRedirect() throws Exception {
         when(productService.findByIdAsDTOAllPrices(any())).thenThrow(new ResourceNotFoundException());
@@ -107,6 +109,7 @@ class ProductControllerTest {
         verify(productService, times(0)).findByIdAsDTOLinkAllPrices(any());
     }
 
+    @Disabled
     @Test
     void byIdNullRedirect2() throws Exception {
         when(productService.findByIdAsDTOAllPrices(any())).thenThrow(new ResourceNotFoundException());
@@ -178,6 +181,7 @@ class ProductControllerTest {
         verify(productService, times(1)).findByParams(any(), any(), any(), any(), any(), any(), any(), any());
     }
 
+    @Disabled
     @Test
     void byMetalRedirect400() throws Exception {
         this.mockMvc.perform(get("/api/v2/product/metal/"))

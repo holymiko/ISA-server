@@ -1,6 +1,5 @@
 package home.holymiko.InvestmentScraperApp.Server.Service;
 
-import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.LinkRepository;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PricePairHistoryRepository;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PriceRepository;
@@ -10,6 +9,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Price;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.PricePair;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PricePairRepository;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.PricePairHistory;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

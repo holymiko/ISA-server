@@ -1,10 +1,10 @@
 package home.holymiko.InvestmentScraperApp.Server.Core;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class Handler {

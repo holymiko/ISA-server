@@ -1,11 +1,10 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
-import com.sun.istack.NotNull;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapRefusedException;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
