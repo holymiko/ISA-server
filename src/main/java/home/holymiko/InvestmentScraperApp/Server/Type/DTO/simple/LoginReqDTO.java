@@ -2,12 +2,15 @@ package home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
+
 
 @Getter
+@Setter
 @AllArgsConstructor
-public class CredentialDTO {
+public class LoginReqDTO {
 
-    private final String username;
-    private final String password;
+    private String username;
+    private String password;
 
 }

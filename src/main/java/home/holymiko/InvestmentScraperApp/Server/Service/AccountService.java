@@ -3,37 +3,35 @@ package home.holymiko.InvestmentScraperApp.Server.Service;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.AccountRepository;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Mapper.AccountMapper;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PersonAccountDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.AccountCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.AccountDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Account;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Role;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 @Service
 @AllArgsConstructor
-public class AccountService {
+public class AccountService implements UserDetailsService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
 
-
-    public String authenticate(String username, String password) {
-        findByUsernameAndPassword(username, password);
-        // TODO JWT token impl.
-        return "myDummyToken";
-    }
 
     /////// FIND AS DTO
 
@@ -42,6 +40,22 @@ public class AccountService {
                 .stream()
                 .map(accountMapper::toAccountDTO)
                 .collect(Collectors.toList());
+    }
+
+    public PersonAccountDTO findByUserNameAsPersonAccountDto(String username) throws UsernameNotFoundException {
+        return accountMapper.toPersonAccountDTO(
+                findByUsername(username)
+        );
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Account user = findByUsername(username);
+        return User.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .roles(user.getRole().name())
+                .build();
     }
 
     public AccountDTO findByIdAsDTO(long id) {

@@ -3,11 +3,16 @@ package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import home.holymiko.InvestmentScraperApp.Server.Core.Handler;
 import home.holymiko.InvestmentScraperApp.Server.Service.AccountService;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PersonAccountDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.AccountCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.AccountDTO;
-import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.CredentialDTO;
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LoginReqDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Role;
+import home.holymiko.InvestmentScraperApp.Server.Utils.JwtUtil;
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -38,6 +43,7 @@ public class AccountController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
 
+    private final JwtUtil jwtUtil;
     private final AccountService accountService;
 
     /////// GET
@@ -53,6 +59,18 @@ public class AccountController extends BaseController {
         LOGGER.info("Get account by id");
         Assert.notNull(id, "ID cannot be null");
         return accountService.findByIdAsDTO(id);
+    }
+
+    @GetMapping("/me")
+    public PersonAccountDTO me(HttpServletRequest request) throws ServletException, IOException {
+        Claims claims = jwtUtil.resolveClaims(request);
+
+        if(claims != null & jwtUtil.validateClaims(claims)){
+            String username = claims.getSubject();
+            LOGGER.info("me: "+username);
+            return accountService.findByUserNameAsPersonAccountDto(username);
+        }
+        return null;
     }
 
 
@@ -86,7 +104,7 @@ public class AccountController extends BaseController {
     }
 
     @PutMapping(path = "/password")
-    public void changePasswordByUsername(@RequestBody CredentialDTO credentials) {
+    public void changePasswordByUsername(@RequestBody LoginReqDTO credentials) {
         LOGGER.info("Change password by username");
         this.accountService.changePasswordByUsername(credentials.getUsername(), credentials.getPassword());
         LOGGER.info("Password change success");
