@@ -10,7 +10,7 @@
     </parent>
     <groupId>home.holymiko</groupId>
     <artifactId>ISA-server</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.4.0</version>
     <name>ISA-server</name>
     <description>Investment scraper application backend</description>
 
