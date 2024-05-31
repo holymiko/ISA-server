@@ -1,6 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.API.FilePort;
 
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Availability;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
@@ -30,27 +31,39 @@ class ExportTest {
 
         PricePair pricePair00 = new PricePair(
                 new Price(LocalDateTime.now(), 1808.45, false),
-                new Price(LocalDateTime.now(), 1428.50, true)
-        );
+                new Price(LocalDateTime.now(), 1428.50, true),
+                Availability.STOCK,
+                "Skladem"
+                );
         PricePair pricePair01 = new PricePair(
                 new Price(LocalDateTime.now(), 1818.45, false),
-                new Price(LocalDateTime.now(), 1528.50, true)
+                new Price(LocalDateTime.now(), 1528.50, true),
+                Availability.STOCK,
+                "Skladem"
         );
         PricePair pricePair10 = new PricePair(
                 new Price(LocalDateTime.now().minusHours(2), 718.45, false),
-                new Price(LocalDateTime.now().minusHours(2), 428.50, true)
+                new Price(LocalDateTime.now().minusHours(2), 428.50, true),
+                Availability.STOCK,
+                "Skladem"
         );
         PricePair pricePair11 = new PricePair(
                 new Price(LocalDateTime.now().minusHours(2), 918.45, false),
-                new Price(LocalDateTime.now().minusHours(2), 628.50, true)
+                new Price(LocalDateTime.now().minusHours(2), 628.50, true),
+                Availability.STOCK,
+                "Skladem"
         );
         PricePair pricePair20 = new PricePair(
                 new Price(LocalDateTime.now().minusDays(1), 108958.00, false),
-                new Price(LocalDateTime.now().minusDays(1), 100000.98, true)
+                new Price(LocalDateTime.now().minusDays(1), 100000.98, true),
+                Availability.STOCK,
+                "Skladem"
         );
         PricePair pricePair30 = new PricePair(
                 new Price(LocalDateTime.now().minusDays(1), 6014.78, false),
-                new Price(LocalDateTime.now().minusDays(1), 5014.78, true)
+                new Price(LocalDateTime.now().minusDays(1), 5014.78, true),
+                Availability.STOCK,
+                "Skladem"
         );
 
         link00.setPricePair(pricePair00);

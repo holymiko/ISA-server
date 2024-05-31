@@ -102,4 +102,25 @@ public class Convert {
         };
     }
 
+    public static Availability availability(String availabilityMsg) throws IllegalArgumentException, NullPointerException {
+        if(availabilityMsg == null) {
+            throw new NullPointerException();
+        }
+        availabilityMsg = availabilityMsg.toLowerCase().trim();
+        if(availabilityMsg.contains("skladem") || availabilityMsg.contains("lager")) {
+            return Availability.STOCK;
+        } else if (availabilityMsg.contains("vyprodáno")) {
+            return Availability.SOLD_OUT;
+        } else if (availabilityMsg.contains("na dotaz")) {
+            return Availability.ON_DEMAND;
+        } else if (availabilityMsg.contains("na objednávku") || availabilityMsg.contains("dní") || availabilityMsg.contains("tage") || availabilityMsg.contains("den") || availabilityMsg.contains("woche")) {
+            return Availability.ON_ORDER;
+        } else if (availabilityMsg.contains("dočasně nedostupné") || availabilityMsg.contains("rezervace")) {
+            return Availability.UNAVAILABLE;
+        } else {
+            throw new IllegalArgumentException("Invalid Enum argument - '"+availabilityMsg+"'");
+        }
+
+    }
+
 }

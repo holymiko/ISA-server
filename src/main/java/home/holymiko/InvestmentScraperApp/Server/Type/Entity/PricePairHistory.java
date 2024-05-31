@@ -1,5 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.Type.Entity;
 
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Availability;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -28,11 +29,13 @@ public class PricePairHistory {
     private Price sellPrice;
     @OneToOne
     private Price redemption;
+    private Availability availability;
     private Long linkId;
 
-    public PricePairHistory(Price sellPrice, Price redemption, Long linkId) {
+    public PricePairHistory(Price sellPrice, Price redemption, Availability availability, Long linkId) {
         this.sellPrice = sellPrice;
         this.redemption = redemption;
+        this.availability = availability;
         this.linkId = linkId;
     }
 }

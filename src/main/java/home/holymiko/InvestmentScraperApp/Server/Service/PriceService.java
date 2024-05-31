@@ -9,6 +9,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Price;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.PricePair;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.PricePairRepository;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.PricePairHistory;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Availability;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,16 +39,16 @@ public class PriceService {
      * Saves Price, PricePair and PricePairHistory to DB.
      * Link references are updated.
      * @param linkId Link to which the PricePair and PricePairHistory is added
+     * @param buy parameter of Price
      * @param sell parameter of Price
-     * @param buyOut parameter of Price
      * @throws NullPointerException linkId is null
      * @throws ResourceNotFoundException Link for linkId doesn't exist
      */
     @Transactional
-    public void savePriceAndUpdateLink(@NotNull Long linkId, Double sell, Double buyOut) {
+    public void savePriceAndUpdateLink(@NotNull Long linkId, Double buy, Double sell, Availability availability, String availabilityMsg) {
         final Link link;
-        final Price sellPrice;
         final Price buyPrice;
+        final Price sellPrice;
         final PricePair pricePair;
         final PricePairHistory pricePairHistory;
         final List<PricePairHistory> pricePairList;
@@ -61,10 +62,10 @@ public class PriceService {
         }
 
         // Save new records
-        sellPrice = this.priceRepository.save(new Price(LocalDateTime.now(), sell, false));
-        buyPrice = this.priceRepository.save(new Price(LocalDateTime.now(), buyOut, true));
-        pricePair = new PricePair(sellPrice, buyPrice);
-        pricePairHistory = new PricePairHistory(sellPrice, buyPrice, linkId);
+        buyPrice = this.priceRepository.save(new Price(LocalDateTime.now(), buy, false));
+        sellPrice = this.priceRepository.save(new Price(LocalDateTime.now(), sell, true));
+        pricePair = new PricePair(buyPrice, sellPrice, availability, availabilityMsg);
+        pricePairHistory = new PricePairHistory(buyPrice, sellPrice, availability, linkId);
         this.pricePairRepository.save(pricePair);
         this.pricePairHistoryRepository.save(pricePairHistory);
 

@@ -23,6 +23,7 @@ public class BessergoldAdapter extends Client implements MetalAdapterInterface {
     private static final String X_PATH_PRODUCT_NAME = ".//span[@class='base']";
     private static final String X_PATH_BUY_PRICE = ".//span[@class='price']";
     private static final String X_PATH_REDEMPTION_PRICE = ".//div[@class='vykupni-cena']";
+    private static final String X_PATH_AVAILABILITY = "//*[@id=\"maincontent\"]/div[2]/div/div[1]/div[2]/div[2]/div/span";
 
     public BessergoldAdapter() {
         super("BessergoldAdapter");
@@ -32,6 +33,7 @@ public class BessergoldAdapter extends Client implements MetalAdapterInterface {
     public HtmlPage getPage(String link) throws ResourceNotFoundException {
         return this.loadPage(link);
     }
+
     @Override
     public List<Link> scrapAllLinksFromProductLists() {
         return scrapAllLinksFromProductListUtil(
@@ -58,7 +60,7 @@ public class BessergoldAdapter extends Client implements MetalAdapterInterface {
     }
 
     @Override
-    public double scrapPriceFromProductPage(HtmlPage productDetailPage) {
+    public double scrapBuyPriceFromProductPage(HtmlPage productDetailPage) {
         try {
             return Convert.currencyToDouble(
                     ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText()
@@ -75,8 +77,9 @@ public class BessergoldAdapter extends Client implements MetalAdapterInterface {
     public String buyOutHtmlToText(HtmlElement redemptionPriceHtml) {
         return redemptionPriceHtml.asText().split(":")[1];
     }
+
     @Override
-    public double scrapBuyOutPrice(HtmlPage page) {
+    public double scrapSellPriceFromProductPage(HtmlPage page) {
         try {
             return Convert.currencyToDouble(
                 buyOutHtmlToText(page.getFirstByXPath(X_PATH_REDEMPTION_PRICE))
@@ -100,8 +103,16 @@ public class BessergoldAdapter extends Client implements MetalAdapterInterface {
     }
 
     @Override
-    public List<Pair<String, Double>> scrapBuyOutFromList() {
+    public List<Pair<String, Double>> scrapSellPriceFromList() {
         // TODO Implement scrapRedemptionFromList
         return new ArrayList<>();
     }
+
+    ////// AVAILABILITY
+
+    @Override
+    public String scrapAvailabilityFromProductPage(HtmlPage productDetailPage) {
+        return ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_AVAILABILITY)).asText();
+    }
+
 }

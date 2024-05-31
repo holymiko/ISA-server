@@ -11,7 +11,6 @@ import home.holymiko.InvestmentScraperApp.Server.Scraper.source.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -40,6 +39,8 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
     private static final String X_PATH_BID_SPOT_GOLD = "/html/body/section[1]/div/div/div[1]/div/div/div[2]/div";
     private static final String X_PATH_BID_SPOT_SILVER  = "/html/body/section[1]/div/div/div[2]/div/div/div[2]/div";
     private static final String X_PATH_BID_SPOT_DOLLAR = "/html/body/section[1]/div/div/div[4]/div/div/div[2]/div";
+    private static final String X_PATH_AVAILABILITY = "/html/body/main/div/section[1]/div/div[2]/div[2]/div/form/div[3]/div";
+    private static final String X_PATH_AVAILABILITY_2 = "/html/body/main/div/section[1]/div/div[2]/div[2]/div/div[2]/div";
 
     public SilverumAdapter() {
         super("SilverumAdapter");
@@ -51,6 +52,7 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
     public HtmlPage getPage(String link) throws ResourceNotFoundException {
         return this.loadPage(link);
     }
+
     @Override
     public List<Link> scrapAllLinksFromProductLists() {
         return scrapAllLinksFromProductListUtil(
@@ -80,7 +82,7 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
     /////// PRICE
 
     @Override
-    public double scrapPriceFromProductPage(HtmlPage productDetailPage) {
+    public double scrapBuyPriceFromProductPage(HtmlPage productDetailPage) {
         try {
             String x = ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText();
             if(Pattern.compile("\\d+,\\d+ Kč bez DPH").matcher(x).find()) {
@@ -99,7 +101,7 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
      * @return
      */
     @Override
-    public double scrapBuyOutPrice(HtmlPage page) {
+    public double scrapSellPriceFromProductPage(HtmlPage page) {
         final String productName = scrapNameFromProductPage(page).toLowerCase();
         final Metal metal = Extract.metalExtract(productName);
         final double weight = Extract.weightExtract(productName) / Extract.TROY_OUNCE;
@@ -135,4 +137,16 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
 
         return Convert.currencyToDouble( metalDollarSpotTxt ) * dollar * weight * q;
     }
+
+    ////// AVAILABILITY
+
+    @Override
+    public String scrapAvailabilityFromProductPage(HtmlPage productDetailPage) {
+        try {
+            return ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_AVAILABILITY)).asText();
+        } catch (Exception ignore) {
+            return ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_AVAILABILITY_2)).asText();
+        }
+    }
+
 }

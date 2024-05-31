@@ -3,17 +3,20 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapFailedException;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDTO;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Availability;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Extract;
 import home.holymiko.InvestmentScraperApp.Server.Service.*;
 import home.holymiko.InvestmentScraperApp.Server.Core.LogBuilder;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
@@ -287,10 +290,12 @@ public class MetalScraper {
      * Scraps new price. Saves entities Price, PricePair and PricePairHistory. Updates relations.
      */
     private void priceScrap(final LinkDTO linkDTO) {
-        Double sellingPrice = null;
-        Double buyOutPrice = null;
+        Double buy = null;
+        Double sell = null;
         final MetalAdapterInterface adapter = dealerToMetalAdapter.get(linkDTO.getDealer());
-        HtmlPage productDetailPage;
+        final HtmlPage productDetailPage;
+        String availabilityMsg = null;
+        Availability availability = null;
 
         if(adapter == null) {
             throw new ScrapFailedException("ProductScrap - Scraper for dealer "+linkDTO.getDealer()+" not found");
@@ -302,21 +307,32 @@ public class MetalScraper {
             return;
         }
 
+        try{
+            availabilityMsg = adapter.scrapAvailabilityFromProductPage(productDetailPage);
+            try {
+                availability = Convert.availability(availabilityMsg);
+            } catch (NullPointerException | IllegalArgumentException e) {
+                LOGGER.warn(e.getMessage());
+            }
+        } catch (NotImplementedException | NullPointerException e) {
+            LOGGER.error(e.getMessage());
+        }
+
         try {
             // Choose MetalScraperInterface & scrap buy price
-            sellingPrice = adapter.scrapPriceFromProductPage(productDetailPage);
+            buy = adapter.scrapBuyPriceFromProductPage(productDetailPage);
         } catch (NumberFormatException e) {
             LOGGER.warn(e.getMessage());
         }
-        if(sellingPrice == null || sellingPrice.intValue() == 0) {
+        if(buy == null || buy.intValue() == 0) {
             LOGGER.warn("Kupni cena = 0");
         }
-        buyOutPrice = adapter.scrapBuyOutPrice(productDetailPage);
-        if(buyOutPrice.intValue() == 0) {
+        sell = adapter.scrapSellPriceFromProductPage(productDetailPage);
+        if(sell.intValue() == 0) {
             LOGGER.warn("Vykupni cena = 0");
         }
 
-        this.priceService.savePriceAndUpdateLink(linkDTO.getId(), sellingPrice, buyOutPrice);
+        this.priceService.savePriceAndUpdateLink(linkDTO.getId(), buy, sell, availability, availabilityMsg);
         LOGGER.info("New pricePair saved - " + linkDTO.getUri());
     }
 
@@ -326,9 +342,9 @@ public class MetalScraper {
     @Deprecated
     private void redemptionScrap(final Metal metal, final Dealer dealer) {
 //        LOGGER.info("Redemption Scrap");
-//        if( dealerToMetalAdapter.get(dealer) instanceof BuyOutInterface) {
+//        if( dealerToMetalAdapter.get(dealer) instanceof SellInterface) {
 //            LOGGER.info("Scraping Redemption List available");
-//            List<Pair<String, Double>> nameRedemptionMap = ((BuyOutInterface) dealerToMetalAdapter.get(dealer)).scrapBuyOutFromList();
+//            List<Pair<String, Double>> nameRedemptionMap = ((SellInterface) dealerToMetalAdapter.get(dealer)).scrapBuyOutFromList();
 //
 //            nameRedemptionMap.forEach(
 //                x -> {

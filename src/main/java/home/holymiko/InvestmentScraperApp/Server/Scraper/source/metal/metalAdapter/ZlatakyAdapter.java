@@ -8,7 +8,6 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.Client;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Convert;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -27,6 +26,7 @@ public class ZlatakyAdapter extends Client implements MetalAdapterInterface {
     private static final String X_PATH_PRODUCT_NAME = "//*[@id=\"snippet--page\"]/div[2]/div[1]/div[2]/h1";
     private static final String X_PATH_BUY_PRICE = "//*[@id=\"hlavni_cena\"]";
     private static final String X_PATH_REDEMPTION_PRICE = ".//*[@id=\"box_vip_vykup\"]/div[3]/span[2]/strong";
+    private static final String X_PATH_AVAILABILITY = "//*[@id=\"sklad_info\"]/span[2]";
 
 
     public ZlatakyAdapter() {
@@ -37,6 +37,7 @@ public class ZlatakyAdapter extends Client implements MetalAdapterInterface {
     public HtmlPage getPage(String link) throws ResourceNotFoundException {
         return this.loadPage(link);
     }
+
     @Override
     public List<Link> scrapAllLinksFromProductLists() {
         return scrapAllLinksFromProductListUtil(
@@ -52,7 +53,7 @@ public class ZlatakyAdapter extends Client implements MetalAdapterInterface {
     }
 
     @Override
-    public double scrapPriceFromProductPage(HtmlPage productDetailPage) {
+    public double scrapBuyPriceFromProductPage(HtmlPage productDetailPage) {
         try {
             String x = Convert.currencyClean(
                     ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText()
@@ -70,8 +71,9 @@ public class ZlatakyAdapter extends Client implements MetalAdapterInterface {
     public String scrapNameFromProductPage(HtmlPage page) {
         return ((HtmlElement) page.getFirstByXPath(X_PATH_PRODUCT_NAME)).asText();
     }
+
     @Override
-    public double scrapBuyOutPrice(HtmlPage page) {
+    public double scrapSellPriceFromProductPage(HtmlPage page) {
         try {
             return Convert.currencyToDouble(
                     ((HtmlElement) page.getFirstByXPath(X_PATH_REDEMPTION_PRICE)).asText()
@@ -85,6 +87,13 @@ public class ZlatakyAdapter extends Client implements MetalAdapterInterface {
     @Override
     public Link scrapLink(HtmlElement elementProduct) {
         return scrapLink(elementProduct, X_PATH_PRODUCT_LIST_PRODUCT_LINK, Dealer.ZLATAKY, BASE_URL);
+    }
+
+    ////// AVAILABILITY
+
+    @Override
+    public String scrapAvailabilityFromProductPage(HtmlPage productDetailPage) {
+        return ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_AVAILABILITY)).asText();
     }
 
 }

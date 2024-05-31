@@ -6,13 +6,13 @@ import org.springframework.data.util.Pair;
 
 import java.util.List;
 
-public interface BuyOutInterface {
+public interface SellInterface {
 
-    default List<Pair<String, Double>> scrapBuyOutFromList() {
+    default List<Pair<String, Double>> scrapSellPriceFromList() {
         throw new NotImplementedException("Method haven't been implemented yet");
     }
 
-    default double scrapBuyOutPrice(HtmlPage page) {
+    default double scrapSellPriceFromProductPage(HtmlPage page) {
         throw new NotImplementedException("Method haven't been implemented yet");
     }
 }

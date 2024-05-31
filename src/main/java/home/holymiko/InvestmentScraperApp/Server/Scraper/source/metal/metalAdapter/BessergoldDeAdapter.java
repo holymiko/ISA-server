@@ -26,7 +26,7 @@ public class BessergoldDeAdapter extends Client implements MetalAdapterInterface
     //    private static final String X_PATH_BUY_PRICE = ".//span[@class='price-wrapper price-including-tax']/span";
     private static final String X_PATH_BUY_PRICE = ".//span[@class='price']";
     private static final String X_PATH_REDEMPTION_PRICE = ".//div[@class='vykupni-cena']";
-
+    private static final String X_PATH_AVAILABILITY = "//*[@id=\"maincontent\"]/div[2]/div/div[1]/div[2]/div[2]/div";
     private final double euroExchangeRate;
 
     public BessergoldDeAdapter(double euroExchangeRate) {
@@ -67,7 +67,7 @@ public class BessergoldDeAdapter extends Client implements MetalAdapterInterface
     }
 
     @Override
-    public double scrapPriceFromProductPage(HtmlPage productDetailPage) {
+    public double scrapBuyPriceFromProductPage(HtmlPage productDetailPage) {
         try {
             return Convert.currency(
                     ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText().replace(".", ""),
@@ -88,8 +88,9 @@ public class BessergoldDeAdapter extends Client implements MetalAdapterInterface
     public String buyOutHtmlToText(HtmlElement redemptionPriceHtml) {
         return redemptionPriceHtml.asText().split(":")[1].replace(".", "");
     }
+
     @Override
-    public double scrapBuyOutPrice(HtmlPage page) {
+    public double scrapSellPriceFromProductPage(HtmlPage page) {
         try {
             return Convert.currency(
                     buyOutHtmlToText(page.getFirstByXPath(X_PATH_REDEMPTION_PRICE)),
@@ -102,8 +103,16 @@ public class BessergoldDeAdapter extends Client implements MetalAdapterInterface
     }
 
     @Override
-    public List<Pair<String, Double>> scrapBuyOutFromList() {
+    public List<Pair<String, Double>> scrapSellPriceFromList() {
         // TODO Implement scrapRedemptionFromList
         return new ArrayList<>();
     }
+
+    ////// AVAILABILITY
+
+    @Override
+    public String scrapAvailabilityFromProductPage(HtmlPage productDetailPage) {
+        return ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_AVAILABILITY)).asText();
+    }
+
 }

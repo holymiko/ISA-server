@@ -1,5 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.Type.Entity;
 
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Availability;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -29,8 +30,14 @@ public class PricePair {
     @OneToOne
     private Price redemption;
 
-    public PricePair(Price sellPrice, Price redemption) {
+    private Availability availability;
+
+    private String availabilityMessage;
+
+    public PricePair(Price sellPrice, Price redemption, Availability availability, String availabilityMessage) {
         this.sellPrice = sellPrice;
         this.redemption = redemption;
+        this.availability = availability;
+        this.availabilityMessage = availabilityMessage;
     }
 }
