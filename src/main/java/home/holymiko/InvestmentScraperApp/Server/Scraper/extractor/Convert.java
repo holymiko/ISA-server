@@ -109,7 +109,7 @@ public class Convert {
         }
         availabilityMsg = availabilityMsg.toLowerCase().trim();
         if(Stream.of("skladem", "lager").anyMatch(availabilityMsg::contains) || availabilityMsg.equals("")) {
-            return Availability.STOCK;
+            return Availability.IN_STOCK;
         } else if (availabilityMsg.contains("vyprodáno")) {
             return Availability.SOLD_OUT;
         } else if (Stream.of("na dotaz", "na cestě").anyMatch(availabilityMsg::contains)) {
