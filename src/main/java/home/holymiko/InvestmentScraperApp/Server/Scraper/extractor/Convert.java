@@ -3,6 +3,7 @@ package home.holymiko.InvestmentScraperApp.Server.Scraper.extractor;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.*;
 
 import java.util.Locale;
+import java.util.stream.Stream;
 
 public class Convert {
 
@@ -107,15 +108,15 @@ public class Convert {
             throw new NullPointerException();
         }
         availabilityMsg = availabilityMsg.toLowerCase().trim();
-        if(availabilityMsg.contains("skladem") || availabilityMsg.contains("lager")) {
+        if(Stream.of("skladem", "lager").anyMatch(availabilityMsg::contains) || availabilityMsg.equals("")) {
             return Availability.STOCK;
         } else if (availabilityMsg.contains("vyprodáno")) {
             return Availability.SOLD_OUT;
-        } else if (availabilityMsg.contains("na dotaz")) {
+        } else if (Stream.of("na dotaz", "na cestě").anyMatch(availabilityMsg::contains)) {
             return Availability.ON_DEMAND;
-        } else if (availabilityMsg.contains("na objednávku") || availabilityMsg.contains("dní") || availabilityMsg.contains("tage") || availabilityMsg.contains("den") || availabilityMsg.contains("woche")) {
+        } else if (Stream.of("na objednávku", "dní", "tage", "den", "woche").anyMatch(availabilityMsg::contains)) {
             return Availability.ON_ORDER;
-        } else if (availabilityMsg.contains("dočasně nedostupné") || availabilityMsg.contains("rezervace")) {
+        } else if (Stream.of("dočasně nedostupné", "rezervace").anyMatch(availabilityMsg::contains)) {
             return Availability.UNAVAILABLE;
         } else {
             throw new IllegalArgumentException("Invalid Enum argument - '"+availabilityMsg+"'");

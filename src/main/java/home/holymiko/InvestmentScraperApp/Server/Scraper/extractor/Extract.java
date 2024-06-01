@@ -7,6 +7,7 @@ import java.time.Year;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class Extract {
 
@@ -24,7 +25,7 @@ public class Extract {
         else if (text.contains("heraeus")) {
             return Producer.HERAEUS;
         }
-        else if (text.contains("münze osterreich") || text.contains("wiener philharmoniker")) {
+        else if (Stream.of("münze osterreich", "wiener philharmoniker").anyMatch(text::contains)) {
             return Producer.MUNZE_OSTERREICH;
         }
         else if (text.contains("pamp")) {
@@ -33,16 +34,16 @@ public class Extract {
         else if (text.contains("valcambi")) {
             return Producer.VALCAMBI;
         }
-        else if (text.contains("royal canadian mint") || text.contains("maple leaf")){
+        else if (Stream.of("royal canadian mint", "maple leaf").anyMatch(text::contains)) {
             return Producer.ROYAL_CANADIAN_MINT;
         }
-        else if (text.contains("the royal mint") || text.contains("britannia")) {
+        else if (Stream.of("the royal mint", "britannia").anyMatch(text::contains)) {
             return Producer.ROYAL_MINT_UK;
         }
-        else if (text.contains("usa") || text.contains("american eagle")) {
+        else if (Stream.of("usa", "american eagle").anyMatch(text::contains)) {
             return Producer.UNITED_STATES_MINT;
         }
-        else if (text.contains("mexico") || text.contains("mexiko")) {
+        else if (Stream.of("mexico", "mexiko").anyMatch(text::contains)) {
             return Producer.MEXICO_MINT;
         }
         else if (text.contains("umicore")) {
@@ -77,25 +78,19 @@ public class Extract {
             return producerExtractBasic(text);
         } catch (Exception ignored){}
 
-        if (text.contains("rok") || text.contains("kangaroo")
-        || text.contains("kookaburra") || text.contains("koala") || text.contains("austrálie")
-        || text.contains("austral") || text.contains(" emu ") || text.contains("drak a ")
-        || text.contains("next generation") || text.contains("black flag") || text.contains("orel klínoocasý") ) {
+        if (Stream.of("rok", "kangaroo", "kookaburra", "koala", "austrálie", "austral", " emu ", "drak a ",
+                "next generation", "black flag", "orel klínoocasý").anyMatch(text::contains)) {
             return Producer.PERTH_MINT;
         }
-        else if (text.contains("rand") || text.contains("krugerrand")) {
+        else if (Stream.of("rand", "krugerrand").anyMatch(text::contains)) {
             return Producer.SOUTH_AFRICAN_MINT;
         }
-        else if (text.contains("moose") || text.contains("golden eagle") || text.contains("kanada")
-        || text.contains("roaring grizzly") || text.contains("growling cougar") || text.contains("howling wolf")
-        || text.contains("zlatá horečka na klondiku") || text.contains(" elk ")){
+        else if (Stream.of("moose", "golden eagle", "kanada", "roaring grizzly", "growling cougar",
+                "howling wolf", "zlatá horečka na klondiku", " elk ").anyMatch(text::contains)){
             return Producer.ROYAL_CANADIAN_MINT;
         }
-        else if (text.contains("sovereign elizabeth") || text.contains("the royal mint")
-        || text.contains("the queen´s beasts") || text.contains("the queen's beasts")
-        || text.contains("royal arms") || text.contains("dva draci")
-        || text.contains("mýty a legendy") || text.contains("valiant")
-        || text.contains("the royal tudor beasts")  ) {
+        else if (Stream.of("sovereign elizabeth", "the royal mint", "the queen´s beasts", "the queen's beasts",
+                "royal arms", "dva draci", "mýty a legendy", "valiant", "the royal tudor beasts").anyMatch(text::contains)) {
             return Producer.ROYAL_MINT_UK;
         }
         else if (text.contains("gibraltar lady justice")) {
@@ -105,7 +100,7 @@ public class Extract {
         else if (text.contains("libertad")) {
             return Producer.MEXICO_MINT;
         }
-        else if (text.contains("slon") || text.contains("leopard somálsko")) {
+        else if (Stream.of("slon", "leopard somálsko").anyMatch(text::contains)) {
             return Producer.BAVARIAN_STATE_MINT;
         }
         else if (text.contains("noble isle of man") ) {
@@ -124,7 +119,6 @@ public class Extract {
             return Producer.MUNZE_OSTERREICH;
         }
 
-
         throw new IllegalArgumentException("Invalid argument for Producer enum");
     }
 
@@ -137,16 +131,16 @@ public class Extract {
         if(text.contains("münzbarren")) {
             return Form.MUNZBARREN;
         }
-        if(text.contains("combibar") || text.contains("combi bar") || text.contains("multidisc") || text.contains("multigram")) {
+        if(Stream.of("combibar", "combi bar", "multidisc", "multigram").anyMatch(text::contains)) {
             return Form.COMBIBAR;
         }
         if(text.contains("roundbar")) {
             return Form.ROUNDBAR;
         }
-        if(text.contains("paket") || text.contains("odběr 100 ks a více")) {
+        if(Stream.of("paket", "odběr 100 ks a více").anyMatch(text::contains)) {
             return Form.PACKET;
         }
-        if(text.contains("mince") || text.contains("coin") || text.contains("münze") || text.contains("tolar")) {
+        if(Stream.of("mince", "coin", "münze", "tolar").anyMatch(text::contains)) {
             return Form.COIN;
         }
         if(text.contains("kinebar")) {
@@ -155,7 +149,7 @@ public class Extract {
         if(text.contains("multicard")) {
             return Form.MULTICARD;
         }
-        if(text.contains("bar") || text.contains("slitek") || text.contains("slitky") || text.contains("cihla")) {
+        if(Stream.of("bar", "slitek", "slitky", "cihla").anyMatch(text::contains)) {
             return Form.BAR;
         }
 
@@ -256,9 +250,9 @@ public class Extract {
      * @return metal of product
      */
     public static Metal metalExtract(String text) throws IllegalArgumentException {
-        if (text.contains("zlat") || text.contains("gold")) {
+        if (Stream.of("zlat", "gold").anyMatch(text::contains)) {
             return Metal.GOLD;
-        } else if (text.contains("stříbr") || text.contains("silver") || text.contains("silber") ) {
+        } else if (Stream.of("stříbr", "silver", "silber").anyMatch(text::contains)) {
             return Metal.SILVER;
         }
         // There was NO other Metal seen in this form, so far
@@ -285,27 +279,26 @@ public class Extract {
      * @param name LowerCase only
      */
     private static boolean isNameSpecialCZ(String name) {
-        return name.contains("lunární") || name.contains("výročí") || name.contains("horečka") ||
-                name.contains("obři doby ledové") || name.contains("rok") || name.contains("draci") ||
-                name.contains("drak") || name.contains("buffalo") || name.contains("legendy") ||
-                name.contains("koala");
+        return Stream.of(
+                "lunární", "výročí", "horečka", "obři doby ledové", "rok", "draci", "drak", "buffalo", "legendy", "koala"
+        ).anyMatch(name::contains);
     }
 
     /**
      * @param name LowerCase only
      */
     private static boolean isNameSpecialEN(String name) {
-        return name.contains("rush") || name.contains("the queen´s beasts");
+        return Stream.of("rush", "the queen´s beasts").anyMatch(name::contains);
     }
 
     /**
      * @param name LowerCase only
      */
     private static boolean isNameSpecialDE(String name) {
-        return name.contains("lunar") || name.contains("serie");
+        return Stream.of("lunar", "serie").anyMatch(name::contains);
     }
+
     /**
-     *
      * @param name CaseInsensitive
      * @return Object includes all extracted params
      * @throws IllegalArgumentException for failure of any param extraction
