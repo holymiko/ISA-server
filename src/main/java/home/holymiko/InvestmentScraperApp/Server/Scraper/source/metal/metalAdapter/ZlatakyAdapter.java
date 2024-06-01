@@ -26,7 +26,8 @@ public class ZlatakyAdapter extends Client implements MetalAdapterInterface {
     private static final String X_PATH_PRODUCT_NAME = "//*[@id=\"snippet--page\"]/div[2]/div[1]/div[2]/h1";
     private static final String X_PATH_BUY_PRICE = "//*[@id=\"hlavni_cena\"]";
     private static final String X_PATH_REDEMPTION_PRICE = ".//*[@id=\"box_vip_vykup\"]/div[3]/span[2]/strong";
-    private static final String X_PATH_AVAILABILITY = "//*[@id=\"sklad_info\"]/span[2]";
+    private static final String X_PATH_AVAILABILITY_1 = "//*[@id=\"sklad_info\"]/span[1]";
+    private static final String X_PATH_AVAILABILITY_2 = "//*[@id=\"sklad_info\"]/span[2]";
 
 
     public ZlatakyAdapter() {
@@ -93,7 +94,12 @@ public class ZlatakyAdapter extends Client implements MetalAdapterInterface {
 
     @Override
     public String scrapAvailabilityFromProductPage(HtmlPage productDetailPage) {
-        return ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_AVAILABILITY)).asText();
+        // There are 2 spans in HTML code, but only 1 is visible
+        HtmlElement span = productDetailPage.getFirstByXPath(X_PATH_AVAILABILITY_1);
+        if(span.getAttribute("class").contains("zobrazit")) {
+            return span.asText();
+        }
+        return ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_AVAILABILITY_2)).asText();
     }
 
 }
