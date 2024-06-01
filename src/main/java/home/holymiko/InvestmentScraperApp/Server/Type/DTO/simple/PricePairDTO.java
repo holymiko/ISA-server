@@ -1,5 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple;
 
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Availability;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import lombok.Getter;
 
@@ -15,13 +16,17 @@ public class PricePairDTO {
     private final double redemption;
     private final double spread;
     private final double pricePerGram;
+    private final String availability;
+    private final String availabilityMessage;
 
-    public PricePairDTO(long id, LocalDateTime priceDateTime, LocalDateTime redemptionDateTime, double price, double redemption, double grams) {
+    public PricePairDTO(long id, LocalDateTime priceDateTime, LocalDateTime redemptionDateTime, double price, double redemption, double grams, String availability, String availabilityMessage) {
         this.id = id;
         this.priceDateTime = priceDateTime;
         this.redemptionDateTime = redemptionDateTime;
         this.price = price;
         this.redemption = redemption;
+        this.availability = availability;
+        this.availabilityMessage = availabilityMessage;
 
         if(price > 0) {
             this.spread = redemption / price;

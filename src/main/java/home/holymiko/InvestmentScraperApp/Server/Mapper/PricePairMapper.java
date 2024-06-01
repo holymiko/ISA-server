@@ -20,6 +20,8 @@ public interface PricePairMapper {
         @Mapping(target = "redemption", source = "entity.redemption.amount"),
         @Mapping(target = "priceDateTime", source = "entity.sellPrice.dateTime"),
         @Mapping(target = "redemptionDateTime", source = "entity.redemption.dateTime"),
+        @Mapping(target = "availability", source = "entity.availability"),
+        @Mapping(target = "availabilityMessage", source = "entity.availabilityMessage"),
         @Mapping(target = "grams", source = "grams"),
         @Mapping(target = "dealer", source = "dealer")
     })
@@ -30,6 +32,8 @@ public interface PricePairMapper {
             @Mapping(target = "redemption", source = "entity.redemption.amount"),
             @Mapping(target = "priceDateTime", source = "entity.sellPrice.dateTime"),
             @Mapping(target = "redemptionDateTime", source = "entity.redemption.dateTime"),
+            @Mapping(target = "availability", source = "entity.availability"),
+            @Mapping(target = "availabilityMessage", ignore = true),
             @Mapping(target = "grams", source = "grams"),
             @Mapping(target = "dealer", source = "dealer")
     })
@@ -40,6 +44,8 @@ public interface PricePairMapper {
             @Mapping(target = "redemption", source = "entity.redemption.amount"),
             @Mapping(target = "priceDateTime", source = "entity.sellPrice.dateTime"),
             @Mapping(target = "redemptionDateTime", source = "entity.redemption.dateTime"),
+            @Mapping(target = "availability", source = "entity.availability"),
+            @Mapping(target = "availabilityMessage", source = "entity.availabilityMessage"),
             @Mapping(target = "grams", source = "grams")
     })
     PricePairDTO toPriceDTO(PricePair entity, Double grams);
@@ -49,6 +55,8 @@ public interface PricePairMapper {
             @Mapping(target = "redemption", source = "entity.redemption.amount"),
             @Mapping(target = "priceDateTime", source = "entity.sellPrice.dateTime"),
             @Mapping(target = "redemptionDateTime", source = "entity.redemption.dateTime"),
+            @Mapping(target = "availability", source = "entity.availability"),
+            @Mapping(target = "availabilityMessage", ignore = true),
             @Mapping(target = "grams", source = "grams")
     })
     PricePairDTO toPriceDTO(PricePairHistory entity, Double grams);

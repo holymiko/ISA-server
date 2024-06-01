@@ -11,8 +11,8 @@ public class PricePairDTO_Dealer extends PricePairDTO {
 
     private final Dealer dealer;
 
-    public PricePairDTO_Dealer(long id, LocalDateTime priceDateTime, LocalDateTime redemptionDateTime, double price, double redemption, Dealer dealer, double grams) {
-        super(id, priceDateTime, redemptionDateTime, price, redemption, grams);
+    public PricePairDTO_Dealer(long id, LocalDateTime priceDateTime, LocalDateTime redemptionDateTime, double price, double redemption, Dealer dealer, double grams, String availability, String availabilityMessage) {
+        super(id, priceDateTime, redemptionDateTime, price, redemption, grams, availability, availabilityMessage);
         this.dealer = dealer;
     }
 
