@@ -184,7 +184,7 @@ public class MetalScraper {
         try {
             productExtracted = Extract.productAggregateExtract(name);
         } catch (IllegalArgumentException e) {
-            throw new ScrapFailedException("Extraction ERROR: "+name +" "+link.getUri()+" - "+e.getMessage());
+            throw new ScrapFailedException("Extraction ERROR - "+e.getMessage()+": "+name +" "+link.getUri());
         }
 
         productSaveSwitch(link, productExtracted);
@@ -312,10 +312,10 @@ public class MetalScraper {
             try {
                 availability = Convert.availability(availabilityMsg);
             } catch (NullPointerException | IllegalArgumentException e) {
-                LOGGER.warn(e.getMessage());
+                LOGGER.error("{} - {}", linkDTO.getDealer(), e.getMessage());
             }
         } catch (NotImplementedException | NullPointerException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("{} - {}", linkDTO.getDealer(), e.getMessage());
         }
 
         try {

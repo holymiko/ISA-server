@@ -79,7 +79,7 @@ public class Extract {
         } catch (Exception ignored){}
 
         if (Stream.of("rok", "kangaroo", "kookaburra", "koala", "austrálie", "austral", " emu ", "drak a ",
-                "next generation", "black flag", "orel klínoocasý").anyMatch(text::contains)) {
+                "next generation", "black flag", "orel klínoocasý", "year of the").anyMatch(text::contains)) {
             return Producer.PERTH_MINT;
         }
         else if (Stream.of("rand", "krugerrand").anyMatch(text::contains)) {
@@ -90,7 +90,7 @@ public class Extract {
             return Producer.ROYAL_CANADIAN_MINT;
         }
         else if (Stream.of("sovereign elizabeth", "the royal mint", "the queen´s beasts", "the queen's beasts",
-                "royal arms", "dva draci", "mýty a legendy", "valiant", "the royal tudor beasts").anyMatch(text::contains)) {
+                "royal arms", "dva draci", "mýty a legendy", "valiant", "tudor beasts").anyMatch(text::contains)) {
             return Producer.ROYAL_MINT_UK;
         }
         else if (text.contains("gibraltar lady justice")) {

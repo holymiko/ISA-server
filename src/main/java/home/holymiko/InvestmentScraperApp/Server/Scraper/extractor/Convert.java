@@ -108,15 +108,17 @@ public class Convert {
             throw new NullPointerException();
         }
         availabilityMsg = availabilityMsg.toLowerCase().trim();
-        if(Stream.of("skladem", "lager").anyMatch(availabilityMsg::contains) || availabilityMsg.equals("")) {
-            return Availability.IN_STOCK;
+        if (availabilityMsg.contains("na prodejně")) {
+            return Availability.IN_STORE;
         } else if (availabilityMsg.contains("vyprodáno")) {
             return Availability.SOLD_OUT;
-        } else if (Stream.of("na dotaz", "na cestě").anyMatch(availabilityMsg::contains)) {
+        } else if (Stream.of("na dotaz", "nadotaz", "na cestě", "předobjednávka", "konečná cena a termín dodání budou dohodnuty telefonicky").anyMatch(availabilityMsg::contains)) {
             return Availability.ON_DEMAND;
-        } else if (Stream.of("na objednávku", "dní", "tage", "den", "woche").anyMatch(availabilityMsg::contains)) {
+        } else if (Stream.of("na objednávku", "den", "dní", "dnů", "tage", "woche").anyMatch(availabilityMsg::contains)) {
             return Availability.ON_ORDER;
-        } else if (Stream.of("dočasně nedostupné", "rezervace").anyMatch(availabilityMsg::contains)) {
+        } else if(Stream.of("skladem", "lager").anyMatch(availabilityMsg::contains) || availabilityMsg.equals("")) {
+            return Availability.IN_STOCK;
+        } else if (Stream.of("nedostupné", "rezervace").anyMatch(availabilityMsg::contains)) {
             return Availability.UNAVAILABLE;
         } else {
             throw new IllegalArgumentException("Invalid Enum argument - '"+availabilityMsg+"'");

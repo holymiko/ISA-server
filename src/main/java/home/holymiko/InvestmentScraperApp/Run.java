@@ -6,11 +6,14 @@ import home.holymiko.InvestmentScraperApp.Server.API.Controller.ScrapController;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
-import home.holymiko.InvestmentScraperApp.Server.Service.RateService;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.AurumProAdapter;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.CeskaMincovnaAdapter;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.GoldASilverAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.BessergoldAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.BessergoldDeAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.SilverumAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.ZlatakyAdapter;
+import home.holymiko.InvestmentScraperApp.Server.Service.RateService;
 import org.slf4j.Logger;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +94,9 @@ public class Run {
         } catch (NullPointerException e) {
             LOGGER.warn("WebClient OFF - BessergoldDeAdapter - EUR exchange rate is missing");
         }
+        metalScraper.addAdapter(Dealer.AURUM_PRO, new AurumProAdapter());
+        metalScraper.addAdapter(Dealer.CESKA_MINCOVNA, new CeskaMincovnaAdapter());
+        metalScraper.addAdapter(Dealer.GOLD_A_SILVER, new GoldASilverAdapter());
     }
 
 //    @Order(2)                       //  TODO activate before release
