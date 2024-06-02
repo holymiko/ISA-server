@@ -21,12 +21,12 @@ public class StatsDTO {
     private final Long linksGoldASilver;
     private final Long linksSilverum;
     private final Long linksZlataky;
-    private final Long linksNoProduct;
-    private final Long linksNoProductAurumPro;
-    private final Long linksNoProductBessergold;
-    private final Long linksNoProductBessergoldDe;
-    private final Long linksNoProductCeskaMincovna;
-    private final Long linksNoProductGoldASilver;
-    private final Long linksNoProductSilverum;
-    private final Long linksNoProductZlataky;
+    private final Long linksWithProduct;
+    private final Long linksWithProductAurumPro;
+    private final Long linksWithProductBessergold;
+    private final Long linksWithProductBessergoldDe;
+    private final Long linksWithProductCeskaMincovna;
+    private final Long linksWithProductGoldASilver;
+    private final Long linksWithProductSilverum;
+    private final Long linksWithProductZlataky;
 }

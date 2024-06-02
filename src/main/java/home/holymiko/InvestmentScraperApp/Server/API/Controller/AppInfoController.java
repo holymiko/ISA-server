@@ -44,14 +44,14 @@ public class AppInfoController extends BaseController {
                 linkService.countByParams(Dealer.GOLD_A_SILVER),
                 linkService.countByParams(Dealer.SILVERUM),
                 linkService.countByParams(Dealer.ZLATAKY),
-                linkService.countByParams(null, false),
-                linkService.countByParams(Dealer.AURUM_PRO, false),
-                linkService.countByParams(Dealer.BESSERGOLD_CZ, false),
-                linkService.countByParams(Dealer.BESSERGOLD_DE, false),
-                linkService.countByParams(Dealer.CESKA_MINCOVNA, false),
-                linkService.countByParams(Dealer.GOLD_A_SILVER, false),
-                linkService.countByParams(Dealer.SILVERUM, false),
-                linkService.countByParams(Dealer.ZLATAKY, false)
+                linkService.countByParams(null, true),
+                linkService.countByParams(Dealer.AURUM_PRO, true),
+                linkService.countByParams(Dealer.BESSERGOLD_CZ, true),
+                linkService.countByParams(Dealer.BESSERGOLD_DE, true),
+                linkService.countByParams(Dealer.CESKA_MINCOVNA, true),
+                linkService.countByParams(Dealer.GOLD_A_SILVER, true),
+                linkService.countByParams(Dealer.SILVERUM, true),
+                linkService.countByParams(Dealer.ZLATAKY, true)
         );
 
     }
