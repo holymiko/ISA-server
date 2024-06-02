@@ -1,6 +1,6 @@
 # Investment Scrap App server
 
-## How to run?
+## How to run on local machine?
 >### Database
 >* cd src/main/docker<br>
 >* docker build .<br>
@@ -14,15 +14,25 @@
 >Enter client directory
 >* yarn install<br>
 >* yarn start<br>
->### Server and Deployment
-> #### Tips
-> After FE deployment, open app in new tab. Otherwise, changes won't take place.
-> #### Useful commands
->Login to server<br>
+
+## Server deployment
+
+> > #### Commands
+><b>Login</b> to server<br>
 >`sudo ssh -v -p 22 root@67.223.117.163`<p>
-> Copy db dump from server to local machine<br>
+> <b>Backup DB</b> on server<br>
+> `nano app/postgres_data_dump/README.txt`<p>
+> <b>Copy DB</b> dump from server to local machine<br>
 >`scp root@67.223.117.163:/root/app/postgres_data_dump/14-04-24-after-clean-up.sql .`<p>
+> <b>Restore DB</b> from local machine<br>
+>`psql -U postgres -p 5432 -h 67.223.117.163 -d goldSilver < 25_04_24_product_synchronization.dump`<p>
 > [useful SQL commands](request.sql) <br>
+> > #### Tips
+> Lack of memory in Docker<br>
+> [docker system prune](https://docs.docker.com/reference/cli/docker/system/prune/)
+> <b>BACKUP Postgres</b> BEFORE this command !!!!<p>
+> After FE deployment, open app in new tab. Otherwise, changes won't take place.
+> 
 
 
 
@@ -30,7 +40,7 @@
 ## Tech stack 
 > ### BE
 > Java<br>Springboot<br>Hibernate<br>Maven<br>Docker<br>PostgreSQL<br>
-
+>
 > ### FE
 > ReactJS<br>JavaScript/TypeScript<br>Material-UI<br>
 
