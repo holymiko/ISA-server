@@ -112,7 +112,7 @@ public class ScrapController extends BaseController {
 
         LOGGER.info("By param scrap products");
         metalScraper.generalInSyncScrapAndSleep(
-                linkService.findLinksGroupedByProduct(metal)
+                linkService.findLinksGroupedByProduct(null, metal, null)
         );
 
         // Unlock guard

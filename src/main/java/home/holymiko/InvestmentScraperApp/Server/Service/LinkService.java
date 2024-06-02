@@ -7,6 +7,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.LinkRepository;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -59,9 +60,9 @@ public class LinkService {
                 ).collect(Collectors.toList());
     }
 
-    public List<List<LinkDTO>> findLinksGroupedByProduct(Metal metal) {
+    public List<List<LinkDTO>> findLinksGroupedByProduct(Dealer dealer, Metal metal, Form form) {
         return this.productRepository.findByParams(
-                null, null, metal, null, null, null, null, Pageable.unpaged()
+                dealer, null, metal, form, null, null, null, Pageable.unpaged()
                 ).stream().map(
                     product -> linkMapper.toDTO(product.getLinks())
                 ).collect(Collectors.toList());
