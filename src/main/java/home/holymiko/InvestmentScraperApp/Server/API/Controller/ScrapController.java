@@ -63,6 +63,21 @@ public class ScrapController extends BaseController {
         ScrapHistory.stopRunning();
     }
 
+    @PostMapping("/products/missing")
+    public void linksWithoutProduct() {
+        ScrapHistory.startRunning();
+        LOGGER.info("SCRAP Links without Product");
+
+        // Scrap Links without Product
+        metalScraper.generalScrapAndSleep(
+                linkService.findByProductId(null)
+        );
+        LogBuilder.logTimeStamp();
+        LOGGER.info("SCRAP FINISHED");
+
+        ScrapHistory.stopRunning();
+    }
+
     /**
      * Scrap products for ALL Links. Including Links which doesn't have Product yet.
      */
