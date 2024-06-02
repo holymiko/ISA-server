@@ -33,6 +33,10 @@ public class LinkService {
         return this.linkRepository.countByParams(dealer);
     }
 
+    public Long countByParams(Dealer dealer, boolean hasProduct)  {
+        return this.linkRepository.countByParams(dealer, hasProduct);
+    }
+
     /**
      * @throws NullPointerException input validation
      * @throws ResourceNotFoundException occurrence validation

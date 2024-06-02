@@ -4,6 +4,7 @@ import home.holymiko.InvestmentScraperApp.Server.Service.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.StatsDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileInputStream;
@@ -42,7 +43,15 @@ public class AppInfoController extends BaseController {
                 linkService.countByParams(Dealer.CESKA_MINCOVNA),
                 linkService.countByParams(Dealer.GOLD_A_SILVER),
                 linkService.countByParams(Dealer.SILVERUM),
-                linkService.countByParams(Dealer.ZLATAKY)
+                linkService.countByParams(Dealer.ZLATAKY),
+                linkService.countByParams(null, false),
+                linkService.countByParams(Dealer.AURUM_PRO, false),
+                linkService.countByParams(Dealer.BESSERGOLD_CZ, false),
+                linkService.countByParams(Dealer.BESSERGOLD_DE, false),
+                linkService.countByParams(Dealer.CESKA_MINCOVNA, false),
+                linkService.countByParams(Dealer.GOLD_A_SILVER, false),
+                linkService.countByParams(Dealer.SILVERUM, false),
+                linkService.countByParams(Dealer.ZLATAKY, false)
         );
 
     }

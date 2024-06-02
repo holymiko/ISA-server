@@ -47,4 +47,16 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
     Long countByParams(
             @Param("dealer") Dealer dealer
     );
+
+    @Query("select count(m) from Link m where " +
+            "(:dealer is null or m.dealer = :dealer) " +
+            "and " +
+            "(:hasProduct = false or m.productId is not null)" +
+            "and " +
+            "(:hasProduct = true or m.productId is null)"
+    )
+    Long countByParams(
+            @Param("dealer") Dealer dealer,
+            @Param("hasProduct") boolean hasProduct
+    );
 }
