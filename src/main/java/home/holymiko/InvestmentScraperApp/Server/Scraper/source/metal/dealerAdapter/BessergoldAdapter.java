@@ -63,13 +63,9 @@ public class BessergoldAdapter extends Client implements ProductDetailInterface 
 
     @Override
     public double scrapBuyPriceFromProductPage(HtmlPage productDetailPage) {
-        try {
-            return Convert.currencyToDouble(
-                    ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText()
-            );
-        } catch (Exception e) {
-            return 0.0;
-        }
+        return Convert.currencyToDouble(
+                ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText()
+        );
     }
 
     /**

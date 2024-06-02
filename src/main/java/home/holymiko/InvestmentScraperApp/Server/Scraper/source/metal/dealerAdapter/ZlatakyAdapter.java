@@ -56,18 +56,13 @@ public class ZlatakyAdapter extends Client implements ProductDetailInterface {
 
     @Override
     public double scrapBuyPriceFromProductPage(HtmlPage productDetailPage) {
-        try {
-            String x = Convert.currencyClean(
-                    ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText()
-            );
-            if(Pattern.compile("původnícena:").matcher(x).find()) {
-                x = x.split("původnícena:\\d+")[1];
-            }
-            return Double.parseDouble(x);
-        } catch (Exception e) {
-            return 0.0;
+        String x = Convert.currencyClean(
+                ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText()
+        );
+        if(Pattern.compile("původnícena:").matcher(x).find()) {
+            x = x.split("původnícena:\\d+")[1];
         }
-
+        return Double.parseDouble(x);
     }
     @Override
     public String scrapNameFromProductPage(HtmlPage page) {

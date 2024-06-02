@@ -8,7 +8,7 @@ import java.util.List;
 public interface SellPriceListInterface {
 
     default List<Pair<String, Double>> scrapSellPriceFromList() {
-        throw new NotImplementedException("Method haven't been implemented yet");
+        throw new NotImplementedException("Method 'scrapSellPriceFromList' haven't been implemented yet");
     }
 
 

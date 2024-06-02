@@ -82,15 +82,11 @@ public class SilverumAdapter extends Client implements ProductDetailInterface {
 
     @Override
     public double scrapBuyPriceFromProductPage(HtmlPage productDetailPage) {
-        try {
-            String x = ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText();
-            if(Pattern.compile("\\d+,\\d+ Kč bez DPH").matcher(x).find()) {
-                x = x.split("\\d*[ ]?\\d+,\\d+ Kč bez DPH")[0];
-            }
-            return Convert.currencyToDouble(x);
-        } catch (Exception e) {
-            return 0.0;
+        String x = ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText();
+        if(Pattern.compile("\\d+,\\d+ Kč bez DPH").matcher(x).find()) {
+            x = x.split("\\d*[ ]?\\d+,\\d+ Kč bez DPH")[0];
         }
+        return Convert.currencyToDouble(x);
     }
 
     /**

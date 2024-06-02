@@ -69,15 +69,11 @@ public class BessergoldDeAdapter extends Client implements ProductDetailInterfac
 
     @Override
     public double scrapBuyPriceFromProductPage(HtmlPage productDetailPage) {
-        try {
-            return Convert.currency(
-                    ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText().replace(".", ""),
-                    euroExchangeRate,
-                    "€"
-            );
-        } catch (Exception e) {
-            return 0.0;
-        }
+        return Convert.currency(
+                ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText().replace(".", ""),
+                euroExchangeRate,
+                "€"
+        );
     }
 
     /**

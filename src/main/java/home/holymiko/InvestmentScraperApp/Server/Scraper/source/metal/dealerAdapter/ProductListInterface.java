@@ -20,10 +20,10 @@ public interface ProductListInterface {
     Logger LOGGER = LoggerFactory.getLogger(ProductListInterface.class);
 
     default HtmlPage getPage(final String link) throws ResourceNotFoundException {
-        throw new NotImplementedException("Method haven't been implemented yet");
+        throw new NotImplementedException("Method 'getPage' haven't been implemented yet");
     }
     default List<Link> scrapAllLinksFromProductLists() {
-        throw new NotImplementedException("Method haven't been implemented yet");
+        throw new NotImplementedException("Method 'scrapAllLinksFromProductLists' haven't been implemented yet");
     }
 
     /**
@@ -53,11 +53,11 @@ public interface ProductListInterface {
     }
 
     default List<HtmlElement> scrapProductList(HtmlPage page) {
-        throw new NotImplementedException("Method haven't been implemented yet");
+        throw new NotImplementedException("Method 'scrapProductList' haven't been implemented yet");
     }
 
     default Link scrapLink(HtmlElement elementProduct) {
-        throw new NotImplementedException("Method haven't been implemented yet");
+        throw new NotImplementedException("Method 'scrapLink' haven't been implemented yet");
     }
 
     /**

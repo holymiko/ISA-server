@@ -321,13 +321,20 @@ public class MetalScraper {
         try {
             // Choose MetalScraperInterface & scrap buy price
             buy = adapter.scrapBuyPriceFromProductPage(productDetailPage);
-        } catch (NumberFormatException e) {
-            LOGGER.warn(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("{} - {}", linkDTO.getDealer(), e.getMessage());
+            buy = 0.0;
         }
-        if(buy == null || buy.intValue() == 0) {
+        if(buy.intValue() == 0) {
             LOGGER.warn("Kupni cena = 0");
         }
-        sell = adapter.scrapSellPriceFromProductPage(productDetailPage);
+
+        try {
+            sell = adapter.scrapSellPriceFromProductPage(productDetailPage);
+        } catch (Exception e) {
+            LOGGER.error("{} - {}", linkDTO.getDealer(), e.getMessage());
+            sell = 0.0;
+        }
         if(sell.intValue() == 0) {
             LOGGER.warn("Vykupni cena = 0");
         }
