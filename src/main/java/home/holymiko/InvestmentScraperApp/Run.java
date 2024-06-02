@@ -80,9 +80,8 @@ public class Run {
     @Order(1)
     @EventListener(ApplicationStartedEvent.class)
     public void initializeAdapterMap() {
+        metalScraper.addAdapter(Dealer.AURUM_PRO, new AurumProAdapter());
         metalScraper.addAdapter(Dealer.BESSERGOLD_CZ, new BessergoldAdapter());
-        metalScraper.addAdapter(Dealer.SILVERUM, new SilverumAdapter());
-        metalScraper.addAdapter(Dealer.ZLATAKY, new ZlatakyAdapter());
         try {
             metalScraper.addAdapter(
                     Dealer.BESSERGOLD_DE,
@@ -94,9 +93,10 @@ public class Run {
         } catch (NullPointerException e) {
             LOGGER.warn("WebClient OFF - BessergoldDeAdapter - EUR exchange rate is missing");
         }
-        metalScraper.addAdapter(Dealer.AURUM_PRO, new AurumProAdapter());
         metalScraper.addAdapter(Dealer.CESKA_MINCOVNA, new CeskaMincovnaAdapter());
         metalScraper.addAdapter(Dealer.GOLD_A_SILVER, new GoldASilverAdapter());
+        metalScraper.addAdapter(Dealer.SILVERUM, new SilverumAdapter());
+        metalScraper.addAdapter(Dealer.ZLATAKY, new ZlatakyAdapter());
     }
 
 //    @Order(2)                       //  TODO activate before release
