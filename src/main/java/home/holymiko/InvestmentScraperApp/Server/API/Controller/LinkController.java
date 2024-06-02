@@ -28,5 +28,12 @@ public class LinkController extends BaseController {
         return this.linkService.findByParams(productId, dealer);
     }
 
-    // TODO getCount
+    @GetMapping("/count")
+    public Long countByParams(
+            @RequestParam(required = false) Dealer dealer
+    ) {
+        LOGGER.info("countByParams {}", dealer);
+        return this.linkService.countByParams(dealer);
+    }
+
 }
