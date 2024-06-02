@@ -67,13 +67,15 @@ public interface ProductListInterface {
      *  Use Link constructor including 'name'
      *  Drop DB and check if it loads data
      */
-    default Link scrapLink(HtmlElement elementProduct, String xPathToLink, Dealer dealer, String baseUrl) {
-        HtmlAnchor itemAnchor = elementProduct.getFirstByXPath(xPathToLink);
+    default Link scrapLinkFromAnchor(HtmlElement elementProduct, String xPathToAnchor, Dealer dealer, String prefixUrl) {
+        HtmlAnchor itemAnchor = elementProduct.getFirstByXPath(xPathToAnchor);
         if(itemAnchor == null) {
             LOGGER.error(elementProduct.asText());
             return null;
         }
-        return new Link(dealer, baseUrl + itemAnchor.getHrefAttribute(), "TODO");
+        final String url = prefixUrl + itemAnchor.getHrefAttribute();
+        LOGGER.info("FOUND: " + url);
+        return new Link(dealer, url, "TODO");
     }
 
 }

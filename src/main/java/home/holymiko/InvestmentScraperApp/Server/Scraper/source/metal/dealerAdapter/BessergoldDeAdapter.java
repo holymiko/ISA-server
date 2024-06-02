@@ -16,10 +16,12 @@ import java.util.List;
 public class BessergoldDeAdapter extends Client implements ProductDetailInterface {
 
     private static final Dealer DEALER = Dealer.BESSERGOLD_DE;
-    private static final String SEARCH_URL_GOLD = "https://www.bessergold.de/de/gold.html?product_list_limit=all";
-    private static final String SEARCH_URL_SILVER = "https://www.bessergold.de/de/silber.html?product_list_limit=all";
-    private static final String SEARCH_URL_PLATINUM = "https://www.bessergold.de/de/platin.html?product_list_limit=all";
-    private static final String SEARCH_URL_PALLADIUM = "https://www.bessergold.de/de/palladium.html?product_list_limit=all";
+    private static final List<String> PRODUCT_LIST_URL = Arrays.asList(
+            "https://www.bessergold.de/de/gold.html?product_list_limit=all",
+            "https://www.bessergold.de/de/silber.html?product_list_limit=all",
+            "https://www.bessergold.de/de/platin.html?product_list_limit=all",
+            "https://www.bessergold.de/de/palladium.html?product_list_limit=all"
+    );
 
     private static final String X_PATH_PRODUCT_LIST = "//li[@class='item product product-item']";
     private static final String X_PATH_PRODUCT_NAME = ".//span[@class='base']";
@@ -42,9 +44,7 @@ public class BessergoldDeAdapter extends Client implements ProductDetailInterfac
 
     @Override
     public List<Link> scrapAllLinksFromProductLists() {
-        return scrapAllLinksFromProductListUtil(
-                Arrays.asList(SEARCH_URL_GOLD, SEARCH_URL_SILVER, SEARCH_URL_PLATINUM, SEARCH_URL_PALLADIUM)
-        );
+        return scrapAllLinksFromProductListUtil(PRODUCT_LIST_URL);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class BessergoldDeAdapter extends Client implements ProductDetailInterfac
 
     @Override
     public Link scrapLink(HtmlElement elementProduct) {
-        return scrapLink(
+        return scrapLinkFromAnchor(
                 elementProduct,
                 ".//strong[@class='product name product-item-name']/a",
                 DEALER,

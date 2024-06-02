@@ -19,16 +19,16 @@ public class SilverumAdapter extends Client implements ProductDetailInterface {
 
     private static final Dealer DEALER = Dealer.SILVERUM;
     private static final String BASE = "https://www.silverum.cz/";
-    private static final String SEARCH_URL_GOLD_COIN = "https://www.silverum.cz/investicni-mince.html";
-    private static final String SEARCH_URL_GOLD_BAR = "https://www.silverum.cz/investicni-slitky.html";
-    private static final String SEARCH_URL_GOLD_BRICK = "https://www.silverum.cz/investicni-cihly.html";
-
-    // THIS won't work from list, because of missing weight
-    private static final String SEARCH_URL_SILVER_COIN_CNB = "https://www.silverum.cz/mince-cnb.html";
-    private static final String SEARCH_URL_SILVER_COIN_21 = "https://www.silverum.cz/numismatika-do-2021.html";
-    private static final String SEARCH_URL_SILVER_COIN_22 = "https://www.silverum.cz/numismatika-2022.html";
-    private static final String SEARCH_URL_SILVER_BAR = "https://www.silverum.cz/investicni-slitky-cs.html";
-    private static final String SEARCH_URL_SILVER_BRICK = "https://www.silverum.cz/investicni-cihly-cs.html";
+    private static final List<String> PRODUCT_LIST_URL = Arrays.asList(
+            "https://www.silverum.cz/investicni-mince.html",
+            "https://www.silverum.cz/investicni-slitky.html",
+            "https://www.silverum.cz/investicni-cihly.html",
+              // "https://www.silverum.cz/mince-cnb.html", THIS won't work from list, because of missing weigh,
+             "https://www.silverum.cz/numismatika-do-2021.html",
+             "https://www.silverum.cz/numismatika-2022.html",
+             "https://www.silverum.cz/investicni-slitky-cs.html",
+             "https://www.silverum.cz/investicni-cihly-cs.html"
+    );
 
     private static final String X_PATH_PRODUCT_LIST = ".//div[@class='productItem']";
     private static final String X_PATH_PRODUCT_NAME = ".//h1[@class='title f600']";
@@ -56,14 +56,12 @@ public class SilverumAdapter extends Client implements ProductDetailInterface {
 
     @Override
     public List<Link> scrapAllLinksFromProductLists() {
-        return scrapAllLinksFromProductListUtil(
-                Arrays.asList(SEARCH_URL_GOLD_COIN, SEARCH_URL_GOLD_BAR, SEARCH_URL_GOLD_BRICK, SEARCH_URL_SILVER_COIN_21, SEARCH_URL_SILVER_COIN_22, SEARCH_URL_SILVER_BAR, SEARCH_URL_SILVER_BRICK)
-        );
+        return scrapAllLinksFromProductListUtil(PRODUCT_LIST_URL);
     }
 
     @Override
     public Link scrapLink(HtmlElement elementProduct) {
-        return scrapLink(elementProduct, "./a", DEALER, BASE);
+        return scrapLinkFromAnchor(elementProduct, "./a", DEALER, BASE);
     }
 
 

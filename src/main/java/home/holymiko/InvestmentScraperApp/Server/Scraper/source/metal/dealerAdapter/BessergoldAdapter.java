@@ -16,10 +16,12 @@ import java.util.List;
 public class BessergoldAdapter extends Client implements ProductDetailInterface {
 
     private static final Dealer DEALER = Dealer.BESSERGOLD_CZ;
-    private static final String SEARCH_URL_GOLD = "https://www.bessergold.cz/investicni-zlato.html?product_list_limit=all";
-    private static final String SEARCH_URL_SILVER = "https://www.bessergold.cz/investicni-stribro.html?product_list_limit=all";
-    private static final String SEARCH_URL_PLATINUM = "https://www.bessergold.cz/investicni-platina.html?product_list_limit=all";
-    private static final String SEARCH_URL_PALLADIUM = "https://www.bessergold.cz/investicni-palladium.html?product_list_limit=all";
+    private static final List<String> PRODUCT_LIST_URL = Arrays.asList(
+            "https://www.bessergold.cz/investicni-zlato.html?product_list_limit=all",
+            "https://www.bessergold.cz/investicni-stribro.html?product_list_limit=all",
+            "https://www.bessergold.cz/investicni-platina.html?product_list_limit=all",
+            "https://www.bessergold.cz/investicni-palladium.html?product_list_limit=all"
+    );
 
     private static final String X_PATH_PRODUCT_LIST = "//li[@class='item product product-item']";
     private static final String X_PATH_PRODUCT_NAME = ".//span[@class='base']";
@@ -38,9 +40,7 @@ public class BessergoldAdapter extends Client implements ProductDetailInterface 
 
     @Override
     public List<Link> scrapAllLinksFromProductLists() {
-        return scrapAllLinksFromProductListUtil(
-                Arrays.asList(SEARCH_URL_GOLD, SEARCH_URL_SILVER, SEARCH_URL_PLATINUM, SEARCH_URL_PALLADIUM)
-        );
+        return scrapAllLinksFromProductListUtil(PRODUCT_LIST_URL);
     }
 
     /////// PRICE
@@ -96,7 +96,7 @@ public class BessergoldAdapter extends Client implements ProductDetailInterface 
 
     @Override
     public Link scrapLink(HtmlElement elementProduct) {
-        return scrapLink(
+        return scrapLinkFromAnchor(
                 elementProduct,
                 ".//strong[@class='product name product-item-name']/a",
                 DEALER,

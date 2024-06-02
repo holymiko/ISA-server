@@ -16,14 +16,16 @@ public class ZlatakyAdapter extends Client implements ProductDetailInterface {
 
     private static final Dealer DEALER = Dealer.ZLATAKY;
     private static final String BASE_URL = "https://zlataky.cz";
-    private static final String SEARCH_URL_GOLD_COIN = "https://zlataky.cz/investicni-zlate-mince?page=1&page_all=1";
-    private static final String SEARCH_URL_GOLD_BAR = "https://zlataky.cz/investicni-zlate-slitky?page=1&page_all=1";
-    private static final String SEARCH_URL_SILVER_COIN = "https://zlataky.cz/investicni-stribrne-mince?page=1&page_all=1";
-    private static final String SEARCH_URL_SILVER_BAR = "https://zlataky.cz/investicni-stribrne-slitky?page=1&page_all=1";
-    private static final String SEARCH_URL_PLATINUM = "https://zlataky.cz/ostatni-investicni-kovy";
+    private static final List<String> PRODUCT_LIST_URL = Arrays.asList(
+            "https://zlataky.cz/investicni-zlate-mince?page=1&page_all=1",
+            "https://zlataky.cz/investicni-zlate-slitky?page=1&page_all=1",
+            "https://zlataky.cz/investicni-stribrne-mince?page=1&page_all=1",
+            "https://zlataky.cz/investicni-stribrne-slitky?page=1&page_all=1",
+            "https://zlataky.cz/ostatni-investicni-kovy"
+    );
 
     private static final String X_PATH_PRODUCT_LIST = ".//*[@id=\"kategorie-obsah\"]/div[3]/child::*";
-    private static final String X_PATH_PRODUCT_LIST_PRODUCT_LINK = ".//div/div[4]/a";
+    private static final String X_PATH_PRODUCT_LIST_ANCHOR = ".//div/div[4]/a";
     private static final String X_PATH_PRODUCT_NAME = "//*[@id=\"snippet--page\"]/div[2]/div[1]/div[2]/h1";
     private static final String X_PATH_BUY_PRICE = "//*[@id=\"hlavni_cena\"]";
     private static final String X_PATH_SELL_PRICE = ".//*[@id=\"box_vip_vykup\"]/div[3]/span[2]/strong";
@@ -42,9 +44,7 @@ public class ZlatakyAdapter extends Client implements ProductDetailInterface {
 
     @Override
     public List<Link> scrapAllLinksFromProductLists() {
-        return scrapAllLinksFromProductListUtil(
-                Arrays.asList(SEARCH_URL_GOLD_BAR, SEARCH_URL_GOLD_COIN, SEARCH_URL_SILVER_BAR, SEARCH_URL_SILVER_COIN, SEARCH_URL_PLATINUM)
-        );
+        return scrapAllLinksFromProductListUtil(PRODUCT_LIST_URL);
     }
 
     /////// PRICE
@@ -88,7 +88,7 @@ public class ZlatakyAdapter extends Client implements ProductDetailInterface {
     /////// LINK
     @Override
     public Link scrapLink(HtmlElement elementProduct) {
-        return scrapLink(elementProduct, X_PATH_PRODUCT_LIST_PRODUCT_LINK, DEALER, BASE_URL);
+        return scrapLinkFromAnchor(elementProduct, X_PATH_PRODUCT_LIST_ANCHOR, DEALER, BASE_URL);
     }
 
     ////// AVAILABILITY
