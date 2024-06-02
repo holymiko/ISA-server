@@ -15,6 +15,7 @@ import java.util.List;
 
 public class BessergoldDeAdapter extends Client implements ProductDetailInterface {
 
+    private static final Dealer DEALER = Dealer.BESSERGOLD_DE;
     private static final String SEARCH_URL_GOLD = "https://www.bessergold.de/de/gold.html?product_list_limit=all";
     private static final String SEARCH_URL_SILVER = "https://www.bessergold.de/de/silber.html?product_list_limit=all";
     private static final String SEARCH_URL_PLATINUM = "https://www.bessergold.de/de/platin.html?product_list_limit=all";
@@ -61,7 +62,7 @@ public class BessergoldDeAdapter extends Client implements ProductDetailInterfac
         return scrapLink(
                 elementProduct,
                 ".//strong[@class='product name product-item-name']/a",
-                Dealer.BESSERGOLD_DE,
+                DEALER,
                 ""
         );
     }

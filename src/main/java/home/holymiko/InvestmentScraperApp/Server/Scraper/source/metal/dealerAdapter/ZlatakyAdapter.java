@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 public class ZlatakyAdapter extends Client implements ProductDetailInterface {
 
+    private static final Dealer DEALER = Dealer.ZLATAKY;
     private static final String BASE_URL = "https://zlataky.cz";
     private static final String SEARCH_URL_GOLD_COIN = "https://zlataky.cz/investicni-zlate-mince?page=1&page_all=1";
     private static final String SEARCH_URL_GOLD_BAR = "https://zlataky.cz/investicni-zlate-slitky?page=1&page_all=1";
@@ -87,7 +88,7 @@ public class ZlatakyAdapter extends Client implements ProductDetailInterface {
     /////// LINK
     @Override
     public Link scrapLink(HtmlElement elementProduct) {
-        return scrapLink(elementProduct, X_PATH_PRODUCT_LIST_PRODUCT_LINK, Dealer.ZLATAKY, BASE_URL);
+        return scrapLink(elementProduct, X_PATH_PRODUCT_LIST_PRODUCT_LINK, DEALER, BASE_URL);
     }
 
     ////// AVAILABILITY

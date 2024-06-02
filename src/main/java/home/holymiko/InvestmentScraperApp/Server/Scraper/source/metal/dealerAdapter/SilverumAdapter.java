@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class SilverumAdapter extends Client implements ProductDetailInterface {
+
+    private static final Dealer DEALER = Dealer.SILVERUM;
     private static final String BASE = "https://www.silverum.cz/";
     private static final String SEARCH_URL_GOLD_COIN = "https://www.silverum.cz/investicni-mince.html";
     private static final String SEARCH_URL_GOLD_BAR = "https://www.silverum.cz/investicni-slitky.html";
@@ -61,7 +63,7 @@ public class SilverumAdapter extends Client implements ProductDetailInterface {
 
     @Override
     public Link scrapLink(HtmlElement elementProduct) {
-        return scrapLink(elementProduct, "./a", Dealer.SILVERUM, BASE);
+        return scrapLink(elementProduct, "./a", DEALER, BASE);
     }
 
 
