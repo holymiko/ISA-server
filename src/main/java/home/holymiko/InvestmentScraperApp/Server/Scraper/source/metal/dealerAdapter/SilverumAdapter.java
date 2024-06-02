@@ -1,4 +1,4 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter;
+package home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class SilverumAdapter extends Client implements MetalAdapterInterface {
+public class SilverumAdapter extends Client implements ProductDetailInterface {
     private static final String BASE = "https://www.silverum.cz/";
     private static final String SEARCH_URL_GOLD_COIN = "https://www.silverum.cz/investicni-mince.html";
     private static final String SEARCH_URL_GOLD_BAR = "https://www.silverum.cz/investicni-slitky.html";
@@ -34,7 +34,6 @@ public class SilverumAdapter extends Client implements MetalAdapterInterface {
 
     private static final String X_PATH_BUY_PRICE = ".//strong[@class='pricePerItem']";
     private static final String X_PATH_BUY_PRICE_LIST = ".//div[@class='price f600']";
-    private static final String X_PATH_REDEMPTION_PRICE = "";
 
     private static final String X_PATH_BID_SPOT_GOLD = "/html/body/section[1]/div/div/div[1]/div/div/div[2]/div";
     private static final String X_PATH_BID_SPOT_SILVER  = "/html/body/section[1]/div/div/div[2]/div/div/div[2]/div";

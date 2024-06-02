@@ -1,9 +1,9 @@
-package home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter;
+package home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.apache.commons.lang3.NotImplementedException;
 
-public interface MetalAdapterInterface extends ProductListInterface, SellInterface {
+public interface ProductDetailInterface extends ProductListInterface, SellPriceListInterface {
 
     default String scrapNameFromProductPage(HtmlPage page) {
         throw new NotImplementedException("Method haven't been implemented yet");
@@ -14,6 +14,10 @@ public interface MetalAdapterInterface extends ProductListInterface, SellInterfa
     }
 
     default String scrapAvailabilityFromProductPage(HtmlPage productDetailPage) {
+        throw new NotImplementedException("Method haven't been implemented yet");
+    }
+
+    default double scrapSellPriceFromProductPage(HtmlPage page) {
         throw new NotImplementedException("Method haven't been implemented yet");
     }
 

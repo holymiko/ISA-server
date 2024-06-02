@@ -5,7 +5,7 @@ import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFound
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapFailedException;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.extractor.Convert;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.Client;
-import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.metalAdapter.*;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.advanced.PortfolioDTO_ProductDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDTO;
@@ -41,7 +41,7 @@ public class MetalScraper {
     private final ProductService productService;
 
     // Used for Polymorphic calling
-    private final Map<Dealer, MetalAdapterInterface> dealerToMetalAdapter = new HashMap<>();
+    private final Map<Dealer, ProductDetailInterface> dealerToMetalAdapter = new HashMap<>();
 
 
     @Autowired
@@ -58,7 +58,7 @@ public class MetalScraper {
         this.productService = productService;
     }
 
-    public void addAdapter(Dealer dealer, MetalAdapterInterface adapter) {
+    public void addAdapter(Dealer dealer, ProductDetailInterface adapter) {
         dealerToMetalAdapter.put(dealer, adapter);
     }
 
@@ -150,7 +150,7 @@ public class MetalScraper {
         String name = "";
         final HtmlPage page;
         final ProductCreateDTO productExtracted;
-        final MetalAdapterInterface adapter = dealerToMetalAdapter.get(link.getDealer());
+        final ProductDetailInterface adapter = dealerToMetalAdapter.get(link.getDealer());
 
         if(link.getProductId() != null) {
             throw new ScrapFailedException("ProductScrap - Product already scraped");
@@ -292,7 +292,7 @@ public class MetalScraper {
     private void priceScrap(final LinkDTO linkDTO) {
         Double buy = null;
         Double sell = null;
-        final MetalAdapterInterface adapter = dealerToMetalAdapter.get(linkDTO.getDealer());
+        final ProductDetailInterface adapter = dealerToMetalAdapter.get(linkDTO.getDealer());
         final HtmlPage productDetailPage;
         String availabilityMsg = null;
         Availability availability = null;
@@ -342,9 +342,9 @@ public class MetalScraper {
     @Deprecated
     private void redemptionScrap(final Metal metal, final Dealer dealer) {
 //        LOGGER.info("Redemption Scrap");
-//        if( dealerToMetalAdapter.get(dealer) instanceof SellInterface) {
+//        if( dealerToMetalAdapter.get(dealer) instanceof SellPriceListInterface) {
 //            LOGGER.info("Scraping Redemption List available");
-//            List<Pair<String, Double>> nameRedemptionMap = ((SellInterface) dealerToMetalAdapter.get(dealer)).scrapBuyOutFromList();
+//            List<Pair<String, Double>> nameRedemptionMap = ((SellPriceListInterface) dealerToMetalAdapter.get(dealer)).scrapBuyOutFromList();
 //
 //            nameRedemptionMap.forEach(
 //                x -> {
@@ -405,7 +405,7 @@ public class MetalScraper {
         AtomicInteger linkInDBCounter = new AtomicInteger(0);
 
         // Polymorphic call
-        for (MetalAdapterInterface scraperInterface : dealerToMetalAdapter.values()) {
+        for (ProductDetailInterface scraperInterface : dealerToMetalAdapter.values()) {
             saveAndCountLinks(scraperInterface.scrapAllLinksFromProductLists(), linkSaveCounter, linkInDBCounter);
         }
         LOGGER.info("Links saved: " + linkSaveCounter + ", Links already in DB: " + linkInDBCounter);
