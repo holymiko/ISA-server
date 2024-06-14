@@ -32,17 +32,15 @@ public class LinkController extends BaseController {
     }
 
     @GetMapping("/count")
-    public List<LinkCountDTO> countByParams(
-            @RequestParam(required = false) Dealer dealer
-    ) {
-        LOGGER.info("countByParams {}", dealer);
+    public List<LinkCountDTO> countLinks() {
+        LOGGER.info("countLinks");
 
         return new ArrayList<>(
-            Arrays.stream(Dealer.values()).map((d) ->
+            Arrays.stream(Dealer.values()).map((dealer) ->
                 new LinkCountDTO(
-                    d,
-                    linkService.countByParams(d),
-                    linkService.countByParams(d, true)
+                    dealer,
+                    linkService.countByParams(dealer),
+                    linkService.countByParams(dealer, true)
                 )
             ).toList()
         );
