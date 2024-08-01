@@ -31,9 +31,11 @@ import org.slf4j.LoggerFactory;
 
 @Component
 public class MetalScraper {
-    private static final long ETHICAL_DELAY = 700;
-    private static final int PRINT_INTERVAL = 10;
     private static final Logger LOGGER = LoggerFactory.getLogger(MetalScraper.class);
+
+    private final int ETHICAL_DELAY;
+    private final int LOG_INTERVAL;
+    private final boolean SAVE_NEW_PRODUCTS_SEPARATELY;
 
     private final LinkService linkService;
     private final PriceService priceService;
@@ -46,6 +48,7 @@ public class MetalScraper {
 
     @Autowired
     public MetalScraper(
+            AppPropsService appPropsService,
             LinkService linkService,
             PriceService priceService,
             PortfolioService portfolioService,
@@ -56,6 +59,9 @@ public class MetalScraper {
         this.priceService = priceService;
         this.portfolioService = portfolioService;
         this.productService = productService;
+        ETHICAL_DELAY = Integer.parseInt(appPropsService.getAppProperty("scraper.ethicaldelay"));
+        LOG_INTERVAL = Integer.parseInt(appPropsService.getAppProperty("scraper.log.interval"));
+        SAVE_NEW_PRODUCTS_SEPARATELY = Boolean.parseBoolean(appPropsService.getAppProperty("scraper.newproducts.saveseparately"));
     }
 
     public void addAdapter(Dealer dealer, ProductDetailInterface adapter) {
@@ -79,7 +85,7 @@ public class MetalScraper {
             generalScrap(link);
 
             // TODO Logging
-            LogBuilder.statusPrint(PRINT_INTERVAL, links.size(), counter++);
+            LogBuilder.statusPrint(LOG_INTERVAL, links.size(), counter++);
             // Sleep time is dynamic, according to time took by scrap procedure
             Client.dynamicSleep(ETHICAL_DELAY, startTime);
         }
@@ -102,7 +108,7 @@ public class MetalScraper {
             productLinks.forEach(this::generalScrap);
 
             // TODO Logging
-            LogBuilder.statusPrint(PRINT_INTERVAL, linksGroupByProduct.size(), counter++);
+            LogBuilder.statusPrint(LOG_INTERVAL, linksGroupByProduct.size(), counter++);
             // Sleep time is dynamic, according to time took by scrap procedure
             Client.dynamicSleep(ETHICAL_DELAY, startTime);
         }
@@ -206,7 +212,7 @@ public class MetalScraper {
         final List<Product> nonSpecialProducts;
 
         // Special products are saved separately
-        if(productExtracted.isSaveAlone()) {
+        if(SAVE_NEW_PRODUCTS_SEPARATELY || productExtracted.isSaveAlone()) {
             saveValidNewProductAndScrapPrice(link, productExtracted);
             return;
         }
@@ -260,7 +266,7 @@ public class MetalScraper {
         Product p = productService.save(productExtracted);
         linkDTO = linkService.updateLinkProductId(linkDTO.getId(), p.getId(), p.getName());
         priceScrap(linkDTO);
-        LOGGER.info("Product saved");
+        LOGGER.info("New Product saved");
     }
 
     /**

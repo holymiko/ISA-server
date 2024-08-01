@@ -1,25 +1,28 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
-import home.holymiko.InvestmentScraperApp.Server.Service.*;
+import home.holymiko.InvestmentScraperApp.Server.Service.AppPropsService;
+import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
+import home.holymiko.InvestmentScraperApp.Server.Service.PriceService;
+import home.holymiko.InvestmentScraperApp.Server.Service.ProductService;
+import home.holymiko.InvestmentScraperApp.Server.Service.RateService;
+import home.holymiko.InvestmentScraperApp.Server.Service.StockGrahamService;
+import home.holymiko.InvestmentScraperApp.Server.Service.TickerService;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.StatsDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import lombok.AllArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Properties;
 
 @RestController
 @RequestMapping("/api/v2/info")
 @AllArgsConstructor
 public class AppInfoController extends BaseController {
 
-    private static final String APP_CONFIG_PATH = "target/classes/application.properties";
-
-
+    private final AppPropsService appPropsService;
     private final RateService rateService;
     private final LinkService linkService;
     private final ProductService productService;
@@ -58,10 +61,7 @@ public class AppInfoController extends BaseController {
 
     @GetMapping("/version")
     public String getProjectVersion() throws IOException {
-        Properties appProps = new Properties();
-        appProps.load(new FileInputStream(APP_CONFIG_PATH));
-
-        return appProps.getProperty("project.version");
+        return appPropsService.getAppProperty("project.version");
     }
 
     @GetMapping("/time")
