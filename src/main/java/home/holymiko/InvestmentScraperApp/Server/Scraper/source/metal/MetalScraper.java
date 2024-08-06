@@ -76,8 +76,14 @@ public class MetalScraper {
      * Prints to console.
      * @param links Optional links of Products
      */
-    public void generalScrapAndSleep(final List<LinkDTO> links) {
+    public void generalScrapAndSleep(List<LinkDTO> links) {
+        final int before = links.size();
         int counter = 0;
+
+        // Filter products without Adapter ON
+        links = links.stream().filter(x -> dealerToMetalAdapter.containsKey(x.getDealer())).collect(Collectors.toList());
+        LOGGER.info(".generalScrapAndSleep() - Filter products with OFF Adapter - {} -> {}", before, links.size());
+
         for (LinkDTO link : links) {
             long startTime = System.nanoTime();
 
@@ -98,8 +104,16 @@ public class MetalScraper {
      * Performs ethical delay.
      * @param linksGroupByProduct Lists of Links, grouped in List, by Product
      */
-    public void generalInSyncScrapAndSleep(final List<List<LinkDTO>> linksGroupByProduct) {
+    public void generalInSyncScrapAndSleep(List<List<LinkDTO>> linksGroupByProduct) {
+        final int before = linksGroupByProduct.size();
         int counter = 0;
+
+        // Filter products without Adapter ON
+        linksGroupByProduct = linksGroupByProduct.stream().map(productLinks ->
+                productLinks.stream().filter(x -> dealerToMetalAdapter.containsKey(x.getDealer())).collect(Collectors.toList())
+        ).filter(x -> !x.isEmpty()).collect(Collectors.toList());
+        LOGGER.info(".generalInSyncScrapAndSleep() - Filter products with OFF Adapter - {} -> {}", before, linksGroupByProduct.size());
+
         for (List<LinkDTO> productLinks : linksGroupByProduct) {
             long startTime = System.nanoTime();
 
@@ -244,7 +258,7 @@ public class MetalScraper {
                 throw new DataIntegrityViolationException(
                         "ProductScrap - Only one Link per Dealer related to single Product allowed \n" +
                         "   Link:      " + link + "\n" +
-                        "   Found:     " + productFound.toString() + "\n"
+                        "   Found:     " + productFound + "\n"
                 );
             }
 
@@ -254,7 +268,7 @@ public class MetalScraper {
         }
 
         throw new DataIntegrityViolationException(
-                "ERROR: Multiple Products for following params present in DB\n" + productExtracted.toString()
+                "ERROR: Multiple Products for following params present in DB\n" + productExtracted
         );
     }
 

@@ -25,7 +25,7 @@ public class Extract {
         else if (text.contains("heraeus")) {
             return Producer.HERAEUS;
         }
-        else if (Stream.of("münze osterreich", "wiener philharmoniker").anyMatch(text::contains)) {
+        else if (Stream.of("münze osterreich", "wiener", "philharmoniker").anyMatch(text::contains)) {
             return Producer.MUNZE_OSTERREICH;
         }
         else if (text.contains("pamp")) {
@@ -64,6 +64,18 @@ public class Extract {
         else if (text.contains("comex")) {
             return Producer.COMEX;
         }
+        else if (Stream.of("hafner", "heimerle").anyMatch(text::contains)) {
+            return Producer.C_HAFNER;
+        }
+        else if (text.contains("bessergold")) {
+            return Producer.BESSERGOLD;
+        }
+        else if (text.contains("nautical")) {
+            return Producer.BH_MAYER_MINT;
+        }
+        else if (text.contains("leipziger")) {
+            return Producer.LEIPZIGER_EDELMETALLVERARBEITUNG_GMBH;
+        }
 
         throw new IllegalArgumentException("Invalid argument for Producer enum");
     }
@@ -79,28 +91,30 @@ public class Extract {
         } catch (Exception ignored){}
 
         if (Stream.of("rok", "kangaroo", "kookaburra", "koala", "austrálie", "austral", " emu ", "drak a ",
-                "next generation", "black flag", "orel klínoocasý", "year of the").anyMatch(text::contains)) {
+                "next generation", "black flag", "orel klínoocasý", "year of the", "marvel", "wombat", "quokka",
+                "chinese myths and legends", "- lunár. série", "- lunární série").anyMatch(text::contains)) {
             return Producer.PERTH_MINT;
         }
         else if (Stream.of("rand", "krugerrand").anyMatch(text::contains)) {
             return Producer.SOUTH_AFRICAN_MINT;
         }
         else if (Stream.of("moose", "golden eagle", "kanada", "roaring grizzly", "growling cougar",
-                "howling wolf", "zlatá horečka na klondiku", " elk ").anyMatch(text::contains)){
+                "howling wolf", "zlatá horečka na klondiku", " elk ", "doba ledová -").anyMatch(text::contains)){
             return Producer.ROYAL_CANADIAN_MINT;
         }
-        else if (Stream.of("sovereign elizabeth", "the royal mint", "the queen´s beasts", "the queen's beasts",
-                "royal arms", "dva draci", "mýty a legendy", "valiant", "tudor beasts").anyMatch(text::contains)) {
+        else if (Stream.of("sovereign elizabeth", "the royal mint", "the queen´s beasts", "the queen's beast",
+                "royal arms", "dva draci", "mýty a legendy", "valiant", "tudor beast",  "queens beasts", "krále karla",
+                "král karel", "alžbět", "svatý jiří a drak").anyMatch(text::contains)) {
             return Producer.ROYAL_MINT_UK;
         }
-        else if (text.contains("gibraltar lady justice")) {
+        else if (Stream.of("gibraltar lady justice", "kongo gorila", "kek", "ramesse").anyMatch(text::contains)) {
             return Producer.SCOTTSDALE_MINT;
         }
         // From now on precision is lowered
         else if (text.contains("libertad")) {
             return Producer.MEXICO_MINT;
         }
-        else if (Stream.of("slon", "leopard somálsko").anyMatch(text::contains)) {
+        else if (Stream.of("slon", "leopard somálsko", "somalia elephant").anyMatch(text::contains)) {
             return Producer.BAVARIAN_STATE_MINT;
         }
         else if (text.contains("noble isle of man") ) {
@@ -112,11 +126,32 @@ public class Extract {
         else if (text.contains("panda")) {
             return Producer.CHINA_MINT;
         }
-        else if (text.contains("obři doby ledové")) {
+        else if (Stream.of("obři doby ledové", "giants of the ice age", "archa noemova", "noemova archa").anyMatch(text::contains)) {
             return Producer.LEIPZIGER_EDELMETALLVERARBEITUNG_GMBH;
         }
-        else if (text.contains("münze")) {
+        else if (Stream.of("münze", "františka josefa").anyMatch(text::contains)) {
             return Producer.MUNZE_OSTERREICH;
+        }
+        else if (Stream.of("smetana", "štramberk", "tábor", "kroměříž", "moravská třebová",
+                "československého rozhlasu", "olomouckým", "městská památková rezervace",
+                "5000 kč hrad", "založení velké prahy", "vydání čtyř pražských artikulů",
+                "kněžna ludmila").anyMatch(text::contains)) {
+            return Producer.CNB;
+        }
+        else if (Stream.of("žampach", "českého svazu", "český lev", "česká republika 20", "orloj",
+                "libuše", "národní divadlo", "unesco -", "mléčná dráha", "psí plemena", "kniha džunglí",
+                "pravěký svět", "objevení ameriky", "obrněná technika", "aleš hrdlička").anyMatch(text::contains)) {
+            return Producer.CESKA_MINCOVNA;
+        }
+        else if (Stream.of("pac-man", "piráti z karibiku", "sonic the hedgehog").anyMatch(text::contains)) {
+            return Producer.NEW_ZEALAND_MINT;
+        }
+        else if (Stream.of("chronos", "equilibrium", "terra", "vivat humanitas", "pioneer plaque",
+                "magnum opus").anyMatch(text::contains)) {
+            return Producer.PRESSBURG_MINT;
+        }
+        else if (Stream.of("fauna a flóra").anyMatch(text::contains)) {
+            return Producer.KREMNICA;
         }
 
         throw new IllegalArgumentException("Invalid argument for Producer enum");
@@ -140,7 +175,7 @@ public class Extract {
         if(Stream.of("paket", "odběr 100 ks a více").anyMatch(text::contains)) {
             return Form.PACKET;
         }
-        if(Stream.of("mince", "coin", "münze", "tolar").anyMatch(text::contains)) {
+        if(Stream.of("mince", "coin", "münze", "tolar", "sovereign").anyMatch(text::contains)) {
             return Form.COIN;
         }
         if(text.contains("kinebar")) {
@@ -153,6 +188,10 @@ public class Extract {
             return Form.BAR;
         }
 
+        if(Stream.of("kangaroo", "philharmoniker", "maple leaf").anyMatch(text::contains)) {
+            return Form.COIN;
+        }
+
         throw new IllegalArgumentException("Invalid argument for Form enum");
     }
 
@@ -163,6 +202,14 @@ public class Extract {
      */
     public static double weightExtract(String text) throws IllegalArgumentException {
 //        text = text.replace("\u00a0", "");         // &nbsp;
+        if(text.contains("zlatá mince 5000 kč")) {
+            return 15.55;
+        } else if (text.contains("zlatá mince 10000 kč")) {
+            return TROY_OUNCE;
+        } else if (text.contains("stříbrná mince 200 kč")) {
+            return 13.00;
+        }
+
         text = text.replace(" ", "");
 
         Pattern pattern = Pattern.compile("\\d+x\\d+g");
@@ -261,7 +308,7 @@ public class Extract {
         }
         else if (text.contains("platin")) {
             return Metal.PLATINUM;
-        } else if (text.contains("pallad")) {
+        } else if (Stream.of("pallad", "paládiov").anyMatch(text::contains)) {
             return Metal.PALLADIUM;
         }
         

@@ -6,11 +6,16 @@ import home.holymiko.InvestmentScraperApp.Server.API.Controller.ScrapController;
 import home.holymiko.InvestmentScraperApp.Server.Core.exception.ResourceNotFoundException;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.CNBScraper;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.AurumBohemicaAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.AurumProAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.CeskaMincovnaAdapter;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.EkkaGoldAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.GoldASilverAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.BessergoldAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.BessergoldDeAdapter;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.GoldSafeAdapter;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.GoldenHouseAdapter;
+import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.JednaUnceAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.SilverumAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.dealerAdapter.ZlatakyAdapter;
 import home.holymiko.InvestmentScraperApp.Server.Service.RateService;
@@ -80,6 +85,7 @@ public class Run {
     @Order(1)
     @EventListener(ApplicationStartedEvent.class)
     public void initializeAdapterMap() {
+        metalScraper.addAdapter(Dealer.AURUM_BOHEMICA, new AurumBohemicaAdapter());
         metalScraper.addAdapter(Dealer.AURUM_PRO, new AurumProAdapter());
         metalScraper.addAdapter(Dealer.BESSERGOLD_CZ, new BessergoldAdapter());
         try {
@@ -94,7 +100,11 @@ public class Run {
             LOGGER.warn("WebClient OFF - BessergoldDeAdapter - EUR exchange rate is missing");
         }
         metalScraper.addAdapter(Dealer.CESKA_MINCOVNA, new CeskaMincovnaAdapter());
+        metalScraper.addAdapter(Dealer.EKKA_GOLD, new EkkaGoldAdapter());
         metalScraper.addAdapter(Dealer.GOLD_A_SILVER, new GoldASilverAdapter());
+        metalScraper.addAdapter(Dealer.GOLD_SAFE, new GoldSafeAdapter());
+        metalScraper.addAdapter(Dealer.GOLDEN_HOUSE, new GoldenHouseAdapter());
+        metalScraper.addAdapter(Dealer.JEDNA_UNCE, new JednaUnceAdapter());
         metalScraper.addAdapter(Dealer.SILVERUM, new SilverumAdapter());
         metalScraper.addAdapter(Dealer.ZLATAKY, new ZlatakyAdapter());
     }
