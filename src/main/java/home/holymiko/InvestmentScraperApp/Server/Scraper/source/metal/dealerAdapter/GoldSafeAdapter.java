@@ -53,6 +53,7 @@ public class GoldSafeAdapter extends Client implements ProductDetailInterface {
     public double scrapBuyPriceFromProductPage(HtmlPage productDetailPage) {
         return Convert.currencyToDouble(
                 ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_BUY_PRICE)).asText()
+                        .replace(".", "")
         );
     }
     @Override
@@ -64,6 +65,7 @@ public class GoldSafeAdapter extends Client implements ProductDetailInterface {
     public double scrapSellPriceFromProductPage(HtmlPage page) {
         return Convert.currencyToDouble(
                 ((HtmlElement) page.getFirstByXPath(X_PATH_SELL_PRICE)).asText()
+                        .replace(".", "")
         );
     }
 
