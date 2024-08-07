@@ -32,7 +32,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "and " +
             "(:year is null or m.year = :year) " +
             "and " +
-            "(:saveAlone is null or m.saveAlone = :saveAlone) "
+            "(:saveAlone is null or m.saveAlone = :saveAlone) " +
+            "and " +
+            "(:hidden is null or m.hidden = :hidden) "
     )
     Page<Product> findByParams(
             @Param("dealer") Dealer dealer,
@@ -42,6 +44,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("grams") Double grams,
             @Param("year") Integer year,
             @Param("saveAlone") Boolean saveAlone,
+            @Param("hidden") Boolean hidden,
             Pageable pageable
     );
 

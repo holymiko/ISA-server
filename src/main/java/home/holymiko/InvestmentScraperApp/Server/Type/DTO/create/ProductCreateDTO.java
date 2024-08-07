@@ -14,8 +14,9 @@ public class ProductCreateDTO {
     private final Producer producer;
     private final Form form;
     private final Metal metal;
-    private final double grams;
+    private final Double grams;
     private final int year;
     private final boolean saveAlone;
+    private final boolean hidden;
 
 }

@@ -4,6 +4,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDT
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Producer;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -40,17 +41,19 @@ public class Product {
     private Producer producer;
     private Form form;
     private Metal metal;
-    // TODO Convert to Double, test on the frontEnd as well
-    private double grams;
+    private Double grams;
     private int year;
     private boolean saveAlone;
+
+    @Column(name = "hidden", columnDefinition = "boolean default false")
+    private boolean hidden = false;
 
     @OneToMany(mappedBy = "productId", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private List<Link> links = new ArrayList<>();      // includes Dealer
 
 
-    public Product(String name, Producer producer, Form form, Metal metal, double grams, int year, boolean saveAlone, List<Link> links) {
+    public Product(String name, Producer producer, Form form, Metal metal, Double grams, int year, boolean saveAlone, boolean hidden, List<Link> links) {
         this.name = name;
         this.producer = producer;
         this.form = form;
@@ -58,6 +61,7 @@ public class Product {
         this.grams = grams;
         this.year = year;
         this.saveAlone = saveAlone;
+        this.hidden = hidden;
         this.links = links;
     }
 
@@ -69,6 +73,7 @@ public class Product {
         this.grams = productCreateDTO.getGrams();
         this.year = productCreateDTO.getYear();
         this.saveAlone = productCreateDTO.isSaveAlone();
+        this.hidden = productCreateDTO.isHidden();
     }
 
 }

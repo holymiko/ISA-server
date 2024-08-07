@@ -61,16 +61,16 @@ public class ProductService {
     /////////// FIND
 
     @Deprecated
-    public List<ProductDTO_LatestPrices> findByParamsOld(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean saveAlone, Pageable pageable) {
-        return productRepository.findByParams(dealer, producer, metal, form, grams, year, saveAlone, pageable).getContent()
+    public List<ProductDTO_LatestPrices> findByParamsOld(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean saveAlone, Boolean hidden, Pageable pageable) {
+        return productRepository.findByParams(dealer, producer, metal, form, grams, year, saveAlone, hidden, pageable).getContent()
                 .stream()
                 .map(productMapper::toProductDTO_LatestPrices)
                 .collect(Collectors.toList());
     }
 
-    public Page<ProductDTO_LatestPrices> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean saveAlone, Pageable pageable) {
+    public Page<ProductDTO_LatestPrices> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean saveAlone, Boolean hidden, Pageable pageable) {
         List<ProductDTO_LatestPrices> products =
-                productRepository.findByParams(dealer, producer, metal, form, grams, year, saveAlone, pageable)
+                productRepository.findByParams(dealer, producer, metal, form, grams, year, saveAlone, hidden, pageable)
                         .stream()
                         .map(productMapper::toProductDTO_LatestPrices)
                         .collect(Collectors.toList());
@@ -78,7 +78,7 @@ public class ProductService {
     }
 
     public List<Product> findByParams(Dealer dealer, ProductCreateDTO product) {
-        return this.productRepository.findByParams(dealer, product.getProducer(), product.getMetal(), product.getForm(), product.getGrams(), product.getYear(), product.isSaveAlone(), Pageable.unpaged()).getContent();
+        return this.productRepository.findByParams(dealer, product.getProducer(), product.getMetal(), product.getForm(), product.getGrams(), product.getYear(), product.isSaveAlone(), product.isHidden(), Pageable.unpaged()).getContent();
     }
 
     /////////// SAVE

@@ -50,7 +50,7 @@ public class ProductController extends BaseController {
             @RequestParam(required = false) Boolean savedAlone
     ) {
         LOGGER.info("GET List<ProductDTO_LatestPrices> ByParamsOld {} {} {} {} {} {} {}", dealer, producer, metal, form, grams, year, savedAlone);
-        return productService.findByParamsOld(dealer, producer, metal, form, grams, year, savedAlone, Pageable.unpaged());
+        return productService.findByParamsOld(dealer, producer, metal, form, grams, year, savedAlone, false, Pageable.unpaged());
     }
 
     @GetMapping
@@ -63,17 +63,18 @@ public class ProductController extends BaseController {
             @RequestParam(required = false) Double grams,
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) Boolean savedAlone,
+            @RequestParam(required = false) Boolean hidden,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) Integer size
     ) {
-        LOGGER.info("GET List<ProductDTO_LatestPrices> ByParams {} {} {} {} {} {} {}", dealer, producer, metal, form, grams, year, savedAlone);
+        LOGGER.info("GET List<ProductDTO_LatestPrices> ByParams {} {} {} {} {} {} {} {}", dealer, producer, metal, form, grams, year, savedAlone, hidden);
 
         if (size == null) {
             size = Integer.MAX_VALUE;
         }
 
         // TODO Add sorting, add column bestSpread and price/gram
-        return productService.findByParams(dealer, producer, metal, form, grams, year, savedAlone, PageRequest.of(page, size));
+        return productService.findByParams(dealer, producer, metal, form, grams, year, savedAlone, hidden, PageRequest.of(page, size));
     }
 
     @GetMapping("/{id}")
