@@ -61,7 +61,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "and " +
             "(:year is null or m.year = :year) " +
             "and " +
-            "(:saveAlone is null or m.saveAlone = :saveAlone) "
+            "(:saveAlone is null or m.saveAlone = :saveAlone) " +
+            "and " +
+            "(:hidden is null or m.hidden = :hidden) "
     )
     Long countByParams(
             @Param("dealer") Dealer dealer,
@@ -70,6 +72,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("form") Form form,
             @Param("grams") Double grams,
             @Param("year") Integer year,
-            @Param("saveAlone") Boolean saveAlone
+            @Param("saveAlone") Boolean saveAlone,
+            @Param("hidden") Boolean hidden
     );
 }

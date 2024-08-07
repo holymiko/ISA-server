@@ -40,8 +40,8 @@ public class ProductService {
     private final ProductMapper productMapper;
     private final LinkService linkService;
 
-    public Long countByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean saveAlone) {
-        return productRepository.countByParams(dealer, producer, metal, form, grams, year, saveAlone);
+    public Long countByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean saveAlone, Boolean hidden) {
+        return productRepository.countByParams(dealer, producer, metal, form, grams, year, saveAlone, hidden);
     }
 
     public boolean existsById(Long id) {
@@ -69,12 +69,13 @@ public class ProductService {
     }
 
     public Page<ProductDTO_LatestPrices> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean saveAlone, Boolean hidden, Pageable pageable) {
+        Long productCount = productRepository.countByParams(dealer, producer, metal, form, grams, year, saveAlone, hidden);
         List<ProductDTO_LatestPrices> products =
                 productRepository.findByParams(dealer, producer, metal, form, grams, year, saveAlone, hidden, pageable)
                         .stream()
                         .map(productMapper::toProductDTO_LatestPrices)
                         .collect(Collectors.toList());
-        return new PageImpl<>(products, pageable, products.size());
+        return new PageImpl<>(products, pageable, productCount);
     }
 
     public List<Product> findByParams(Dealer dealer, ProductCreateDTO product) {
