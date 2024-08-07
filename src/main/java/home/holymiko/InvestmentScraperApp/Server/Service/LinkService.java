@@ -67,9 +67,9 @@ public class LinkService {
     public List<List<LinkDTO>> findLinksGroupedByProduct(Dealer dealer, Metal metal, Form form) {
         return this.productRepository.findByParams(
                 dealer, null, metal, form, null, null, null, Pageable.unpaged()
-                ).stream().map(
-                    product -> linkMapper.toDTO(product.getLinks())
-                ).collect(Collectors.toList());
+            ).stream().map(
+                product -> linkMapper.toDTO(product.getLinks())
+            ).collect(Collectors.toList());
     }
 
     public List<LinkDTO> findByParams(Long productId, Dealer dealer) {

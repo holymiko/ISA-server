@@ -36,6 +36,7 @@ public class MetalScraper {
     private final int ETHICAL_DELAY;
     private final int LOG_INTERVAL;
     private final boolean SAVE_NEW_PRODUCTS_SEPARATELY;
+    private final boolean SAVE_INCOMPLETE_PRODUCTS_AS_HIDDEN;
 
     private final LinkService linkService;
     private final PriceService priceService;
@@ -62,6 +63,7 @@ public class MetalScraper {
         ETHICAL_DELAY = Integer.parseInt(appPropsService.getAppProperty("scraper.ethicaldelay"));
         LOG_INTERVAL = Integer.parseInt(appPropsService.getAppProperty("scraper.log.interval"));
         SAVE_NEW_PRODUCTS_SEPARATELY = Boolean.parseBoolean(appPropsService.getAppProperty("scraper.newproducts.saveseparately"));
+        SAVE_INCOMPLETE_PRODUCTS_AS_HIDDEN = Boolean.parseBoolean(appPropsService.getAppProperty("scraper.newproducts.saveincomplete.hidden"));
     }
 
     public void addAdapter(Dealer dealer, ProductDetailInterface adapter) {
@@ -201,10 +203,13 @@ public class MetalScraper {
         }
 
         // Extraction of parameters for saving new Product to DB
-        try {
-            productExtracted = Extract.productAggregateExtract(name);
-        } catch (IllegalArgumentException e) {
-            throw new ScrapFailedException("Extraction ERROR - "+e.getMessage()+": "+name +" "+link.getUri());
+        productExtracted = Extract.productAggregateExtract(name);
+        if(productExtracted.isHidden()) {
+            if(SAVE_INCOMPLETE_PRODUCTS_AS_HIDDEN) {
+                LOGGER.warn("Extraction: "+name+" will be saved as hidden, due to missing parameters");
+            } else {
+                throw new ScrapFailedException("Extraction ERROR: "+name +" "+link.getUri());
+            }
         }
 
         productSaveSwitch(link, productExtracted);

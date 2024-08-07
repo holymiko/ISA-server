@@ -350,18 +350,45 @@ public class Extract {
      * @return Object includes all extracted params
      * @throws IllegalArgumentException for failure of any param extraction
      */
-    public static ProductCreateDTO productAggregateExtract(String name) throws IllegalArgumentException {
+    public static ProductCreateDTO productAggregateExtract(String name) {
         String nameLow = name.toLowerCase(Locale.ROOT);
+        boolean hidden = false;
+        Producer producer = null;
+        Form form = null;
+        Metal metal = null;
+        Double weight = null;
+
+        try {
+            producer = producerExtract(nameLow);
+        } catch (IllegalArgumentException e) {
+            hidden = true;
+        }
+        try {
+            form = formExtract(nameLow);
+        } catch (IllegalArgumentException e) {
+            hidden = true;
+        }
+        try {
+            metal = metalExtract(nameLow);
+        } catch (IllegalArgumentException e) {
+            hidden = true;
+        }
+        try {
+            weight = weightExtract(nameLow);
+        } catch (IllegalArgumentException e) {
+            hidden = true;
+        }
 
         // Extraction of parameters for saving new Product/PricePair to DB
         return new ProductCreateDTO(
                     name,
-                    producerExtract(nameLow),
-                    formExtract(nameLow),
-                    metalExtract(nameLow),
-                    weightExtract(nameLow),
+                    producer,
+                    form,
+                    metal,
+                    weight,
                     yearExtract(nameLow),
-                    isNameSpecial(nameLow)
+                    isNameSpecial(nameLow),
+                    hidden
         );
     }
 }
