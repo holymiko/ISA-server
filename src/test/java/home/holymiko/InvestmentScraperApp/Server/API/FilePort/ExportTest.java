@@ -1,5 +1,6 @@
 package home.holymiko.InvestmentScraperApp.Server.API.FilePort;
 
+import home.holymiko.InvestmentScraperApp.Server.Type.DTO.create.ProductCreateDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Entity.*;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Availability;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
@@ -73,10 +74,15 @@ class ExportTest {
         link20.setPricePair(pricePair20);
         link30.setPricePair(pricePair30);
 
-        Product product0 = new Product("Zlatý slitek 1g ARGOR-HERAEUS (Švýcarsko)", Producer.ARGOR_HERAEUS, Form.BAR, Metal.GOLD, 1.0, 2023, false, Arrays.asList(link00, link01));
-        Product product1 = new Product("Stříbrná mince 1 oz (trojská unce) WIENER PHILHARMONIKER Rakousko 2011", Producer.MUNZE_OSTERREICH, Form.COIN, Metal.SILVER, 31.1, 2022, false, Arrays.asList(link10, link11));
-        Product product2 = new Product("5000g Argor Heraeus / Heraeus Investiční stříbrný slitek", Producer.MUNZE_OSTERREICH, Form.BAR, Metal.SILVER, 5000, 2023, false, List.of(link20));
-        Product product3 = new Product("Platinový slitek 5 g ARGOR-HERAEUS (Švýcarsko)", Producer.HERAEUS, Form.BAR, Metal.PLATINUM, 5, 2021, false, List.of(link30));
+        Product product0 = new Product(new ProductCreateDTO("Zlatý slitek 1g ARGOR-HERAEUS (Švýcarsko)", Producer.ARGOR_HERAEUS, Form.BAR, Metal.GOLD, 1.0, 2023, false, false));
+        Product product1 = new Product(new ProductCreateDTO("Stříbrná mince 1 oz (trojská unce) WIENER PHILHARMONIKER Rakousko 2011", Producer.MUNZE_OSTERREICH, Form.COIN, Metal.SILVER, 31.1, 2022, false, false));
+        Product product2 = new Product(new ProductCreateDTO("5000g Argor Heraeus / Heraeus Investiční stříbrný slitek", Producer.MUNZE_OSTERREICH, Form.BAR, Metal.SILVER, 5000.0, 2023, false, false));
+        Product product3 = new Product(new ProductCreateDTO("Platinový slitek 5 g ARGOR-HERAEUS (Švýcarsko)", Producer.HERAEUS, Form.BAR, Metal.PLATINUM, 5.0, 2021, false, false));
+
+        product0.setLinks(Arrays.asList(link00, link01));
+        product1.setLinks(Arrays.asList(link10, link11));
+        product2.setLinks(List.of(link20));
+        product3.setLinks(List.of(link30));
 
         InvestmentMetal investmentMetal0 = new InvestmentMetal(product0, Dealer.ZLATAKY, 1808.45, LocalDate.now());
         InvestmentMetal investmentMetal1 = new InvestmentMetal(product1, Dealer.BESSERGOLD_CZ, 858.00, LocalDate.now().minusWeeks(65));

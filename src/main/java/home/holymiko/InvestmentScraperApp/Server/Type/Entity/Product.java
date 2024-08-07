@@ -52,19 +52,6 @@ public class Product {
     @Fetch(FetchMode.SELECT)
     private List<Link> links = new ArrayList<>();      // includes Dealer
 
-
-    public Product(String name, Producer producer, Form form, Metal metal, Double grams, int year, boolean saveAlone, boolean hidden, List<Link> links) {
-        this.name = name;
-        this.producer = producer;
-        this.form = form;
-        this.metal = metal;
-        this.grams = grams;
-        this.year = year;
-        this.saveAlone = saveAlone;
-        this.hidden = hidden;
-        this.links = links;
-    }
-
     public Product(ProductCreateDTO productCreateDTO) {
         this.name = productCreateDTO.getName();
         this.producer = productCreateDTO.getProducer();
