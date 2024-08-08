@@ -49,8 +49,11 @@ public class EkkaGoldAdapter extends Client implements ProductDetailInterface {
             "https://www.ekka-gold.cz/australska-lunarni-serie",
             "https://www.ekka-gold.cz/australska-lunarni-serie?page=2",
             "https://www.ekka-gold.cz/australska-lunarni-serie?page=3",
-            "https://www.ekka-gold.cz/australska-lunarni-serie?page=4"
-            // TODO Add Obezne mince, Moderni numismatika URLs
+            "https://www.ekka-gold.cz/australska-lunarni-serie?page=4",
+            "https://www.ekka-gold.cz/obezne-mince",
+            "https://www.ekka-gold.cz/moderni-numismatika",
+            "https://www.ekka-gold.cz/moderni-numismatika?page=2",
+            "https://www.ekka-gold.cz/moderni-numismatika?page=3"
     );
 
     private static final String X_PATH_PRODUCT_LIST = "//*[@class=\"rocketoo-products\"]/div[1]/child::*";

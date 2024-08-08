@@ -17,11 +17,23 @@ public class ZlatakyAdapter extends Client implements ProductDetailInterface {
     private static final Dealer DEALER = Dealer.ZLATAKY;
     private static final String BASE_URL = "https://zlataky.cz";
     private static final List<String> PRODUCT_LIST_URL = Arrays.asList(
+            // GOLD
             "https://zlataky.cz/investicni-zlate-mince?page=1&page_all=1",
             "https://zlataky.cz/investicni-zlate-slitky?page=1&page_all=1",
+            "https://zlataky.cz/zlato-pro-zvlastni-prilezitost?page_all=1",
+            "https://zlataky.cz/zlate-mince-zahranici?page_all=1",
+            "https://zlataky.cz/zlate-historicke-mince?page_all=1",
+            "https://zlataky.cz/zlate-mince-cr-a-ceskoslovensko?page_all=1",
+            "https://zlataky.cz/numismatika-pro-narocne-sberatele?page_all=1",
+            // SILVER
             "https://zlataky.cz/investicni-stribrne-mince?page=1&page_all=1",
             "https://zlataky.cz/investicni-stribrne-slitky?page=1&page_all=1",
-            "https://zlataky.cz/ostatni-investicni-kovy"
+            "https://zlataky.cz/stribrne-mince-zahranici?page_all=1",
+            "https://zlataky.cz/stribrne-mince-cr-a-ceskoslovensko?page_all=1",
+            "https://zlataky.cz/stribrne-mince-slovensko?page_all=1",
+            "https://zlataky.cz/stribro-pro-zvlastni-prilezitost?page_all=1",
+            // OTHER
+            "https://zlataky.cz/ostatni-investicni-kovy?page_all=1"
     );
 
     private static final String X_PATH_PRODUCT_LIST = ".//*[@id=\"kategorie-obsah\"]/div[3]/child::*";

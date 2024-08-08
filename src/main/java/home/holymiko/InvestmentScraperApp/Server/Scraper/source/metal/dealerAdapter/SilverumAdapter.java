@@ -20,14 +20,17 @@ public class SilverumAdapter extends Client implements ProductDetailInterface {
     private static final Dealer DEALER = Dealer.SILVERUM;
     private static final String BASE = "https://www.silverum.cz/";
     private static final List<String> PRODUCT_LIST_URL = Arrays.asList(
-            "https://www.silverum.cz/investicni-mince.html",
+            "https://www.silverum.cz/svetove-investicni-mince.html",
+            "https://www.silverum.cz/mince-cnb.html",
             "https://www.silverum.cz/investicni-slitky.html",
             "https://www.silverum.cz/investicni-cihly.html",
-              // "https://www.silverum.cz/mince-cnb.html", THIS won't work from list, because of missing weigh,
-             "https://www.silverum.cz/numismatika-do-2021.html",
-             "https://www.silverum.cz/numismatika-2022.html",
-             "https://www.silverum.cz/investicni-slitky-cs.html",
-             "https://www.silverum.cz/investicni-cihly-cs.html"
+            // Silver
+            "https://www.silverum.cz/svetove-mince-2023-24.html",
+            "https://www.silverum.cz/svetove-mince-do-2022.html",
+            "https://www.silverum.cz/lunarni-serie.html",
+            "https://www.silverum.cz/ceske-mince-cnb-cs.html",
+            "https://www.silverum.cz/investicni-slitky-a-medaile.html",
+            "https://www.silverum.cz/investicni-cihly-cs.html"
     );
 
     private static final String X_PATH_PRODUCT_LIST = ".//div[@class='productItem']";
