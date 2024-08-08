@@ -16,7 +16,6 @@ public class ProductCreateDTO {
     private final Metal metal;
     private final Double grams;
     private final int year;
-    private final boolean saveAlone;
     private final boolean hidden;
 
 }

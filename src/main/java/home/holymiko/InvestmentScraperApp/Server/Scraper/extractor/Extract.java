@@ -387,7 +387,6 @@ public class Extract {
                     metal,
                     weight,
                     yearExtract(nameLow),
-                    isNameSpecial(nameLow),
                     hidden
         );
     }

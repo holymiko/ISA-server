@@ -74,10 +74,10 @@ class ExportTest {
         link20.setPricePair(pricePair20);
         link30.setPricePair(pricePair30);
 
-        Product product0 = new Product(new ProductCreateDTO("Zlatý slitek 1g ARGOR-HERAEUS (Švýcarsko)", Producer.ARGOR_HERAEUS, Form.BAR, Metal.GOLD, 1.0, 2023, false, false));
-        Product product1 = new Product(new ProductCreateDTO("Stříbrná mince 1 oz (trojská unce) WIENER PHILHARMONIKER Rakousko 2011", Producer.MUNZE_OSTERREICH, Form.COIN, Metal.SILVER, 31.1, 2022, false, false));
-        Product product2 = new Product(new ProductCreateDTO("5000g Argor Heraeus / Heraeus Investiční stříbrný slitek", Producer.MUNZE_OSTERREICH, Form.BAR, Metal.SILVER, 5000.0, 2023, false, false));
-        Product product3 = new Product(new ProductCreateDTO("Platinový slitek 5 g ARGOR-HERAEUS (Švýcarsko)", Producer.HERAEUS, Form.BAR, Metal.PLATINUM, 5.0, 2021, false, false));
+        Product product0 = new Product(new ProductCreateDTO("Zlatý slitek 1g ARGOR-HERAEUS (Švýcarsko)", Producer.ARGOR_HERAEUS, Form.BAR, Metal.GOLD, 1.0, 2023, false));
+        Product product1 = new Product(new ProductCreateDTO("Stříbrná mince 1 oz (trojská unce) WIENER PHILHARMONIKER Rakousko 2011", Producer.MUNZE_OSTERREICH, Form.COIN, Metal.SILVER, 31.1, 2022, false));
+        Product product2 = new Product(new ProductCreateDTO("5000g Argor Heraeus / Heraeus Investiční stříbrný slitek", Producer.MUNZE_OSTERREICH, Form.BAR, Metal.SILVER, 5000.0, 2023, false));
+        Product product3 = new Product(new ProductCreateDTO("Platinový slitek 5 g ARGOR-HERAEUS (Švýcarsko)", Producer.HERAEUS, Form.BAR, Metal.PLATINUM, 5.0, 2021, false));
 
         product0.setLinks(Arrays.asList(link00, link01));
         product1.setLinks(Arrays.asList(link10, link11));

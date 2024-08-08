@@ -40,8 +40,8 @@ public class ProductService {
     private final ProductMapper productMapper;
     private final LinkService linkService;
 
-    public Long countByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean saveAlone, Boolean hidden) {
-        return productRepository.countByParams(dealer, producer, metal, form, grams, year, saveAlone, hidden);
+    public Long countByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean hidden) {
+        return productRepository.countByParams(dealer, producer, metal, form, grams, year, hidden);
     }
 
     public boolean existsById(Long id) {
@@ -61,17 +61,17 @@ public class ProductService {
     /////////// FIND
 
     @Deprecated
-    public List<ProductDTO_LatestPrices> findByParamsOld(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean saveAlone, Boolean hidden, Pageable pageable) {
-        return productRepository.findByParams(dealer, producer, metal, form, grams, year, saveAlone, hidden, pageable).getContent()
+    public List<ProductDTO_LatestPrices> findByParamsOld(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean hidden, Pageable pageable) {
+        return productRepository.findByParams(dealer, producer, metal, form, grams, year, hidden, pageable).getContent()
                 .stream()
                 .map(productMapper::toProductDTO_LatestPrices)
                 .collect(Collectors.toList());
     }
 
-    public Page<ProductDTO_LatestPrices> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean saveAlone, Boolean hidden, Pageable pageable) {
-        Long productCount = productRepository.countByParams(dealer, producer, metal, form, grams, year, saveAlone, hidden);
+    public Page<ProductDTO_LatestPrices> findByParams(Dealer dealer, Producer producer, Metal metal, Form form, Double grams, Integer year, Boolean hidden, Pageable pageable) {
+        Long productCount = productRepository.countByParams(dealer, producer, metal, form, grams, year, hidden);
         List<ProductDTO_LatestPrices> products =
-                productRepository.findByParams(dealer, producer, metal, form, grams, year, saveAlone, hidden, pageable)
+                productRepository.findByParams(dealer, producer, metal, form, grams, year, hidden, pageable)
                         .stream()
                         .map(productMapper::toProductDTO_LatestPrices)
                         .collect(Collectors.toList());
@@ -79,7 +79,7 @@ public class ProductService {
     }
 
     public List<Product> findByParams(Dealer dealer, ProductCreateDTO product) {
-        return this.productRepository.findByParams(dealer, product.getProducer(), product.getMetal(), product.getForm(), product.getGrams(), product.getYear(), product.isSaveAlone(), product.isHidden(), Pageable.unpaged()).getContent();
+        return this.productRepository.findByParams(dealer, product.getProducer(), product.getMetal(), product.getForm(), product.getGrams(), product.getYear(), product.isHidden(), Pageable.unpaged()).getContent();
     }
 
     /////////// SAVE

@@ -43,7 +43,6 @@ public class Product {
     private Metal metal;
     private Double grams;
     private int year;
-    private boolean saveAlone;
 
     @Column(name = "hidden", columnDefinition = "boolean default false")
     private boolean hidden = false;
@@ -59,7 +58,6 @@ public class Product {
         this.metal = productCreateDTO.getMetal();
         this.grams = productCreateDTO.getGrams();
         this.year = productCreateDTO.getYear();
-        this.saveAlone = productCreateDTO.isSaveAlone();
         this.hidden = productCreateDTO.isHidden();
     }
 

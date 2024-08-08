@@ -34,7 +34,7 @@ public class AppInfoController extends BaseController {
     public StatsDTO getDatabaseStatistics() {
         return new StatsDTO(
                 rateService.count(),
-                productService.countByParams(null, null, null, null, null, null, null, null),
+                productService.countByParams(null, null, null, null, null, null, null),
                 priceService.countPricePairs(),
                 priceService.countPricePairsHistory(),
                 tickerService.countByParams(null),

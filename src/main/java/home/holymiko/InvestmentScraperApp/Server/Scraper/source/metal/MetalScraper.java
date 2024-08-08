@@ -231,7 +231,7 @@ public class MetalScraper {
         final List<Product> nonSpecialProducts;
 
         // Special products are saved separately
-        if(SAVE_NEW_PRODUCTS_SEPARATELY || productExtracted.isSaveAlone()) {
+        if(SAVE_NEW_PRODUCTS_SEPARATELY) {
             saveValidNewProductAndScrapPrice(link, productExtracted);
             return;
         }
@@ -251,12 +251,6 @@ public class MetalScraper {
         if (nonSpecialProducts.size() == 1) {
             final Dealer linkDealer = link.getDealer();
             final Product productFound = nonSpecialProducts.get(0);
-
-            if(productFound.isSaveAlone()) {
-                throw new DataIntegrityViolationException(
-                        "ERROR: Trying to merge to saveAlone Product"
-                );
-            }
 
             // Max one Link per Dealer
             if(productFound.getLinks().stream().anyMatch(link1 -> link1.getDealer() == linkDealer)) {
