@@ -54,7 +54,7 @@ public class Client {
         try {
             page = client.getPage(link);                // Product page
         } catch (Exception e)  {
-            throw new ResourceNotFoundException("loadPage exception");
+            throw new ResourceNotFoundException("loadPage exception: "+link);
         }
         if(page.getWebResponse().getStatusCode() == 404) {
             throw new ResourceNotFoundException("loadPage exception - 404");
