@@ -24,8 +24,31 @@ public class AurumProAdapter extends Client implements ProductDetailInterface {
             "https://www.aurumpro.cz/zlate-slitky/pg-2",
             "https://www.aurumpro.cz/stribrne-mince",
             "https://www.aurumpro.cz/stribrne-mince/pg-2",
-            "https://www.aurumpro.cz/stribrne-slitky"
-            // TODO Add Mince ČNB URLs
+            "https://www.aurumpro.cz/stribrne-slitky",
+            "https://www.aurumpro.cz/mince-cnb",
+            "https://www.aurumpro.cz/mince-cnb/pg-2",
+            "https://www.aurumpro.cz/mince-cnb/pg-3",
+            "https://www.aurumpro.cz/mince-cnb/pg-4",
+            "https://www.aurumpro.cz/mince-cnb/pg-5",
+            "https://www.aurumpro.cz/mince-cnb/pg-6",
+            "https://www.aurumpro.cz/mince-cnb/pg-7",
+            "https://www.aurumpro.cz/mince-cnb/pg-8",
+            "https://www.aurumpro.cz/historicke-novorazby",
+            "https://www.aurumpro.cz/historicke-novorazby/pg-2",
+            "https://www.aurumpro.cz/historicke-novorazby/pg-3",
+            "https://www.aurumpro.cz/historicke-novorazby/pg-4",
+            "https://www.aurumpro.cz/historicke-novorazby/pg-5",
+            "https://www.aurumpro.cz/historicke-novorazby/pg-6",
+            "https://www.aurumpro.cz/historicke-novorazby/pg-7",
+            "https://www.aurumpro.cz/historicke-novorazby/pg-8",
+            "https://www.aurumpro.cz/historicke-novorazby/pg-9",
+            "https://www.aurumpro.cz/historicke-novorazby/pg-10",
+            "https://www.aurumpro.cz/historicke-novorazby/pg-11",
+            "https://www.aurumpro.cz/historicke-novorazby/pg-12",
+            "https://www.aurumpro.cz/historicke-novorazby/pg-13",
+            "https://www.aurumpro.cz/historicke-novorazby/pg-14",
+            "https://www.aurumpro.cz/historicke-novorazby/pg-15",
+            "https://www.aurumpro.cz/historicke-novorazby/pg-16"
     );
 
     private static final String X_PATH_PRODUCT_LIST = "//*[@id=\"snippet-products-productList\"]/div/child::*";

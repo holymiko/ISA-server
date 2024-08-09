@@ -64,8 +64,16 @@ public class GoldASilverAdapter extends Client implements ProductDetailInterface
             "https://www.goldasilver.com/6-stribro?page=28",
             "https://www.goldasilver.com/6-stribro?page=29",
             // PLATINUM
-            "https://www.goldasilver.com/304-platina"
-            // TODO Add Mince ČNG and other special URLs
+            "https://www.goldasilver.com/304-platina",
+            // OTHER
+            "https://www.goldasilver.com/267-darkove-mince-a-slitky",
+            "https://www.goldasilver.com/267-darkove-mince-a-slitky?page=2",
+            "https://www.goldasilver.com/267-darkove-mince-a-slitky?page=3",
+            "https://www.goldasilver.com/267-darkove-mince-a-slitky?page=4",
+            "https://www.goldasilver.com/267-darkove-mince-a-slitky?page=5",
+            "https://www.goldasilver.com/267-darkove-mince-a-slitky?page=6",
+            "https://www.goldasilver.com/267-darkove-mince-a-slitky?page=7",
+            "https://www.goldasilver.com/267-darkove-mince-a-slitky?page=8"
     );
 
     private static final String X_PATH_PRODUCT_LIST = "//*[@id=\"js-product-list\"]/div[1]/child::*";

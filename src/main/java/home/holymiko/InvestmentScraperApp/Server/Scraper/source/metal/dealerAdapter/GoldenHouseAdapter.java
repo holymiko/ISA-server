@@ -30,8 +30,22 @@ public class GoldenHouseAdapter extends Client implements ProductDetailInterface
             "https://goldenhouse.cz/c/stribro?page=3",
             "https://goldenhouse.cz/c/stribro?page=4",
             "https://goldenhouse.cz/c/platina-a-palladium",
-            "https://goldenhouse.cz/c/platina-a-palladium?page=2"
-            // TODO Add Numismatika, ČNB, Pro sběratele URLs
+            "https://goldenhouse.cz/c/platina-a-palladium?page=2",
+            "https://goldenhouse.cz/c/zlato-zlate-mince-pro-sberatele",
+            "https://goldenhouse.cz/c/zlato-zlate-mince-pro-sberatele?page=2",
+            "https://goldenhouse.cz/c/zlato-zlate-mince-pro-sberatele?page=3",
+            "https://goldenhouse.cz/c/zlato-zlate-mince-pro-sberatele?page=4",
+            "https://goldenhouse.cz/c/stribro-stribrne-mince-pro-sberatele",
+            "https://goldenhouse.cz/c/stribro-stribrne-mince-pro-sberatele?page=2",
+            "https://goldenhouse.cz/c/stribro-stribrne-mince-pro-sberatele?page=3",
+            "https://goldenhouse.cz/c/stribro-stribrne-mince-pro-sberatele?page=4",
+            "https://goldenhouse.cz/c/stribro-stribrne-mince-pro-sberatele?page=5",
+            "https://goldenhouse.cz/c/numismatika",
+            "https://goldenhouse.cz/c/numismatika?page=2",
+            "https://goldenhouse.cz/c/numismatika?page=3",
+            "https://goldenhouse.cz/c/numismatika?page=4",
+            "https://goldenhouse.cz/c/numismatika?page=5"
+//            Mince ČNB are included in numismatika
     );
 
 
