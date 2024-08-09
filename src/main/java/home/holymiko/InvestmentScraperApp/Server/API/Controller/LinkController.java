@@ -1,6 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
+import home.holymiko.InvestmentScraperApp.Server.Service.ProductService;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkCountDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.DTO.simple.LinkDTO;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
@@ -21,6 +22,7 @@ public class LinkController extends BaseController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
 
     private final LinkService linkService;
+    private final ProductService productService;
 
     @GetMapping
     public List<LinkDTO> findByParams(
@@ -39,8 +41,9 @@ public class LinkController extends BaseController {
             Arrays.stream(Dealer.values()).map((dealer) ->
                 new LinkCountDTO(
                     dealer,
-                    linkService.countByParams(dealer),
-                    linkService.countByParams(dealer, true)
+                    linkService.countByParams(dealer, true),
+                    linkService.countByParams(dealer, false),
+                    productService.countByParams(dealer, null, null, null, null, null, true)
                 )
             ).toList()
         );

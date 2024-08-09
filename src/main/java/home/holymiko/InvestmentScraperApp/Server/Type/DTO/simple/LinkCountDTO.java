@@ -11,7 +11,8 @@ import lombok.ToString;
 public class LinkCountDTO {
 
     private final Dealer dealer;
-    private final Long linkCount;
     private final Long productCount;
+    private final Long linkWithoutProductCount;
+    private final Long hiddenProductCount;
 
 }
