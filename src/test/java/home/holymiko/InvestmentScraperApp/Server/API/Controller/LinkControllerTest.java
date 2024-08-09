@@ -2,6 +2,7 @@ package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Core.config.SpringConfig;
 import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
+import home.holymiko.InvestmentScraperApp.Server.Service.ProductService;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,8 @@ class LinkControllerTest {
     private WebApplicationContext context;
     @MockBean
     private LinkService linkService;
+    @MockBean
+    private ProductService productService;
     private MockMvc mockMvc;
 
     @BeforeEach
