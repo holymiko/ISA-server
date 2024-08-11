@@ -26,7 +26,7 @@ public class GoldSafeAdapter extends Client implements ProductDetailInterface {
     private static final String X_PATH_BUY_PRICE = "/html/body/div[3]/div/div[4]/div[1]/div[2]/span[1]";
     private static final String X_PATH_SELL_PRICE = "/html/body/div[3]/div/div[4]/div[1]/div[2]/div/span[2]";
     private static final String X_PATH_AVAILABILITY = "/html/body/div[3]/div/div[4]/table/tbody/tr[6]/td[2]";
-
+    private static final String X_PATH_AVAILABILITY_2 = "/html/body/div[3]/div/div[4]/table/tbody/tr[7]/td[2]";
 
     public GoldSafeAdapter() {
         super("GoldSafeAdapter");
@@ -79,7 +79,13 @@ public class GoldSafeAdapter extends Client implements ProductDetailInterface {
 
     @Override
     public String scrapAvailabilityFromProductPage(HtmlPage productDetailPage) {
-        return ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_AVAILABILITY)).asText();
+        String availabilityMsg = ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_AVAILABILITY)).asText();
+        try {
+            Convert.availability(availabilityMsg);
+        } catch (NullPointerException | IllegalArgumentException e) {
+            availabilityMsg = ((HtmlElement) productDetailPage.getFirstByXPath(X_PATH_AVAILABILITY_2)).asText();
+        }
+        return availabilityMsg;
     }
 
 }
