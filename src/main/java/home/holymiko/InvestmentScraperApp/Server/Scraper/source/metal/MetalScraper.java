@@ -78,7 +78,7 @@ public class MetalScraper {
      * Prints to console.
      * @param links Optional links of Products
      */
-    public void generalScrapAndSleep(List<LinkDTO> links) {
+    public void generalScrapAndSleep(List<LinkDTO> links, boolean saveHistory) {
         final int before = links.size();
         int counter = 0;
 
@@ -90,7 +90,7 @@ public class MetalScraper {
             long startTime = System.nanoTime();
 
             // Main method for scraping a document
-            generalScrap(link);
+            generalScrap(link, saveHistory);
 
             // TODO Logging
             LogBuilder.statusPrint(LOG_INTERVAL, links.size(), counter++);
@@ -106,7 +106,7 @@ public class MetalScraper {
      * Performs ethical delay.
      * @param linksGroupByProduct Lists of Links, grouped in List, by Product
      */
-    public void generalInSyncScrapAndSleep(List<List<LinkDTO>> linksGroupByProduct) {
+    public void generalInSyncScrapAndSleep(List<List<LinkDTO>> linksGroupByProduct, boolean saveHistory) {
         final int before = linksGroupByProduct.size();
         int counter = 0;
 
@@ -121,7 +121,7 @@ public class MetalScraper {
 
             // TODO Make multithreading here
             // Main method for scraping a document
-            productLinks.forEach(this::generalScrap);
+            productLinks.forEach(linkDTO -> generalScrap(linkDTO, saveHistory));
 
             // TODO Logging
             LogBuilder.statusPrint(LOG_INTERVAL, linksGroupByProduct.size(), counter++);
@@ -152,7 +152,7 @@ public class MetalScraper {
                         Collectors.toSet()
                 );
 
-        generalScrapAndSleep( new ArrayList<>(linkSet) );
+        generalScrapAndSleep( new ArrayList<>(linkSet), true );
         LogBuilder.logTimeStamp();
     }
 
@@ -168,7 +168,7 @@ public class MetalScraper {
      * @throws ScrapFailedException Link has saved product / Extraction from HTML failed
      * @throws DataIntegrityViolationException
      */
-    private void productScrap(LinkDTO link) throws ResourceNotFoundException, ScrapFailedException, DataIntegrityViolationException {
+    private void productScrap(LinkDTO link, boolean saveHistory) throws ResourceNotFoundException, ScrapFailedException, DataIntegrityViolationException {
         String name = "";
         final HtmlPage page;
         final ProductCreateDTO productExtracted;
@@ -212,7 +212,7 @@ public class MetalScraper {
             }
         }
 
-        productSaveSwitch(link, productExtracted);
+        productSaveSwitch(link, productExtracted, saveHistory);
     }
 
     /**
@@ -227,12 +227,12 @@ public class MetalScraper {
      * @param link
      * @param productExtracted
      */
-    private void productSaveSwitch(LinkDTO link, ProductCreateDTO productExtracted) {
+    private void productSaveSwitch(LinkDTO link, ProductCreateDTO productExtracted, boolean saveHistory) {
         final List<Product> nonSpecialProducts;
 
         // Special products are saved separately
         if(SAVE_NEW_PRODUCTS_SEPARATELY) {
-            saveValidNewProductAndScrapPrice(link, productExtracted);
+            saveValidNewProductAndScrapPrice(link, productExtracted, saveHistory);
             return;
         }
 
@@ -242,7 +242,7 @@ public class MetalScraper {
 
         // New product saved
         if(nonSpecialProducts.isEmpty()) {
-            saveValidNewProductAndScrapPrice(link, productExtracted);
+            saveValidNewProductAndScrapPrice(link, productExtracted, saveHistory);
             return;
         }
 
@@ -262,7 +262,7 @@ public class MetalScraper {
             }
 
             link = linkService.updateLinkProductId(link.getId(), productFound.getId(), productExtracted.getName());
-            priceScrap(link);
+            priceScrap(link, saveHistory);
             return;
         }
 
@@ -275,10 +275,10 @@ public class MetalScraper {
      * @param linkDTO
      * @param productExtracted
      */
-    private void saveValidNewProductAndScrapPrice(LinkDTO linkDTO, ProductCreateDTO productExtracted) {
+    private void saveValidNewProductAndScrapPrice(LinkDTO linkDTO, ProductCreateDTO productExtracted, boolean saveHistory) {
         Product p = productService.save(productExtracted);
         linkDTO = linkService.updateLinkProductId(linkDTO.getId(), p.getId(), p.getName());
-        priceScrap(linkDTO);
+        priceScrap(linkDTO, saveHistory);
         LOGGER.info("New Product saved");
     }
 
@@ -287,15 +287,15 @@ public class MetalScraper {
      * Switch: Save new product / Update price of existing product
      * @param link of Product
      */
-    private void generalScrap(final LinkDTO link) {
+    private void generalScrap(final LinkDTO link, boolean saveHistory) {
         // Product is already assigned to Link -> update PricePair
         if (link.getProductId() != null) {
-            priceScrap(link);
+            priceScrap(link, saveHistory);
             return;
         }
 
         try {
-            productScrap(link);
+            productScrap(link, saveHistory);
         } catch (Exception e) {
             LOGGER.warn( e.getMessage() );
         }
@@ -308,7 +308,7 @@ public class MetalScraper {
      * Main Price scraping method
      * Scraps new price. Saves entities Price, PricePair and PricePairHistory. Updates relations.
      */
-    private void priceScrap(final LinkDTO linkDTO) {
+    private void priceScrap(final LinkDTO linkDTO, boolean saveHistory) {
         Double buy = null;
         Double sell = null;
         final ProductDetailInterface adapter = dealerToMetalAdapter.get(linkDTO.getDealer());
@@ -358,7 +358,7 @@ public class MetalScraper {
             LOGGER.warn("Vykupni cena = 0");
         }
 
-        this.priceService.savePriceAndUpdateLink(linkDTO.getId(), buy, sell, availability, availabilityMsg);
+        this.priceService.savePriceAndUpdateLink(linkDTO.getId(), buy, sell, availability, availabilityMsg, saveHistory);
         LOGGER.info("New pricePair saved - " + linkDTO.getUri());
     }
 
@@ -394,13 +394,11 @@ public class MetalScraper {
      * TODO Method has to be tested
      */
     @Deprecated
-    public void scrapProductByIdList(final List<Long> productIds) {
+    public void scrapProductByIdList(final List<Long> productIds, boolean saveHistory) {
         for (long productId : productIds) {
             // Scraps new price for this.dealer product link
             linkService.findByProductId(productId)
-                    .forEach(
-                            this::priceScrap
-                    );
+                    .forEach((linkDTO) -> priceScrap(linkDTO, saveHistory));
         }
     }
 

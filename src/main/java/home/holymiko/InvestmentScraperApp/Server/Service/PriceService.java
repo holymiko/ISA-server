@@ -41,11 +41,12 @@ public class PriceService {
      * @param linkId Link to which the PricePair and PricePairHistory is added
      * @param buy parameter of Price
      * @param sell parameter of Price
+     * @param saveHistory switch to save PricePairHistory
      * @throws NullPointerException linkId is null
      * @throws ResourceNotFoundException Link for linkId doesn't exist
      */
     @Transactional
-    public void savePriceAndUpdateLink(@NotNull Long linkId, Double buy, Double sell, Availability availability, String availabilityMsg) {
+    public void savePriceAndUpdateLink(@NotNull Long linkId, Double buy, Double sell, Availability availability, String availabilityMsg, boolean saveHistory) {
         final Link link;
         final Price buyPrice;
         final Price sellPrice;
@@ -55,25 +56,32 @@ public class PriceService {
 
         // Validate inputs
         link = this.linkService.findById(linkId);
+        pricePairList = link.getPricePairsHistory();
 
-        // Remove old record
+        // Remove old PricePair
         if(link.getPricePair() != null) {
             this.pricePairRepository.delete(link.getPricePair());
         }
 
-        // Save new records
+        // Save new Prices
         buyPrice = this.priceRepository.save(new Price(LocalDateTime.now(), buy, false));
         sellPrice = this.priceRepository.save(new Price(LocalDateTime.now(), sell, true));
-        pricePair = new PricePair(buyPrice, sellPrice, availability, availabilityMsg);
-        pricePairHistory = new PricePairHistory(buyPrice, sellPrice, availability, linkId);
-        this.pricePairRepository.save(pricePair);
-        this.pricePairHistoryRepository.save(pricePairHistory);
 
+        // Save new PricePair
+        pricePair = new PricePair(buyPrice, sellPrice, availability, availabilityMsg);
+        this.pricePairRepository.save(pricePair);
         // Update relations
-        pricePairList = link.getPricePairsHistory();
-        pricePairList.add(pricePairHistory);
         link.setPricePair(pricePair);
-        link.setPricePairsHistory(pricePairList);
+
+        if(saveHistory) {
+            // Save new PricePair History
+            pricePairHistory = new PricePairHistory(buyPrice, sellPrice, availability, linkId);
+            this.pricePairHistoryRepository.save(pricePairHistory);
+            // Update relations
+            pricePairList.add(pricePairHistory);
+            link.setPricePairsHistory(pricePairList);
+        }
+        // Save/Update Link
         linkRepository.save(link);
     }
 

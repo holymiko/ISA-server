@@ -2,6 +2,8 @@ package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Core.LogBuilder;
 import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.TickerState;
 import home.holymiko.InvestmentScraperApp.Server.Scraper.source.metal.MetalScraper;
@@ -31,7 +33,7 @@ public class ScrapController extends BaseController {
     @PostMapping("/all")
     public void scrapEverything() {
         allLinks();
-        allProductsInSync();
+        allProductsInSync(false);
         serenity();
     }
 
@@ -47,34 +49,39 @@ public class ScrapController extends BaseController {
         ScrapHistory.frequencyHandlingAll(false);
         ScrapHistory.startRunning();
 
-        LOGGER.info("All products SCRAP IN SYNC");
-        // Scrap Links by Product, in sync, grouped by Product
-        metalScraper.generalInSyncScrapAndSleep(
-                linkService.findLinksGroupedByProduct()
-        );
-        // Scrap Links without Product
-        metalScraper.generalScrapAndSleep(
-            linkService.findByProductId(null)
-        );
-        LogBuilder.logTimeStamp();
-        LOGGER.info("All products scraped");
+        scrapLinksGroupedByProduct(null, null, null, saveHistory);
+        scrapLinksWoutProduct(saveHistory);
 
         ScrapHistory.timeUpdate(false, true);
         ScrapHistory.stopRunning();
     }
 
-    @PostMapping("/products/missing")
-    public void linksWithoutProduct() {
-        ScrapHistory.startRunning();
-        LOGGER.info("SCRAP Links without Product");
+    public void scrapLinksGroupedByProduct(Dealer dealer, Metal metal, Form form, boolean saveHistory) {
+        LOGGER.info("START SYNC SCRAP - Links grouped by Product {} {} {}", dealer, metal, form);
+        // Scrap Links by Product, in sync, grouped by Product
+        metalScraper.generalInSyncScrapAndSleep(
+                linkService.findLinksGroupedByProduct(dealer, metal, form),
+                saveHistory
+        );
+        LOGGER.info("END SYNC SCRAP - Links grouped by Product {} {} {}", dealer, metal, form);
+        LogBuilder.logTimeStamp();
+    }
 
+    public void scrapLinksWoutProduct(boolean saveHistory) {
+        LOGGER.info("START SCRAP - Links without Product");
         // Scrap Links without Product
         metalScraper.generalScrapAndSleep(
-                linkService.findByProductId(null)
+                linkService.findByProductId(null),
+                saveHistory
         );
+        LOGGER.info("END SCRAP - Links without Product");
         LogBuilder.logTimeStamp();
-        LOGGER.info("SCRAP FINISHED");
+    }
 
+    @PostMapping("/products/missing")
+    public void linksWithoutProduct(boolean saveHistory) {
+        ScrapHistory.startRunning();
+        scrapLinksWoutProduct(saveHistory);
         ScrapHistory.stopRunning();
     }
 
@@ -87,9 +94,9 @@ public class ScrapController extends BaseController {
         ScrapHistory.startRunning();
 
         LOGGER.info("All products SCRAP ASYNC");
-        // Scrap Links without Product
         metalScraper.generalScrapAndSleep(
-                linkService.findByParams(null, null)
+                linkService.findByParams(null, null),
+                saveHistory
         );
         // TODO Scrap others
         LogBuilder.logTimeStamp();
@@ -105,7 +112,8 @@ public class ScrapController extends BaseController {
 
         LOGGER.info("Client Product ID "+id);
         metalScraper.generalScrapAndSleep(
-                linkService.findByProductId(id)
+                linkService.findByProductId(id),
+                true
         );
         LogBuilder.logTimeStamp();
         LOGGER.info("Products with ID "+id+" scraped");
@@ -125,10 +133,7 @@ public class ScrapController extends BaseController {
         // Lock guard
         ScrapHistory.startRunning();
 
-        LOGGER.info("By param scrap products");
-        metalScraper.generalInSyncScrapAndSleep(
-                linkService.findLinksGroupedByProduct(null, metal, null)
-        );
+        scrapLinksGroupedByProduct(null, metal, null, true);
 
         // Unlock guard
         scrapHistory.timeUpdate(metal);
