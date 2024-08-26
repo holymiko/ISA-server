@@ -1,10 +1,6 @@
 Removed to GitHub issues.<br> No future updates planned on this file.
 # ToDo
 
-## A priority
-- [ ] <b>Write bachelors documentation</b>
-- [ ] Write <b>JUnit tests</b> for all services (use Mockito)
-
 ## B priority
 - [ ] <b>Scrap pricePairs from product list page and buyout page</b>
   for Bessergold & Silverum. Visiting all product detail pages won't be necessary.

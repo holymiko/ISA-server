@@ -1,6 +1,7 @@
 package home.holymiko.InvestmentScraperApp.Server.API.Controller;
 
 import home.holymiko.InvestmentScraperApp.Server.Core.LogBuilder;
+import home.holymiko.InvestmentScraperApp.Server.Core.exception.ScrapRefusedException;
 import home.holymiko.InvestmentScraperApp.Server.Service.LinkService;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Dealer;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
@@ -45,9 +46,13 @@ public class ScrapController extends BaseController {
      * scraped at the same time. Thanks to that, Prices are time synchronized.
      */
     @PostMapping("/products")
-    public void allProductsInSync() {
-        ScrapHistory.frequencyHandlingAll(false);
-        ScrapHistory.startRunning();
+    public void allProductsInSync(boolean saveHistory) {
+        try {
+            ScrapHistory.frequencyHandlingAll(false);
+            ScrapHistory.startRunning();
+        } catch (ScrapRefusedException e) {
+            return;
+        }
 
         scrapLinksGroupedByProduct(null, null, null, saveHistory);
         scrapLinksWoutProduct(saveHistory);
@@ -89,9 +94,15 @@ public class ScrapController extends BaseController {
      * Scrap products for ALL Links. Including Links which doesn't have Product yet.
      */
     @PostMapping({"/products/async"})
-    public void allProductsAsync() {
-        ScrapHistory.frequencyHandlingAll(false);
-        ScrapHistory.startRunning();
+    public void allProductsAsync(boolean saveHistory) {
+
+
+        try {
+            ScrapHistory.frequencyHandlingAll(false);
+            ScrapHistory.startRunning();
+        } catch (ScrapRefusedException e) {
+            return;
+        }
 
         LOGGER.info("All products SCRAP ASYNC");
         metalScraper.generalScrapAndSleep(
@@ -129,9 +140,13 @@ public class ScrapController extends BaseController {
      */
     @PostMapping(value ="/param", headers = "Accept=application/json;charset=UTF-8")
     public void scrapProductsInSyncByMetal(@RequestParam Metal metal) {
-        scrapHistory.frequencyHandling(metal);
-        // Lock guard
-        ScrapHistory.startRunning();
+        try {
+            scrapHistory.frequencyHandling(metal);
+            // Lock guard
+            ScrapHistory.startRunning();
+        } catch (ScrapRefusedException e) {
+            return;
+        }
 
         scrapLinksGroupedByProduct(null, metal, null, true);
 

@@ -146,7 +146,7 @@ public class ScrapHistory {
     }
 
     public static void startRunning() throws ScrapRefusedException {
-        isRunning();
+//        isRunning();
         ScrapHistory.isRunning = true;
     }
 
