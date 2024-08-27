@@ -125,25 +125,18 @@ public class Run {
         stockController.importTickers();
     }
 
-//    @EventListener(ApplicationReadyEvent.class)
-    public void scrap() throws IOException {
-        scrapController.allLinks();
-        scrapController.allProductsInSync(true);
-//        scrapController.serenity();
-    }
-
     /**
      * Runs every day at [9:00, 17:00]
      */
     @Scheduled(cron = "0 0 9,17 * * ?")
     public void scheduleScrap() {
-        scrapController.allProductsInSync(false);
+        scrapController.productsInSync(null, null, null, null,false, false);
     }
 
     @Scheduled(cron = "0 0 13 * * ?")
     public void scheduleScrapHistory() {
         scrapController.allLinks();
-        scrapController.allProductsInSync(true);
+        scrapController.productsInSync(null, null, null, null,true, null);
         scrapController.linksWithoutProduct(true);
     }
 

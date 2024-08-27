@@ -9,6 +9,7 @@ import home.holymiko.InvestmentScraperApp.Server.Type.Entity.Link;
 import home.holymiko.InvestmentScraperApp.Server.API.Repository.LinkRepository;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Form;
 import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Metal;
+import home.holymiko.InvestmentScraperApp.Server.Type.Enum.Producer;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -58,9 +59,9 @@ public class LinkService {
         );
     }
 
-    public List<List<LinkDTO>> findLinksGroupedByProduct(Dealer dealer, Metal metal, Form form) {
+    public List<List<LinkDTO>> findLinksGroupedByProduct(Dealer dealer, Producer producer, Metal metal, Form form, Boolean hidden) {
         return this.productRepository.findByParams(
-                dealer, null, metal, form, null, null, null, Pageable.unpaged()
+                dealer, producer, metal, form, null, null, hidden, Pageable.unpaged()
             ).stream().map(
                 product -> linkMapper.toDTO(product.getLinks())
             ).collect(Collectors.toList());
