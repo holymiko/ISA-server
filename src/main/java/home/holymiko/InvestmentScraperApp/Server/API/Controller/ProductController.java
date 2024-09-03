@@ -18,13 +18,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 
 
 @RestController
@@ -38,21 +36,6 @@ public class ProductController extends BaseController {
 
     /////// GET
 
-    @GetMapping("/old")
-    @Operation(description = "Without params, returns all products")
-    public List<ProductDTO_LatestPrices> byParamsOld(
-            @RequestParam(required = false) Dealer dealer,
-            @RequestParam(required = false) Producer producer,
-            @RequestParam(required = false) Metal metal,
-            @RequestParam(required = false) Form form,
-            @RequestParam(required = false) Double grams,
-            @RequestParam(required = false) Integer year,
-            @RequestParam(required = false) Boolean savedAlone
-    ) {
-        LOGGER.info("GET List<ProductDTO_LatestPrices> ByParamsOld {} {} {} {} {} {} {}", dealer, producer, metal, form, grams, year, savedAlone);
-        return productService.findByParamsOld(dealer, producer, metal, form, grams, year, false, Pageable.unpaged());
-    }
-
     @GetMapping
     @Operation(description = "Without params, returns all products")
     public Page<ProductDTO_LatestPrices> byParams(
@@ -62,18 +45,19 @@ public class ProductController extends BaseController {
             @RequestParam(required = false) Form form,
             @RequestParam(required = false) Double grams,
             @RequestParam(required = false) Integer year,
-            @RequestParam(required = false) Boolean hidden,
+            @RequestParam(required = false) Boolean isHidden,
+            @RequestParam(required = false) Boolean isTopProduct,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) Integer size
     ) {
-        LOGGER.info("GET List<ProductDTO_LatestPrices> ByParams {} {} {} {} {} {} {}", dealer, producer, metal, form, grams, year, hidden);
+        LOGGER.info("GET List<ProductDTO_LatestPrices> ByParams {} {} {} {} {} {} isHidden: {} isTopProduct: {}", dealer, producer, metal, form, grams, year, isHidden, isTopProduct);
 
         if (size == null) {
             size = Integer.MAX_VALUE;
         }
 
         // TODO Add sorting, add column bestSpread and price/gram
-        return productService.findByParams(dealer, producer, metal, form, grams, year, hidden, PageRequest.of(page, size));
+        return productService.findByParams(dealer, producer, metal, form, grams, year, isHidden, isTopProduct, PageRequest.of(page, size));
     }
 
     @GetMapping("/{id}")

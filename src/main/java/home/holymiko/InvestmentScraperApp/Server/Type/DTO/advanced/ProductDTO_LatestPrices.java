@@ -15,8 +15,8 @@ public class ProductDTO_LatestPrices extends ProductDTO {
     private List<String> links;
     private List<PricePairDTO_Dealer> latestPrices;
 
-    public ProductDTO_LatestPrices(long id, String name, Metal metal, Form form, double grams, List<String> links, List<PricePairDTO_Dealer> latestPrices) {
-        super(id, name, metal, form, grams);
+    public ProductDTO_LatestPrices(long id, String name, Metal metal, Form form, double grams, boolean isTopProduct, List<String> links, List<PricePairDTO_Dealer> latestPrices) {
+        super(id, name, metal, form, grams, isTopProduct);
         this.links = links;
         this.latestPrices = latestPrices;
     }

@@ -130,13 +130,13 @@ public class Run {
      */
     @Scheduled(cron = "0 0 9,17 * * ?")
     public void scheduleScrap() {
-        scrapController.productsInSync(null, null, null, null,false, false);
+        scrapController.productsInSync(false, null, null, null, null, false, null);
     }
 
     @Scheduled(cron = "0 0 13 * * ?")
     public void scheduleScrapHistory() {
         scrapController.allLinks();
-        scrapController.productsInSync(null, null, null, null,true, null);
+        scrapController.productsInSync(true, null, null, null, null, null, null);
         scrapController.linksWithoutProduct(true);
     }
 

@@ -9,7 +9,6 @@ Removed to GitHub issues.<br> No future updates planned on this file.
 - [ ] Implement <b>multithreading</b> for scraping
 - [ ] <b>Finalize SerenityScraper:</b> make tickers initializing method, endpoint and UI
 - [ ] Add scraper for https://www.investicni-zlato-praha.cz/
-- [ ] Add scraper for https://www.aurumbohemica.cz/
 
 ## C priority
 - [ ] Scrap <b>spot prices</b> of Gold and Silver to compute <b>Gold/Silver ratio</b>

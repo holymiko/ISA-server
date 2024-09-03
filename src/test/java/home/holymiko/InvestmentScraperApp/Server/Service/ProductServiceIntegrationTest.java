@@ -34,14 +34,14 @@ class ProductServiceIntegrationTest {
     @Test
     void productIntegrationTest() {
 
-        Product savedP0 = productService.save( new Product(new ProductCreateDTO("test0", Producer.ARGOR_HERAEUS, Form.BAR, Metal.GOLD, 1.0, 2015, false)));
-        Product savedP1 = productService.save( new Product(new ProductCreateDTO("test1", Producer.HERAEUS, Form.KINEBAR, Metal.SILVER, 1.0, 2015, false)));
+        Product savedP0 = productService.save( new Product(new ProductCreateDTO("test0", Producer.ARGOR_HERAEUS, Form.BAR, Metal.GOLD, 1.0, 2015, false, false)));
+        Product savedP1 = productService.save( new Product(new ProductCreateDTO("test1", Producer.HERAEUS, Form.KINEBAR, Metal.SILVER, 1.0, 2015, false, false)));
 
-        Assertions.assertEquals(2, productService.findByParams(null, null, null, null, null, null, null, Pageable.unpaged()).getTotalElements());
+        Assertions.assertEquals(2, productService.findByParams(null, null, null, null, null, null, null, null, Pageable.unpaged()).getTotalElements());
 
         // Clean
         productService.deleteById(savedP0.getId());
         productService.deleteById(savedP1.getId());
-        Assertions.assertEquals(0, productService.findByParams(null, null, null, null, null, null, null, Pageable.unpaged()).getTotalElements());
+        Assertions.assertEquals(0, productService.findByParams(null, null, null, null, null, null, null, null, Pageable.unpaged()).getTotalElements());
     }
 }

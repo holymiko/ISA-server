@@ -35,7 +35,7 @@ public class ScrapController extends BaseController {
     @PostMapping("/all")
     public void scrapEverything() {
         allLinks();
-        productsInSync(null, null,null,null, true, null);
+        productsInSync(true, null,null,null, null, null, null);
         linksWithoutProduct(true);
         serenity();
     }
@@ -48,7 +48,7 @@ public class ScrapController extends BaseController {
      * scraped at the same time. Thanks to that, Prices are time synchronized.
      */
     @PostMapping("/products")
-    public void productsInSync(Dealer dealer, Producer producer, Metal metal, Form form, boolean saveHistory, Boolean hidden) {
+    public void productsInSync(boolean saveHistory, Dealer dealer, Producer producer, Metal metal, Form form, Boolean isHidden, Boolean isTopProduct) {
         try {
             ScrapHistory.frequencyHandlingAll(false);
             ScrapHistory.startRunning();
@@ -56,17 +56,17 @@ public class ScrapController extends BaseController {
             return;
         }
 
-        scrapLinksGroupedByProduct(dealer, producer, metal, form, saveHistory, hidden);
+        scrapLinksGroupedByProduct(saveHistory, dealer, producer, metal, form, isHidden, isTopProduct);
 
         ScrapHistory.timeUpdate(false, true);
         ScrapHistory.stopRunning();
     }
 
-    public void scrapLinksGroupedByProduct(Dealer dealer, Producer producer, Metal metal, Form form, boolean saveHistory, Boolean hidden) {
+    public void scrapLinksGroupedByProduct(boolean saveHistory, Dealer dealer, Producer producer, Metal metal, Form form, Boolean isHidden, Boolean isTopProduct) {
         LOGGER.info("START SYNC SCRAP - Links grouped by Product {} {} {}", dealer, metal, form);
         // Scrap Links by Product, in sync, grouped by Product
         metalScraper.generalInSyncScrapAndSleep(
-                linkService.findLinksGroupedByProduct(dealer, producer, metal, form, hidden),
+                linkService.findLinksGroupedByProduct(dealer, producer, metal, form, isHidden, isTopProduct),
                 saveHistory
         );
         LOGGER.info("END SYNC SCRAP - Links grouped by Product {} {} {}", dealer, metal, form);
@@ -140,7 +140,7 @@ public class ScrapController extends BaseController {
      * scraped at the same time. Thanks to that, Prices are time synchronized.
      */
     @PostMapping(value ="/param", headers = "Accept=application/json;charset=UTF-8")
-    public void scrapProductsInSyncByMetal(@RequestParam Metal metal) {
+    public void scrapProductsInSyncByMetal(@RequestParam Metal metal, @RequestParam Boolean isTopProduct) {
         try {
             scrapHistory.frequencyHandling(metal);
             // Lock guard
@@ -149,7 +149,7 @@ public class ScrapController extends BaseController {
             return;
         }
 
-        scrapLinksGroupedByProduct(null, null, metal, null, true, null);
+        scrapLinksGroupedByProduct(true, null, null, metal, null, false, isTopProduct);
 
         // Unlock guard
         scrapHistory.timeUpdate(metal);

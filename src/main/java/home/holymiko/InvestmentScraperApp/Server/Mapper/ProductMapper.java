@@ -29,6 +29,7 @@ public abstract class ProductMapper {
     public abstract ProductDTO_AllPrices toProductDTO_AllPrices(Product product);
 
     @Mappings({
+            @Mapping(target = "isTopProduct", source = "product.isTopProduct"),
             @Mapping(target = "links", ignore = true),
             @Mapping(target = "latestPrices", ignore = true)
     })

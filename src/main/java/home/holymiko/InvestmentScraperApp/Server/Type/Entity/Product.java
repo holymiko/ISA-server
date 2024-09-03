@@ -44,8 +44,11 @@ public class Product {
     private Double grams;
     private int year;
 
-    @Column(name = "hidden", columnDefinition = "boolean default false")
-    private boolean hidden = false;
+    @Column(name = "is_hidden", columnDefinition = "boolean default false")
+    private boolean isHidden = false;
+
+    @Column(name = "is_top_product", columnDefinition = "boolean default false")
+    private boolean isTopProduct = false;
 
     @OneToMany(mappedBy = "productId", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
@@ -58,7 +61,11 @@ public class Product {
         this.metal = productCreateDTO.getMetal();
         this.grams = productCreateDTO.getGrams();
         this.year = productCreateDTO.getYear();
-        this.hidden = productCreateDTO.isHidden();
+        this.isHidden = productCreateDTO.isHidden();
+        this.isTopProduct = productCreateDTO.isTopProduct();
     }
 
+    public boolean getIsTopProduct() {
+        return isTopProduct;
+    }
 }

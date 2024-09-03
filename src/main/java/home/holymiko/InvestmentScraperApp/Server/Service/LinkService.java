@@ -59,9 +59,9 @@ public class LinkService {
         );
     }
 
-    public List<List<LinkDTO>> findLinksGroupedByProduct(Dealer dealer, Producer producer, Metal metal, Form form, Boolean hidden) {
+    public List<List<LinkDTO>> findLinksGroupedByProduct(Dealer dealer, Producer producer, Metal metal, Form form, Boolean isHidden, Boolean isTopProduct) {
         return this.productRepository.findByParams(
-                dealer, producer, metal, form, null, null, hidden, Pageable.unpaged()
+                dealer, producer, metal, form, null, null, isHidden, isTopProduct, Pageable.unpaged()
             ).stream().map(
                 product -> linkMapper.toDTO(product.getLinks())
             ).collect(Collectors.toList());

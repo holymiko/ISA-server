@@ -14,5 +14,6 @@ public class ProductDTO {
     private final Metal metal;
     private final Form form;
     private final double grams;
+    private final boolean isTopProduct;
 
 }

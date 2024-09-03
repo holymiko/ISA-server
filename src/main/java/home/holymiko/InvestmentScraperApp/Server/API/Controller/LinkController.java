@@ -43,7 +43,7 @@ public class LinkController extends BaseController {
                     dealer,
                     linkService.countByParams(dealer, true),
                     linkService.countByParams(dealer, false),
-                    productService.countByParams(dealer, null, null, null, null, null, true)
+                    productService.countByParams(dealer, null, null, null, null, null, true, null)
                 )
             ).toList()
         );

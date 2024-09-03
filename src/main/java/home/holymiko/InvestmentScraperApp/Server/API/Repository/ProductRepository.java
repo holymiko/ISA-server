@@ -32,7 +32,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "and " +
             "(:year is null or m.year = :year) " +
             "and " +
-            "(:hidden is null or m.hidden = :hidden) "
+            "(:hidden is null or m.isHidden = :hidden) " +
+            "and " +
+            "(:isTopProduct is null or m.isTopProduct = :isTopProduct) "
     )
     Page<Product> findByParams(
             @Param("dealer") Dealer dealer,
@@ -42,6 +44,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("grams") Double grams,
             @Param("year") Integer year,
             @Param("hidden") Boolean hidden,
+            @Param("isTopProduct") Boolean isTopProduct,
             Pageable pageable
     );
 
@@ -58,7 +61,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "and " +
             "(:year is null or m.year = :year) " +
             "and " +
-            "(:hidden is null or m.hidden = :hidden) "
+            "(:hidden is null or m.isHidden = :hidden) " +
+            "and " +
+            "(:isTopProduct is null or m.isTopProduct = :isTopProduct) "
     )
     Long countByParams(
             @Param("dealer") Dealer dealer,
@@ -67,6 +72,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("form") Form form,
             @Param("grams") Double grams,
             @Param("year") Integer year,
-            @Param("hidden") Boolean hidden
+            @Param("hidden") Boolean hidden,
+            @Param("isTopProduct") Boolean isTopProduct
     );
 }
