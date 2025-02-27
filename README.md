@@ -1,23 +1,24 @@
-# Investment Scrap App server
+# Investment Scrap App
 
 ## How to run on local machine?
->### Database
->* cd src/main/docker<br>
->* docker build .<br>
->* docker compose up
->### Back-end application
+#### Database
+>`cd src/main/docker`<br>
+>`docker build .`<br>
+>`docker compose up`
+#### Backend application
 >Make sure your device has access to internet.<br>
 >Run <b>main method in InvestmentScraperApp.java</b><br>
 >Initial actions, like data scraping,
 > can be handled by <b>EventListeners in Run.java</b>
->### Front-end application
->Enter client directory
->* yarn install<br>
->* yarn start<br>
+#### Frontend application
+>Enter client directory <br>
+>`yarn install`<br>
+>`yarn start`<br>
+<br>
 
 ## Server deployment
 
-> #### Commands
+#### Commands
 ><b>Login</b> to server<br>
 >`sudo ssh -v -p 22 root@67.223.117.163`<p>
 > <b>Backup DB</b> on server<br>
@@ -27,22 +28,22 @@
 > <b>Restore DB</b> from local machine<br>
 >`psql -U postgres -p 5432 -h 67.223.117.163 -d goldSilver < 25_04_24_product_synchronization.dump`<p>
 > [useful SQL commands](request.sql) <br>
-> #### Tips
+
+#### Tips
 > Lack of memory in Docker<br>
 > [docker system prune](https://docs.docker.com/reference/cli/docker/system/prune/)
 > <b>BACKUP Postgres</b> BEFORE this command !!!!<p>
 > After FE deployment, open app in new tab. Otherwise, changes won't take place.
-> 
+<br>
 
 
-
-
-## Tech stack 
-> ### BE
+## Technology stack 
+#### Backend stack
 > Java<br>Springboot<br>Hibernate<br>Maven<br>Docker<br>PostgreSQL<br>
 >
-> ### FE
+#### Frontend stack
 > ReactJS<br>JavaScript/TypeScript<br>Material-UI<br>
+<br>
 
 ## Introduction
 > Smyslem algoritmu je zprostředkovat informace o investičních produktech. <br>
@@ -55,6 +56,7 @@ strategie popsané v knize <b> Inteligentní Investor</b> od Benjamina Grahama
 https://www.grahamvalue.com/article/how-build-complete-benjamin-graham-portfolio <br>
 https://en.wikipedia.org/wiki/Benjamin_Graham  
 https://en.wikipedia.org/wiki/The_Intelligent_Investor  
+<br>
 
 ## Data gathering
 > Získání dat zajišťují třídy `scrap`
@@ -71,7 +73,7 @@ Na základě link adresy je zjištěna cena, váha, výrobce atd.
 <img src="doc/img/isa_draw/scraper_api_5_legend.png" title="app diagram" alt="app diagram"/>
 
 ### Data sources
-https://www.serenitystocks.com<br>
+> https://www.serenitystocks.com<br>
 https://www.bessergold.cz<br>
 https://www.bessergold.de<br>
 https://zlataky.cz<br>
@@ -81,14 +83,14 @@ https://silverum.cz<br>
 
 ## Application interface
 
-Data je možné získat na http://localhost:8080/api/v2/ +`entita` Jsou poskytovány ve formátu JSON.
+> Data je možné získat na http://localhost:8080/api/v2/ +`entita` Jsou poskytovány ve formátu JSON.
 Entity jsou k dispozici v optimalizovaném formátu `DTO` (Data Transfer Object).
 
 ### Swagger
-http://localhost:8080/swagger-ui/
+> http://localhost:8080/swagger-ui/
 
 ### DTO
-V aplikaci jsou používány Data Transfer Objects, aby se šetřil datový přenos mezi aplikacemi a minimalizovalo množství dat, se kterými se manipuluje.
+> V aplikaci jsou používány Data Transfer Objects, aby se šetřil datový přenos mezi aplikacemi a minimalizovalo množství dat, se kterými se manipuluje.
 
 <br>
 
