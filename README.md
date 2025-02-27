@@ -1,22 +1,22 @@
 # Investment Scrap App
 
 ## How to run on local machine?
-#### Database
+#### Whole application with database
 >`cd src/main/docker`<br>
 >`docker build .`<br>
 >`docker compose up`
-#### Backend application
+#### Backend separately
 >Make sure your device has access to internet.<br>
 >Run <b>main method in InvestmentScraperApp.java</b><br>
 >Initial actions, like data scraping,
 > can be handled by <b>EventListeners in Run.java</b>
-#### Frontend application
+#### Frontend separately
 >Enter client directory <br>
 >`yarn install`<br>
 >`yarn start`<br>
 <br>
 
-## Server deployment
+## Server management
 
 #### Commands
 ><b>Login</b> to server<br>
