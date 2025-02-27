@@ -63,7 +63,7 @@ https://en.wikipedia.org/wiki/The_Intelligent_Investor
 Program se pomocí `htmlunit` klienta spojí s webovou stránkou a na základě `XPath` získá z dokumentu relevantní data. 
 Ty jsou následné použity k vytvoření instance třídy `Product` nebo `StockGraham` a uloženy do databáze.
 
-> Data pro třídu `StockGraham` jsou získávány z www.serenitystocks.com/stock/ +`ticker`
+> Data pro třídu `StockGraham` jsou získávány z www.grahamvalue.com/stock/ +`ticker`
 Databáze uchovává seznam tickerů (zkratek užívaných na burze) a jejich stav. 
 Jejich zdrojem jsou soubory v adresáři `txt/`
 
@@ -73,7 +73,7 @@ Na základě link adresy je zjištěna cena, váha, výrobce atd.
 <img src="doc/img/isa_draw/scraper_api_5_legend.png" title="app diagram" alt="app diagram"/>
 
 ### Data sources
-> https://www.serenitystocks.com<br>
+> https://www.grahamvalue.com<br>
 https://www.bessergold.cz<br>
 https://www.bessergold.de<br>
 https://zlataky.cz<br>
