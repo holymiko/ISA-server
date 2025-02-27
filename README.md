@@ -59,9 +59,9 @@ https://en.wikipedia.org/wiki/The_Intelligent_Investor
 <br>
 
 ## Data gathering
-> Získání dat zajišťují třídy `scrap`
+> Získání dat zajišťují třídy v adresáři `scraper`.
 Program se pomocí `htmlunit` klienta spojí s webovou stránkou a na základě `XPath` získá z dokumentu relevantní data. 
-Ty jsou následné použity k vytvoření entit `stockGraham` či `product` a uloženy do databáze.
+Ty jsou následné použity k vytvoření instance třídy `Product` nebo `StockGraham` a uloženy do databáze.
 
 > Informace pro `stockGraham` jsou získány z www.serenitystocks.com/stockGraham/ +`ticker`
 Databáze uchovává seznam tickerů (zkratek užívaných na burze) a jejich stav. 
