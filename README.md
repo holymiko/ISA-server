@@ -63,7 +63,7 @@ https://en.wikipedia.org/wiki/The_Intelligent_Investor
 Program se pomocí `htmlunit` klienta spojí s webovou stránkou a na základě `XPath` získá z dokumentu relevantní data. 
 Ty jsou následné použity k vytvoření instance třídy `Product` nebo `StockGraham` a uloženy do databáze.
 
-> Informace pro `stockGraham` jsou získány z www.serenitystocks.com/stockGraham/ +`ticker`
+> Data pro třídu `StockGraham` jsou získávány z www.serenitystocks.com/stock/ +`ticker`
 Databáze uchovává seznam tickerů (zkratek užívaných na burze) a jejich stav. 
 Jejich zdrojem jsou soubory v adresáři `txt/`
 
