@@ -44,14 +44,19 @@
 > ### FE
 > ReactJS<br>JavaScript/TypeScript<br>Material-UI<br>
 
-## Úvod
+## Introduction
 > Smyslem algoritmu je zprostředkovat informace o investičních produktech. <br>
 Program vyhodnocuje nabídku drahých kovů na českém trhu. <br>
 Zároveň získává informace ze stránky, která vyhodnocuje akcie na základě 
 strategie popsané v knize <b> Inteligentní Investor</b> od Benjamina Grahama
 
+### Relevant articles
+> https://www.silverum.cz/pruvodce-investora.html <br>
+https://www.grahamvalue.com/article/how-build-complete-benjamin-graham-portfolio <br>
+https://en.wikipedia.org/wiki/Benjamin_Graham  
+https://en.wikipedia.org/wiki/The_Intelligent_Investor  
 
-## Získání dat
+## Data gathering
 > Získání dat zajišťují třídy `scrap`
 Program se pomocí `htmlunit` klienta spojí s webovou stránkou a na základě `XPath` získá z dokumentu relevantní data. 
 Ty jsou následné použity k vytvoření entit `stockGraham` či `product` a uloženy do databáze.
@@ -65,7 +70,7 @@ Na základě link adresy je zjištěna cena, váha, výrobce atd.
 
 <img src="doc/img/isa_draw/scraper_api_5_legend.png" title="app diagram" alt="app diagram"/>
 
-### Zdroje dat
+### Data sources
 https://www.serenitystocks.com<br>
 https://www.bessergold.cz<br>
 https://www.bessergold.de<br>
@@ -74,7 +79,7 @@ https://silverum.cz<br>
 
 <br>
 
-## Aplikační rozhraní
+## Application interface
 
 Data je možné získat na http://localhost:8080/api/v2/ +`entita` Jsou poskytovány ve formátu JSON.
 Entity jsou k dispozici v optimalizovaném formátu `DTO` (Data Transfer Object).
@@ -85,32 +90,28 @@ http://localhost:8080/swagger-ui/
 ### DTO
 V aplikaci jsou používány Data Transfer Objects, aby se šetřil datový přenos mezi aplikacemi a minimalizovalo množství dat, se kterými se manipuluje.
 
+<br>
 
-## Uživatelské rozhraní
+## User interface
 
-
-![Screenshot from 2024-08-15 16-45-43](https://github.com/user-attachments/assets/deb75c99-2ea2-46d5-96f5-ee83f52ec55e)
+### Product table
+![Gold products filter](https://github.com/user-attachments/assets/deb75c99-2ea2-46d5-96f5-ee83f52ec55e)
 ![Screenshot from 2024-08-15 16-46-18](https://github.com/user-attachments/assets/60e2c696-bab8-4428-aa9f-dfac9b1bfd96)
 ![Screenshot from 2024-08-15 16-46-29](https://github.com/user-attachments/assets/c1afb7a8-98dd-4596-b2e2-985eff75561b)
-![Screenshot from 2024-08-15 16-49-11](https://github.com/user-attachments/assets/20acb5f4-c619-462c-b231-8f1c0c528982)
-![Screenshot from 2024-08-15 17-39-27](https://github.com/user-attachments/assets/fe25d200-a26f-40d5-89f7-9a8cd9e0a1a3)
-![Screenshot from 2024-08-15 17-40-17](https://github.com/user-attachments/assets/8412783d-639d-450a-92cf-041eed546764)
-![Screenshot from 2024-08-28 00-21-27](https://github.com/user-attachments/assets/70b6276e-6dbe-47e5-a855-b2f9c2f1dfbc)
-![Screenshot from 2024-08-28 00-21-33](https://github.com/user-attachments/assets/4dd88f77-2459-4e56-93d3-aec67383f902)
-![Screenshot from 2024-08-28 00-21-39](https://github.com/user-attachments/assets/9e2153ff-0a29-4a70-b77f-6e36c4877777)
-![Screenshot from 2024-08-28 00-23-38](https://github.com/user-attachments/assets/456f1722-752d-4e2d-b1f6-f0a030711519)
-![Screenshot from 2024-08-28 00-23-59](https://github.com/user-attachments/assets/08474891-78f2-4e85-93df-4400e4a08725)
-![Screenshot from 2024-08-28 00-24-16](https://github.com/user-attachments/assets/769c40e8-f143-4ace-bce0-61794b96a073)
+### Product detail
 ![Screenshot from 2024-08-28 10-43-48](https://github.com/user-attachments/assets/086d4d52-238c-4b6c-8f6a-5d29632172aa)
 ![Screenshot from 2024-08-28 10-43-55](https://github.com/user-attachments/assets/c531d089-12e5-4a38-baf5-ee97bf47fd00)
 ![Screenshot from 2024-08-28 10-44-00](https://github.com/user-attachments/assets/168f72ff-5ed2-473f-8cb5-441ffa9fa0a6)
 ![Screenshot from 2024-08-28 10-44-57](https://github.com/user-attachments/assets/f036b7e2-9244-4d3c-9606-7e166d4743f8)
+### Portfolios
+![Portfolios](https://github.com/user-attachments/assets/8412783d-639d-450a-92cf-041eed546764)
+### Analytics
+![Analytics filter](https://github.com/user-attachments/assets/70b6276e-6dbe-47e5-a855-b2f9c2f1dfbc)
+![Dealer stats](https://github.com/user-attachments/assets/4dd88f77-2459-4e56-93d3-aec67383f902)
+![Gold distribution fce](https://github.com/user-attachments/assets/9e2153ff-0a29-4a70-b77f-6e36c4877777)
+![Gold distribution fce 2](https://github.com/user-attachments/assets/fe25d200-a26f-40d5-89f7-9a8cd9e0a1a3)
+![Availability](https://github.com/user-attachments/assets/20acb5f4-c619-462c-b231-8f1c0c528982)
+![Availability 2](https://github.com/user-attachments/assets/456f1722-752d-4e2d-b1f6-f0a030711519)
+![Screenshot from 2024-08-28 00-23-59](https://github.com/user-attachments/assets/08474891-78f2-4e85-93df-4400e4a08725)
+![Screenshot from 2024-08-28 00-24-16](https://github.com/user-attachments/assets/769c40e8-f143-4ace-bce0-61794b96a073)
 
-
-<br/>
-
-### Relevantní články
-https://www.serenitystocks.com/article/how-build-complete-benjamin-graham-portfolio  
-https://en.wikipedia.org/wiki/Benjamin_Graham  
-https://en.wikipedia.org/wiki/The_Intelligent_Investor  
-https://www.silverum.cz/pruvodce-investora.html  
