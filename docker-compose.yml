@@ -43,13 +43,13 @@ services:
     ports:
     - "5432:5432"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=prahapodoli
-      - POSTGRES_DB=goldSilver
+      - POSTGRES_PASSWORD=Praha4
+      - POSTGRES_DB=gold_silver
       # solves problem of incompatible password hashing functions (related to pg_isready)
       - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
     volumes:
-      - ../postgres_data:/var/lib/postgresql/data
+      - ../postgres_data_isa:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Mount the init script
     healthcheck:
       # -U postgres solves problem with missing root user
       test: ["CMD", "pg_isready", "-U", "postgres"]

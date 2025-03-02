@@ -1,17 +1,19 @@
 # Investment Scrap App
 
 ## How to run on local machine?
+>Make sure your device has access to internet.<br>
 #### Whole application with database
 > Install docker compose <br>
 >`cd ISA-server`<br>
->`./startDev.sh`
+>`./startDev.sh`<br>
+> open localhost:3000<br>
+> login with credentials admin Praha4
 #### Backend separately
->Make sure your device has access to internet.<br>
 >Run <b>main method in InvestmentScraperApp.java</b><br>
 >Initial actions, like data scraping,
 > can be handled by <b>EventListeners in Run.java</b>
 #### Frontend separately
->Enter client directory <br>
+>`cd ISA-client`<br>
 >`yarn install`<br>
 >`yarn start`<br>
 
@@ -21,19 +23,24 @@
 
 #### Commands
 ><b>Login</b> to server<br>
->`sudo ssh -v -p 22 root@67.223.117.163`<p>
+>`sudo ssh -v -p 22 root@67.223.117.163`
+
 > <b>Backup DB</b> on server<br>
-> `nano app/postgres_data_dump/README.txt`<p>
+> `nano app/postgres_data_dump/README.txt`
+
 > <b>Copy DB</b> dump from server to local machine<br>
->`scp root@67.223.117.163:/root/app/postgres_data_dump/14-04-24-after-clean-up.sql .`<p>
+>`scp root@67.223.117.163:/root/app/postgres_data_dump/14-04-24-after-clean-up.sql .`
+
 > <b>Restore DB</b> from local machine<br>
->`psql -U postgres -p 5432 -h 67.223.117.163 -d goldSilver < 25_04_24_product_synchronization.dump`<p>
+>`psql -U postgres -p 5432 -h 67.223.117.163 -d goldSilver < 25_04_24_product_synchronization.dump`
+
 > [useful SQL commands](request.sql) <br>
 
 #### Tips
-> Lack of memory in Docker<br>
-> [docker system prune](https://docs.docker.com/reference/cli/docker/system/prune/)
-> <b>BACKUP Postgres</b> BEFORE this command !!!!<p>
+> Lack of memory in Docker -
+> [`docker system prune`](https://docs.docker.com/reference/cli/docker/system/prune/) <br>
+> <b>BACKUP Postgres</b> BEFORE this command !!!!
+
 > After FE deployment, open app in new tab. Otherwise, changes won't take place.
 
 <br>
@@ -91,7 +98,7 @@ https://silverum.cz<br>
 Entity jsou k dispozici v optimalizovaném formátu `DTO` (Data Transfer Object).
 
 ### Swagger
-> http://localhost:8080/swagger-ui/
+> http://localhost:8080/swagger-ui/index.html
 
 ### DTO
 > V aplikaci jsou používány Data Transfer Objects, aby se šetřil datový přenos mezi aplikacemi a minimalizovalo množství dat, se kterými se manipuluje.
