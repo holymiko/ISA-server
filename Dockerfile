@@ -1,7 +1,10 @@
 FROM maven:3.9.6-amazoncorretto-17 AS build
 WORKDIR /app
 
-ENV PROFILE prod
+# ARG loads value from docker-compose
+ARG PROFILE_ARG
+# ENV makes value persistant for ENTRYPOINT
+ENV PROFILE $PROFILE_ARG
 ENV TIME_ZONE "Europe/Prague"
 
 COPY pom.xml .
@@ -11,7 +14,7 @@ COPY txt/export/tickers ./txt/export/tickers
 
 RUN mvn clean
 # RUN mvn package -DskipTests spring-boot:repackage # this works
-RUN mvn package -P $PROFILE  # Production exclusive Dockerfile
+RUN mvn package -P $PROFILE
 # mvn package automatically triggeres spring-boot:repackage due to pom.xml build plugin
 
 # Dynamic loading of project.version from pom.xml throw application.properties

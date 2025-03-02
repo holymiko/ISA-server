@@ -1,7 +1,7 @@
-version: '3.9'
+name: 'isa'
 services:
 
-  isa-client:
+  client:
     image: isa-client
     ports:
       - "3000:3000"
@@ -9,21 +9,36 @@ services:
       context: ../ISA-client
       dockerfile: Dockerfile
 
-  isa-server:
-    image: isa-server
+  server-dev:
+    image: isa-server-dev
+    profiles: [dev]
     restart: on-failure
     network_mode: "host"
-#    ports:
-#      - "8080:8080"
     depends_on:
-        isa-postgres:
+        postgres:
           condition: service_healthy
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - PROFILE_ARG=dev
 
-  isa-postgres:
-    image: postgres
+  server-prod:
+    image: isa-server-prod
+    profiles: [prod]
+    restart: on-failure
+    network_mode: "host"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - PROFILE_ARG=prod
+
+  postgres:
+    image: postgres:16
     restart: on-failure
     ports:
     - "5432:5432"
@@ -38,7 +53,7 @@ services:
     healthcheck:
       # -U postgres solves problem with missing root user
       test: ["CMD", "pg_isready", "-U", "postgres"]
-      interval: 30s
+      interval: 3s
       timeout: 10s
       retries: 5
 

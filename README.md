@@ -2,9 +2,9 @@
 
 ## How to run on local machine?
 #### Whole application with database
->`cd src/main/docker`<br>
->`docker build .`<br>
->`docker compose up`
+> Install docker compose <br>
+>`cd ISA-server`<br>
+>`./startDev.sh`
 #### Backend separately
 >Make sure your device has access to internet.<br>
 >Run <b>main method in InvestmentScraperApp.java</b><br>
@@ -14,6 +14,7 @@
 >Enter client directory <br>
 >`yarn install`<br>
 >`yarn start`<br>
+
 <br>
 
 ## Server management
@@ -34,15 +35,17 @@
 > [docker system prune](https://docs.docker.com/reference/cli/docker/system/prune/)
 > <b>BACKUP Postgres</b> BEFORE this command !!!!<p>
 > After FE deployment, open app in new tab. Otherwise, changes won't take place.
+
 <br>
 
 
 ## Technology stack 
 #### Backend stack
-> Java<br>Springboot<br>Hibernate<br>Maven<br>Docker<br>PostgreSQL<br>
+> Java 17<br>Springboot 3.1<br>Hibernate 6.2<br>Maven<br>Docker<br>PostgreSQL 16<br>
 >
 #### Frontend stack
-> ReactJS<br>JavaScript/TypeScript<br>Material-UI<br>
+> ReactJS<br>TypeScript<br>Material-UI<br>
+
 <br>
 
 ## Introduction
@@ -56,6 +59,7 @@ strategie popsané v knize <b> Inteligentní Investor</b> od Benjamina Grahama
 https://www.grahamvalue.com/article/how-build-complete-benjamin-graham-portfolio <br>
 https://en.wikipedia.org/wiki/Benjamin_Graham  
 https://en.wikipedia.org/wiki/The_Intelligent_Investor  
+
 <br>
 
 ## Data gathering
