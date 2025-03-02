@@ -18,7 +18,7 @@
         <java.version>17</java.version>
         <maven.compiler.release>17</maven.compiler.release>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
-        <start-class>home.holymiko.InvestmentScraperApp.InvestmentScraperApp</start-class>
+        <start-class>home.holymiko.investment.scraper.app.InvestmentScraperApp</start-class>
     </properties>
 
     <dependencies>
