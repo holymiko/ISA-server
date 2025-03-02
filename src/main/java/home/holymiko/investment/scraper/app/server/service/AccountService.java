@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -31,6 +32,7 @@ public class AccountService implements UserDetailsService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     /////// FIND AS DTO
@@ -71,6 +73,13 @@ public class AccountService implements UserDetailsService {
         }
         assertUsername(accountCreateDTO.getUsername());
         assertPassword(accountCreateDTO.getPassword());
+
+        accountCreateDTO.setPassword(
+                passwordEncoder.encode(
+                        accountCreateDTO.getPassword()
+                )
+        );
+
         // Default role
         if(accountCreateDTO.getRole() == null) {
             accountCreateDTO.setRole(Role.USER);

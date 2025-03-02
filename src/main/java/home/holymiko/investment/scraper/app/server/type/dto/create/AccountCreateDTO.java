@@ -10,7 +10,8 @@ import lombok.Setter;
 public class AccountCreateDTO {
 
     private final String username;
-    private final String password;
+    @Setter
+    private String password;
     @Setter
     private Role role;
 
