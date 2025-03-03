@@ -28,7 +28,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -42,7 +41,6 @@ public class Run {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Run.class);
 
-    Process process;
     private final ScrapController scrapController;
     private final StockController stockController;
     private final RateService rateService;
