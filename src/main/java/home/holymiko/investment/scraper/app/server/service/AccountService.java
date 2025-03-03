@@ -169,7 +169,7 @@ public class AccountService implements UserDetailsService {
 
     private static void assertUsername(String username) {
         Assert.hasText(username, "'Username' must not be empty");
-        Assert.isTrue(username.length() >= 6, "'Username' must be at least 6 characters long");
+        Assert.isTrue(username.length() >= 4, "'Username' must be at least 4 characters long");
     }
 
     private static void assertPassword(String password) {
