@@ -28,6 +28,6 @@ create table account
 );
 
 INSERT INTO account (id, password, role, username, person_id)
-VALUES (1, '$2a$10$OkMC9XdP50hoHQ.uTXAzZOeJ5L8miyBYAa14ilts.cX6ZZwISGhMO', 4, 'admin', 0);
+VALUES (0, '$2a$10$OkMC9XdP50hoHQ.uTXAzZOeJ5L8miyBYAa14ilts.cX6ZZwISGhMO', 4, 'admin', 0);
 
 
