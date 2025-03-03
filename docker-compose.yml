@@ -1,13 +1,23 @@
 name: 'isa'
 services:
 
-  client:
-    image: isa-client
+  client-dev:
+    image: isa-client-dev
+    profiles: [dev]
     ports:
       - "3000:3000"
     build:
       context: ../ISA-client
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
+
+  client-prod:
+    image: isa-client-prod
+    profiles: [prod]
+    ports:
+      - "3000:3000"
+    build:
+      context: ../ISA-client
+      dockerfile: Dockerfile.prod
 
   server-dev:
     image: isa-server-dev
