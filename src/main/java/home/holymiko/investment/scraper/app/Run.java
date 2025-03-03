@@ -109,14 +109,11 @@ public class Run {
         metalScraper.addAdapter(Dealer.ZLATAKY, new ZlatakyAdapter());
     }
 
-//    @Order(2)                       //  TODO activate before release
-//    @EventListener(ApplicationStartedEvent.class)
-    public void runFrontEnd() throws IOException {
-        // Run FrontEnd NodeJS Application
-        LOGGER.info("Attempt START frontend");
-        process = new ProcessBuilder(isWindows() ? "npm.cmd" : "yarn", "start")
-                .directory( new File("../ISA-client"))
-                .start();
+    @Order(2)
+    @EventListener(ApplicationStartedEvent.class)
+    public void initScrapData() {
+        scrapController.allLinks();
+        scrapController.linksWithoutProduct(true);
     }
 
 //    @Order(3) // Last Order index
@@ -140,7 +137,4 @@ public class Run {
         scrapController.linksWithoutProduct(true);
     }
 
-    static boolean isWindows() {
-        return System.getProperty("os.name").toLowerCase().contains("win");
-    }
 }
