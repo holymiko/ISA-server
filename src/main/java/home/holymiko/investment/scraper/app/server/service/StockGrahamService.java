@@ -10,6 +10,7 @@ import home.holymiko.investment.scraper.app.server.api.repository.StockGrahamRep
 import lombok.AllArgsConstructor;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -69,7 +70,7 @@ public class StockGrahamService {
 
     ////// SAVE
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void save(StockGraham stockGraham) {
         this.stockGrahamRepository.deleteByTicker(stockGraham.getTicker());
         this.stockGrahamRepository.save(stockGraham);
