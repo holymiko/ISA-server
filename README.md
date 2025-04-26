@@ -8,9 +8,12 @@
 >`./startDev.sh`<br>
 > open localhost:3000<br>
 > login with credentials admin Praha4
-#### Backend separately
->Run <b>main method in InvestmentScraperApp.java</b><br>
->Initial actions, like data scraping,
+#### Backend separately with IntelliJ
+> Set SDK 17 in Project Structure<br>
+> Set JDK 17 in Run Configuration > Build and Run<br>
+> Set 'dev' in Run Configuration > Active profiles<br>
+> Run <b>main method in InvestmentScraperApp.java</b><br>
+> Initial actions, like data scraping,
 > can be handled by <b>EventListeners in Run.java</b>
 #### Frontend separately
 >`cd ISA-client`<br>
